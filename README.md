@@ -15,6 +15,13 @@ and `scenario-driven-architecture/docs/authoring-altitude-model-stubs-2026-09-21
 altitude's declared writer kind and output land in the estate, that provider is deleted
 from `providers/`; the set never grows.
 
+## Architecture documentation
+
+The [documentation index](docs/README.md) connects this bridge to the broader
+capability-estate modernization model: execution authority, external provider
+boundaries, evidence and metrics, and scenario-based absorption. It distinguishes
+current repository behavior from proposed estate capabilities and operating rules.
+
 ## Layout
 
 ```
