@@ -1,0 +1,164 @@
+{
+  "providerId": "sfx-authoring-altitude-06",
+  "altitude": 6,
+  "toolId": "ast.author",
+  "disposition": "AUTHORED",
+  "candidate": {
+    "contractId": "altitude-6-transformation-ast-output.v1",
+    "altitude": 6,
+    "altitudeId": "altitude-6-transformation-ast",
+    "altitudeName": "Transformation AST",
+    "stub": true,
+    "shapeSource": "tool-to-altitude.v1.json#ast.author",
+    "canned": {
+      "transformation_id": "altitude-6-transformation-ast-stub-transform.v1",
+      "transformation_version_pk": 0,
+      "expression": {
+        "op": "object",
+        "fields": {
+          "stub": {
+            "op": "literal",
+            "value": true
+          }
+        }
+      },
+      "normalization": {
+        "root": "object",
+        "nodes": 2
+      },
+      "documentDigest": "sha256:f28b675790cd3ace2236dcf23b8617e06830eb007a919f0eefac06e28bdc3e9d",
+      "modelOutput": {
+        "contractId": "altitude-6-transformation-ast-output.v1",
+        "altitude": 6,
+        "altitudeId": "transformation-ast",
+        "altitudeName": "Transformation AST",
+        "stub": false,
+        "shapeSource": "authored",
+        "canned": {
+          "semantics": {
+            "expression": {
+              "contractId": "json-expression-tree.v1",
+              "operator": "Object",
+              "properties": [
+                {
+                  "key": "fullName",
+                  "value": {
+                    "operator": "Concatenate",
+                    "arguments": [
+                      {
+                        "operator": "Path",
+                        "path": "$.user.firstName"
+                      },
+                      {
+                        "operator": "Literal",
+                        "value": " "
+                      },
+                      {
+                        "operator": "Path",
+                        "path": "$.user.lastName"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "key": "fullAddress",
+                  "value": {
+                    "operator": "Path",
+                    "path": "$.user.address.street"
+                  }
+                },
+                {
+                  "key": "isAdult",
+                  "value": {
+                    "operator": "GreaterThanOrEqual",
+                    "arguments": [
+                      {
+                        "operator": "Path",
+                        "path": "$.user.age"
+                      },
+                      {
+                        "operator": "Literal",
+                        "value": 18
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        }
+      },
+      "modelId": "gemini-2.5-pro"
+    }
+  },
+  "providerExecution": "model",
+  "elapsedMs": 13903.005,
+  "shapeConforms": true,
+  "modelCall": {
+    "attempted": true,
+    "ok": true,
+    "status": 200,
+    "model": "gemini-2.5-pro",
+    "output": {
+      "contractId": "altitude-6-transformation-ast-output.v1",
+      "altitude": 6,
+      "altitudeId": "transformation-ast",
+      "altitudeName": "Transformation AST",
+      "stub": false,
+      "shapeSource": "authored",
+      "canned": {
+        "semantics": {
+          "expression": {
+            "contractId": "json-expression-tree.v1",
+            "operator": "Object",
+            "properties": [
+              {
+                "key": "fullName",
+                "value": {
+                  "operator": "Concatenate",
+                  "arguments": [
+                    {
+                      "operator": "Path",
+                      "path": "$.user.firstName"
+                    },
+                    {
+                      "operator": "Literal",
+                      "value": " "
+                    },
+                    {
+                      "operator": "Path",
+                      "path": "$.user.lastName"
+                    }
+                  ]
+                }
+              },
+              {
+                "key": "fullAddress",
+                "value": {
+                  "operator": "Path",
+                  "path": "$.user.address.street"
+                }
+              },
+              {
+                "key": "isAdult",
+                "value": {
+                  "operator": "GreaterThanOrEqual",
+                  "arguments": [
+                    {
+                      "operator": "Path",
+                      "path": "$.user.age"
+                    },
+                    {
+                      "operator": "Literal",
+                      "value": 18
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      }
+    }
+  }
+}

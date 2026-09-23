@@ -1,0 +1,92 @@
+{
+  "contractId": "provider-binding-change.v1",
+  "providerId": "sfx-authoring-altitude-06",
+  "provider": {
+    "name": "Authoring altitude 06 provider (transformation AST)",
+    "operations": [
+      "ast.author",
+      "ast.normalize",
+      "ast.repair"
+    ]
+  },
+  "capabilityId": "authoring-altitude-model-stubs",
+  "outcomeContractId": "altitude-6-transformation-ast-output.v1",
+  "bindingId": "sfx-providers-altitude-06",
+  "route": {
+    "routeId": "sfx-providers-altitude-06",
+    "resolvedDisposition": "AUTHORED"
+  },
+  "endpoint": {
+    "host": "localhost:8790",
+    "method": "POST",
+    "pathPrefix": "/altitude-06/ast.author",
+    "requestTemplate": "https://localhost:8790/altitude-06/ast.author",
+    "safeHeaders": {
+      "content-type": "application/json"
+    },
+    "allowedResponseHeaders": [
+      "content-type"
+    ],
+    "timeoutMilliseconds": 60000,
+    "maxResponseBytes": 524288
+  },
+  "credential": {
+    "referenceName": "ALTITUDE_LOCAL_NO_CREDENTIAL",
+    "injectionRuleId": "altitude-local-no-credential.v1",
+    "headerName": "x-altitude-local-credential",
+    "source": "vault",
+    "storeLocator": "%LOCALAPPDATA%\\sfx\\vault"
+  },
+  "effectScope": "ONE_BOUNDED_HTTPS_EXCHANGE_NO_REDIRECT_NO_RETRY",
+  "nativeShape": "candidate",
+  "mapping": {
+    "contractId": "candidate.contractId",
+    "altitude": "candidate.altitude",
+    "altitudeId": "candidate.altitudeId",
+    "altitudeName": "candidate.altitudeName",
+    "stub": "candidate.stub",
+    "shapeSource": "candidate.shapeSource",
+    "canned": "candidate.canned"
+  },
+  "observedSample": {
+    "providerId": "sfx-authoring-altitude-06",
+    "altitude": 6,
+    "toolId": "ast.author",
+    "disposition": "AUTHORED",
+    "candidate": {
+      "contractId": "altitude-6-transformation-ast-output.v1",
+      "altitude": 6,
+      "altitudeId": "altitude-6-transformation-ast",
+      "altitudeName": "Transformation AST",
+      "stub": true,
+      "shapeSource": "tool-to-altitude.v1.json#ast.author",
+      "canned": {
+        "transformation_id": "altitude-6-transformation-ast-stub-transform.v1",
+        "transformation_version_pk": 0,
+        "expression": {
+          "op": "object",
+          "fields": {
+            "stub": {
+              "op": "literal",
+              "value": true
+            }
+          }
+        },
+        "normalization": {
+          "root": "object",
+          "nodes": 2
+        },
+        "documentDigest": "sha256:f28b675790cd3ace2236dcf23b8617e06830eb007a919f0eefac06e28bdc3e9d"
+      }
+    }
+  },
+  "preflight": {
+    "input": {
+      "contractId": "authoring-altitude-model-stubs-request.v1",
+      "payload": {}
+    },
+    "expected": {
+      "disposition": "AUTHORED"
+    }
+  }
+}

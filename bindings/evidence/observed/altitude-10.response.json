@@ -1,0 +1,32 @@
+{
+  "providerId": "sfx-authoring-altitude-10",
+  "altitude": 10,
+  "toolId": "fixture.author",
+  "disposition": "AUTHORED",
+  "candidate": {
+    "contractId": "altitude-10-fixtures-proof-output.v1",
+    "altitude": 10,
+    "altitudeId": "altitude-10-fixtures-proof",
+    "altitudeName": "Fixtures and proof",
+    "stub": true,
+    "shapeSource": "tool-to-altitude.v1.json#fixture.author",
+    "canned": {
+      "fixture_id": "altitude-10-stub-fixture",
+      "input": {
+        "contractId": "authoring-altitude-model-stubs-request.v1",
+        "payload": {}
+      },
+      "expected": {
+        "disposition": "terminated",
+        "scenarioSequence": [
+          "altitude-10-fixtures-proof"
+        ]
+      },
+      "fixtureProfile": "consumer-capability-fixtures.v1",
+      "documentDigest": "sha256:bbf545d34922f78d806a1d95ed2c6164ed11fe8a1cf6acb88ddce2922af41851"
+    }
+  },
+  "providerExecution": "stub",
+  "elapsedMs": 0.286,
+  "shapeConforms": true
+}

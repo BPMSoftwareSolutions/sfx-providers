@@ -1,0 +1,69 @@
+{
+  "providerId": "sfx-authoring-altitude-01",
+  "altitude": 1,
+  "toolId": "feature.resolve",
+  "disposition": "AUTHORED",
+  "candidate": {
+    "contractId": "altitude-1-feature-parse-output.v1",
+    "altitude": 1,
+    "altitudeId": "altitude-1-feature-parse",
+    "altitudeName": "Feature parse",
+    "stub": true,
+    "shapeSource": "tool-to-altitude.v1.json#feature.resolve",
+    "canned": {
+      "capability": "resolve-equity-market-price-evidence",
+      "input": "AVGO",
+      "featureReference": "features/authoring-altitude-model-stubs.feature",
+      "classification": "AUTHOR_PROFILE",
+      "documentDigest": "sha256:fa6eb7ff21816b3a79f75995307dc1d8dac0e87f5c12d6f3824b6fcaa3917369",
+      "modelOutput": {
+        "contractId": "altitude-1-feature-parse-output.v1",
+        "altitude": 1,
+        "altitudeId": "feature-parse",
+        "altitudeName": "Feature Parse",
+        "stub": true,
+        "shapeSource": "default-stub",
+        "canned": {
+          "capability": "unknown",
+          "input": "",
+          "featureReference": "unknown.unspecified",
+          "classification": {
+            "domain": "unknown",
+            "intent": "unspecified",
+            "context": null,
+            "keywords": []
+          }
+        }
+      },
+      "modelId": "gemini-2.5-pro"
+    }
+  },
+  "providerExecution": "model",
+  "elapsedMs": 8405.972,
+  "shapeConforms": true,
+  "modelCall": {
+    "attempted": true,
+    "ok": true,
+    "status": 200,
+    "model": "gemini-2.5-pro",
+    "output": {
+      "contractId": "altitude-1-feature-parse-output.v1",
+      "altitude": 1,
+      "altitudeId": "feature-parse",
+      "altitudeName": "Feature Parse",
+      "stub": true,
+      "shapeSource": "default-stub",
+      "canned": {
+        "capability": "unknown",
+        "input": "",
+        "featureReference": "unknown.unspecified",
+        "classification": {
+          "domain": "unknown",
+          "intent": "unspecified",
+          "context": null,
+          "keywords": []
+        }
+      }
+    }
+  }
+}

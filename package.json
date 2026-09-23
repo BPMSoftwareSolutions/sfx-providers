@@ -1,0 +1,15 @@
+{
+  "name": "sfx-providers",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Local HTTPS model-provider services, one per authoring altitude, bridging code now to declared data later",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "setup-cert": "powershell -ExecutionPolicy Bypass -NoProfile -File ./setup-cert.ps1",
+    "start": "node runner.mjs",
+    "test": "node --test tests"
+  }
+}

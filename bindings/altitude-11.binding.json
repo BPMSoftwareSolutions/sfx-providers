@@ -1,0 +1,112 @@
+{
+  "contractId": "provider-binding-change.v1",
+  "providerId": "sfx-authoring-altitude-11",
+  "provider": {
+    "name": "Authoring altitude 11 provider (alignment evaluation)",
+    "operations": [
+      "alignment.evaluate",
+      "candidate.decide",
+      "alignment.broadcast"
+    ]
+  },
+  "capabilityId": "authoring-altitude-model-stubs",
+  "outcomeContractId": "altitude-11-alignment-evaluation-output.v1",
+  "bindingId": "sfx-providers-altitude-11",
+  "route": {
+    "routeId": "sfx-providers-altitude-11",
+    "resolvedDisposition": "AUTHORED"
+  },
+  "endpoint": {
+    "host": "localhost:8790",
+    "method": "POST",
+    "pathPrefix": "/altitude-11/alignment.evaluate",
+    "requestTemplate": "https://localhost:8790/altitude-11/alignment.evaluate",
+    "safeHeaders": {
+      "content-type": "application/json"
+    },
+    "allowedResponseHeaders": [
+      "content-type"
+    ],
+    "timeoutMilliseconds": 60000,
+    "maxResponseBytes": 524288
+  },
+  "credential": {
+    "referenceName": "ALTITUDE_LOCAL_NO_CREDENTIAL",
+    "injectionRuleId": "altitude-local-no-credential.v1",
+    "headerName": "x-altitude-local-credential",
+    "source": "vault",
+    "storeLocator": "%LOCALAPPDATA%\\sfx\\vault"
+  },
+  "effectScope": "ONE_BOUNDED_HTTPS_EXCHANGE_NO_REDIRECT_NO_RETRY",
+  "nativeShape": "candidate",
+  "mapping": {
+    "contractId": "candidate.contractId",
+    "altitude": "candidate.altitude",
+    "altitudeId": "candidate.altitudeId",
+    "altitudeName": "candidate.altitudeName",
+    "stub": "candidate.stub",
+    "shapeSource": "candidate.shapeSource",
+    "canned": "candidate.canned"
+  },
+  "observedSample": {
+    "providerId": "sfx-authoring-altitude-11",
+    "altitude": 11,
+    "toolId": "alignment.evaluate",
+    "disposition": "AUTHORED",
+    "candidate": {
+      "contractId": "altitude-11-alignment-evaluation-output.v1",
+      "altitude": 11,
+      "altitudeId": "altitude-11-alignment-evaluation",
+      "altitudeName": "Alignment evaluation",
+      "stub": true,
+      "shapeSource": "tool-to-altitude.v1.json#alignment.evaluate",
+      "canned": {
+        "candidateId": "altitude-11-stub-candidate",
+        "alignment": {
+          "disposition": "UNALIGNED",
+          "altitudes": 11,
+          "missingDimensions": [
+            "intent",
+            "scenario",
+            "semantic-altitude",
+            "estate",
+            "topology",
+            "authority",
+            "provider",
+            "proof",
+            "novelty",
+            "admission"
+          ]
+        },
+        "review": {
+          "decision": "PENDING",
+          "reviewerAuthorityId": null
+        },
+        "contractId": "alignment-evaluation.v1",
+        "dimensions": {
+          "intent": {},
+          "scenario": {},
+          "semantic-altitude": {},
+          "estate": {},
+          "topology": {},
+          "authority": {},
+          "provider": {},
+          "proof": {},
+          "novelty": {},
+          "admission": {}
+        },
+        "convergenceDistance": 11,
+        "documentDigest": "sha256:f417e68a28fbe1e013f4bf1fd102c77cd35c8e1b9ccaac32b7d140591c786409"
+      }
+    }
+  },
+  "preflight": {
+    "input": {
+      "contractId": "authoring-altitude-model-stubs-request.v1",
+      "payload": {}
+    },
+    "expected": {
+      "disposition": "AUTHORED"
+    }
+  }
+}

@@ -1,0 +1,211 @@
+{
+  "policyType": "code-provider-swap-in.v1",
+  "policyId": "sfx-providers/authoring-altitude-code-providers.v1",
+  "instrumentKind": "migration-bridge",
+  "decisionRecord": "docs/README-bridge.md",
+  "refines": [
+    "docs/authoring-altitude-model-stubs-2026-09-21/analysis.md",
+    "docs/authoring-altitude-model-stubs-2026-09-21/swap-in-plan.md",
+    "docs/authoring-altitude-model-stubs-2026-09-21/stub-fill-checklist.md"
+  ],
+  "admittedOnce": true,
+  "surface": "providers/altitude-01.mjs..altitude-11.mjs: eleven local HTTPS model-provider services (providerId sfx-authoring-altitude-NN), one per authoring altitude, each holding the bridge placement of the estate role of the matching authoring-altitude-model-stubs port (estate sidefx, estate model 34)",
+  "baseline": {
+    "providers": 11,
+    "recordedAt": "2026-09-22",
+    "recordedAtRevision": "estate sql/migrations/declare-authoring-altitude-model-stubs.commit.sql",
+    "note": "Immutable admission ceiling: the eleven authoring-altitude code providers (the local HTTPS services in providers/) whose declared bridge placement is the authoring-altitude-model-stubs surface. Later behavior does not move this ceiling; the surface may only shrink toward deletion.",
+    "growthDisposition": "PROVIDER_BRIDGE_GROWTH_REFUSED"
+  },
+  "declaredDataCounterpartsToday": {
+    "count": 2,
+    "altitudes": [
+      "altitude-1-feature-parse",
+      "altitude-8-providers-bindings-overlays"
+    ],
+    "note": "A1: live governed HTTP text lane (provider-binding-change.v1, request-capability-from-objective). A8: provider-binding route install (model.install_provider_binding_change via sfx provider add). These two bridges are removable now; the other nine await their successor's admission and placement writer."
+  },
+  "shrinkOnly": true,
+  "overdueCondition": "A provider's declared-data successor is admitted (its change kind and placement writer exist and the swap verification passes) while the code-bridge placement is still selected for that altitude; providers_retired is not incremented for it.",
+  "overdueDisposition": "PROVIDER_BRIDGE_SUCCESSOR_OVERDUE",
+  "providers": [
+    {
+      "providerId": "sfx-authoring-altitude-01",
+      "altitude": "altitude-1-feature-parse",
+      "ordinal": 1,
+      "toolId": "feature.resolve",
+      "bridgePlacement": "authoring-altitude-model-stubs-port",
+      "successor": {
+        "kind": "provider-binding",
+        "mechanism": "B",
+        "platformCapabilityId": "sda-governed-http-exchange-port.v1",
+        "counterpart": "live governed HTTP exchange lane request-capability-from-objective (provider-binding-change.v1) + deterministic sda-canonical-capability-feature-resolution-port.v1 for feature.resolve"
+      },
+      "admittedAsDeclaredData": true,
+      "revisitTrigger": "feature.resolve consumer overlay binding declared and feature-binding-change kind admitted; live lane invocation emits provider-exchange-shape.v1 status 200",
+      "status": "code-bridge"
+    },
+    {
+      "providerId": "sfx-authoring-altitude-02",
+      "altitude": "altitude-2-capability-meaning",
+      "ordinal": 2,
+      "toolId": "meaning.author",
+      "bridgePlacement": "altitude-2-capability-meaning-stub-port",
+      "successor": {
+        "kind": "connector-port",
+        "mechanism": "C",
+        "platformCapabilityId": "sda-projected-capability-invocation-port.v2",
+        "counterpart": "obtain-governed-model-response (live projected child; nests the B governed exchange)"
+      },
+      "admittedAsDeclaredData": false,
+      "revisitTrigger": "capability-authoring kind admitted with the ACCEPTED-receipt gate and model.install_model_placement_change available; author-one-scenario-candidate emits nested provider-exchange-shape.v1 200 + modelResponse",
+      "status": "code-bridge"
+    },
+    {
+      "providerId": "sfx-authoring-altitude-03",
+      "altitude": "altitude-3-scenario-io",
+      "ordinal": 3,
+      "toolId": "scenario.author",
+      "bridgePlacement": "altitude-3-scenario-io-stub-port",
+      "successor": {
+        "kind": "connector-port",
+        "mechanism": "C",
+        "platformCapabilityId": "sda-projected-capability-invocation-port.v2",
+        "counterpart": "obtain-governed-model-response (live projected child) replacing the conveyor model-invoker-port D no-op"
+      },
+      "admittedAsDeclaredData": false,
+      "revisitTrigger": "scenario-authoring kind admitted and the conveyor model-invoker-port C placement relinked; conveyor invocation emits nested provider exchange 200 + modelResponse and non-empty transitions",
+      "status": "code-bridge"
+    },
+    {
+      "providerId": "sfx-authoring-altitude-04",
+      "altitude": "altitude-4-contracts-schemas",
+      "ordinal": 4,
+      "toolId": "contract.author",
+      "bridgePlacement": "altitude-4-contracts-schemas-stub-port",
+      "successor": {
+        "kind": "connector-port",
+        "mechanism": "C",
+        "platformCapabilityId": "sda-projected-capability-invocation-port.v2",
+        "counterpart": "obtain-governed-model-response (live projected child) + contract-change writer model.declare_contract/model.configure_contract"
+      },
+      "admittedAsDeclaredData": false,
+      "revisitTrigger": "contract-change kind admitted plus the S4 contract.read row; contract invocation emits nested provider exchange 200 + modelResponse and the written schema digest matches",
+      "status": "code-bridge"
+    },
+    {
+      "providerId": "sfx-authoring-altitude-05",
+      "altitude": "altitude-5-semantic-authority-envelope",
+      "ordinal": 5,
+      "toolId": "semantics.author",
+      "bridgePlacement": "altitude-5-semantic-authority-envelope-stub-port",
+      "successor": {
+        "kind": "connector-port",
+        "mechanism": "C",
+        "platformCapabilityId": "sda-projected-capability-invocation-port.v2",
+        "counterpart": "rides the parent altitude's C/B child; envelope written by model.put_semantic_definition (no standalone model port)"
+      },
+      "admittedAsDeclaredData": false,
+      "revisitTrigger": "parent altitude kinds (capability-authoring/contract-change/transformation-change) admitted; the parent invocation's modelResponse binds to model.put_semantic_definition and the new definition is selected",
+      "status": "code-bridge"
+    },
+    {
+      "providerId": "sfx-authoring-altitude-06",
+      "altitude": "altitude-6-transformation-ast",
+      "ordinal": 6,
+      "toolId": "ast.author",
+      "bridgePlacement": "altitude-6-transformation-ast-stub-port",
+      "successor": {
+        "kind": "connector-port",
+        "mechanism": "C",
+        "platformCapabilityId": "sda-projected-capability-invocation-port.v2",
+        "counterpart": "obtain-governed-model-response for generation; D sda-authority-transformation-port.v1 + model.normalize_transformation_expression for normalization/execution"
+      },
+      "admittedAsDeclaredData": false,
+      "revisitTrigger": "transformation-change kind admitted and the ast.repair mechanical-repair unit declared; solution invocation emits nested provider exchange 200 + modelResponse and normalize_transformation_expression writes the new version",
+      "status": "code-bridge"
+    },
+    {
+      "providerId": "sfx-authoring-altitude-07",
+      "altitude": "altitude-7-execution-authorities-ports",
+      "ordinal": 7,
+      "toolId": "authority.author",
+      "bridgePlacement": "altitude-7-execution-authorities-ports-stub-port",
+      "successor": {
+        "kind": "connector-port",
+        "mechanism": "C",
+        "platformCapabilityId": "sda-projected-capability-invocation-port.v2",
+        "counterpart": "obtain-governed-model-response (live projected child) + execution-authority-change writer model.declare_scenario/model.bind_provider"
+      },
+      "admittedAsDeclaredData": false,
+      "revisitTrigger": "execution-authority-change kind admitted; graph compiles in preflight and the invocation emits nested provider exchange 200 + modelResponse with operation_links=1",
+      "status": "code-bridge"
+    },
+    {
+      "providerId": "sfx-authoring-altitude-08",
+      "altitude": "altitude-8-providers-bindings-overlays",
+      "ordinal": 8,
+      "toolId": "provider.author",
+      "bridgePlacement": "altitude-8-providers-bindings-overlays-stub-port",
+      "successor": {
+        "kind": "provider-binding",
+        "mechanism": "B",
+        "platformCapabilityId": "sda-governed-http-exchange-port.v1",
+        "counterpart": "provider-binding-change.v1 route installed by model.install_provider_binding_change via sfx provider add"
+      },
+      "admittedAsDeclaredData": true,
+      "revisitTrigger": "provider-binding-change.v1 published as a kernel schema and the model proposal capability declared (flywheel Phase 2); sfx provider add is no longer the only author of the binding document",
+      "status": "code-bridge"
+    },
+    {
+      "providerId": "sfx-authoring-altitude-09",
+      "altitude": "altitude-9-interface-cli-display",
+      "ordinal": 9,
+      "toolId": "interface.author",
+      "bridgePlacement": "altitude-9-interface-cli-display-stub-port",
+      "successor": {
+        "kind": "connector-port",
+        "mechanism": "C",
+        "platformCapabilityId": "sda-projected-capability-invocation-port.v2",
+        "counterpart": "rides the parent capability-authoring C/B call; CLI document written by model.configure_interface and delivered by sda-json-cli.v1"
+      },
+      "admittedAsDeclaredData": false,
+      "revisitTrigger": "capability-authoring kind admitted; interface invocation emits the CLI document and nested provider exchange 200 + modelResponse",
+      "status": "code-bridge"
+    },
+    {
+      "providerId": "sfx-authoring-altitude-10",
+      "altitude": "altitude-10-fixtures-proof",
+      "ordinal": 10,
+      "toolId": "fixture.author",
+      "bridgePlacement": "altitude-10-fixtures-proof-stub-port",
+      "successor": {
+        "kind": "connector-port",
+        "mechanism": "C",
+        "platformCapabilityId": "sda-projected-capability-invocation-port.v2",
+        "counterpart": "rides the parent scenario-authoring/capability-authoring C/B call; fixtures written by model.add_example or the $.fixtures block"
+      },
+      "admittedAsDeclaredData": false,
+      "revisitTrigger": "scenario-authoring/capability-authoring fixture member admitted; capability-fixtures preflight passes and the fixture invocation emits nested provider exchange 200 + modelResponse",
+      "status": "code-bridge"
+    },
+    {
+      "providerId": "sfx-authoring-altitude-11",
+      "altitude": "altitude-11-alignment-evaluation",
+      "ordinal": 11,
+      "toolId": "alignment.evaluate",
+      "bridgePlacement": "altitude-11-alignment-evaluation-stub-port",
+      "successor": {
+        "kind": "provider-binding",
+        "mechanism": "B",
+        "platformCapabilityId": "sda-governed-http-exchange-port.v1",
+        "counterpart": "evaluator capability route (+ C child) with alignment-evaluation.v1 receipt writer and declaration-controlled concurrent dispatch"
+      },
+      "admittedAsDeclaredData": false,
+      "revisitTrigger": "evaluator capability plus alignment-evaluation and candidate-decision kinds admitted with the ACCEPTED gate; broadcast emits one provider-exchange-shape.v1 + modelResponse per provider branch and candidate.read returns convergenceDistance",
+      "status": "code-bridge"
+    }
+  ],
+  "surfaceListIsClosed": true,
+  "failureDisposition": "PROVIDER_BRIDGE_ADMISSION_REJECTED"
+}

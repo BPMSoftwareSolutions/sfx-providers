@@ -1,0 +1,88 @@
+{
+  "contractId": "provider-binding-change.v1",
+  "providerId": "sfx-authoring-altitude-09",
+  "provider": {
+    "name": "Authoring altitude 09 provider (interface and CLI display)",
+    "operations": [
+      "interface.author"
+    ]
+  },
+  "capabilityId": "authoring-altitude-model-stubs",
+  "outcomeContractId": "altitude-9-interface-cli-display-output.v1",
+  "bindingId": "sfx-providers-altitude-09",
+  "route": {
+    "routeId": "sfx-providers-altitude-09",
+    "resolvedDisposition": "AUTHORED"
+  },
+  "endpoint": {
+    "host": "localhost:8790",
+    "method": "POST",
+    "pathPrefix": "/altitude-09/interface.author",
+    "requestTemplate": "https://localhost:8790/altitude-09/interface.author",
+    "safeHeaders": {
+      "content-type": "application/json"
+    },
+    "allowedResponseHeaders": [
+      "content-type"
+    ],
+    "timeoutMilliseconds": 60000,
+    "maxResponseBytes": 524288
+  },
+  "credential": {
+    "referenceName": "ALTITUDE_LOCAL_NO_CREDENTIAL",
+    "injectionRuleId": "altitude-local-no-credential.v1",
+    "headerName": "x-altitude-local-credential",
+    "source": "vault",
+    "storeLocator": "%LOCALAPPDATA%\\sfx\\vault"
+  },
+  "effectScope": "ONE_BOUNDED_HTTPS_EXCHANGE_NO_REDIRECT_NO_RETRY",
+  "nativeShape": "candidate",
+  "mapping": {
+    "contractId": "candidate.contractId",
+    "altitude": "candidate.altitude",
+    "altitudeId": "candidate.altitudeId",
+    "altitudeName": "candidate.altitudeName",
+    "stub": "candidate.stub",
+    "shapeSource": "candidate.shapeSource",
+    "canned": "candidate.canned"
+  },
+  "observedSample": {
+    "providerId": "sfx-authoring-altitude-09",
+    "altitude": 9,
+    "toolId": "interface.author",
+    "disposition": "AUTHORED",
+    "candidate": {
+      "contractId": "altitude-9-interface-cli-display-output.v1",
+      "altitude": 9,
+      "altitudeId": "altitude-9-interface-cli-display",
+      "altitudeName": "Interface and CLI display",
+      "stub": true,
+      "shapeSource": "tool-to-altitude.v1.json#interface.author",
+      "canned": {
+        "capabilityId": "authoring-altitude-model-stubs",
+        "interfaceId": "altitude-9-interface-cli-display-cli",
+        "cli": {
+          "input": {
+            "type": "text",
+            "contract": "authoring-altitude-model-stubs-request.v1",
+            "path": "payload.objective"
+          },
+          "display": {
+            "select": "outcome.canned",
+            "as": "json"
+          }
+        },
+        "documentDigest": "sha256:e20fdc59a19fe554177e6967761ded5a495786907d968da4b6d1d31c34e20c13"
+      }
+    }
+  },
+  "preflight": {
+    "input": {
+      "contractId": "authoring-altitude-model-stubs-request.v1",
+      "payload": {}
+    },
+    "expected": {
+      "disposition": "AUTHORED"
+    }
+  }
+}

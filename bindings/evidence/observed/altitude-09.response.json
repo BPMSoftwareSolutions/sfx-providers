@@ -1,0 +1,33 @@
+{
+  "providerId": "sfx-authoring-altitude-09",
+  "altitude": 9,
+  "toolId": "interface.author",
+  "disposition": "AUTHORED",
+  "candidate": {
+    "contractId": "altitude-9-interface-cli-display-output.v1",
+    "altitude": 9,
+    "altitudeId": "altitude-9-interface-cli-display",
+    "altitudeName": "Interface and CLI display",
+    "stub": true,
+    "shapeSource": "tool-to-altitude.v1.json#interface.author",
+    "canned": {
+      "capabilityId": "authoring-altitude-model-stubs",
+      "interfaceId": "altitude-9-interface-cli-display-cli",
+      "cli": {
+        "input": {
+          "type": "text",
+          "contract": "authoring-altitude-model-stubs-request.v1",
+          "path": "payload.objective"
+        },
+        "display": {
+          "select": "outcome.canned",
+          "as": "json"
+        }
+      },
+      "documentDigest": "sha256:e20fdc59a19fe554177e6967761ded5a495786907d968da4b6d1d31c34e20c13"
+    }
+  },
+  "providerExecution": "stub",
+  "elapsedMs": 0.841,
+  "shapeConforms": true
+}

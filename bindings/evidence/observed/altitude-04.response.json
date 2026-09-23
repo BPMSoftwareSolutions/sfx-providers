@@ -1,0 +1,254 @@
+{
+  "providerId": "sfx-authoring-altitude-04",
+  "altitude": 4,
+  "toolId": "contract.author",
+  "disposition": "AUTHORED",
+  "candidate": {
+    "contractId": "altitude-4-contracts-schemas-output.v1",
+    "altitude": 4,
+    "altitudeId": "altitude-4-contracts-schemas",
+    "altitudeName": "Contracts and schemas",
+    "stub": true,
+    "shapeSource": "tool-to-altitude.v1.json#contract.author",
+    "canned": {
+      "contract_id": "altitude-4-contracts-schemas-output.v1",
+      "definition_digest": "sha256:0000000000000000000000000000000000000000000000000000000000000004",
+      "schema_digest": "sha256:0000000000000000000000000000000000000000000000000000000000000004",
+      "faceBindings": [
+        {
+          "scenarioId": "altitude-4-contracts-schemas",
+          "face": "input"
+        }
+      ],
+      "documentDigest": "sha256:eb127a70c5e6412b387fb995a540ad2e8c92a7baaa55322b9591acc139bd6ec2",
+      "modelOutput": {
+        "contractId": "com.example.schemas.user-profile.v1",
+        "altitude": 4,
+        "altitudeId": "contracts-schemas",
+        "altitudeName": "Contracts/Schemas",
+        "stub": "A simple user profile schema with UI face bindings.",
+        "shapeSource": "JSON Schema 2020-12",
+        "canned": {
+          "id": "user-profile-schema",
+          "schema": {
+            "$schema": "https://json-schema.org/draft/2020-12/schema",
+            "$id": "https://example.com/schemas/user-profile.v1.json",
+            "title": "User Profile",
+            "description": "A schema representing a user profile.",
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "format": "uuid",
+                "description": "The unique identifier for the user.",
+                "readOnly": true
+              },
+              "username": {
+                "type": "string",
+                "description": "The user's chosen username.",
+                "minLength": 3,
+                "maxLength": 20
+              },
+              "email": {
+                "type": "string",
+                "format": "email",
+                "description": "The user's email address."
+              },
+              "fullName": {
+                "type": "string",
+                "description": "The user's full name."
+              },
+              "dateOfBirth": {
+                "type": "string",
+                "format": "date",
+                "description": "The user's date of birth in YYYY-MM-DD format."
+              },
+              "isActive": {
+                "type": "boolean",
+                "description": "Indicates if the user account is active.",
+                "default": true
+              }
+            },
+            "required": [
+              "id",
+              "username",
+              "email"
+            ]
+          },
+          "faceBindings": [
+            {
+              "face": "web-form",
+              "bindings": [
+                {
+                  "pointer": "/properties/id",
+                  "widget": {
+                    "type": "text-input",
+                    "label": "User ID",
+                    "disabled": true
+                  }
+                },
+                {
+                  "pointer": "/properties/username",
+                  "widget": {
+                    "type": "text-input",
+                    "label": "Username",
+                    "placeholder": "Enter your username"
+                  }
+                },
+                {
+                  "pointer": "/properties/email",
+                  "widget": {
+                    "type": "email-input",
+                    "label": "Email Address",
+                    "placeholder": "you@example.com"
+                  }
+                },
+                {
+                  "pointer": "/properties/fullName",
+                  "widget": {
+                    "type": "text-input",
+                    "label": "Full Name",
+                    "placeholder": "Enter your full name"
+                  }
+                },
+                {
+                  "pointer": "/properties/dateOfBirth",
+                  "widget": {
+                    "type": "date-picker",
+                    "label": "Date of Birth"
+                  }
+                },
+                {
+                  "pointer": "/properties/isActive",
+                  "widget": {
+                    "type": "checkbox",
+                    "label": "Active Account"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "modelId": "gemini-2.5-pro"
+    }
+  },
+  "providerExecution": "model",
+  "elapsedMs": 16904.422,
+  "shapeConforms": true,
+  "modelCall": {
+    "attempted": true,
+    "ok": true,
+    "status": 200,
+    "model": "gemini-2.5-pro",
+    "output": {
+      "contractId": "com.example.schemas.user-profile.v1",
+      "altitude": 4,
+      "altitudeId": "contracts-schemas",
+      "altitudeName": "Contracts/Schemas",
+      "stub": "A simple user profile schema with UI face bindings.",
+      "shapeSource": "JSON Schema 2020-12",
+      "canned": {
+        "id": "user-profile-schema",
+        "schema": {
+          "$schema": "https://json-schema.org/draft/2020-12/schema",
+          "$id": "https://example.com/schemas/user-profile.v1.json",
+          "title": "User Profile",
+          "description": "A schema representing a user profile.",
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "format": "uuid",
+              "description": "The unique identifier for the user.",
+              "readOnly": true
+            },
+            "username": {
+              "type": "string",
+              "description": "The user's chosen username.",
+              "minLength": 3,
+              "maxLength": 20
+            },
+            "email": {
+              "type": "string",
+              "format": "email",
+              "description": "The user's email address."
+            },
+            "fullName": {
+              "type": "string",
+              "description": "The user's full name."
+            },
+            "dateOfBirth": {
+              "type": "string",
+              "format": "date",
+              "description": "The user's date of birth in YYYY-MM-DD format."
+            },
+            "isActive": {
+              "type": "boolean",
+              "description": "Indicates if the user account is active.",
+              "default": true
+            }
+          },
+          "required": [
+            "id",
+            "username",
+            "email"
+          ]
+        },
+        "faceBindings": [
+          {
+            "face": "web-form",
+            "bindings": [
+              {
+                "pointer": "/properties/id",
+                "widget": {
+                  "type": "text-input",
+                  "label": "User ID",
+                  "disabled": true
+                }
+              },
+              {
+                "pointer": "/properties/username",
+                "widget": {
+                  "type": "text-input",
+                  "label": "Username",
+                  "placeholder": "Enter your username"
+                }
+              },
+              {
+                "pointer": "/properties/email",
+                "widget": {
+                  "type": "email-input",
+                  "label": "Email Address",
+                  "placeholder": "you@example.com"
+                }
+              },
+              {
+                "pointer": "/properties/fullName",
+                "widget": {
+                  "type": "text-input",
+                  "label": "Full Name",
+                  "placeholder": "Enter your full name"
+                }
+              },
+              {
+                "pointer": "/properties/dateOfBirth",
+                "widget": {
+                  "type": "date-picker",
+                  "label": "Date of Birth"
+                }
+              },
+              {
+                "pointer": "/properties/isActive",
+                "widget": {
+                  "type": "checkbox",
+                  "label": "Active Account"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

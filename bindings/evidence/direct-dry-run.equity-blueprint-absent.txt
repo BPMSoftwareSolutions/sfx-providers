@@ -1,0 +1,7 @@
+﻿node : DECLARED CHANGE FAILED: EQUITY_BLUEPRINT_ABSENT
+At line:1 char:732
++ ... ange.json"; node "C:\lab\repos\scenario-driven-architecture\languages ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (DECLARED CHANGE...LUEPRINT_ABSENT:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 

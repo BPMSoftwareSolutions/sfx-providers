@@ -1,0 +1,34 @@
+{
+  "providerId": "sfx-authoring-altitude-07",
+  "altitude": 7,
+  "toolId": "authority.author",
+  "disposition": "AUTHORED",
+  "candidate": {
+    "contractId": "altitude-7-execution-authorities-ports-output.v1",
+    "altitude": 7,
+    "altitudeId": "altitude-7-execution-authorities-ports",
+    "altitudeName": "Execution authorities and ports",
+    "stub": true,
+    "shapeSource": "tool-to-altitude.v1.json#authority.author",
+    "canned": {
+      "authority_id": "altitude-7-execution-authorities-ports.v1",
+      "definition_digest": "sha256:a681d7853d027c23c58e141f6e9739dcd970d28c11eb5c380e8e241f9355ffbd",
+      "operation_count": 1,
+      "operations": [
+        {
+          "operationId": "altitude-7-execution-authorities-ports.stub",
+          "kind": "invoke-port"
+        }
+      ],
+      "portBindings": [
+        {
+          "portId": "altitude-7-execution-authorities-ports-stub-port"
+        }
+      ],
+      "documentDigest": "sha256:e6cc64a242603d8af0c24ca444ba787fc9c881dcf902e50eacb50ae8f5e2c794"
+    }
+  },
+  "providerExecution": "stub",
+  "elapsedMs": 0.615,
+  "shapeConforms": true
+}

@@ -1,0 +1,9 @@
+{
+  "configurationType": "sfx-database-memory-runtime.v1",
+  "credentialVaultStoreLocator": "C:\\Users\\Sidney Jones\\AppData\\Local\\sfx\\vault",
+  "credentialStoreRealization": {
+    "providerProfileId": "windows-credential-store-provider",
+    "module": "languages/typescript/runtimes/node/windows-credential-store-provider.mjs",
+    "export": "createWindowsCredentialStoreRealization"
+  }
+}

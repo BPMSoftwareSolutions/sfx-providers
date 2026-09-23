@@ -1,0 +1,88 @@
+{
+  "contractId": "provider-binding-change.v1",
+  "providerId": "sfx-authoring-altitude-03",
+  "provider": {
+    "name": "Authoring altitude 03 provider (scenario I/E/O)",
+    "operations": [
+      "scenario.author"
+    ]
+  },
+  "capabilityId": "authoring-altitude-model-stubs",
+  "outcomeContractId": "altitude-3-scenario-io-output.v1",
+  "bindingId": "sfx-providers-altitude-03",
+  "route": {
+    "routeId": "sfx-providers-altitude-03",
+    "resolvedDisposition": "AUTHORED"
+  },
+  "endpoint": {
+    "host": "localhost:8790",
+    "method": "POST",
+    "pathPrefix": "/altitude-03/scenario.author",
+    "requestTemplate": "https://localhost:8790/altitude-03/scenario.author",
+    "safeHeaders": {
+      "content-type": "application/json"
+    },
+    "allowedResponseHeaders": [
+      "content-type"
+    ],
+    "timeoutMilliseconds": 60000,
+    "maxResponseBytes": 524288
+  },
+  "credential": {
+    "referenceName": "ALTITUDE_LOCAL_NO_CREDENTIAL",
+    "injectionRuleId": "altitude-local-no-credential.v1",
+    "headerName": "x-altitude-local-credential",
+    "source": "vault",
+    "storeLocator": "%LOCALAPPDATA%\\sfx\\vault"
+  },
+  "effectScope": "ONE_BOUNDED_HTTPS_EXCHANGE_NO_REDIRECT_NO_RETRY",
+  "nativeShape": "candidate",
+  "mapping": {
+    "contractId": "candidate.contractId",
+    "altitude": "candidate.altitude",
+    "altitudeId": "candidate.altitudeId",
+    "altitudeName": "candidate.altitudeName",
+    "stub": "candidate.stub",
+    "shapeSource": "candidate.shapeSource",
+    "canned": "candidate.canned"
+  },
+  "observedSample": {
+    "providerId": "sfx-authoring-altitude-03",
+    "altitude": 3,
+    "toolId": "scenario.author",
+    "disposition": "AUTHORED",
+    "candidate": {
+      "contractId": "altitude-3-scenario-io-output.v1",
+      "altitude": 3,
+      "altitudeId": "altitude-3-scenario-io",
+      "altitudeName": "Scenario inputs/events/outcomes",
+      "stub": true,
+      "shapeSource": "tool-to-altitude.v1.json#scenario.author",
+      "canned": {
+        "result_set": "scenario_change_installed",
+        "capability_id": "authoring-altitude-model-stubs",
+        "scenario_id": "altitude-3-scenario-io",
+        "faces": [
+          "input",
+          "event",
+          "outcome"
+        ],
+        "portBindings": [
+          {
+            "portId": "altitude-3-scenario-io-stub-port"
+          }
+        ],
+        "documentDigest": "sha256:09ec0fe6ec7c2783d62c38849f42e1968855469e4e415a6ed78c4e5a0d5bdb17"
+      }
+    }
+  },
+  "preflight": {
+    "input": {
+      "contractId": "authoring-altitude-model-stubs-request.v1",
+      "payload": {}
+    },
+    "expected": {
+      "disposition": "AUTHORED"
+    }
+  }
+}

@@ -1,0 +1,163 @@
+{
+  "providerId": "sfx-authoring-altitude-05",
+  "altitude": 5,
+  "toolId": "semantics.author",
+  "disposition": "AUTHORED",
+  "candidate": {
+    "contractId": "altitude-5-semantic-authority-envelope-output.v1",
+    "altitude": 5,
+    "altitudeId": "altitude-5-semantic-authority-envelope",
+    "altitudeName": "Semantic authority envelope",
+    "stub": true,
+    "shapeSource": "tool-to-altitude.v1.json#semantics.author",
+    "canned": {
+      "address": {
+        "id": "altitude-5-semantic-authority-envelope",
+        "kind": "AUTHORITY",
+        "namespace": "sidefx:stubs"
+      },
+      "format": "sidefx-semantic-definition.v1",
+      "semantics": {
+        "envelope": "stub",
+        "altitude": 5
+      },
+      "documentDigest": "sha256:8db28f1b2718034f11876836b93a234569a4b96b4e6095ad261b5652cac62868",
+      "modelOutput": {
+        "contractId": "altitude-5-semantic-authority-envelope-output.v1",
+        "altitude": 5,
+        "altitudeId": "semantic-authority-envelope",
+        "altitudeName": "Semantic Authority Envelope",
+        "stub": false,
+        "shapeSource": "canned",
+        "canned": {
+          "address": {
+            "id": "customer-profile",
+            "kind": "entity",
+            "namespace": "com.example.crm"
+          },
+          "format": "json-schema/draft-07",
+          "semantics": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "title": "Customer Profile",
+            "description": "Represents a customer's profile within the CRM system.",
+            "type": "object",
+            "properties": {
+              "customerId": {
+                "type": "string",
+                "format": "uuid",
+                "description": "The unique identifier for the customer."
+              },
+              "firstName": {
+                "type": "string",
+                "description": "The customer's first name."
+              },
+              "lastName": {
+                "type": "string",
+                "description": "The customer's last name."
+              },
+              "email": {
+                "type": "string",
+                "format": "email",
+                "description": "The customer's primary email address."
+              },
+              "createdAt": {
+                "type": "string",
+                "format": "date-time",
+                "description": "The timestamp when the customer profile was created."
+              },
+              "loyaltyTier": {
+                "type": "string",
+                "enum": [
+                  "bronze",
+                  "silver",
+                  "gold"
+                ],
+                "description": "The customer's loyalty program tier."
+              }
+            },
+            "required": [
+              "customerId",
+              "firstName",
+              "lastName",
+              "email",
+              "createdAt"
+            ]
+          }
+        }
+      },
+      "modelId": "gemini-2.5-pro"
+    }
+  },
+  "providerExecution": "model",
+  "elapsedMs": 15331.069,
+  "shapeConforms": true,
+  "modelCall": {
+    "attempted": true,
+    "ok": true,
+    "status": 200,
+    "model": "gemini-2.5-pro",
+    "output": {
+      "contractId": "altitude-5-semantic-authority-envelope-output.v1",
+      "altitude": 5,
+      "altitudeId": "semantic-authority-envelope",
+      "altitudeName": "Semantic Authority Envelope",
+      "stub": false,
+      "shapeSource": "canned",
+      "canned": {
+        "address": {
+          "id": "customer-profile",
+          "kind": "entity",
+          "namespace": "com.example.crm"
+        },
+        "format": "json-schema/draft-07",
+        "semantics": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "title": "Customer Profile",
+          "description": "Represents a customer's profile within the CRM system.",
+          "type": "object",
+          "properties": {
+            "customerId": {
+              "type": "string",
+              "format": "uuid",
+              "description": "The unique identifier for the customer."
+            },
+            "firstName": {
+              "type": "string",
+              "description": "The customer's first name."
+            },
+            "lastName": {
+              "type": "string",
+              "description": "The customer's last name."
+            },
+            "email": {
+              "type": "string",
+              "format": "email",
+              "description": "The customer's primary email address."
+            },
+            "createdAt": {
+              "type": "string",
+              "format": "date-time",
+              "description": "The timestamp when the customer profile was created."
+            },
+            "loyaltyTier": {
+              "type": "string",
+              "enum": [
+                "bronze",
+                "silver",
+                "gold"
+              ],
+              "description": "The customer's loyalty program tier."
+            }
+          },
+          "required": [
+            "customerId",
+            "firstName",
+            "lastName",
+            "email",
+            "createdAt"
+          ]
+        }
+      }
+    }
+  }
+}

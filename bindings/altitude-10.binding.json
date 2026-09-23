@@ -1,0 +1,88 @@
+{
+  "contractId": "provider-binding-change.v1",
+  "providerId": "sfx-authoring-altitude-10",
+  "provider": {
+    "name": "Authoring altitude 10 provider (fixtures and proof)",
+    "operations": [
+      "fixture.author",
+      "proof.obligation.author"
+    ]
+  },
+  "capabilityId": "authoring-altitude-model-stubs",
+  "outcomeContractId": "altitude-10-fixtures-proof-output.v1",
+  "bindingId": "sfx-providers-altitude-10",
+  "route": {
+    "routeId": "sfx-providers-altitude-10",
+    "resolvedDisposition": "AUTHORED"
+  },
+  "endpoint": {
+    "host": "localhost:8790",
+    "method": "POST",
+    "pathPrefix": "/altitude-10/fixture.author",
+    "requestTemplate": "https://localhost:8790/altitude-10/fixture.author",
+    "safeHeaders": {
+      "content-type": "application/json"
+    },
+    "allowedResponseHeaders": [
+      "content-type"
+    ],
+    "timeoutMilliseconds": 60000,
+    "maxResponseBytes": 524288
+  },
+  "credential": {
+    "referenceName": "ALTITUDE_LOCAL_NO_CREDENTIAL",
+    "injectionRuleId": "altitude-local-no-credential.v1",
+    "headerName": "x-altitude-local-credential",
+    "source": "vault",
+    "storeLocator": "%LOCALAPPDATA%\\sfx\\vault"
+  },
+  "effectScope": "ONE_BOUNDED_HTTPS_EXCHANGE_NO_REDIRECT_NO_RETRY",
+  "nativeShape": "candidate",
+  "mapping": {
+    "contractId": "candidate.contractId",
+    "altitude": "candidate.altitude",
+    "altitudeId": "candidate.altitudeId",
+    "altitudeName": "candidate.altitudeName",
+    "stub": "candidate.stub",
+    "shapeSource": "candidate.shapeSource",
+    "canned": "candidate.canned"
+  },
+  "observedSample": {
+    "providerId": "sfx-authoring-altitude-10",
+    "altitude": 10,
+    "toolId": "fixture.author",
+    "disposition": "AUTHORED",
+    "candidate": {
+      "contractId": "altitude-10-fixtures-proof-output.v1",
+      "altitude": 10,
+      "altitudeId": "altitude-10-fixtures-proof",
+      "altitudeName": "Fixtures and proof",
+      "stub": true,
+      "shapeSource": "tool-to-altitude.v1.json#fixture.author",
+      "canned": {
+        "fixture_id": "altitude-10-stub-fixture",
+        "input": {
+          "contractId": "authoring-altitude-model-stubs-request.v1",
+          "payload": {}
+        },
+        "expected": {
+          "disposition": "terminated",
+          "scenarioSequence": [
+            "altitude-10-fixtures-proof"
+          ]
+        },
+        "fixtureProfile": "consumer-capability-fixtures.v1",
+        "documentDigest": "sha256:bbf545d34922f78d806a1d95ed2c6164ed11fe8a1cf6acb88ddce2922af41851"
+      }
+    }
+  },
+  "preflight": {
+    "input": {
+      "contractId": "authoring-altitude-model-stubs-request.v1",
+      "payload": {}
+    },
+    "expected": {
+      "disposition": "AUTHORED"
+    }
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "providerId": "sfx-authoring-altitude-08",
+  "altitude": 8,
+  "toolId": "provider.author",
+  "disposition": "AUTHORED",
+  "candidate": {
+    "contractId": "altitude-8-providers-bindings-overlays-output.v1",
+    "altitude": 8,
+    "altitudeId": "altitude-8-providers-bindings-overlays",
+    "altitudeName": "Providers, bindings, overlays",
+    "stub": true,
+    "shapeSource": "tool-to-altitude.v1.json#provider.author",
+    "canned": {
+      "providerId": "altitude-8-stub-provider",
+      "disposition": "PROVIDER_CHANGE_AUTHORED",
+      "bindingId": "altitude-8-providers-bindings-overlays-stub-binding.v1",
+      "overlay": {
+        "mechanicId": "sda-authority-transformation-port.v1",
+        "providerProfileId": "sda-semantic-value-graph-provider.v1"
+      },
+      "documentDigest": "sha256:fc96ac9b8ffdc1d4c38aa199e2bd2608b331b891935b6cfe4aa55c0651093c9a"
+    }
+  },
+  "providerExecution": "stub",
+  "elapsedMs": 0.73,
+  "shapeConforms": true
+}

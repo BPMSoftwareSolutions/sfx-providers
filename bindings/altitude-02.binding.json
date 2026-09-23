@@ -1,0 +1,91 @@
+{
+  "contractId": "provider-binding-change.v1",
+  "providerId": "sfx-authoring-altitude-02",
+  "provider": {
+    "name": "Authoring altitude 02 provider (capability meaning)",
+    "operations": [
+      "meaning.author"
+    ]
+  },
+  "capabilityId": "authoring-altitude-model-stubs",
+  "outcomeContractId": "altitude-2-capability-meaning-output.v1",
+  "bindingId": "sfx-providers-altitude-02",
+  "route": {
+    "routeId": "sfx-providers-altitude-02",
+    "resolvedDisposition": "AUTHORED"
+  },
+  "endpoint": {
+    "host": "localhost:8790",
+    "method": "POST",
+    "pathPrefix": "/altitude-02/meaning.author",
+    "requestTemplate": "https://localhost:8790/altitude-02/meaning.author",
+    "safeHeaders": {
+      "content-type": "application/json"
+    },
+    "allowedResponseHeaders": [
+      "content-type"
+    ],
+    "timeoutMilliseconds": 60000,
+    "maxResponseBytes": 524288
+  },
+  "credential": {
+    "referenceName": "ALTITUDE_LOCAL_NO_CREDENTIAL",
+    "injectionRuleId": "altitude-local-no-credential.v1",
+    "headerName": "x-altitude-local-credential",
+    "source": "vault",
+    "storeLocator": "%LOCALAPPDATA%\\sfx\\vault"
+  },
+  "effectScope": "ONE_BOUNDED_HTTPS_EXCHANGE_NO_REDIRECT_NO_RETRY",
+  "nativeShape": "candidate",
+  "mapping": {
+    "contractId": "candidate.contractId",
+    "altitude": "candidate.altitude",
+    "altitudeId": "candidate.altitudeId",
+    "altitudeName": "candidate.altitudeName",
+    "stub": "candidate.stub",
+    "shapeSource": "candidate.shapeSource",
+    "canned": "candidate.canned"
+  },
+  "observedSample": {
+    "providerId": "sfx-authoring-altitude-02",
+    "altitude": 2,
+    "toolId": "meaning.author",
+    "disposition": "AUTHORED",
+    "candidate": {
+      "contractId": "altitude-2-capability-meaning-output.v1",
+      "altitude": 2,
+      "altitudeId": "altitude-2-capability-meaning",
+      "altitudeName": "Capability meaning",
+      "stub": true,
+      "shapeSource": "tool-to-altitude.v1.json#meaning.author",
+      "canned": {
+        "capabilityId": "authoring-altitude-model-stubs",
+        "meaning": {
+          "name": "Declared model stubs at every authoring altitude",
+          "userStory": {
+            "actor": "caller",
+            "intent": "author capability meaning",
+            "outcome": "meaning observable"
+          },
+          "experience": {
+            "promise": "stub",
+            "observableConditions": [
+              "stub-condition"
+            ]
+          }
+        },
+        "definitionDigest": "sha256:0000000000000000000000000000000000000000000000000000000000000002",
+        "documentDigest": "sha256:e3cd454387271f140222eff17e1f8c397e03ecc23e38cfd42f7f2f5f96b5baef"
+      }
+    }
+  },
+  "preflight": {
+    "input": {
+      "contractId": "authoring-altitude-model-stubs-request.v1",
+      "payload": {}
+    },
+    "expected": {
+      "disposition": "AUTHORED"
+    }
+  }
+}

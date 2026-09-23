@@ -1,0 +1,85 @@
+{
+  "contractId": "provider-binding-change.v1",
+  "providerId": "sfx-authoring-altitude-05",
+  "provider": {
+    "name": "Authoring altitude 05 provider (semantic authority envelope)",
+    "operations": [
+      "semantics.author"
+    ]
+  },
+  "capabilityId": "authoring-altitude-model-stubs",
+  "outcomeContractId": "altitude-5-semantic-authority-envelope-output.v1",
+  "bindingId": "sfx-providers-altitude-05",
+  "route": {
+    "routeId": "sfx-providers-altitude-05",
+    "resolvedDisposition": "AUTHORED"
+  },
+  "endpoint": {
+    "host": "localhost:8790",
+    "method": "POST",
+    "pathPrefix": "/altitude-05/semantics.author",
+    "requestTemplate": "https://localhost:8790/altitude-05/semantics.author",
+    "safeHeaders": {
+      "content-type": "application/json"
+    },
+    "allowedResponseHeaders": [
+      "content-type"
+    ],
+    "timeoutMilliseconds": 60000,
+    "maxResponseBytes": 524288
+  },
+  "credential": {
+    "referenceName": "ALTITUDE_LOCAL_NO_CREDENTIAL",
+    "injectionRuleId": "altitude-local-no-credential.v1",
+    "headerName": "x-altitude-local-credential",
+    "source": "vault",
+    "storeLocator": "%LOCALAPPDATA%\\sfx\\vault"
+  },
+  "effectScope": "ONE_BOUNDED_HTTPS_EXCHANGE_NO_REDIRECT_NO_RETRY",
+  "nativeShape": "candidate",
+  "mapping": {
+    "contractId": "candidate.contractId",
+    "altitude": "candidate.altitude",
+    "altitudeId": "candidate.altitudeId",
+    "altitudeName": "candidate.altitudeName",
+    "stub": "candidate.stub",
+    "shapeSource": "candidate.shapeSource",
+    "canned": "candidate.canned"
+  },
+  "observedSample": {
+    "providerId": "sfx-authoring-altitude-05",
+    "altitude": 5,
+    "toolId": "semantics.author",
+    "disposition": "AUTHORED",
+    "candidate": {
+      "contractId": "altitude-5-semantic-authority-envelope-output.v1",
+      "altitude": 5,
+      "altitudeId": "altitude-5-semantic-authority-envelope",
+      "altitudeName": "Semantic authority envelope",
+      "stub": true,
+      "shapeSource": "tool-to-altitude.v1.json#semantics.author",
+      "canned": {
+        "address": {
+          "id": "altitude-5-semantic-authority-envelope",
+          "kind": "AUTHORITY",
+          "namespace": "sidefx:stubs"
+        },
+        "format": "sidefx-semantic-definition.v1",
+        "semantics": {
+          "envelope": "stub",
+          "altitude": 5
+        },
+        "documentDigest": "sha256:8db28f1b2718034f11876836b93a234569a4b96b4e6095ad261b5652cac62868"
+      }
+    }
+  },
+  "preflight": {
+    "input": {
+      "contractId": "authoring-altitude-model-stubs-request.v1",
+      "payload": {}
+    },
+    "expected": {
+      "disposition": "AUTHORED"
+    }
+  }
+}

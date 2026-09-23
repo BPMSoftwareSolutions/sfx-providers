@@ -1,0 +1,90 @@
+{
+  "contractId": "provider-binding-change.v1",
+  "providerId": "sfx-authoring-altitude-07",
+  "provider": {
+    "name": "Authoring altitude 07 provider (execution authorities and ports)",
+    "operations": [
+      "authority.author",
+      "port.bind"
+    ]
+  },
+  "capabilityId": "authoring-altitude-model-stubs",
+  "outcomeContractId": "altitude-7-execution-authorities-ports-output.v1",
+  "bindingId": "sfx-providers-altitude-07",
+  "route": {
+    "routeId": "sfx-providers-altitude-07",
+    "resolvedDisposition": "AUTHORED"
+  },
+  "endpoint": {
+    "host": "localhost:8790",
+    "method": "POST",
+    "pathPrefix": "/altitude-07/authority.author",
+    "requestTemplate": "https://localhost:8790/altitude-07/authority.author",
+    "safeHeaders": {
+      "content-type": "application/json"
+    },
+    "allowedResponseHeaders": [
+      "content-type"
+    ],
+    "timeoutMilliseconds": 60000,
+    "maxResponseBytes": 524288
+  },
+  "credential": {
+    "referenceName": "ALTITUDE_LOCAL_NO_CREDENTIAL",
+    "injectionRuleId": "altitude-local-no-credential.v1",
+    "headerName": "x-altitude-local-credential",
+    "source": "vault",
+    "storeLocator": "%LOCALAPPDATA%\\sfx\\vault"
+  },
+  "effectScope": "ONE_BOUNDED_HTTPS_EXCHANGE_NO_REDIRECT_NO_RETRY",
+  "nativeShape": "candidate",
+  "mapping": {
+    "contractId": "candidate.contractId",
+    "altitude": "candidate.altitude",
+    "altitudeId": "candidate.altitudeId",
+    "altitudeName": "candidate.altitudeName",
+    "stub": "candidate.stub",
+    "shapeSource": "candidate.shapeSource",
+    "canned": "candidate.canned"
+  },
+  "observedSample": {
+    "providerId": "sfx-authoring-altitude-07",
+    "altitude": 7,
+    "toolId": "authority.author",
+    "disposition": "AUTHORED",
+    "candidate": {
+      "contractId": "altitude-7-execution-authorities-ports-output.v1",
+      "altitude": 7,
+      "altitudeId": "altitude-7-execution-authorities-ports",
+      "altitudeName": "Execution authorities and ports",
+      "stub": true,
+      "shapeSource": "tool-to-altitude.v1.json#authority.author",
+      "canned": {
+        "authority_id": "altitude-7-execution-authorities-ports.v1",
+        "definition_digest": "sha256:a681d7853d027c23c58e141f6e9739dcd970d28c11eb5c380e8e241f9355ffbd",
+        "operation_count": 1,
+        "operations": [
+          {
+            "operationId": "altitude-7-execution-authorities-ports.stub",
+            "kind": "invoke-port"
+          }
+        ],
+        "portBindings": [
+          {
+            "portId": "altitude-7-execution-authorities-ports-stub-port"
+          }
+        ],
+        "documentDigest": "sha256:e6cc64a242603d8af0c24ca444ba787fc9c881dcf902e50eacb50ae8f5e2c794"
+      }
+    }
+  },
+  "preflight": {
+    "input": {
+      "contractId": "authoring-altitude-model-stubs-request.v1",
+      "payload": {}
+    },
+    "expected": {
+      "disposition": "AUTHORED"
+    }
+  }
+}

@@ -1,0 +1,101 @@
+{
+  "providerId": "sfx-authoring-altitude-02",
+  "altitude": 2,
+  "toolId": "meaning.author",
+  "disposition": "AUTHORED",
+  "candidate": {
+    "contractId": "altitude-2-capability-meaning-output.v1",
+    "altitude": 2,
+    "altitudeId": "altitude-2-capability-meaning",
+    "altitudeName": "Capability meaning",
+    "stub": true,
+    "shapeSource": "tool-to-altitude.v1.json#meaning.author",
+    "canned": {
+      "capabilityId": "authoring-altitude-model-stubs",
+      "meaning": {
+        "name": "Declared model stubs at every authoring altitude",
+        "userStory": {
+          "actor": "caller",
+          "intent": "author capability meaning",
+          "outcome": "meaning observable"
+        },
+        "experience": {
+          "promise": "stub",
+          "observableConditions": [
+            "stub-condition"
+          ]
+        }
+      },
+      "definitionDigest": "sha256:0000000000000000000000000000000000000000000000000000000000000002",
+      "documentDigest": "sha256:e3cd454387271f140222eff17e1f8c397e03ecc23e38cfd42f7f2f5f96b5baef",
+      "modelOutput": {
+        "contractId": "altitude-2-capability-meaning-output.v1",
+        "altitude": 2,
+        "altitudeId": "capability-meaning",
+        "altitudeName": "Capability Meaning",
+        "stub": false,
+        "shapeSource": "declared",
+        "canned": {
+          "name": "Search for Products",
+          "userStory": {
+            "actor": "As a Customer",
+            "intent": "I want to find products by entering keywords",
+            "outcome": "so that I can quickly locate items I am interested in purchasing"
+          },
+          "experience": {
+            "experienceId": "exp-product-search-01",
+            "actor": "Customer",
+            "promise": "The system will display a list of relevant products based on my search query.",
+            "observableConditions": [
+              "A search input field is visible on the page.",
+              "After entering a query and submitting, a results page is displayed.",
+              "The results page shows a list of products matching the search query.",
+              "Each product in the list displays a name, image, and price.",
+              "If no products match the query, a 'no results found' message is shown.",
+              "The search results are displayed within an acceptable time frame."
+            ]
+          }
+        }
+      },
+      "modelId": "gemini-2.5-pro"
+    }
+  },
+  "providerExecution": "model",
+  "elapsedMs": 10342.807,
+  "shapeConforms": true,
+  "modelCall": {
+    "attempted": true,
+    "ok": true,
+    "status": 200,
+    "model": "gemini-2.5-pro",
+    "output": {
+      "contractId": "altitude-2-capability-meaning-output.v1",
+      "altitude": 2,
+      "altitudeId": "capability-meaning",
+      "altitudeName": "Capability Meaning",
+      "stub": false,
+      "shapeSource": "declared",
+      "canned": {
+        "name": "Search for Products",
+        "userStory": {
+          "actor": "As a Customer",
+          "intent": "I want to find products by entering keywords",
+          "outcome": "so that I can quickly locate items I am interested in purchasing"
+        },
+        "experience": {
+          "experienceId": "exp-product-search-01",
+          "actor": "Customer",
+          "promise": "The system will display a list of relevant products based on my search query.",
+          "observableConditions": [
+            "A search input field is visible on the page.",
+            "After entering a query and submitting, a results page is displayed.",
+            "The results page shows a list of products matching the search query.",
+            "Each product in the list displays a name, image, and price.",
+            "If no products match the query, a 'no results found' message is shown.",
+            "The search results are displayed within an acceptable time frame."
+          ]
+        }
+      }
+    }
+  }
+}

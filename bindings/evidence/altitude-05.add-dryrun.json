@@ -1,0 +1,20 @@
+﻿{
+  "command": "provider add",
+  "providerId": "sfx-authoring-altitude-05",
+  "capabilityId": "authoring-altitude-model-stubs",
+  "disposition": "PROVIDER_CHANGE_HELD",
+  "installed": false,
+  "stages": [
+    {
+      "stage": "author",
+      "disposition": "PROVIDER_CHANGE_HELD",
+      "endpointAuthorityDigest": "sha256:e862a3dda41f8bd0e444e27a8c6f6f3950e29f5da1f631a8c7d018438d3866ab",
+      "findings": [
+        {
+          "code": "PROVIDER_NOT_DECLARED",
+          "message": "no provider declaration matches sfx-authoring-altitude-05"
+        }
+      ]
+    }
+  ]
+}

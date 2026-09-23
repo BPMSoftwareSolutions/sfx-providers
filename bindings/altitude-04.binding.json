@@ -1,0 +1,85 @@
+{
+  "contractId": "provider-binding-change.v1",
+  "providerId": "sfx-authoring-altitude-04",
+  "provider": {
+    "name": "Authoring altitude 04 provider (contracts and schemas)",
+    "operations": [
+      "contract.author",
+      "contract.validate"
+    ]
+  },
+  "capabilityId": "authoring-altitude-model-stubs",
+  "outcomeContractId": "altitude-4-contracts-schemas-output.v1",
+  "bindingId": "sfx-providers-altitude-04",
+  "route": {
+    "routeId": "sfx-providers-altitude-04",
+    "resolvedDisposition": "AUTHORED"
+  },
+  "endpoint": {
+    "host": "localhost:8790",
+    "method": "POST",
+    "pathPrefix": "/altitude-04/contract.author",
+    "requestTemplate": "https://localhost:8790/altitude-04/contract.author",
+    "safeHeaders": {
+      "content-type": "application/json"
+    },
+    "allowedResponseHeaders": [
+      "content-type"
+    ],
+    "timeoutMilliseconds": 60000,
+    "maxResponseBytes": 524288
+  },
+  "credential": {
+    "referenceName": "ALTITUDE_LOCAL_NO_CREDENTIAL",
+    "injectionRuleId": "altitude-local-no-credential.v1",
+    "headerName": "x-altitude-local-credential",
+    "source": "vault",
+    "storeLocator": "%LOCALAPPDATA%\\sfx\\vault"
+  },
+  "effectScope": "ONE_BOUNDED_HTTPS_EXCHANGE_NO_REDIRECT_NO_RETRY",
+  "nativeShape": "candidate",
+  "mapping": {
+    "contractId": "candidate.contractId",
+    "altitude": "candidate.altitude",
+    "altitudeId": "candidate.altitudeId",
+    "altitudeName": "candidate.altitudeName",
+    "stub": "candidate.stub",
+    "shapeSource": "candidate.shapeSource",
+    "canned": "candidate.canned"
+  },
+  "observedSample": {
+    "providerId": "sfx-authoring-altitude-04",
+    "altitude": 4,
+    "toolId": "contract.author",
+    "disposition": "AUTHORED",
+    "candidate": {
+      "contractId": "altitude-4-contracts-schemas-output.v1",
+      "altitude": 4,
+      "altitudeId": "altitude-4-contracts-schemas",
+      "altitudeName": "Contracts and schemas",
+      "stub": true,
+      "shapeSource": "tool-to-altitude.v1.json#contract.author",
+      "canned": {
+        "contract_id": "altitude-4-contracts-schemas-output.v1",
+        "definition_digest": "sha256:0000000000000000000000000000000000000000000000000000000000000004",
+        "schema_digest": "sha256:0000000000000000000000000000000000000000000000000000000000000004",
+        "faceBindings": [
+          {
+            "scenarioId": "altitude-4-contracts-schemas",
+            "face": "input"
+          }
+        ],
+        "documentDigest": "sha256:eb127a70c5e6412b387fb995a540ad2e8c92a7baaa55322b9591acc139bd6ec2"
+      }
+    }
+  },
+  "preflight": {
+    "input": {
+      "contractId": "authoring-altitude-model-stubs-request.v1",
+      "payload": {}
+    },
+    "expected": {
+      "disposition": "AUTHORED"
+    }
+  }
+}

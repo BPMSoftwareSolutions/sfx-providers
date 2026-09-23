@@ -1,0 +1,33 @@
+{
+  "providerId": "sfx-authoring-altitude-03",
+  "altitude": 3,
+  "toolId": "scenario.author",
+  "disposition": "AUTHORED",
+  "candidate": {
+    "contractId": "altitude-3-scenario-io-output.v1",
+    "altitude": 3,
+    "altitudeId": "altitude-3-scenario-io",
+    "altitudeName": "Scenario inputs/events/outcomes",
+    "stub": true,
+    "shapeSource": "tool-to-altitude.v1.json#scenario.author",
+    "canned": {
+      "result_set": "scenario_change_installed",
+      "capability_id": "authoring-altitude-model-stubs",
+      "scenario_id": "altitude-3-scenario-io",
+      "faces": [
+        "input",
+        "event",
+        "outcome"
+      ],
+      "portBindings": [
+        {
+          "portId": "altitude-3-scenario-io-stub-port"
+        }
+      ],
+      "documentDigest": "sha256:09ec0fe6ec7c2783d62c38849f42e1968855469e4e415a6ed78c4e5a0d5bdb17"
+    }
+  },
+  "providerExecution": "stub",
+  "elapsedMs": 0.82,
+  "shapeConforms": true
+}

@@ -1,0 +1,28 @@
+﻿{
+  "command": "provider add",
+  "providerId": "rapidapi/yahoo-finance15",
+  "capabilityId": "authoring-altitude-model-stubs",
+  "disposition": "PROVIDER_ADD_FAILED",
+  "installed": false,
+  "stages": [
+    {
+      "stage": "author",
+      "disposition": "PROVIDER_CHANGE_AUTHORED",
+      "endpointAuthorityDigest": "sha256:08dfdb44eb44b430b475435937dc75abea7442b9e3b5e8fd412a976d6ff2b2eb",
+      "findings": []
+    },
+    {
+      "stage": "prepare",
+      "disposition": "PREPARED",
+      "changeFile": "C:\\Users\\Sidney Jones\\AppData\\Local\\Temp\\sfx\\provider-add\\752a01b48a454831bb9cc13496c9105a\\provider-add-rapidapi-yahoo-finance15.change.json",
+      "authorityDigest": "sha256:c57adf07009fe60fded0f5240806ac7d91be32e17880a5ca456d3ec9a9b4f64c",
+      "requestDigest": "sha256:6cbbea48bc274b0db30e0ce441594e4baf32928b590b976564f7799bcee1142a"
+    },
+    {
+      "stage": "dry-run",
+      "disposition": "FAILED",
+      "exitCode": 1,
+      "error": "DECLARED CHANGE FAILED: EQUITY_BLUEPRINT_ABSENT"
+    }
+  ]
+}

@@ -1,0 +1,81 @@
+{
+  "contractId": "provider-binding-change.v1",
+  "providerId": "sfx-authoring-altitude-01",
+  "provider": {
+    "name": "Authoring altitude 01 provider (feature parse)",
+    "operations": [
+      "feature.resolve",
+      "intent.parse",
+      "feature.pin"
+    ]
+  },
+  "capabilityId": "authoring-altitude-model-stubs",
+  "outcomeContractId": "altitude-1-feature-parse-output.v1",
+  "bindingId": "sfx-providers-altitude-01",
+  "route": {
+    "routeId": "sfx-providers-altitude-01",
+    "resolvedDisposition": "AUTHORED"
+  },
+  "endpoint": {
+    "host": "localhost:8790",
+    "method": "POST",
+    "pathPrefix": "/altitude-01/feature.resolve",
+    "requestTemplate": "https://localhost:8790/altitude-01/feature.resolve",
+    "safeHeaders": {
+      "content-type": "application/json"
+    },
+    "allowedResponseHeaders": [
+      "content-type"
+    ],
+    "timeoutMilliseconds": 60000,
+    "maxResponseBytes": 524288
+  },
+  "credential": {
+    "referenceName": "ALTITUDE_LOCAL_NO_CREDENTIAL",
+    "injectionRuleId": "altitude-local-no-credential.v1",
+    "headerName": "x-altitude-local-credential",
+    "source": "vault",
+    "storeLocator": "%LOCALAPPDATA%\\sfx\\vault"
+  },
+  "effectScope": "ONE_BOUNDED_HTTPS_EXCHANGE_NO_REDIRECT_NO_RETRY",
+  "nativeShape": "candidate",
+  "mapping": {
+    "contractId": "candidate.contractId",
+    "altitude": "candidate.altitude",
+    "altitudeId": "candidate.altitudeId",
+    "altitudeName": "candidate.altitudeName",
+    "stub": "candidate.stub",
+    "shapeSource": "candidate.shapeSource",
+    "canned": "candidate.canned"
+  },
+  "observedSample": {
+    "providerId": "sfx-authoring-altitude-01",
+    "altitude": 1,
+    "toolId": "feature.resolve",
+    "disposition": "AUTHORED",
+    "candidate": {
+      "contractId": "altitude-1-feature-parse-output.v1",
+      "altitude": 1,
+      "altitudeId": "altitude-1-feature-parse",
+      "altitudeName": "Feature parse",
+      "stub": true,
+      "shapeSource": "tool-to-altitude.v1.json#feature.resolve",
+      "canned": {
+        "capability": "resolve-equity-market-price-evidence",
+        "input": "AVGO",
+        "featureReference": "features/authoring-altitude-model-stubs.feature",
+        "classification": "AUTHOR_PROFILE",
+        "documentDigest": "sha256:fa6eb7ff21816b3a79f75995307dc1d8dac0e87f5c12d6f3824b6fcaa3917369"
+      }
+    }
+  },
+  "preflight": {
+    "input": {
+      "contractId": "authoring-altitude-model-stubs-request.v1",
+      "payload": {}
+    },
+    "expected": {
+      "disposition": "AUTHORED"
+    }
+  }
+}
