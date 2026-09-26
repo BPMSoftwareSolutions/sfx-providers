@@ -80,14 +80,19 @@ export function buildStoryboard(snapshot, model, { contextAltitude='all' } = {})
       case 6: {
         const usedPorts=new Set(s.authorities.flatMap(a=>a.operations.map(o=>o.portId).filter(Boolean)));
         const usedTransforms=new Set(s.bindings.filter(b=>usedPorts.has(b.portId)).map(b=>b.transformationId));
-        const t=s.transformations.filter(t=>usedTransforms.has(t.id)).sort((a,b)=>b.branchCount-a.branchCount||(a.id<b.id?-1:a.id>b.id?1:0))[0];
+        // Authoring context retains declared expressions even when the selected
+        // execution has no port binding that references them.
+        const t=[...s.transformations].sort((a,b)=>Number(usedTransforms.has(b.id))-Number(usedTransforms.has(a.id))||b.branchCount-a.branchCount||(a.id<b.id?-1:a.id>b.id?1:0))[0];
         if(!t){fan(p,'Transformation expressions',[]);break;}
+        const referenced=usedTransforms.has(t.id);
         const root=t.preview[0];
         const children=t.preview.filter(n=>n.parent===root?.path);
-        fan(p,root?.op??'Expression',children.map(n=>({label:`${n.op}\n${n.path.split('/').at(-1)}`,color:['if','switch','case'].includes(n.op)?C.amber:C.violet})), 'expression containment; not an observed execution trace');
+        const caption=referenced?'expression containment; referenced by an invoked port binding':'retained expression; no binding from invoked ports';
+        if(children.length)fan(p,root?.op??'Expression',children.map(n=>({label:`${n.op}\n${n.path.split('/').at(-1)}`,color:['if','switch','case'].includes(n.op)?C.amber:C.violet})),caption);
+        else {p.chip(68,245,220,85,root?.op??'Expression',C.violet,18);p.text(caption,332,118,540,27,12,C.muted);p.text(root?'No child operators in this preview':'Operator preview unavailable',380,258,470,70,20,C.muted);}
         p.text(short(t.id,95),50,438,850,27,13,C.white);
         p.detail+='\nExpression preview: '+JSON.stringify(t,null,2);
-        p.interpretation=`This expression contains ${t.nodeCount} mechanic nodes and ${t.branchCount} conditional operator nodes. Larger subexpressions are collapsed; operator counts and the digest remain in the snapshot.`;break;
+        p.interpretation=`This expression contains ${t.nodeCount} mechanic nodes and ${t.branchCount} conditional operator nodes. ${referenced?'An invoked port binding references this expression.':'The snapshot retains this expression, but no invoked port binding references it.'} This is declaration evidence, not an observed execution trace. Larger subexpressions are collapsed; operator counts and the digest remain in the snapshot.`;break;
       }
       case 7: {
         const a=s.authorities.find(a=>a.scenarioId===s.identity.rootScenarioId)??s.authorities[0];

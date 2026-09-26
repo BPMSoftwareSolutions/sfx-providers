@@ -37,6 +37,19 @@ test('scenario view preserves branches, calls, joins and cycles as distinct rela
   const raw=rawFixture();raw.graph.transitions.push({transitionId:'return',from:{scenarioId:'accept'},to:{scenarioId:'review'},selectsVariant:'RETRY'});
   const m=buildCircuitModel(normalizeSnapshot(raw),'scenario');assert.equal(m.nodes.length,3);assert.equal(m.edges.length,4);assert.equal(m.edges.filter(e=>e.relation==='invocation').length,1);assert.ok(m.edges.some(e=>e.label==='RETRY'));
 });
+
+test('transformation context retains unreferenced expressions without inventing execution bindings',()=>{
+  const s=snapshotFixture();s.bindings.forEach(b=>{b.transformationId='';});
+  const model=buildCircuitModel(s,'scenario');
+  const slide=buildStoryboard(s,model).slides.find(p=>p.title==='06 · Transformation AST');
+  assert.ok(slide.commands.some(c=>c.op==='t'&&c.args[0]==='retained expression; no binding from invoked ports'));
+  assert.ok(!slide.commands.some(c=>c.op==='t'&&c.args[0]==='No linked evidence returned'));
+  assert.match(slide.detail,new RegExp(s.transformations[0].id.replaceAll('.','\\.')));
+  assert.equal(buildCircuitModel(s,'mechanic').edges.filter(e=>e.relation==='binding').length,0);
+  s.transformations[0].preview=s.transformations[0].preview.slice(0,1);
+  const leaf=buildStoryboard(s,model).slides.find(p=>p.title==='06 · Transformation AST');
+  assert.ok(leaf.commands.some(c=>c.op==='t'&&c.args[0]==='No child operators in this preview'));
+});
 test('both axes persist: eleven context layers with an independent circuit view and focused context',async()=>{
   const r=await handle({...input,view:'provider',contextAltitude:4},{readEstate});assert.equal(r.disposition,'AUTHORED',JSON.stringify(r.findings));
   assert.equal(r.candidate.storyboard.contexts.length,11);assert.equal(r.candidate.view,'provider');assert.equal(r.candidate.contextAltitude,4);
