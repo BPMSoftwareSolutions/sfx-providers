@@ -90,6 +90,8 @@ automatically through the existing capability CLI and provider operation.
 
 From this repository:
 
+For the complete repeatable workflow, see [Regenerate a capability presentation](capability-presentation-regeneration.md).
+
 ```powershell
 $capabilityId = Read-Host 'Capability ID'
 node capability-deck.mjs --capability-id $capabilityId --view scenario --context-altitude all --output outputs/selected-capability --pptx
@@ -105,6 +107,24 @@ uses the existing optional `@oai/artifact-tool` adapter and
 `CIRCUIT_ARTIFACT_MODULE` configuration described in
 [circuit-presentation.md](circuit-presentation.md). It remains a private optional
 runtime, not a public npm dependency. `npm run capability-deck -- ...` is equivalent.
+
+Regeneration requires no source edits and no AI agent. After the one-time host
+configuration, rerun the command with any selected capability ID and a new output
+directory. It rereads the estate and writes `presentation.pptx` containing the
+entire deck, including slides beyond the 32-slide transport-volume boundary.
+Page numbers continue across volumes. An identical snapshot can instead be
+replayed with `--snapshot`.
+
+To avoid setting a runtime environment variable each session, add an absolute
+`artifactModule` path to the same ignored local configuration shown below. For
+example, point it at the installed `@oai/artifact-tool/dist/artifact_tool.mjs`.
+`CIRCUIT_ARTIFACT_MODULE` overrides that setting. This is machine configuration,
+not a capability-specific code change.
+
+Google conversion also runs without an agent through the migration CLI and an
+authenticated host. That host requires one-time OAuth setup and token refresh.
+A connected Codex Google account is not automatically a standalone CLI login.
+See [standalone Google migration](google-slides-migration.md#run-unattended-from-an-authenticated-application).
 
 ## Database host binding
 
@@ -244,6 +264,7 @@ The CLI retains `request.json`, `context-audit.json`, the compact content-addres
 `circuit-model.json`, `storyboard.json`, and `receipt.json`. Each `volume-NN/`
 contains editable Google request batches, notes, SVGs, `presentation.json`, and
 optional `presentation.pptx`. Large decks are divided into 32-slide volumes.
+With `--pptx`, the output root also contains the complete `presentation.pptx`.
 Long labels may be shortened visually; full identities and details remain in
 notes and the sidecars. Large notes are explicitly abbreviated in the deck.
 The receipt records the requested capability/namespace and the selected estate,

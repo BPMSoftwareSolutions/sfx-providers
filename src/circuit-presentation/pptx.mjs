@@ -6,13 +6,18 @@ const hex=rgb=>'#'+['red','green','blue'].map(k=>Math.round((rgb?.[k]??0)*255).t
 const fill=p=>!p||p.propertyState==='NOT_RENDERED'?'none':hex(p.solidFill?.color?.rgbColor)+(p.solidFill?.alpha<1?'/'+Math.round(p.solidFill.alpha*100):'');
 const geom={RECTANGLE:'rect',ROUND_RECTANGLE:'roundRect',ELLIPSE:'ellipse',DIAMOND:'diamond',HEXAGON:'hexagon',TEXT_BOX:'textbox'};
 
-export async function exportPptx(candidate,outputPath,{artifactTool,renderDirectory}={}) {
- if(!artifactTool){
-  const modulePath=process.env.CIRCUIT_ARTIFACT_MODULE;
-  if(modulePath&&!path.isAbsolute(modulePath))throw new Error('CIRCUIT_ARTIFACT_MODULE must name an absolute local module file.');
-  try{artifactTool=await import(modulePath?pathToFileURL(modulePath).href:'@oai/artifact-tool');}
-  catch(error){throw new Error('PPTX export requires @oai/artifact-tool. Set CIRCUIT_ARTIFACT_MODULE to its installed dist/artifact_tool.mjs. JSON and SVG compilation need no dependencies.',{cause:error});}
+export async function loadArtifactTool({modulePath=process.env.CIRCUIT_ARTIFACT_MODULE,configUrl=new URL('../../config/capability-presentation.local.json',import.meta.url)}={}) {
+ if(!modulePath){
+  try{modulePath=JSON.parse(await fs.readFile(configUrl,'utf8')).artifactModule;}
+  catch(error){if(error.code!=='ENOENT')throw error;}
  }
+ if(modulePath&&!path.isAbsolute(modulePath))throw new Error('The configured artifactModule must name an absolute local module file.');
+ try{return await import(modulePath?pathToFileURL(modulePath).href:'@oai/artifact-tool');}
+ catch(error){throw new Error('PPTX export requires @oai/artifact-tool. Configure artifactModule in config/capability-presentation.local.json or set CIRCUIT_ARTIFACT_MODULE to its installed dist/artifact_tool.mjs.',{cause:error});}
+}
+
+export async function exportPptx(candidate,outputPath,{artifactTool,renderDirectory}={}) {
+ artifactTool??=await loadArtifactTool();
  try{await fs.access(outputPath);throw new Error('Refusing to overwrite an existing PPTX.');}catch(error){if(error.code!=='ENOENT')throw error;}
  const {Presentation,PresentationFile}=artifactTool;
  const scale=4/3,ppt=Presentation.create({slideSize:{width:1280,height:720}});

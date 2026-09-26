@@ -37,7 +37,13 @@ export async function run(args=process.argv.slice(2)) {
     for(const [i,slide]of v.presentation.slides.entries())await write(`${dir}/slide-${String(v.firstSlide+i).padStart(3,'0')}.svg`,slide.svg);
     if(options.pptx){const {exportPptx}=await import('./src/circuit-presentation/pptx.mjs');await exportPptx(v.presentation,path.join(output,dir,'presentation.pptx'));}
   }
-  console.log(JSON.stringify({output,capabilityId:c.capabilityId,view:c.view,contextAltitude:c.contextAltitude,slides:c.storyboard.slides.length,volumes:c.volumes.length,contentDigest:c.contentDigest}));
+  let pptx;
+  if(options.pptx){
+    pptx=path.join(output,'presentation.pptx');
+    if(c.volumes.length===1)await fs.copyFile(path.join(output,'volume-01','presentation.pptx'),pptx,fs.constants.COPYFILE_EXCL);
+    else {const {exportPptx}=await import('./src/circuit-presentation/pptx.mjs');await exportPptx({slides:c.volumes.flatMap(v=>v.presentation.slides)},pptx);}
+  }
+  console.log(JSON.stringify({output,capabilityId:c.capabilityId,view:c.view,contextAltitude:c.contextAltitude,slides:c.storyboard.slides.length,volumes:c.volumes.length,contentDigest:c.contentDigest,...(pptx?{pptx}:{})}));
   return result;
 }
 if(process.argv[1]&&pathToFileURL(path.resolve(process.argv[1])).href===import.meta.url)run().catch(error=>{console.error(error.message);process.exitCode=1;});
