@@ -4,6 +4,8 @@ export { MAX_REQUEST_BYTES } from '../src/circuit-presentation/contracts.mjs';
 import { MAX_REQUEST_BYTES } from '../src/circuit-presentation/contracts.mjs';
 export const providerId='sfx-circuit-presentation';
 export const toolId='presentation.compile';
+export const additionalTools=['presentation.from-capability'];
+export { handle as presentCapability } from '../src/capability-presentation/provider.mjs';
 export const inputShape={contractId:REQUEST_ID,status:'PROPOSED',schema:requestSchema};
 export const outputShape={contractId:OUTPUT_ID,status:'PROPOSED',schema:outputSchema};
 

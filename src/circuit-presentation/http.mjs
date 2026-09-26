@@ -1,13 +1,16 @@
 import * as provider from '../../providers/circuit-presentation.mjs';
+import * as capabilityProvider from '../capability-presentation/provider.mjs';
 export const INVOKE='/circuit-presentation/presentation.compile';
 export const HEALTH='/circuit-presentation/health';
+export const CAPABILITY_INVOKE='/circuit-presentation/presentation.from-capability';
 const send=(res,status,body)=>{res.writeHead(status,{'content-type':'application/json; charset=utf-8'});res.end(JSON.stringify(body));};
-export function createCircuitRequestHandler(api=provider){
+export function createCircuitRequestHandler(compiler=provider, capabilityApi=capabilityProvider){
   return async(req,res,pathname)=>{
-    if(![INVOKE,HEALTH].includes(pathname))return false;
+    if(![INVOKE,HEALTH,CAPABILITY_INVOKE].includes(pathname))return false;
+    const api=pathname===CAPABILITY_INVOKE?capabilityApi:compiler;
     const held=(status,code,message)=>send(res,status,{providerId:api.providerId,toolId:api.toolId,disposition:'HELD',candidate:null,findings:[{code,path:'$',message}]});
-    if(req.method==='GET'&&pathname===HEALTH){send(res,200,{status:'ok',providerId:api.providerId,toolId:api.toolId,implementation:'hand-authored',estateStatus:'not-declared',contractStatus:'PROPOSED',inputContract:api.inputShape.contractId,outputContract:api.outputShape.contractId,maxRequestBytes:api.MAX_REQUEST_BYTES,presets:['sidefx-announcement'],endpoints:{invoke:INVOKE,health:HEALTH}});return true;}
-    if(req.method!=='POST'||pathname!==INVOKE){req.resume();held(405,'CIRCUIT_METHOD_NOT_ALLOWED','Use GET for health or POST for compilation.');return true;}
+    if(req.method==='GET'&&pathname===HEALTH){send(res,200,{status:'ok',providerId:api.providerId,toolId:api.toolId,tools:[api.toolId,capabilityApi.toolId],implementation:'hand-authored',estateStatus:'not-declared',contractStatus:'PROPOSED',inputContract:api.inputShape.contractId,outputContract:api.outputShape.contractId,maxRequestBytes:api.MAX_REQUEST_BYTES,presets:['sidefx-announcement'],endpoints:{invoke:INVOKE,health:HEALTH,fromCapability:CAPABILITY_INVOKE}});return true;}
+    if(req.method!=='POST'||![INVOKE,CAPABILITY_INVOKE].includes(pathname)){req.resume();held(405,'CIRCUIT_METHOD_NOT_ALLOWED','Use GET for health or POST for compilation.');return true;}
     if(req.headers['content-type']?.split(';')[0].trim().toLowerCase()!=='application/json'){req.resume();held(415,'CIRCUIT_CONTENT_TYPE_INVALID','Use application/json.');return true;}
     let bytes=0;const chunks=[];
     try{

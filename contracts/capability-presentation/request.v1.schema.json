@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contractId",
+    "capabilityId"
+  ],
+  "properties": {
+    "contractId": {
+      "const": "capability-presentation-request.v1"
+    },
+    "capabilityId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 400
+    },
+    "namespaceId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 400
+    },
+    "view": {
+      "enum": [
+        "scenario",
+        "mechanic",
+        "provider",
+        "physical"
+      ]
+    },
+    "contextAltitude": {
+      "oneOf": [
+        {
+          "const": "all"
+        },
+        {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 11
+        }
+      ]
+    },
+    "objectPrefix": {
+      "type": "string",
+      "pattern": "^[A-Za-z][A-Za-z0-9_]{4,24}$"
+    }
+  }
+}

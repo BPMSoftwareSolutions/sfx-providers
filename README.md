@@ -6,6 +6,10 @@ provider bindings, signal colors, source links and speaker notes. See
 [Circuit presentations](docs/circuit-presentation.md) for the JSON contract,
 HTTPS endpoint, CLI, PowerPoint export and retained authoring sources.
 
+The provider also generates [capability presentations](docs/capability-presentation.md)
+from a selected estate `capabilityId`, combining a semantic circuit view with all
+eleven authoring context layers. Use `node capability-deck.mjs --help`.
+
 ```powershell
 node circuit-deck.mjs --preset sidefx-announcement --output outputs/circuit-replay
 ```

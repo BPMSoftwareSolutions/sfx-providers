@@ -1,5 +1,10 @@
 # Circuit-presentation provider
 
+For database-driven decks from any selected capability, see
+[Capability presentations](capability-presentation.md). The additional
+`presentation.from-capability` tool combines a semantic circuit view with all
+eleven authoring context layers.
+
 `sfx-circuit-presentation` is the hand-authored provider behind the reusable
 diagram design extracted from the SideFX announcement. Its tool is
 `presentation.compile`. It compiles a JSON drawing description or the retained

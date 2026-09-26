@@ -1,0 +1,368 @@
+{
+  "contractId": "capability-presentation-snapshot.v1",
+  "identity": {
+    "capabilityId": "review-request",
+    "namespaceId": "example:capabilities",
+    "estateModelId": "42",
+    "capabilityPk": "7",
+    "capabilityVersionPk": "9",
+    "definitionPk": "11",
+    "definitionDigest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "name": "Review request",
+    "actor": "reviewer",
+    "intent": "Evaluate a request under the declared policy",
+    "outcome": "A retained decision",
+    "experiencePromise": "",
+    "rootScenarioId": "review",
+    "meaningSourceRef": "model:semantic_object_definition/11/semantics/authority"
+  },
+  "provenance": {
+    "adapter": "synthetic-test-fixture.v1",
+    "isolation": "fixture",
+    "graphDigest": "e40b49d6bc253ca22714907b6975d5aeb8a90b554991e101fa38441cf9e310da",
+    "selection": "current estate capability version and its declared scenario closure"
+  },
+  "scenarios": [
+    {
+      "id": "review",
+      "name": "review",
+      "versionPk": "",
+      "definitionDigest": "",
+      "authorityId": "review.v1",
+      "eventId": "review-requested",
+      "inputId": "request",
+      "inputContractId": "request.v1",
+      "outcomeId": "decision",
+      "outcomeContractId": "decision.v1",
+      "terminal": false,
+      "variants": [
+        {
+          "id": "ADMITTED",
+          "classification": "success"
+        },
+        {
+          "id": "REFUSED",
+          "classification": "failure"
+        }
+      ],
+      "sourceRef": "graph:/scenarios/0"
+    },
+    {
+      "id": "accept",
+      "name": "accept",
+      "versionPk": "",
+      "definitionDigest": "",
+      "authorityId": "accept.v1",
+      "eventId": "accepted",
+      "inputId": "",
+      "inputContractId": "",
+      "outcomeId": "accepted",
+      "outcomeContractId": "",
+      "terminal": true,
+      "variants": [],
+      "sourceRef": "graph:/scenarios/1"
+    },
+    {
+      "id": "refuse",
+      "name": "refuse",
+      "versionPk": "",
+      "definitionDigest": "",
+      "authorityId": "refuse.v1",
+      "eventId": "refused",
+      "inputId": "",
+      "inputContractId": "",
+      "outcomeId": "refused",
+      "outcomeContractId": "",
+      "terminal": true,
+      "variants": [],
+      "sourceRef": "graph:/scenarios/2"
+    }
+  ],
+  "transitions": [
+    {
+      "id": "yes",
+      "from": "review",
+      "to": "accept",
+      "variant": "ADMITTED",
+      "topologyKind": "selection",
+      "bindingAuthorityId": "",
+      "digest": "cc54de421e7056ebd1eb416bd9d08157c757fa9d828a3971661e2e2678a08a53",
+      "sourceRef": "graph:/transitions/0"
+    },
+    {
+      "id": "no",
+      "from": "review",
+      "to": "refuse",
+      "variant": "REFUSED",
+      "topologyKind": "selection",
+      "bindingAuthorityId": "",
+      "digest": "0e8fc7a78d43418432b4b4b5514d15f12d7e445897cd3b9e02e4768cd138c2fc",
+      "sourceRef": "graph:/transitions/1"
+    }
+  ],
+  "authorities": [
+    {
+      "id": "review.v1",
+      "scenarioId": "review",
+      "sourceRef": "graph:/executionAuthorities/0",
+      "digest": "5fa601bf14fbb046d288249f4523d00a0beb9f1544885eed1489fbdabc3d19c5",
+      "operations": [
+        {
+          "id": "review.v1#1",
+          "ordinal": 1,
+          "kind": "invoke-port",
+          "portId": "policy",
+          "variants": [],
+          "digest": "883a6c54814093aa18d97a3f0fcbbdc6dde2c03ea78aa579dc95d7b878af92f3",
+          "sourceRef": "graph:/executionAuthorities/0/operations/0"
+        },
+        {
+          "id": "review.v1#2",
+          "ordinal": 2,
+          "kind": "invoke-scenario",
+          "scenarioId": "accept",
+          "variants": [],
+          "digest": "f06d973dc824c896c2f6e64471086fed3a9bf4f5e0963ba022258a2b7a116a78",
+          "sourceRef": "graph:/executionAuthorities/0/operations/1"
+        }
+      ]
+    },
+    {
+      "id": "accept.v1",
+      "scenarioId": "accept",
+      "sourceRef": "graph:/executionAuthorities/1",
+      "digest": "96fd827b4c4c7c07094b949a7fc46232334efbc29c41d26a6e0535a68fa7d682",
+      "operations": [
+        {
+          "id": "accept.v1#1",
+          "ordinal": 1,
+          "kind": "invoke-port",
+          "portId": "deliver",
+          "variants": [],
+          "digest": "c3629a4ff5051ab96795e99db856d63a8cbc33db9053672500d5f006da527627",
+          "sourceRef": "graph:/executionAuthorities/1/operations/0"
+        }
+      ]
+    },
+    {
+      "id": "refuse.v1",
+      "scenarioId": "refuse",
+      "sourceRef": "graph:/executionAuthorities/2",
+      "digest": "39d2effc875233130292fe82de5b85c6ece657c0a14e8ab8e83ab8217fe78dd0",
+      "operations": []
+    }
+  ],
+  "bindings": [
+    {
+      "portId": "policy",
+      "platformCapabilityId": "transform.v1",
+      "transformationId": "policy.v1",
+      "configurationDigest": "b1a628f650ed95177275de4136a7e1fb9860d89a477e4b01e10d8d5711aaceb8",
+      "providerIds": [],
+      "endpoints": [],
+      "credentialReferences": [],
+      "realizations": [],
+      "sourceRef": "graph:/interfaceAuthority/portBindings/0"
+    },
+    {
+      "portId": "deliver",
+      "platformCapabilityId": "http.v1",
+      "transformationId": "",
+      "configurationDigest": "9e6f44ff9f4524dd64fd80ce6cdfcee23e7eeb8f54b7d009577a89d3c1b67a67",
+      "providerIds": [
+        "example-provider"
+      ],
+      "endpoints": [
+        {
+          "sourcePointer": "/endpointAuthorities/0/urlPrefixes/0",
+          "origin": "https://example.org",
+          "path": "/review",
+          "selector": "urlPrefixes"
+        }
+      ],
+      "credentialReferences": [
+        "example-reference"
+      ],
+      "realizations": [],
+      "sourceRef": "graph:/interfaceAuthority/portBindings/1"
+    }
+  ],
+  "transformations": [
+    {
+      "id": "policy.v1",
+      "nodeCount": 4,
+      "branchCount": 1,
+      "operatorCounts": {
+        "if": 1,
+        "path": 1,
+        "literal": 2
+      },
+      "preview": [
+        {
+          "path": "/expression",
+          "parent": null,
+          "op": "if"
+        },
+        {
+          "path": "/expression/when",
+          "parent": "/expression",
+          "op": "path"
+        },
+        {
+          "path": "/expression/then",
+          "parent": "/expression",
+          "op": "literal"
+        },
+        {
+          "path": "/expression/else",
+          "parent": "/expression",
+          "op": "literal"
+        }
+      ],
+      "previewComplete": true,
+      "expressionDigest": "a5583b3c1f990483d4a0773ea1222bfc0cc161c2bddf54f01a3d7704a7befb85",
+      "sourceRef": "graph:/semanticTransformations/0"
+    }
+  ],
+  "contracts": [
+    {
+      "id": "request.v1",
+      "schemaId": "",
+      "title": "request.v1",
+      "type": "object",
+      "required": [
+        "approved"
+      ],
+      "properties": [
+        "approved"
+      ],
+      "schemaDigest": "2669b42546471c1da2dfb50cca7a7dbae638203124bf1b1cdaf58a7ddf0de291",
+      "sourceRef": "graph:/contractAuthorities/contracts/request.v1"
+    },
+    {
+      "id": "decision.v1",
+      "schemaId": "",
+      "title": "decision.v1",
+      "type": "object",
+      "required": [],
+      "properties": [],
+      "schemaDigest": "a2c799262a3ce3c19ef5cdd983bf3d12b43ab3c426227091b909dcb7054738c0",
+      "sourceRef": "graph:/contractAuthorities/contracts/decision.v1"
+    }
+  ],
+  "interfaces": [
+    {
+      "id": "review-cli",
+      "profile": "",
+      "configurationDigest": "1d439124cf08ec3a975ca35917070903cec2d37b9119a4f8591b54c6b2daa449",
+      "configurationKeys": [
+        "command"
+      ],
+      "sourceRef": "graph:/interfaceAuthority/interfaces/0"
+    }
+  ],
+  "features": [
+    {
+      "id": "review-feature",
+      "name": "Request review",
+      "role": "primary",
+      "versionPk": "22",
+      "definitionDigest": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "sourceRef": "model:feature_version/22"
+    }
+  ],
+  "fixtures": [
+    {
+      "id": "review-fixture",
+      "caseId": "refusal",
+      "expectedDisposition": "REFUSED",
+      "assertionCount": 2,
+      "definitionDigest": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+      "sourceRef": "model:fixture/30/refusal"
+    }
+  ],
+  "obligations": [
+    {
+      "id": "policy-boundary",
+      "statement": "Unapproved requests are refused",
+      "kind": "behavior",
+      "definitionDigest": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+      "sourceRef": "model:proof_obligation/31"
+    }
+  ],
+  "altitudeCatalog": [
+    {
+      "id": "altitude-1-example",
+      "name": "Declared altitude 1",
+      "definitionDigest": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+      "sourceRef": "model:scenario_version/50"
+    },
+    {
+      "id": "altitude-2-example",
+      "name": "Declared altitude 2",
+      "definitionDigest": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+      "sourceRef": "model:scenario_version/51"
+    },
+    {
+      "id": "altitude-3-example",
+      "name": "Declared altitude 3",
+      "definitionDigest": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+      "sourceRef": "model:scenario_version/52"
+    },
+    {
+      "id": "altitude-4-example",
+      "name": "Declared altitude 4",
+      "definitionDigest": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+      "sourceRef": "model:scenario_version/53"
+    },
+    {
+      "id": "altitude-5-example",
+      "name": "Declared altitude 5",
+      "definitionDigest": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+      "sourceRef": "model:scenario_version/54"
+    },
+    {
+      "id": "altitude-6-example",
+      "name": "Declared altitude 6",
+      "definitionDigest": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+      "sourceRef": "model:scenario_version/55"
+    },
+    {
+      "id": "altitude-7-example",
+      "name": "Declared altitude 7",
+      "definitionDigest": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+      "sourceRef": "model:scenario_version/56"
+    },
+    {
+      "id": "altitude-8-example",
+      "name": "Declared altitude 8",
+      "definitionDigest": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+      "sourceRef": "model:scenario_version/57"
+    },
+    {
+      "id": "altitude-9-example",
+      "name": "Declared altitude 9",
+      "definitionDigest": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+      "sourceRef": "model:scenario_version/58"
+    },
+    {
+      "id": "altitude-10-example",
+      "name": "Declared altitude 10",
+      "definitionDigest": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+      "sourceRef": "model:scenario_version/59"
+    },
+    {
+      "id": "altitude-11-example",
+      "name": "Declared altitude 11",
+      "definitionDigest": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+      "sourceRef": "model:scenario_version/60"
+    }
+  ],
+  "graphFeatures": {
+    "graphType": "legacy declaration",
+    "requiredExecutionFeatures": [],
+    "edgeGroups": [],
+    "dispatchAuthorities": []
+  },
+  "snapshotDigest": "f422a381bb44f0fca62b7512f2a9aaa556755171980057f9fc5682c152fd5e50"
+}

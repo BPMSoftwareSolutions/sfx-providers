@@ -2,6 +2,7 @@ import fs from 'node:fs/promises';
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { requestSchema,outputSchema } from '../src/circuit-presentation/contracts.mjs';
+import { inputShape as capabilityInput,outputShape as capabilityOutput } from '../src/capability-presentation/provider.mjs';
 const root=new URL('../',import.meta.url),base=new URL('examples/circuit-presentation/sidefx-announcement/provenance/',root);
 const json=async url=>JSON.parse(await fs.readFile(url,'utf8'));
 const manifest=await json(new URL('manifest.json',base));
@@ -19,4 +20,6 @@ for(const [i,slide]of preset.slides.entries()){
 }
 assert.deepEqual(await json(new URL('contracts/circuit-presentation/request.v1.schema.json',root)),requestSchema);
 assert.deepEqual(await json(new URL('contracts/circuit-presentation/output.v1.schema.json',root)),outputSchema);
+assert.deepEqual(await json(new URL('contracts/capability-presentation/request.v1.schema.json',root)),capabilityInput.schema);
+assert.deepEqual(await json(new URL('contracts/capability-presentation/output.v1.schema.json',root)),capabilityOutput.schema);
 console.log(JSON.stringify({retainedHashes:manifest.files.filter(f=>f.sha256).length,replayedSlides:preset.slides.length,schemas:'match'}));
