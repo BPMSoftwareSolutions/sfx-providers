@@ -15,13 +15,17 @@ export const fail = (message, code = 'CAPABILITY_PRESENTATION_INVALID') => { thr
 const pointer = value => str(value).replaceAll('~','~0').replaceAll('/','~1');
 
 function mechanics(expression) {
-  const counts = {}, preview = [], inputPaths=[];
+  const counts = {}, preview = [], inputPaths=[], cells=[];
   let count = 0, branchCount = 0;
   const walk = (value, path, parent, depth) => {
     if (!value || typeof value !== 'object') return;
     // Literal payloads are data, even if they contain an "op" member.
     if (typeof value.op === 'string') {
       count++; counts[value.op] = (counts[value.op] ?? 0) + 1;
+      cells.push({path,parent,op:value.op,operand:parent===null?'root':path.slice(parent.length+1),
+        ...(value.op==='path'&&typeof value.path==='string'?{inputPath:value.path}:{}),
+        ...(value.op==='literal'?{literalType:value.value===null?'null':Array.isArray(value.value)?'array':typeof value.value}:{}),
+        ...(value.op==='object'?{outputFields:Object.keys(value.fields??{})}:{})});
       if(value.op==='path'&&typeof value.path==='string')inputPaths.push({expressionPath:path,inputPath:value.path});
       if (['if','switch','case','match','coalesce'].includes(value.op)) branchCount++;
       if (depth < 3 && preview.length < 40) preview.push({ path, parent, op: value.op,
@@ -34,7 +38,7 @@ function mechanics(expression) {
     for (const [key, child] of Object.entries(value)) if (key !== 'op') walk(child, path + '/' + pointer(key), parent, depth);
   };
   walk(expression, '/expression', null, 0);
-  return { nodeCount: count, branchCount, operatorCounts: counts, preview,inputPaths,
+  return { nodeCount: count, branchCount, operatorCounts: counts, preview,inputPaths,cells,
     previewComplete: preview.length === count, expressionDigest: digest(expression ?? null) };
 }
 
@@ -63,7 +67,7 @@ function physicalFields(config) {
   return { providerIds: [...providers].sort(), endpoints, credentialReferences: [...credentials].sort(), realizations };
 }
 
-export function normalizeSnapshot({ capability: c, graph: g, scenarios = [], features = [], fixtures = [], obligations = [], altitudeCatalog = [], conditions = [], provenance = {} }) {
+export function normalizeSnapshot({ capability: c, graph: g, scenarios = [], features = [], fixtures = [], obligations = [], altitudeCatalog = [], conditions = [], blueprintSources = [], provenance = {} }) {
   if (g.declaredExecutionGraphRefused) fail(g.declaredExecutionGraphRefused, 'CAPABILITY_GRAPH_REFUSED');
   if (c.capability_id !== g.capabilityId) fail('The graph and selected capability identity disagree.');
   const declared = c.definition_json ? JSON.parse(c.definition_json)?.semantics?.authority ?? {} : {};
@@ -100,7 +104,9 @@ export function normalizeSnapshot({ capability: c, graph: g, scenarios = [], fea
         meaningSourceRef:row.scenario_version_pk?`model:scenario_version/${row.scenario_version_pk}`:'',sourceRef: `graph:/scenarios/${i}` };
     }),
     transitions: list(g.transitions).map((t, i) => ({ id: t.transitionId ?? `transition:${i}`, from: t.from?.scenarioId, to: t.to?.scenarioId,
-      variant: str(t.selectsVariant), topologyKind: str(t.topologyKind), bindingAuthorityId: str(t.bindingAuthorityId), digest: digest(t), sourceRef: `graph:/transitions/${i}` })),
+      variant: str(t.selectsVariant), topologyKind: str(t.topologyKind), bindingAuthorityId: str(t.bindingAuthorityId),
+      semanticProgress:str(t.semanticProgress),contractRelation:str(t.contractRelation),
+      digest: digest(t), sourceRef: `graph:/transitions/${i}` })),
     authorities,
     bindings: list(g.interfaceAuthority?.portBindings).map((b, i) => ({ portId: b.portId, platformCapabilityId: str(b.platformCapabilityId),
       transformationId: str(b.configuration?.transformationId), configurationDigest: digest(b.configuration ?? {}),
@@ -121,6 +127,10 @@ export function normalizeSnapshot({ capability: c, graph: g, scenarios = [], fea
     altitudeCatalog: altitudeCatalog.map(a => ({ id: a.scenario_id, name: str(a.name), definitionDigest: str(a.definition_digest), sourceRef: `model:scenario_version/${a.scenario_version_pk}` })),
     conditions:conditions.map(v=>({id:str(v.condition_id),statement:str(v.statement),definitionDigest:str(v.definition_digest),sourceRef:`model:observable_condition/${v.semantic_object_definition_pk}`})),
     contextReaderVersion:'feature-prose-and-altitudes.v2',
+    blueprintSources:blueprintSources.map(b=>({id:str(b.blueprint_id),versionPk:str(b.blueprint_version_pk),
+      capabilityVersionPk:str(b.capability_version_pk),disposition:str(b.source_disposition),
+      nodeCount:Number(b.node_count),edgeCount:Number(b.edge_count),definitionDigest:str(b.definition_digest),
+      sourceRef:`model:blueprint_version/${b.blueprint_version_pk}`})),
     graphFeatures: { graphType: str(g.graphType || 'legacy declaration'), requiredExecutionFeatures: list(g.requiredExecutionFeatures),
       edgeGroups: list(g.edgeGroups).map((e, i) => ({ id: str(e.edgeGroupId ?? e.id ?? i), digest: digest(e), sourceRef: `graph:/edgeGroups/${i}` })),
       dispatchAuthorities: list(g.dispatchAuthorities).map((d, i) => ({ id: str(d.id ?? i), digest: digest(d), sourceRef: `graph:/dispatchAuthorities/${i}` })) },

@@ -1,6 +1,6 @@
 import { digest, fail } from './snapshot.mjs';
 
-export const VIEWS = ['scenario', 'mechanic', 'provider', 'physical'];
+export const VIEWS = ['capability', 'scenario', 'event', 'mechanic', 'provider', 'physical'];
 export const ALTITUDES = [
   ['Feature parse','What need and feature frame this capability?'],
   ['Capability meaning','Who needs the capability, for what purpose and outcome?'],
@@ -65,14 +65,14 @@ export function buildCircuitModel(s, view) {
   }
   const edge = (from, to, relation, ref, label = '') => edges.push({ id: `edge:${edges.length + 1}`, from, to, relation, ref, label });
   const scenario = id => node('scenario:' + id, s.scenarios.find(v => v.id === id)?.name ?? id, 'scenario', s.scenarios.find(v => v.id === id)?.sourceRef ?? '', { missing: !s.scenarios.some(v => v.id === id) });
-  if (view === 'scenario') {
+  if (view === 'scenario' || view === 'capability') {
     for (const sc of s.scenarios) scenario(sc.id);
     for (const t of s.transitions) {
       edge(scenario(t.from), scenario(t.to), 'transition', t.sourceRef, t.variant || t.topologyKind);
       edges.at(-1).classification=s.scenarios.find(s=>s.id===t.from)?.variants.find(v=>v.id===t.variant)?.classification??'unspecified';
     }
     for (const a of s.authorities) for (const op of a.operations) if (op.kind === 'invoke-scenario') edge(scenario(a.scenarioId), scenario(op.scenarioId), 'invocation', op.sourceRef, `call ${op.ordinal}`);
-  } else if (view === 'mechanic') {
+  } else if (view === 'mechanic' || view === 'event') {
     for (const a of s.authorities) {
       const parent = scenario(a.scenarioId);
       let prior;
@@ -83,7 +83,7 @@ export function buildCircuitModel(s, view) {
         prior = id;
         const b = s.bindings.find(b => b.portId === op.portId);
         if (op.kind === 'invoke-scenario') edge(id, scenario(op.scenarioId), 'invocation', op.sourceRef, 'call');
-        if (b?.transformationId) {
+        if (b?.transformationId && view==='mechanic') {
           const t = s.transformations.find(t => t.id === b.transformationId);
           const transform = node('transform:' + b.transformationId, b.transformationId, 'transformation', t?.sourceRef ?? b.sourceRef, { missing: !t, nodeCount: t?.nodeCount ?? 0 });
           edge(id, transform, 'binding', b.sourceRef, 'transformation');

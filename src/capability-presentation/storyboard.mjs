@@ -15,7 +15,7 @@ function wrap(value, width=25, lines=3) {
 const color = n => n.missing ? C.red : n.used===false?C.muted:({scenario:C.blue,operation:C.amber,transformation:C.violet,mechanic:C.violet,port:C.amber,provider:C.green,endpoint:C.green,physical:C.muted}[n.kind]??C.blue);
 const colorEdge = e => e.classification==='failure'?C.red:e.classification==='success'?C.green:e.relation==='invocation' ? C.blue : e.relation==='order' ? C.amber : C.violet;
 
-export function buildStoryboard(snapshot, model, { contextAltitude='all' } = {}) {
+export function buildStoryboard(snapshot, model, { contextAltitude='all',view=model.view,scenarioId,operationId,transformationId } = {}) {
   const s=snapshot, slides=[], contexts=buildContexts(s), checks=structuralChecks(s);
   const identityRef='model:capability_version/'+s.identity.capabilityVersionPk;
   function page(title, subtitle, refs=[], detail='') {
@@ -48,7 +48,7 @@ export function buildStoryboard(snapshot, model, { contextAltitude='all' } = {})
   p.text(s.features[0]?.sourceTitle?short('Feature: '+s.features[0].sourceTitle,130):s.identity.intent?short('Declared intent: '+s.identity.intent,130):'Declared structure, selected versions, and traceable context',150,406,665,50,18,C.white,false,'center');
 
   const blueprint=buildBlueprint(s);
-  appendBlueprintSlides({snapshot:s,model:blueprint,page});
+  const disclosure=appendBlueprintSlides({snapshot:s,model:blueprint,page,view,scenarioId,operationId,transformationId});
 
   for(const group of chunks(contexts,6)){
     p=page('The capability’s authoring context',`ALTITUDES ${group[0].altitude}–${group.at(-1).altitude}  ·  EACH LAYER ANSWERS A DIFFERENT QUESTION`,group.flatMap(c=>[c.catalogRef,...c.evidenceRefs]),group.map(c=>`${c.altitude}. ${c.name}\n${c.question}\n${c.summary}`).join('\n\n'));
@@ -63,6 +63,7 @@ export function buildStoryboard(snapshot, model, { contextAltitude='all' } = {})
   }
 
   const focus=contextAltitude==='all'?contexts:contexts.filter(c=>c.altitude===contextAltitude);
+  if(contextAltitude!=='all'&&contextAltitude!==1)appendContextSlides({snapshot:s,altitude:1,page});
   for(const c of focus){
     p=page(`${String(c.altitude).padStart(2,'0')} · ${c.name}`,c.question,[c.catalogRef,...c.evidenceRefs],c.summary);
     switch(c.altitude){
@@ -131,70 +132,17 @@ export function buildStoryboard(snapshot, model, { contextAltitude='all' } = {})
     appendContextSlides({snapshot:s,altitude:c.altitude,page});
   }
 
-  // Deterministic breadth-first page order. No topology is synthesized by layout.
-  const ordered=[],seen=new Set(),queue=[model.nodes.find(n=>n.id==='scenario:'+s.identity.rootScenarioId)?.id??model.nodes[0]?.id];
-  const byId=new Map(model.nodes.map(n=>[n.id,n]));
-  while(ordered.length<model.nodes.length){
-    if(!queue.length)queue.push(model.nodes.find(n=>!seen.has(n.id)).id);
-    const id=queue.shift();if(!byId.has(id)||seen.has(id))continue;seen.add(id);ordered.push(byId.get(id));
-    for(const e of model.edges)if(e.from===id&&!seen.has(e.to))queue.push(e.to);
+  // Retain the full source inventory without turning disconnected declarations
+  // or lower-altitude detail into primary circuit geometry.
+  for(const group of chunks(model.nodes,8)){
+    p=page('Retained source register',model.view.toUpperCase()+' VIEW · DECLARATION INVENTORY',group.map(n=>n.ref),JSON.stringify(group,null,2));
+    for(const [i,n]of group.entries()){const y=137+i*39;p.text(n.kind,36,y,145,25,12,C.muted);p.text(short(n.label,87),190,y,720,29,13,C.white);}
+    p.coverage.nodes=group.map(n=>n.id);
   }
-  const batches=chunks(ordered,6),index=new Map(ordered.map((n,i)=>[n.id,{number:i+1,page:Math.floor(i/6)+1}]));
-  for(const [batchIndex,batch]of batches.entries()){
-    const ids=new Set(batch.map(n=>n.id)), edges=model.edges.filter(e=>ids.has(e.from)||ids.has(e.to));
-    p=page(`${model.view[0].toUpperCase()+model.view.slice(1)} circuit · ${batchIndex+1}/${batches.length}`,
-      'SOLID: DECLARED RELATIONSHIP  ·  DASHED: CALL / ORDER / PAGE CONTINUATION', [...batch.map(n=>n.ref),...edges.map(e=>e.ref)],JSON.stringify({nodes:batch,edges},null,2));
-    const pos=new Map(batch.map((n,i)=>[n.id,{x:90+(i%3)*290,y:175+Math.floor(i/3)*164,w:205,h:72}]));
-    const internal=edges.filter(e=>ids.has(e.from)&&ids.has(e.to));
-    for(const [i,e]of internal.entries()){
-      const a=pos.get(e.from),b=pos.get(e.to),paint=colorEdge(e);
-      const ax=a.x+a.w+7,ay=a.y+a.h/2,bx=b.x-7,by=b.y+b.h/2;
-      const sx=ax+12+(i%3)*4,tx=bx-12-(i%3)*4;
-      const lane=(a.y===b.y?a.y-36:292)+(i%3)*9;
-      p.wire([[ax,ay],[sx,ay],[sx,lane],[tx,lane],[tx,by],[bx,by]],paint,['order','invocation'].includes(e.relation));
-      // Compact edge IDs prevent adjacent wire labels from merging; the exact
-      // relationship is retained in the notes and the following relation sheet.
-      const outgoingIndex=internal.filter(w=>w.from===e.from).indexOf(e);
-      p.text(`E${model.edges.indexOf(e)+1}`,ax+13,ay-19-outgoingIndex*17,37,19,9,paint);
-    }
-    for(const n of batch){
-      const b=pos.get(n.id),paint=color(n),related=edges.filter(e=>e.from===n.id),fanout=related.length>1;
-      p.chip(b.x,b.y,b.w,b.h,n.label,paint,14);
-      p.text(`N${String(index.get(n.id).number).padStart(2,'0')} · ${n.kind}${n.missing?' · unresolved':n.used===false?' · retained':''}`,b.x,b.y-27,b.w+20,24,11,paint);
-      if(fanout)p.add('junction',b.x+b.w+7,b.y+b.h/2,paint,4);
-      const outside=edges.filter(e=>(e.from===n.id&&!ids.has(e.to))||(e.to===n.id&&!ids.has(e.from)));
-      if(outside.length){
-        if(outside.some(e=>e.from===n.id))p.wire([[b.x+b.w+7,b.y+36],[b.x+b.w+27,b.y+36]],C.muted,true);
-        if(outside.some(e=>e.to===n.id))p.wire([[b.x-27,b.y+36],[b.x-7,b.y+36]],C.muted,true);
-        const refs=[...new Set(outside.map(e=>{const r=index.get(e.from===n.id?e.to:e.from);return r?`${e.to===n.id?'in':'out'}: N${String(r.number).padStart(2,'0')} / circuit ${r.page}`:'';}))];
-        p.text(short(refs.join('; '),66),b.x-4,b.y+b.h+11,b.w+20,43,10,C.muted);
-      }
-      if(n.reachable===false)p.text('No declared path from root',b.x,b.y+b.h+49,b.w+20,23,10,C.red);
-    }
-    p.coverage={nodes:batch.map(n=>n.id),edges:edges.map(e=>e.id)};
-    p.interpretation=model.view==='mechanic'?'Operation-order wires show the retained authority sequence; they do not assert unconditional execution. Transformation subcircuits are collapsed and identified by digest.'
-      :model.view==='physical'?'Destinations and host fields describe declarations. Actual processes, devices, network calls and timings require separate execution testimony.'
-      :'Page continuations retain their exact peer and relation in the notes and circuit-model.json.';
-  }
-
   for(const group of chunks(model.edges,7)){
-    p=page('Circuit relationship register',`${model.view.toUpperCase()} VIEW  ·  EDGE IDS MATCH THE CIRCUIT DIAGRAMS`,group.map(e=>e.ref),JSON.stringify(group,null,2));
-    for(const [i,e]of group.entries()){
-      const y=137+i*44,paint=colorEdge(e),a=index.get(e.from),b=index.get(e.to);
-      p.text(`E${model.edges.indexOf(e)+1}`,42,y,45,26,13,paint,true);
-      p.text(`N${String(a.number).padStart(2,'0')}`,102,y,70,26,13,C.white,true);
-      p.wire([[173,y+12],[232,y+12]],paint,['order','invocation'].includes(e.relation));
-      p.text(`N${String(b.number).padStart(2,'0')}`,249,y,70,26,13,C.white,true);
-      p.text(short(e.label||e.relation,52),346,y,400,27,14,paint);
-      p.text(e.relation,765,y,150,27,11,C.muted);
-    }
-  }
-
-  // Outcome branches are drawn only for declared variants, without guessing a
-  // route from a name such as "success" or converting an unused outcome to STOP.
-  for(const sc of s.scenarios.filter(sc=>sc.variants.length))for(const group of chunks(sc.variants,4)){
-    p=page('Declared outcome branches',short(sc.id,105),[sc.sourceRef],JSON.stringify({scenarioId:sc.id,variants:group},null,2));
-    fan(p,sc.outcomeId,group.map(v=>({label:v.id,color:v.classification==='failure'?C.red:v.classification==='success'?C.green:C.violet})), 'variant membership; routing requires a declared transition');
+    p=page('Retained relationship register','SOURCE REFERENCES · NOT AN ACTIVE CIRCUIT PROJECTION',group.map(e=>e.ref),JSON.stringify(group,null,2));
+    for(const [i,e]of group.entries()){const y=137+i*45;p.text(e.id+' · '+e.relation,36,y,255,27,12,C.muted);p.text(short(e.from+' → '+e.to,100),301,y,610,39,12,C.white);}
+    p.coverage.edges=group.map(e=>e.id);
   }
   if(model.findings.length){
     for(const group of chunks(model.findings,4)){
@@ -208,10 +156,11 @@ export function buildStoryboard(snapshot, model, { contextAltitude='all' } = {})
 
   // Details live in the machine-readable sidecars; bounded notes keep the deck
   // usable even when bindings or transformation declarations are very large.
-  return { contexts,checks,blueprint,slides:slides.map(p=>{
+  return { contexts,checks,blueprint,disclosure,slides:slides.map(p=>{
     const notes=[p.detail, p.interpretation?'Interpretation / scope: '+p.interpretation:'', 'Evidence references:\n'+p.evidenceRefs.join('\n'),
       'Snapshot: '+s.snapshotDigest,'Full identities, relationships, and detail: snapshot.json, circuit-model.json, storyboard.json.'].filter(Boolean).join('\n\n');
-    p.commands.push({op:'foot',args:[`Estate ${s.identity.estateModelId} · ${model.view} view · snapshot ${s.snapshotDigest.slice(0,12)}`]});
+    const footer=`Estate ${s.identity.estateModelId} · ${model.view} view · snapshot ${s.snapshotDigest.slice(0,12)}`;
+    p.commands.push(p.blueprint?{op:'t',args:[footer,36,522,840,16,8,C.muted]}:{op:'foot',args:[footer]});
     return {id:p.id,title:p.title,subtitle:p.subtitle,commands:p.commands,notes:notes.length>19000?notes.slice(0,18500)+'\n\nNotes abbreviated. Full detail is retained in storyboard.json.':notes,
       evidenceRefs:p.evidenceRefs,detail:p.detail,interpretation:p.interpretation,coverage:p.coverage,...(p.blueprint?{blueprint:p.blueprint}:{})};
   }) };

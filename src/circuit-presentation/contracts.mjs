@@ -19,7 +19,7 @@ const array = (items, maxItems = 128) => ({ type: 'array', items, maxItems });
 // Positional arguments match the public Slide methods. No dynamic member access.
 export const operations = {
   shape: [5, [enumOf('RECTANGLE','ROUND_RECTANGLE','ELLIPSE','DIAMOND','HEXAGON'),number,number,number,number,options(['fill','stroke','sw','alpha','sa'])]],
-  t: [5, [text,number,number,number,number,number,color,{type:'boolean'},enumOf('left','center','right'),{type:'string',format:'http-url'}]],
+  t: [5, [text,number,number,number,number,number,color,{type:'boolean'},enumOf('left','center','right'),{oneOf:[{type:'string',format:'http-url'},object({slideIndex:{type:'integer',minimum:0,maximum:255}},['slideIndex'])]}]],
   line: [4, [number,number,number,number,color,number,options(['dash','alpha','arrow'])]],
   route: [1, [{...array(point),minItems:2},color,options(['width','dash','arrow','glow'])]],
   port: [2, [number,number,color,number]], junction: [2, [number,number,color,number]],

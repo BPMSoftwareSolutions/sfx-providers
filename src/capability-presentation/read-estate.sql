@@ -118,3 +118,16 @@ SELECT LOWER(CONVERT(varchar(64),HASHBYTES('SHA2_256',CONVERT(varbinary(max),OBJ
 SELECT oc.condition_id,oc.statement,oc.semantic_object_definition_pk,LOWER(CONVERT(varchar(64),oc.definition_digest,2)) AS definition_digest
 FROM model.observable_condition oc WHERE oc.owner_definition_pk IN (SELECT definition_pk FROM @cap)
 ORDER BY oc.condition_id;
+
+-- Assess canonical blueprint availability against the exact selected capability
+-- version. A retained candidate with only provider-slot nodes is not a complete
+-- executable circuit and must not be substituted for graph-source authority.
+SELECT b.blueprint_id,bv.blueprint_version_pk,bv.capability_version_pk,bv.source_disposition,
+ LOWER(CONVERT(varchar(64),bv.definition_digest,2)) AS definition_digest,
+ (SELECT COUNT(*) FROM model.blueprint_node n WHERE n.blueprint_version_pk=bv.blueprint_version_pk) AS node_count,
+ (SELECT COUNT(*) FROM model.blueprint_edge e WHERE e.blueprint_version_pk=bv.blueprint_version_pk) AS edge_count
+FROM model.blueprint_version bv
+JOIN model.blueprint b ON b.blueprint_pk=bv.blueprint_pk
+JOIN @cap p ON p.capability_version_pk=bv.capability_version_pk
+JOIN analysis.v_selected_semantic_definition sd ON sd.estate_model_pk=@estate AND sd.semantic_object_definition_pk=bv.semantic_object_definition_pk
+ORDER BY b.blueprint_id,bv.blueprint_version_pk;

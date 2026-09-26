@@ -12,7 +12,7 @@ export const MAX_OUTPUT_BYTES = 48 * 1024 * 1024;
 export const inputShape = {contractId:'capability-presentation-request.v1',status:'PROPOSED',schema:{
   $schema:'https://json-schema.org/draft/2020-12/schema',type:'object',additionalProperties:false,required:['contractId','capabilityId'],
   properties:{contractId:{const:'capability-presentation-request.v1'},capabilityId:{type:'string',minLength:1,maxLength:400},namespaceId:{type:'string',minLength:1,maxLength:400},
-    view:{enum:VIEWS},contextAltitude:{oneOf:[{const:'all'},{type:'integer',minimum:1,maximum:11}]},
+    view:{enum:VIEWS},scenarioId:{type:'string',minLength:1,maxLength:400},operationId:{type:'string',minLength:1,maxLength:1000},transformationId:{type:'string',minLength:1,maxLength:400},contextAltitude:{oneOf:[{const:'all'},{type:'integer',minimum:1,maximum:11}]},
     objectPrefix:{type:'string',pattern:'^[A-Za-z][A-Za-z0-9_]{4,24}$'}},
 }};
 export const outputShape = {contractId:'capability-presentation-output.v1',status:'PROPOSED',schema:{
@@ -27,8 +27,8 @@ export async function presentCapability(input, { readEstate, narrator } = {}) {
   readEstate ??= await loadEstateReader();
   const snapshot=validateSnapshot(await readEstate({capabilityId:input.capabilityId,namespaceId:input.namespaceId}));
   if(snapshot.identity.capabilityId!==input.capabilityId||(input.namespaceId&&snapshot.identity.namespaceId!==input.namespaceId))fail('Requested identity does not match the selected snapshot.');
-  const view=input.view??'scenario',model=buildCircuitModel(snapshot,view);
-  const storyboard=buildStoryboard(snapshot,model,input);
+  const view=input.view??'capability',model=buildCircuitModel(snapshot,view);
+  const storyboard=buildStoryboard(snapshot,model,{...input,view});
   if(storyboard.slides.length>256)fail('This projection exceeds 256 slides; use a narrower view or context altitude.','CAPABILITY_PRESENTATION_TOO_LARGE');
   let inference={mode:'deterministic-context',applied:0};
   if(narrator){
@@ -48,7 +48,8 @@ export async function presentCapability(input, { readEstate, narrator } = {}) {
   }
   const coveredNodes=new Set(storyboard.slides.flatMap(s=>s.coverage.nodes)),coveredEdges=new Set(storyboard.slides.flatMap(s=>s.coverage.edges));
   const blueprint=storyboard.blueprint,overview=storyboard.slides.find(s=>s.blueprint?.role==='overview')?.blueprint;
-  if(!overview||blueprint.nodes.some(n=>!overview.nodes.includes(n.id))||blueprint.edges.some(e=>!overview.edges.includes(e.id)))fail('The complete blueprint lost a node or edge.','CAPABILITY_BLUEPRINT_INCOMPLETE');
+  const primary=storyboard.disclosure.primary;
+  if(!overview||overview.altitude!==view||primary.nodes.some(n=>!overview.nodes.includes(n.id))||primary.edges.some(e=>!overview.edges.includes(e.id)))fail('The selected projection lost a node or edge.','CAPABILITY_BLUEPRINT_INCOMPLETE');
   if(model.nodes.some(n=>!coveredNodes.has(n.id))||model.edges.some(e=>!coveredEdges.has(e.id)))fail('Circuit projection lost a node or edge.','CAPABILITY_COVERAGE_INCOMPLETE');
   const volumes=[];
   for(let i=0;i<storyboard.slides.length;i+=32){
@@ -58,7 +59,7 @@ export async function presentCapability(input, { readEstate, narrator } = {}) {
     volumes.push({volume,firstSlide:i+1,lastSlide:i+subset.length,presentation:compiled});
   }
   const body={contractId:outputShape.contractId,capabilityId:input.capabilityId,view,contextAltitude:input.contextAltitude??'all',snapshot,model,storyboard,inference,
-    coverage:{nodeCount:model.nodes.length,edgeCount:model.edges.length,coveredNodes:coveredNodes.size,coveredEdges:coveredEdges.size,contextLayers:11,blueprint:blueprint.coverage},volumes};
+    coverage:{nodeCount:model.nodes.length,edgeCount:model.edges.length,coveredNodes:coveredNodes.size,coveredEdges:coveredEdges.size,inventoryScope:'source registers, not primary geometry',contextLayers:11,blueprint:blueprint.coverage,projection:{altitude:view,nodes:primary.nodes.length,edges:primary.edges.length,topologyDigest:primary.topologyDigest}},volumes};
   return {...body,contentDigest:digest(body)};
 }
 
@@ -69,6 +70,6 @@ export async function handle(input,options={}) {
     const candidate=await presentCapability(input,options);
     validate(candidate,outputShape.schema);
     if(Buffer.byteLength(JSON.stringify(candidate))>MAX_OUTPUT_BYTES)fail('Presentation output exceeds 48 MiB.','CAPABILITY_PRESENTATION_TOO_LARGE');
-    return {providerId,toolId,disposition:'AUTHORED',candidate,elapsedMs:Math.round(performance.now()-started),findings:candidate.model.findings};
+    return {providerId,toolId,disposition:'AUTHORED',candidate,elapsedMs:Math.round(performance.now()-started),findings:[...candidate.model.findings,...candidate.storyboard.blueprint.review.issues]};
   }catch(error){return {providerId,toolId,disposition:'HELD',candidate:null,elapsedMs:Math.round(performance.now()-started),findings:[{code:error.code??'CAPABILITY_PRESENTATION_FAILED',message:String(error.message).slice(0,800)}]};}
 }

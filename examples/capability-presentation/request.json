@@ -1,6 +1,6 @@
 {
   "contractId": "capability-presentation-request.v1",
   "capabilityId": "request-capability-from-objective",
-  "view": "scenario",
+  "view": "capability",
   "contextAltitude": "all"
 }

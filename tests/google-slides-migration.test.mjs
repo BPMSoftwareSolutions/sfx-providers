@@ -7,7 +7,7 @@ import http from 'node:http';
 import {handle,verifyConversion,GOOGLE_SLIDES_MIME} from '../src/google-slides-migration/workflow.mjs';
 import {inspectPptx} from '../src/google-slides-migration/pptx.mjs';
 import {prepareJob,loadJob,fileJournal} from '../src/google-slides-migration/local.mjs';
-import {createConnectorDrive} from '../src/google-slides-migration/codex-host.mjs';
+import {createConnectorDrive,createCodexHost} from '../src/google-slides-migration/codex-host.mjs';
 import {createDrive} from '../src/google-slides-migration/rest-host.mjs';
 import {createCircuitRequestHandler,HEALTH,MIGRATION_INVOKE} from '../src/circuit-presentation/http.mjs';
 const folder='folder_123456789',fileId='presentation_123456789';
@@ -69,6 +69,23 @@ test('readback detects lost pictures and reads linked editable table text',()=>{
  const s=structuredClone(source);s.slides[0].imageCount=1;
  const v=verifyConversion(s,metadata,p,request);assert.deepEqual(v.findings.map(f=>f.code),['IMAGES_NOT_RETAINED']);assert.equal(v.slides[0].tables,1);
 });
+test('conversion verifies internal drill-down destinations against the converted slide identities',()=>{
+ const s=structuredClone(source),p=structuredClone(presentation);s.slides[0].internalTargets=[1];
+ assert.ok(verifyConversion(s,metadata,p,request).findings.some(f=>f.code==='DRILL_DOWN_LINKS_NOT_RETAINED'));
+ p.slides[0].pageElements.push({shape:{text:{textElements:[{textRun:{content:'Open',style:{link:{pageObjectId:'slide1'}}}}]}}});
+ assert.equal(verifyConversion(s,metadata,p,request).passed,true);
+});
+test('Codex host transfers large evidence in bounded chunks without truncating JSON',async()=>{
+ const payload={...source,slides:[{text:['captions'],notes:['Unicode Ω and apostrophe \' '.repeat(12000)],links:[]}]},json=JSON.stringify(payload);let chunks=0;
+ const tools={exec_command:async({cmd})=>{
+  let result;
+  if(cmd.includes("'read-job'"))result={request,source:{...payload,slides:[]},sourceJsonLength:json.length};
+  else{assert.ok(cmd.includes("'read-source-chunk'"));const offset=Number(cmd.match(/'--offset' '(\d+)'/)[1]),length=Number(cmd.match(/'--length' '(\d+)'/)[1]);assert.ok(length<=24000);chunks++;result={offset,totalLength:json.length,text:json.slice(offset,offset+length)};}
+  return {exit_code:0,output:JSON.stringify(result)};
+ }};
+ const host=await createCodexHost(tools,{jobDirectory:'C:/job with spaces',cliPath:'C:/repo/google-slides-migrate.mjs'});
+ assert.deepEqual(await host.options.resolveArtifact(request.artifactId),payload);assert.ok(chunks>2);
+});
 // Minimal ZIP package generated in memory: tests absolute OPC relationships,
 // slide order, notes and hyperlinks without a proprietary runtime or fixture.
 function zip(files){let offset=0;const chunks=[],central=[];for(const [name,text]of Object.entries(files)){const n=Buffer.from(name),data=Buffer.from(text),header=Buffer.alloc(30);header.writeUInt32LE(0x04034b50);header.writeUInt32LE(data.length,18);header.writeUInt32LE(data.length,22);header.writeUInt16LE(n.length,26);chunks.push(header,n,data);const cd=Buffer.alloc(46);cd.writeUInt32LE(0x02014b50);cd.writeUInt32LE(data.length,20);cd.writeUInt32LE(data.length,24);cd.writeUInt16LE(n.length,28);cd.writeUInt32LE(offset,42);central.push(cd,n);offset+=header.length+n.length+data.length;}const directory=Buffer.concat(central),end=Buffer.alloc(22);end.writeUInt32LE(0x06054b50);end.writeUInt16LE(Object.keys(files).length,8);end.writeUInt16LE(Object.keys(files).length,10);end.writeUInt32LE(directory.length,12);end.writeUInt32LE(offset,16);return Buffer.concat([...chunks,directory,end]);}
@@ -76,6 +93,10 @@ const bytes=zip({'[Content_Types].xml':'<Types/>','ppt/presentation.xml':'<p:sld
 test('PPTX evidence follows package relationships and rejects corrupt archives',()=>{
  const s=inspectPptx(bytes);assert.equal(s.slideCount,1);assert.deepEqual(s.slides[0].text,['Circuit & intent']);assert.deepEqual(s.slides[0].notes,['Speaker context']);assert.deepEqual(s.slides[0].links,['https://example.com/source']);
  assert.throws(()=>inspectPptx(Buffer.from('not a pptx')));assert.throws(()=>inspectPptx(bytes.subarray(0,bytes.length-8)));
+});
+test('PPTX internal link inspection follows the actual package slide order',()=>{
+ const b=zip({'[Content_Types].xml':'<Types/>','ppt/presentation.xml':'<p:sldId r:id="r1"/><p:sldId r:id="r2"/>','ppt/_rels/presentation.xml.rels':'<Relationship Id="r1" Type="x/slide" Target="slides/z.xml"/><Relationship Id="r2" Type="x/slide" Target="slides/a.xml"/>','ppt/slides/z.xml':'<a:hlinkClick r:id="go" action="ppaction://hlinksldjump"/>','ppt/slides/a.xml':'<p:sp/>','ppt/slides/_rels/z.xml.rels':'<Relationship Id="go" Type="x/hyperlink" Target="a.xml"/>'});
+ assert.deepEqual(inspectPptx(b).slides[0].internalTargets,[2]);
 });
 const temp=await fs.mkdtemp(path.join(os.tmpdir(),'sfx-slides-test-'));
 after(async()=>{const real=await fs.realpath(temp);assert.equal(path.dirname(real),await fs.realpath(os.tmpdir()));assert.ok(path.basename(real).startsWith('sfx-slides-test-'));await fs.rm(real,{recursive:true,force:true});});

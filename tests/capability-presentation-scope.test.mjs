@@ -75,7 +75,8 @@ test('prose naming another capability cannot resolve a runtime selector or add a
   assert.deepEqual(calls, [request]);
   const story = result.candidate.storyboard;
   assert.equal(story.slides.filter(s => s.blueprint?.role === 'overview').length, 1);
-  assert.deepEqual(story.blueprint.nodes.filter(n => n.kind === 'dynamic').map(n => n.selector), ['capabilityId']);
+  assert.deepEqual(story.blueprint.references.filter(n => n.code === 'RUNTIME_TARGET_UNRESOLVED').map(n => n.targetId), ['capabilityId']);
+  assert.ok(!story.blueprint.nodes.some(n=>n.kind==='dynamic'));
   assert.ok(!story.blueprint.nodes.some(n => n.label === 'inspect-sample'));
   assert.deepEqual(story.blueprint.scenarios.map(s => s.id), snapshot.scenarios.map(s => s.id));
 });

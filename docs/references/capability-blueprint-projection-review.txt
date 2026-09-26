@@ -1,0 +1,326 @@
+**This one is materially better.** The agent is starting to respect the actual circuit boundary and the Given → When → Then geometry.
+
+But I’d classify this as:
+
+> **a detailed execution-altitude projection of the capability**, not yet the primary capability blueprint.
+
+That distinction will keep this from becoming a spaghetti diagram.
+
+## What improved
+
+The overall structure is much cleaner now:
+
+```text
+CAPABILITY BOUNDARY
+    │
+    ├── GIVEN / INPUT
+    │
+    ├── WHEN / EVENT
+    │      └── execution cells
+    │
+    └── THEN / OUTCOME
+```
+
+And the external provider bindings are outside the capability boundary, which is directionally right.
+
+The agent also stopped scattering quite as much unrelated stuff around the canvas. The main circuit now has an obvious center of gravity.
+
+## The remaining problem
+
+The `WHEN / EVENT` region is carrying **35 operations and 39 bindings simultaneously**.
+
+That is too much for the default blueprint.
+
+You're looking at something closer to:
+
+```text
+EVENT
+  ↓
+all execution responsibilities
+  ↓
+all mechanics
+  ↓
+all provider bindings
+```
+
+flattened into one plane.
+
+That is why the center already looks dense despite the capability itself being conceptually simple.
+
+### The default capability blueprint should probably collapse this
+
+Something like:
+
+```text
+GIVEN
+Public Equity Request
+      │
+      ▼
+WHEN
+Resolve Equity Market Price Evidence
+      │
+      ├── Resolve provider authority
+      ├── Prepare governed request
+      ├── Execute market-data exchange
+      ├── Interpret provider response
+      └── Admit attributable evidence
+      │
+      ▼
+THEN
+Equity Market Price Evidence
+```
+
+And then **click `Execute market-data exchange`** to get the current 35-operation view.
+
+That is observation altitude working exactly as intended.
+
+---
+
+# I would preserve this detailed view
+
+Don't throw it away.
+
+This is useful as:
+
+```text
+Capability
+    ↓
+Scenario
+    ↓
+Event
+    ↓
+Execution detail       ← THIS IMAGE
+```
+
+It is a legitimate projection.
+
+It just shouldn't be called the same thing as the high-level capability blueprint.
+
+Maybe:
+
+### Capability blueprint
+
+```text
+resolve-equity-market-price-evidence
+Input → Event → Outcome
+```
+
+### Event circuit
+
+```text
+resolve-equity-market-price-evidence / WHEN
+35 operations
+39 port bindings
+```
+
+### Mechanic/provider view
+
+Then descend again.
+
+That prevents each screen from trying to explain the entire universe.
+
+---
+
+## The violet boxes are still visually overpowering
+
+Every operation appears to have a violet binding label sitting directly over it:
+
+```text
+transformation
+credential
+http exchange
+...
+```
+
+Those bindings are useful, but at this altitude they should probably be an **overlay**.
+
+Default:
+
+```text
+┌──────────────────┐
+│ build request    │
+└──────────────────┘
+```
+
+Provider-binding overlay enabled:
+
+```text
+        [transformation]
+               │
+┌──────────────▼───┐
+│ build request    │
+└──────────────────┘
+```
+
+That would eliminate a huge amount of noise.
+
+Same principle as telemetry:
+
+> topology first; properties second.
+
+---
+
+# The outcome side needs stronger semantic geometry
+
+The right side is interesting because I can see multiple result/disposition states:
+
+```text
+EQUITY MARKET PRICE ...
+EQUITY MARKET PRICE ... [red]
+NATIVE MARKET PRICE TESTIMONY
+REJECTED
+```
+
+This should not look like a stack of status labels.
+
+It should look like **declared outcome variants**:
+
+```text
+                     ┌─► PRICE_EVIDENCE_RESOLVED
+                     │
+classify outcome ────┼─► PRICE_EVIDENCE_REJECTED
+                     │
+                     └─► NATIVE_TESTIMONY_REJECTED
+```
+
+That's much more semantically meaningful.
+
+The user should immediately understand:
+
+> “Ah. These are possible terminal dispositions of this circuit.”
+
+Not:
+
+> “These are some boxes on the right.”
+
+---
+
+## Provider topology is closer, but still needs explicit port ownership
+
+The RapidAPI / Yahoo Finance boxes at the top are better positioned now.
+
+But I would insist on:
+
+```text
+execution cell
+     │
+     ▼
+Provider Port
+     │
+     ▼
+Provider Binding
+     │
+     ▼
+RapidAPI / Yahoo Finance
+```
+
+Not a long dashed line that the viewer has to trace across the picture.
+
+The key question should always be obvious:
+
+> **Which operation owns this provider invocation?**
+
+---
+
+# The four bottom transformations look orphaned
+
+`R01–R04` appear along the bottom.
+
+If those are meaningful execution transformations, they need to be attached to their owning operations.
+
+If they are retained declarations not traversed by the current route, they should not be inside the active circuit surface.
+
+So either:
+
+```text
+operation
+   ↓
+R01 transformation
+```
+
+or:
+
+```text
+DECLARATION INVENTORY
+R01 R02 R03 R04
+```
+
+off the primary topology.
+
+No floating architecture.
+
+---
+
+# “Evidence incomplete” is okay now
+
+This is much better than the original large red **ISSUES FOUND** treatment.
+
+```text
+EVIDENCE INCOMPLETE
+0 errors
+7 evidence / connection warnings
+```
+
+That's a useful **blueprint-state overlay**.
+
+I would keep it, but consider making it collapsible:
+
+```text
+Blueprint status: EVIDENCE INCOMPLETE  ⚠ 7
+```
+
+Click to inspect.
+
+Don't let diagnostics consume more visual weight than the actual circuit.
+
+---
+
+# Observation / Telemetry boundary
+
+I like that it remains separate at the bottom.
+
+But eventually it should not just say:
+
+```text
+Planned structure
+no invocation testimony selected
+```
+
+It should behave like an actual observation boundary.
+
+Static:
+
+```text
+OBSERVATION / TELEMETRY
+───────────────────────
+No active invocation
+```
+
+During execution:
+
+```text
+OBSERVATION / TELEMETRY
+───────────────────────
+OA5–OA8 · Debugger profile
+
+cells active       2
+edges admitted    11
+provider effects   1
+warnings           0
+```
+
+And the **nodes above light up** from the protocol stream.
+
+That's the connection to the work we've been doing.
+
+---
+
+# I would tell the agent this
+
+> **Keep this projection. It is useful as the Event / Execution observation altitude. Do not use it as the default capability blueprint. The default capability blueprint should collapse the 35 operations into a small number of semantic responsibilities. Bindings, mechanics, diagnostics, telemetry, and evidence are overlays or lower-altitude projections. Outcome variants should render as explicit terminal branches. Every provider must visibly connect through its owning port. Every retained declaration must either participate in the active route or move to inventory.**
+
+And one more hard rule:
+
+> **Increasing detail must happen by descending observation altitude, never by continually adding more objects to the same projection.**
+
+That one rule will keep this whole visualization system sane as capabilities become much larger.

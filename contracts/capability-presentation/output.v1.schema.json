@@ -24,7 +24,9 @@
     },
     "view": {
       "enum": [
+        "capability",
         "scenario",
+        "event",
         "mechanic",
         "provider",
         "physical"

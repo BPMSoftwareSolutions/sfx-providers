@@ -26,14 +26,14 @@ function validateInput(v){
 }
 const normal=v=>String(v??'').replace(/\s+/g,' ').trim();
 function pageEvidence(page){
- const texts=[],links=[],counts={shapes:0,images:0,lines:0,tables:0};
+ const texts=[],links=[],internalTargets=[],counts={shapes:0,images:0,lines:0,tables:0};
  const walk=elements=>{for(const e of elements??[]){
-   if(e.shape){counts.shapes++;for(const t of e.shape.text?.textElements??[]){if(t.textRun?.content)texts.push(t.textRun.content);if(t.textRun?.style?.link?.url)links.push(t.textRun.style.link.url);}}
+   if(e.shape){counts.shapes++;for(const t of e.shape.text?.textElements??[]){if(t.textRun?.content)texts.push(t.textRun.content);if(t.textRun?.style?.link?.url)links.push(t.textRun.style.link.url);if(t.textRun?.style?.link?.pageObjectId)internalTargets.push(t.textRun.style.link.pageObjectId);}}
    if(e.image){counts.images++;if(e.image.imageProperties?.link?.url)links.push(e.image.imageProperties.link.url);}
    if(e.line)counts.lines++;
    if(e.table){counts.tables++;for(const row of e.table.tableRows??[])for(const cell of row.tableCells??[])for(const t of cell.text?.textElements??[]){if(t.textRun?.content)texts.push(t.textRun.content);if(t.textRun?.style?.link?.url)links.push(t.textRun.style.link.url);}}
    if(e.elementGroup)walk(e.elementGroup.children);
- }};walk(page.pageElements);return {text:normal(texts.join(' ')),links,counts};
+ }};walk(page.pageElements);return {text:normal(texts.join(' ')),links,internalTargets,counts};
 }
 export function verifyConversion(source,metadata,presentation,request){
  const findings=[];const check=(ok,code,detail)=>{if(!ok)findings.push({code,detail});};
@@ -50,6 +50,8 @@ export function verifyConversion(source,metadata,presentation,request){
      check(!missingText.length,'SLIDE_TEXT_NOT_RETAINED',`Slide ${i+1}: ${missingText.length} source text runs missing from editable text.`);
      check(!missingNotes.length,'SPEAKER_NOTES_NOT_RETAINED',`Slide ${i+1}: ${missingNotes.length} source note runs missing.`);
      check(!missingLinks.length,'LINKS_NOT_RETAINED',`Slide ${i+1}: ${missingLinks.length} source links missing.`);
+     const missingTargets=(expected.internalTargets??[]).filter(n=>!actual.internalTargets.includes(presentation.slides[n-1]?.objectId));
+     check(!missingTargets.length,'DRILL_DOWN_LINKS_NOT_RETAINED',`Slide ${i+1}: ${missingTargets.length} internal slide destinations missing.`);
      check(actual.counts.images>=(expected.imageCount??0),'IMAGES_NOT_RETAINED',`Slide ${i+1}: expected at least ${expected.imageCount} pictures; read ${actual.counts.images}.`);
    }
    return {number:i+1,objectId:s.objectId,...actual.counts};

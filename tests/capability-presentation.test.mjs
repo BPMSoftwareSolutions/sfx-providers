@@ -143,17 +143,16 @@ test('large circuits paginate instead of dropping nodes or edges',async()=>{
   assert.ok(r.candidate.volumes.length>1);assert.equal(r.candidate.coverage.coveredEdges,130);assert.equal(r.candidate.coverage.coveredNodes,262);
   const ids=r.candidate.volumes.flatMap(v=>v.presentation.slides.map(s=>s.id));assert.equal(new Set(ids).size,ids.length);
 });
-test('cross-page incoming wires point into the node instead of reversing the call',()=>{
+test('source register preserves cross-page relationships without drawing them as active topology',()=>{
   const s=snapshotFixture();
   const nodes=Array.from({length:7},(_,i)=>({id:'n'+i,label:'Node '+i,kind:'scenario',ref:'example:'+i}));
   const model={view:'scenario',nodes,edges:[{id:'edge:1',from:'n0',to:'n6',relation:'invocation',ref:'example:call',label:'call'}],findings:[],digest:'f'.repeat(64)};
-  // Keep the disconnected first-page nodes before the called node by including
-  // six outgoing edges, then verify the continuation on circuit page two.
   model.edges=nodes.slice(1).map((n,i)=>({id:'edge:'+(i+1),from:'n0',to:n.id,relation:'invocation',ref:'example:call'+i,label:'call'}));
   const story=buildStoryboard(s,model,{contextAltitude:3});
-  const second=story.slides.find(p=>p.title==='Scenario circuit · 2/2');
-  assert.ok(second.commands.some(c=>c.op==='route'&&JSON.stringify(c.args[0])===JSON.stringify([[63,211],[83,211]])));
-  assert.ok(!second.commands.some(c=>c.op==='route'&&JSON.stringify(c.args[0])===JSON.stringify([[302,211],[322,211]])));
+  const register=story.slides.find(p=>p.title==='Retained relationship register');
+  assert.equal(register.coverage.edges.length,6);
+  assert.ok(register.commands.some(c=>c.op==='t'&&c.args[0].includes('n0 → n6')));
+  assert.ok(!register.commands.some(c=>c.op==='route'));
 });
 test('SQL reader binds parameters, pins SNAPSHOT, and rolls back and closes on failure',async()=>{
   const log=[];const sql={NVarChar:n=>n,ISOLATION_LEVEL:{SNAPSHOT:'SNAPSHOT'},Transaction:class{async begin(v){log.push(['begin',v]);}async rollback(){log.push(['rollback']);}},Request:class{input(...a){log.push(['input',...a]);return this;}async query(q){assert.match(q,/analysis.capability_graph_source\(@capability_id/);throw new Error('connection password should not escape');}}};

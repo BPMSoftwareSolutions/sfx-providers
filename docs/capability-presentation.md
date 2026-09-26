@@ -31,7 +31,7 @@ hash and observed file ID, so repeated runs reuse the converted presentation.
 
 The two altitude axes work together:
 
-* **Semantic view** (`view`): `scenario`, `mechanic`, `provider`, or `physical`.
+* **Semantic view** (`view`): `capability` (default), `scenario`, `event`, `mechanic`, `provider`, or `physical`.
 * **Authoring context** (`contextAltitude`): `all` (default), or a focus from 1–11.
 
 Every deck retains all eleven context layers and their evidence references. With
@@ -39,58 +39,36 @@ Every deck retains all eleven context layers and their evidence references. With
 context map and expands the chosen layer. These numbers organize meaning; they
 are not an execution sequence or a claim that eleven authoring steps completed.
 
-## Circuit overview and required blueprint correction
+## Blueprint projections and disclosure
 
-Every generated deck places a circuit overview immediately after its cover,
-regardless of semantic view or authoring-altitude focus. The current slide is
-titled “Complete capability circuit,” but that title overstates its coverage.
-The [capability circuit visual contract](capability-circuit-visual-contract.md)
-records the user's reference lens, the required Given/When/Then geometry and
-the concrete gaps in the current implementation.
+The slide after the cover is complete at the requested observation altitude.
+It does not combine every retained fact into one circuit. See the
+[projection contract](capability-circuit-visual-contract.md) for the six rendering
+rules, authority boundaries and source limitations.
 
-The current overview combines the selected scenarios' input and outcome
-boundaries, operations, ordered continuation, scenario transitions, nested calls
-and returns, and port bindings on one sheet. It preserves declared recurrence.
-Its glyphs distinguish some wire and node types, but do not establish the full
-typed semantics of cells, convergence requirements, authority descent, or
-evidence return.
+Capability shows root-connected scenarios; selecting a scenario opens its
+Input/Event/Outcome frame. Selecting its Event opens all declared operations.
+Invoking operations link to explicit port/binding/provider ownership views.
+Review markers, declaration inventory and observation state remain separate.
+All eleven authoring contexts and feature/Gherkin evidence remain available.
 
-The whole sheet supplements the detailed, paginated semantic projections. Large
-circuits keep all components and wires on the overview and use stable component
-IDs with a readable register. Unused bindings remain in a separate region.
-Missing bindings and unresolved call targets remain visible. Generation checks
-that the overview contains every blueprint node and edge, and emits
-`circuit-blueprint.json` with the source references and coverage counts.
+Use `--scenario-id` to select a retained scenario, and `--operation-id` to
+select an operation for provider/physical detail. `--transformation-id` selects
+a retained expression in mechanic view. Unknown identities are refused.
+No capability-specific source changes are needed.
 
-Coverage currently measures the renderer's reduced scenario/operation model;
-it does not prove a complete canonical circuit. Transformation identifiers appear
-as binding labels, without their internal cell topology. Variant membership is
-distinct from a declared transition. Sequence, binding, call and return wires
-have separate types, but do not supply missing contract or progress declarations.
-A drawing alone is not an admission receipt or a proof of monotonic execution.
+The output retains `circuit-blueprint.json`, `circuit-projection.json`,
+`circuit-review.json`, full-size projection SVGs and the editable presentation.
+Coverage checks the selected projection separately from the source inventory.
+Declared operation-order wires do not prove full canonical routing or monotonic
+progress; those missing proofs are explicit review findings. Missing targets are
+not fabricated nodes. Runtime selectors remain unresolved references until an
+identified invocation provides testimony.
 
-Runtime-selected capabilities appear as explicit wired boundaries. A selector
-path declares where an identity will come from at execution time; it does not
-declare that identity. Generation does not guess a target or fetch a capability
-from example input. Request that target's own ID to generate its own slide show.
-
-The earlier demonstration deck combined a CLI wrapper and an equity-price
-capability from two separately selected snapshots. It is a composite example,
-not the output of one `presentation.from-capability` request and not an acceptance
-artifact for single-capability generation.
-
-To build just the blueprint sheets for an existing presentation:
-
-```powershell
-node scripts/build-blueprint-slides.mjs --snapshot examples/capability-presentation/sda-cli-invoke.snapshot.json --output outputs/cli-blueprint
-```
-
-Repeat `--snapshot` to include additional capability sheets. The output contains
-native presentation requests, SVG sheets, and blueprint models. A Google Slides
-host should use an inspected layout ID when an imported deck has no `BLANK`
-layout, retain existing slide IDs, add notes from the emitted source, and
-renumber/reorder only after native readback. New generation includes the sheet
-automatically through the existing capability CLI and provider operation.
+The standalone blueprint-sheet script remains a composition utility for
+explicitly selected snapshots. It remaps internal slide links when extracting
+or composing the blueprint appendix. The normal capability-ID provider is the
+single-capability generation and acceptance path.
 
 ## Run
 
@@ -100,7 +78,7 @@ For the complete repeatable workflow, see [Regenerate a capability presentation]
 
 ```powershell
 $capabilityId = Read-Host 'Capability ID'
-node capability-deck.mjs --capability-id $capabilityId --view scenario --context-altitude all --output outputs/selected-capability --pptx
+node capability-deck.mjs --capability-id $capabilityId --view capability --context-altitude all --output outputs/selected-capability --pptx
 node capability-deck.mjs --snapshot outputs/selected-capability/snapshot.json --view mechanic --output outputs/selected-mechanics --pptx
 ```
 
@@ -179,10 +157,12 @@ temporary files are research inputs, not runtime dependencies.
 
 | View | Diagram meaning |
 | --- | --- |
-| Scenario | Retained scenarios, declared transition branches, and scenario calls. Calls and transitions remain distinct. |
-| Mechanic | Authority operation order, scenario calls, transformation bindings, and the first three levels of expression operators. Larger expressions are collapsed with complete operator counts and digests. Literal payloads are not treated as executable AST. |
-| Provider | Port → platform/provider bindings, including retained unused bindings. Unresolved operation ports remain visible. |
-| Physical | Declared endpoint origins/paths and host realization fields, where present. Actual process, device, timing and network testimony is not inferred from these declarations. |
+| Capability | Root-connected scenario topology. Calls collapse their owning operation while retaining the source edge ID. |
+| Scenario | The selected scenario's declared Input, Event and Outcome, with a link into the Event. |
+| Event | All operations in the selected Event and their declared order. Runtime routing and monotonic progress remain separate proof questions. |
+| Mechanic | The selected declared expression operand tree. Literal payloads are not executable AST nodes. |
+| Provider | The selected operation → port → binding → platform/provider chain. Unused bindings belong in inventory. |
+| Physical | The selected binding's declared endpoint origins/paths and realization fields. Actual process, timing and network testimony is not inferred. |
 
 Cross-page links retain peer node IDs and page references. Cycles and joins are
 kept. The generator checks coverage of every node and relationship in its
@@ -268,8 +248,8 @@ future declared adapter.
 
 The CLI retains `request.json`, `context-audit.json`, the compact content-addressed `snapshot.json`,
 `circuit-model.json`, `storyboard.json`, and `receipt.json`. Each `volume-NN/`
-contains editable Google request batches, notes, SVGs, `presentation.json`, and
-optional `presentation.pptx`. Large decks are divided into 32-slide volumes.
+contains editable Google request batches, notes, SVGs and `presentation.json`.
+Large decks are divided into 32-slide transport volumes.
 With `--pptx`, the output root also contains the complete `presentation.pptx`.
 Long labels may be shortened visually; full identities and details remain in
 notes and the sidecars. Large notes are explicitly abbreviated in the deck.

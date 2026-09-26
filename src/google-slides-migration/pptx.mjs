@@ -43,6 +43,7 @@ export function inspectPptx(bytes) {
   const main=read('ppt/presentation.xml'),rels=relationships(read('ppt/_rels/presentation.xml.rels'));
   const ids=[...main.matchAll(/<(?:\w+:)?sldId\b([^>]*?)\/?\s*>/g)].map(m=>attrs(m[1])['r:id']);
   if(!ids.length||ids.length>256)fail('Expected 1 to 256 PPTX slides.');
+  const slideParts=ids.map(id=>part('ppt',rels.find(r=>r.Id===id)?.Target??''));
   const slides=ids.map((id,index)=>{
     const rel=rels.find(r=>r.Id===id&&r.Type?.endsWith('/slide')&&r.TargetMode!=='External');
     if(!rel)fail('Unresolved slide relationship.');
@@ -50,7 +51,9 @@ export function inspectPptx(bytes) {
     const xml=read(name),slideRels=relationships(read(path.posix.join(path.posix.dirname(name),'_rels',path.posix.basename(name)+'.rels')));
     const note=slideRels.find(r=>r.Type?.endsWith('/notesSlide')&&r.TargetMode!=='External');
     const notes=note?read(part(path.posix.dirname(name),note.Target)):'';
-    return {number:index+1,text:textRuns(xml),notes:textRuns(notes),links:slideRels.filter(r=>r.Type?.endsWith('/hyperlink')&&r.TargetMode==='External').map(r=>r.Target),
+    const clickIds=new Set([...xml.matchAll(/<(?:\w+:)?hlinkClick\b([^>]*?)\/?\s*>/g)].map(m=>attrs(m[1])['r:id']));
+    const internalTargets=[...new Set(slideRels.filter(r=>clickIds.has(r.Id)&&r.TargetMode!=='External').map(r=>slideParts.indexOf(part(path.posix.dirname(name),r.Target))+1).filter(n=>n>0))];
+    return {number:index+1,text:textRuns(xml),notes:textRuns(notes),links:slideRels.filter(r=>r.Type?.endsWith('/hyperlink')&&r.TargetMode==='External').map(r=>r.Target),internalTargets,
       shapeCount:[...xml.matchAll(/<(?:\w+:)?sp\b/g)].length,imageCount:[...xml.matchAll(/<(?:\w+:)?pic\b/g)].length};
   });
   return {mimeType:PPTX_MIME,sha256:createHash('sha256').update(bytes).digest('hex'),byteCount:bytes.length,slideCount:slides.length,slides};

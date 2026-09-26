@@ -21,6 +21,7 @@ export async function exportPptx(candidate,outputPath,{artifactTool,renderDirect
  try{await fs.access(outputPath);throw new Error('Refusing to overwrite an existing PPTX.');}catch(error){if(error.code!=='ENOENT')throw error;}
  const {Presentation,PresentationFile}=artifactTool;
  const scale=4/3,ppt=Presentation.create({slideSize:{width:1280,height:720}});
+ ppt.theme.colorScheme={name:'SideFX circuit',themeColors:{accent1:'#45A7FF',accent2:'#4DE0B0',accent3:'#A98AF2',accent4:'#F6B94D',accent5:'#FF5F70',accent6:'#A8B8CA',bg1:'#06111F',bg2:'#102238',tx1:'#F4F7FB',tx2:'#A8B8CA',dk1:'#06111F',dk2:'#102238',lt1:'#F4F7FB',lt2:'#A8B8CA',hlink:'#80C9FF',folHlink:'#B9A2FF'}};
  for(const design of candidate.slides){
   const s=ppt.slides.add();s.background.fill='#06111F';
   const objects=objectsFromRequests(design.requests);
@@ -39,7 +40,7 @@ export async function exportPptx(candidate,outputPath,{artifactTool,renderDirect
   }else{
    const p=o.props??{};const outline=p.outline;
    const shape=s.shapes.add({geometry:geom[o.shapeType],name:o.objectId,position:{left:x,top:y,width:w,height:h},fill:fill(p.shapeBackgroundFill),line:{fill:!outline||outline.propertyState==='NOT_RENDERED'?'none':fill(outline.outlineFill),width:(outline?.weight?.magnitude??0)*scale},...(o.shapeType==='ROUND_RECTANGLE'?{borderRadius:8*scale}:{})});
-   if(o.text){const st=o.textStyle;shape.text=o.text;shape.text.style={typeface:'Arial',fontSize:st.fontSize.magnitude*scale,bold:st.bold,color:hex(st.foregroundColor.opaqueColor.rgbColor),alignment:o.para.alignment==='CENTER'?'center':o.para.alignment==='END'?'right':'left',verticalAlignment:'top',autoFit:'none',wrap:'square',insets:{left:4*scale,right:4*scale,top:3*scale,bottom:0},lineSpacing:1.08};if(st.link)shape.text.get(o.text).link={uri:st.link.url,isExternal:true};}
+   if(o.text){const st=o.textStyle;shape.text=o.text;shape.text.style={typeface:'Arial',fontSize:st.fontSize.magnitude*scale,bold:st.bold,color:hex(st.foregroundColor.opaqueColor.rgbColor),alignment:o.para.alignment==='CENTER'?'center':o.para.alignment==='END'?'right':'left',verticalAlignment:'top',autoFit:'none',wrap:'square',insets:{left:4*scale,right:4*scale,top:3*scale,bottom:0},lineSpacing:1.08};if(st.link)shape.text.get(o.text).link=st.link.url?{uri:st.link.url,isExternal:true}:{uri:`slide${st.link.slideIndex+1}.xml`,isExternal:false,action:'ppaction://hlinksldjump'};}
   }
  }
 

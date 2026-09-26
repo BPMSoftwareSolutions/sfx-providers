@@ -10,7 +10,14 @@ const required=name=>{if(!options[name])throw new Error(`Missing --${name}`);ret
 try{
  let result;
  if(command==='prepare'){const job=await prepareJob({input:required('input'),output:required('output'),title:options.title,parentFolderId:required('folder-id')});result={jobDirectory:job.jobDirectory,request:job.request,slideCount:job.source.slideCount,byteCount:job.source.byteCount};}
- else if(command==='read-job')result=await loadJob(required('job'));
+ else if(command==='read-job'){
+   result=await loadJob(required('job'));
+   if(options['metadata-only']==='true'){const sourceJsonLength=JSON.stringify(result.source).length;result={request:result.request,sourceJsonLength,source:{...result.source,slides:[]}};}
+ }else if(command==='read-source-chunk'){
+   const offset=Number(required('offset')),length=Number(required('length'));
+   if(!Number.isSafeInteger(offset)||offset<0||!Number.isSafeInteger(length)||length<1||length>24000)throw new Error('Invalid source chunk bounds.');
+   const job=await loadJob(required('job')),text=JSON.stringify(job.source);result={offset,totalLength:text.length,text:text.slice(offset,offset+length)};
+ }
  else if(command==='run'){
    const directory=required('job'),job=await loadJob(directory),host=await import(pathToFileURL(path.resolve(required('host'))));
    const drive=await host.createDrive();

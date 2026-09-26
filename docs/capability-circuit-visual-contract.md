@@ -1,161 +1,106 @@
-# Capability circuit visual contract
+# Capability circuit projection contract
 
-Status: user-aligned presentation target, recorded 2026-09-26. The current
-presentation provider does **not** yet meet this contract. This records the
-required correction; it does not admit a new estate capability or claim a
-completed renderer implementation.
+Status: implemented as a hand-authored presentation provider. This contract
+governs rendering; it is not estate admission or proof of monotonic execution.
 
-## The reference lens
+## Authority and visual references
 
-The user supplied this [blueprint reference](references/capability-circuit-blueprint.png)
-and the accompanying [circuit sketch](references/capability-circuit-sketch.txt).
-The screenshot is retained unchanged, including its editing toolbar. Its visual
-organization is the reference; its eight cells, provider name, dates, identifiers,
-and telemetry labels are not verified declarations for the selected estate.
-The pasted sketch's unresolved citation markers are not source evidence.
+The [fidelity reference](references/capability-blueprint-fidelity.png) establishes
+the drafting quality: fine grid, precise capability and scenario boundaries,
+numbered cells, explicit connector ownership and stable signal colors. The
+[earlier reference](references/capability-circuit-blueprint.png) and
+[projection review](references/capability-blueprint-projection-review.txt) are
+retained for design lineage. Their illustrative cells, provider names, metrics,
+eight-step sequence and telemetry channels are not estate declarations.
 
-![User-supplied capability circuit reference](references/capability-circuit-blueprint.png)
+The user’s six rules are the rendering contract:
 
-The essential geometry is **one capability boundary containing the scenario's
-Given/Input, When/Event, and Then/Outcome**, with the execution circuit inside
-When/Event. Provider connections cross the boundary through declared ports.
-An observation band below makes the circuit's evidence obligations legible.
-The blueprint grid, fine lines, generous frames, readable labels, and restrained
-signal colors support that structure; styling alone cannot establish it.
+1. **One observation altitude per primary projection.** Capability shows
+   root-connected scenario topology. Scenario shows its declared Input, Event
+   and Outcome. Event shows its own operations. Provider and mechanic detail
+   are separate projections, reached through disclosure.
+2. **Diagnostics are overlays, not topology.** Affected identities receive
+   compact review markers. The review link opens source-bound findings.
+3. **Unconnected declarations belong in inventory.** Retained scenarios,
+   operations and bindings without a root path stay outside the active circuit.
+4. **Every provider has explicit ownership.** Provider detail retains the
+   operation → port → binding → platform → provider chain. No floating providers.
+5. **No invented cells, edges or ports.** Missing targets are references in the
+   review, not fabricated target nodes. No semantic grouping is inferred merely
+   to reduce the operation count. Outcome variants express membership unless
+   source transitions declare routing.
+6. **Observation remains separate.** Runtime state may decorate known IDs.
+   It cannot create nodes, move them or rewrite architecture.
 
-| Region | Meaning and rendering obligation |
-| --- | --- |
-| Title block | Selected capability identity, declared purpose, source version/digest and projection scope. Retain traceability without substituting presentation ordinals for semantic identities. |
-| Capability boundary | The selected capability's governed scope. Multiple scenarios retain their own semantic frames and declared connections; they must not be flattened into an invented single scenario. |
-| Given / Input | The admitted state and input contract, explained using linked feature/Gherkin intent. |
-| When / Event | The bounded responsibility, opened to reveal execution cells and their declared paths, selections, fan-outs, junctions, convergence requirements and terminals. |
-| Then / Outcome | The promised experience and declared outcome variants/products. A provider response or successful operation is not automatically an admitted outcome. |
-| Provider boundary | A visible port on the responsible cell, its governed binding and provider realization when known. Forward authority and returning testimony remain distinct. |
-| Observation / Telemetry | Declared observation checkpoints and their attribution to cells/edges. Measured status, duration and testimony require an identified invocation overlay. |
-| Legend | Explain frame types, cell types, ports, junctions and wire meanings. Color reinforces explicit labels and line styles. |
+The numbered authoring altitudes 1–11 remain a separate context axis. Feature
+writeups, retained Gherkin and context evidence are not discarded when the
+selected circuit projection is small.
 
-A straight path is correct when the declarations are straight. The example's
-eight-cell path is not an eight-step template for every capability. Branches
-must remain branches; multiple alternative routes into one node must not be
-drawn as a jointly required convergence.
+## Deterministic implementation
 
-## Open a cell without changing its meaning
+`buildBlueprint` retains the selected source graph and its identities once.
+`projectBlueprint` selects altitude and scope. `layoutBlueprint` depends only
+on that projection’s nodes and edges. Review and observation overlays are
+computed separately. Each projection records a topology digest, source pointers,
+snapshot digest, and exact visible identities.
 
-| Semantic altitude | Three-position cell |
-| --- | --- |
-| Scenario | Input → Event → Outcome |
-| Execution | Input → Responsibility → Result |
-| Mechanic | Input → Mechanic → Result |
-| Provider / physical | Physical Input → Native Operation → Physical Result |
+Capability call edges collapse the owning operation but retain the source edge
+ID. Shared execution authorities retain each owning scenario. Declared
+transitions preserve selectors, topology kind and progress metadata. Layout
+does not turn multiple incoming alternatives into an all-required convergence.
 
-Opening the middle position reveals the lower circuit that fulfills it. Parent
-identity, input/result contracts, and the declared descent reference remain
-traceable. The overview can use compact execution cells, as in the reference;
-detail sheets expose their three positions and descendants. Detail sheets are
-projections of the same graph, not separately authored diagrams.
+The current reader retains ordered operation declarations. Wires labelled
+“declared order” show those declarations, not proven runtime routing. It does
+not manufacture input-to-outcome completion, reverse testimony wires, junction
+rules or bounded recursion. Unresolved runtime selectors name their source path
+in the review; examples in prose cannot resolve them.
 
-The eleven authoring altitudes provide the capability's deeper context and
-intent. They remain in the deck alongside these semantic views; they are neither
-eleven execution steps nor a replacement for the circuit. Feature/Gherkin prose
-explains the promise and scenarios. Inference may explain supplied facts but
-cannot supply missing topology, admission, bindings or proof.
+The complete Event sheet includes every selected operation and its retained
+order relationships. Dense sheets have readable identity registers and full-size
+SVG projections. They do not force all bindings and AST nodes onto that sheet.
+Short diagram captions remove repeated identifier context deterministically;
+full identifiers remain in source registers, notes and JSON.
 
-## Wire semantics
+Native PowerPoint links connect capability → scenario → Event → operation port
+detail and back. Google migration checks the converted internal destinations.
+The complete `presentation.pptx` owns the global slide navigation; JSON
+transport volumes are not separate navigable PowerPoint files.
 
-* **Solid forward:** declared semantic flow. Preserve the edge's topology,
-  selecting outcome variant, contract relation and progress disposition.
-* **Dashed descent/binding:** authority crosses into a subordinate cell or
-  provider slot. Visual placement above the circuit, as in the reference, does
-  not change its semantic altitude.
-* **Dotted return evidence:** testimony attributed to canonical cell/edge
-  identities. An observation overlay has a separate identity/digest and does
-  not alter blueprint topology. A callable subcircuit's result mapping is not
-  interchangeable with an observed execution receipt.
+## Geometry and signal language
 
-Branch selection, jointly required fan-out, convergence, termination and bounded
-returns must come from declared semantics. A line crossing is not a junction.
-Node degree is not proof of convergence. Alternative provider bindings are not
-automatically parallel executions.
+- Amber: Input; blue: scenario, Event and execution responsibility.
+- Violet: explicit port/binding/provider relationships.
+- Green: Outcome; red: declared failure classification or an error overlay.
+- Connector circles terminate existing edges; they are drafting anchors, not
+  newly declared governed ports.
+- Dashed wires identify calls or retained order, and are labelled as such.
+- Outcome membership is separate from selected routing or measured success.
+- The observation band says “unobserved” until identified testimony exists.
 
-Monotonicity concerns semantic progress: narrowing admitted state, establishing
-a required product, descending an altitude or terminating an obligation. It
-does not mean left-to-right placement, a linear chain or simply an acyclic
-drawing. A declared bounded repair/resumption/iteration must show its bound;
-it must not be hidden to make the picture appear monotonic.
+## Review and observation boundaries
 
-## What “complete circuit” must establish
+`circuit-review.json` distinguishes errors from incomplete evidence. Findings
+identify affected nodes and retained sources. Checks include disconnected
+scenarios, absent targets/bindings, unused bindings, unresolved selectors,
+self-calls without retained bounds, and missing branch selector/variant
+declarations. This is a bounded structural review, not exhaustive verification
+of all possible circuit defects or an admission decision.
 
-1. One capability ID selects the authority and its declared invocation closure.
-   Example inputs and prose do not silently add another capability.
-2. The whole-circuit sheet preserves every declared route and terminal at the
-   selected semantic scope, within the Given/When/Then geometry. Named collapsed
-   cells retain all boundary connections and an explicit descendant mapping;
-   expansion exposes those descendants without changing identities or paths.
-3. Every displayed component, contract, binding and route traces to authority.
-   Every authority item in scope maps back to the rendered sheet or an explicitly
-   represented subcircuit. Counts over a reduced renderer model are insufficient.
-4. Provider slots, physical bindings, branch variants, convergence requirements,
-   call/result contracts, observability obligations and available monotonicity
-   evidence remain inspectable. Missing required facts produce an explicit gap
-   disposition and prevent a claim of completeness; layout cannot fill them in.
-5. Planned topology is visible independently of invocation testimony. Unobserved
-   paths are not removed or presented as successful. Dynamic targets remain
-   explicit unresolved boundaries until separately supported by authority or a
-   clearly identified runtime overlay.
-6. The entire sheet remains a useful blueprint at presentation scale, with a
-   zoomable vector artifact and linked detail sheets for dense circuits. Tiny
-   anonymous IDs plus a detached inventory are insufficient as the main view.
-7. The same projection and renderer regenerate any supported capability without
-   source edits or hand-authored capability-specific slides. The receipt states
-   the selected source, scope, gaps and coverage actually verified.
+`applyObservationFrame` is a presentation-side adapter function. It requires
+the matching snapshot digest, an invocation ID, a known node ID and a supported
+state. Unknown identities or mixed invocations are rejected. It updates a
+separate state map without changing topology. It is not a declared estate
+protocol, a live subscription, or evidence that a capability executed.
 
-## Current implementation gap
+## Source limitations
 
-The current `src/capability-presentation/blueprint.mjs` constructs a reduced
-scenario/operation graph. It does not consume a complete typed canonical cell
-graph. Specifically:
+The reader returns selected blueprint-version metadata, including candidate
+disposition and node/edge counts, alongside the selected declaration graph.
+It does not yet retrieve and reconcile every compiled canonical edge or a
+monotonic-progress proof. Canonical completeness is therefore false and the
+review exposes that limitation. Rendering must never use a “monotonic” title
+as if visual left-to-right placement proved it.
 
-* Scenario inputs carry `eventId` metadata, but there is no explicit Event frame
-  containing the responsibility circuit or recursive three-position cells.
-* Sequence/completion and generic call-return wires do not establish all typed
-  contract/progress/evidence semantics. An empty operation list still receives
-  a completion wire; missing authority must not imply fulfillment.
-* Transformation IDs are labels on binding nodes, not expanded mechanic cells.
-  `snapshot.mjs` retains limited expression previews and only digests/identities
-  for edge groups and dispatch authorities.
-* Junction marks are selected using connection counts. They do not demonstrate
-  declared fan-out or complete convergence requirement sets.
-* Binding nodes do not provide the reference's full provider-boundary structure;
-  the overview has no observation band with per-cell obligation attribution.
-* Existing coverage checks verify the reduced model's own nodes and edges. They
-  do not prove complete canonical authority coverage or monotonicity.
-
-The current slide title “Complete capability circuit” therefore overstates the
-result. The generated decks remain existing artifacts of that implementation;
-this documentation change does not regenerate or repair them.
-
-The correction starts with a lossless typed authority/view adapter, then the
-nested frame and wiring renderer, then generic regeneration and visual/source
-coverage verification. Investigate the existing `read-capability-circuit` and
-compiled planned-cell/edge surfaces before introducing another graph model.
-Their current payload fidelity must be checked, not assumed from historical
-implementation notes. The hand-authored provider remains the authorized bridge
-until its later migration into the declared estate.
-
-## Architecture sources inspected
-
-These are source documents, not additional user instructions or proof of current
-live estate contents:
-
-* `bpm/intelligence/backup/agentic-harness/docs/adr-001-design-identity-capability-capsules.md`
-  (archived copy, header “Accepted”): three-position cells at lines 777–780;
-  branching/convergence and progress at 867–966; authority/evidence at 970–994;
-  geometry and edge/view laws at 2453–2501. The archived location is intentional;
-  a corresponding file was not present under the main `intelligence/docs` path.
-* `sfx-embody/docs/circuit-view-flywheel.md`: generic projection over declared
-  topology, with testimony overlay and explicit planned/unobserved state.
-* `sfx-embody/docs/implementation-plan-circuit-view.md`: `circuit-view.v1` nodes
-  and edges, source reuse, and recorded implementation/attestation limitations.
-
-The user's screenshot establishes the visual lens. These documents substantiate
-the semantic distinctions that the reusable provider must preserve.
+This provider does not execute the selected capability, call its external
+providers, or create telemetry testimony. Migration into a declared provider
+in the sfx-embody estate remains later work.

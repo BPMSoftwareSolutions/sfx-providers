@@ -212,8 +212,26 @@
                               ]
                             },
                             {
-                              "type": "string",
-                              "format": "http-url"
+                              "oneOf": [
+                                {
+                                  "type": "string",
+                                  "format": "http-url"
+                                },
+                                {
+                                  "type": "object",
+                                  "properties": {
+                                    "slideIndex": {
+                                      "type": "integer",
+                                      "minimum": 0,
+                                      "maximum": 255
+                                    }
+                                  },
+                                  "required": [
+                                    "slideIndex"
+                                  ],
+                                  "additionalProperties": false
+                                }
+                              ]
                             }
                           ],
                           "minItems": 5,

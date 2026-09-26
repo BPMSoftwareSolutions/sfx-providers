@@ -22,11 +22,28 @@
     },
     "view": {
       "enum": [
+        "capability",
         "scenario",
+        "event",
         "mechanic",
         "provider",
         "physical"
       ]
+    },
+    "scenarioId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 400
+    },
+    "operationId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 1000
+    },
+    "transformationId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 400
     },
     "contextAltitude": {
       "oneOf": [

@@ -25,7 +25,7 @@ export class Slide{
  t(text,x,y,w,h,size=18,color=C.white,bold=false,align='left',link){
   const id=this.idNew();this.req.push({createShape:{objectId:id,shapeType:'TEXT_BOX',elementProperties:{pageObjectId:this.id,size:{width:{magnitude:w,unit:'PT'},height:{magnitude:h,unit:'PT'}},transform:{scaleX:1,scaleY:1,translateX:x,translateY:y,unit:'PT'}}}});
   this.req.push({insertText:{objectId:id,insertionIndex:0,text}});
-  this.req.push({updateTextStyle:{objectId:id,textRange:{type:'ALL'},style:{fontFamily:'Arial',fontSize:{magnitude:size,unit:'PT'},bold,foregroundColor:{opaqueColor:{rgbColor:rgb(color)}},...(link?{link:{url:link},underline:true}:{})},fields:'fontFamily,fontSize,bold,foregroundColor'+(link?',link,underline':'')}});
+  this.req.push({updateTextStyle:{objectId:id,textRange:{type:'ALL'},style:{fontFamily:'Arial',fontSize:{magnitude:size,unit:'PT'},bold,foregroundColor:{opaqueColor:{rgbColor:rgb(color)}},...(link?{link:typeof link==='string'?{url:link}:link,underline:true}:{})},fields:'fontFamily,fontSize,bold,foregroundColor'+(link?',link,underline':'')}});
   this.req.push({updateParagraphStyle:{objectId:id,textRange:{type:'ALL'},style:{alignment:align==='center'?'CENTER':align==='right'?'END':'START',spaceAbove:{magnitude:0,unit:'PT'},spaceBelow:{magnitude:0,unit:'PT'},lineSpacing:108},fields:'alignment,spaceAbove,spaceBelow,lineSpacing'}});
   const ax=align==='center'?x+w/2:align==='right'?x+w-4:x+4;
   const anchor=align==='center'?'middle':align==='right'?'end':'start';
