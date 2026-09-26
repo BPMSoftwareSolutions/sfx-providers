@@ -102,3 +102,28 @@ test('scenario provider ports retain exact evidence and never assign an unbound 
  assert.ok(summary.detail.includes('/fields/providerTestimony/fields/providerId/value'));
  assert.ok(!ports.some(p=>p.operationId==='operation:accept.v1:1'));
 });
+
+test('scenario operation references reuse the complete Event component symbols and preserve provider ownership',async()=>{
+ const raw=rawFixture();
+ raw.graph.executionAuthorities[0].operations=[{kind:'invoke-port',portId:'observe-exchange'},{kind:'invoke-port',portId:'select-route'}];
+ raw.graph.interfaceAuthority.portBindings.push(
+  {portId:'observe-exchange',platformCapabilityId:'sda-governed-http-exchange-port.v1',configuration:{providerId:'example-provider'}},
+  {portId:'select-route',platformCapabilityId:'sda-authority-transformation-port.v1',configuration:{transformationId:'policy.v1'}});
+ raw.graph.semanticTransformations[0].expression={op:'object',fields:{providerTestimony:{op:'object',fields:{providerId:{op:'literal',value:'example-provider'}}}}};
+ const s=normalizeSnapshot(raw),r=await handle({contractId:'capability-presentation-request.v1',capabilityId:s.identity.capabilityId,view:'event',contextAltitude:7},{readEstate:async()=>s});
+ assert.equal(r.disposition,'AUTHORED',JSON.stringify(r.findings));
+ const slides=r.candidate.storyboard.slides,summary=slides[1],event=slides[2],ports=summary.blueprint.providerPorts;
+ assert.deepEqual(ports.map(p=>p.component.glyph),['event-device','event-transform']);
+ assert.deepEqual(ports.map(p=>p.basis),['declared provider','declared provider testimony']);
+ for(const port of ports){
+  const cell=event.blueprint.render.cells.find(c=>c.nodeId===port.operationId);
+  assert.deepEqual(port.component,cell.component);assert.deepEqual(port.action,cell.action);
+  const glyph=summary.blueprint.glyphs.find(g=>g.nodeId===port.operationId);
+  assert.equal(glyph.glyph,cell.component.glyph);assert.deepEqual(glyph.anchors.right,port.anchor);
+  const wire=summary.commands.find(c=>c.op==='route'&&JSON.stringify(c.args[0][0])===JSON.stringify(port.anchor));
+  assert.ok(wire);assert.equal(wire.args[2].dash,port.basis!=='declared provider');
+  const nativeLink=summary.commands.find(c=>c.op==='t'&&c.args[0]===(port.component.glyph==='event-device'?'observe exchange':'select route'));
+  assert.ok(slides[nativeLink.args[9].slideIndex].blueprint.operationIds.includes(port.operationId));
+ }
+ assert.equal(summary.blueprint.nodes.length,3);assert.equal(summary.blueprint.disclosedOperationIds.length,2);
+});

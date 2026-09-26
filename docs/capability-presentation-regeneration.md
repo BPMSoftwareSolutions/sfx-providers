@@ -305,3 +305,24 @@ Current PowerPoint and generation evidence:
 `outputs/capability-estate/equity-execution-components-final/presentation.pptx`.
 Native update, PDF render and verification evidence:
 `outputs/google-slides/equity-execution-components`.
+
+### Scenario operation references
+
+Slide 02 now reuses the complete Event's data-driven component selection, compact
+shape recipes and action colors. In the retained equity snapshot, its eight
+provider operation references comprise two HTTP-exchange modules and six
+transformation badges. Provider ownership, solid binding links, dashed testimony
+references, operation numbers and drill-down destinations are preserved.
+
+The 92 relevant tests passed, and Python found no fit issues across 415 labels.
+The PowerPoint passed package, layout, font-policy and artifact-import checks.
+The updated Google slide was visually inspected from its PDF render. All 172
+internal text links resolve, native structural checks report no issues, and the
+other 68 slides are unchanged both structurally and pixel-for-pixel. The update
+retained 289 unaffected objects on slide 02. Native PowerPoint font rendering was
+not independently executed.
+
+Current PowerPoint and generation evidence:
+`outputs/capability-estate/equity-scenario-components/presentation.pptx`.
+Native update, PDF render and verification evidence:
+`outputs/google-slides/equity-scenario-components`.

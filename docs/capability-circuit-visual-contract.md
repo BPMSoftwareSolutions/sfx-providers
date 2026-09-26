@@ -216,6 +216,13 @@ exchanges have pinned module bodies. Unknown platform identities keep a neutral
 execution symbol. The shape legend includes only component families actually
 present. Colors remain a separate identifier-prefix convention.
 
+The scenario blueprint's disclosed operation references reuse this exact mapping
+and its normalized compact recipes. Their shapes and action colors therefore
+match the corresponding operations in the complete Event sheet. Provider wires
+terminate at the selected glyph's owned anchor. Each reference retains its
+component classification alongside its independent provider-binding or testimony
+basis; changing a symbol cannot change provider ownership or disclosure scope.
+
 Each rendered cell records its selected glyph, classification basis, platform
 ID, owning binding ID and retained source pointer. The rendering validator
 recomputes that selection and checks each wire against the selected glyph's

@@ -2,8 +2,8 @@ import {C} from '../circuit-presentation/design.mjs';
 import {fitBlueprintText} from '../circuit-presentation/text-fit.mjs';
 import {projectBlueprint} from './projection.mjs';
 import {identifierCaption} from './caption.mjs';
-import {blueprintGrid} from './event-sheet.mjs';
-import {drawComponentGlyph} from './component-glyphs.mjs';
+import {blueprintGrid,eventAction,eventComponent} from './event-sheet.mjs';
+import {drawComponentGlyph,glyphAnchor,COMPONENT_STYLE} from './component-glyphs.mjs';
 
 // Native drafting symbols describe visual roles only; they never add authority.
 function documentIcon(p,x,y,color){
@@ -27,7 +27,7 @@ export function appendScenarioSheet({snapshot,model,page,slides,scenarioId=model
  const p=page('Scenario circuit blueprint',model.capabilityId,[sc.ref,...involvement.flatMap(e=>e.sourceRefs)],JSON.stringify({scenario:sc,semantics:semantic,involvement},null,2));
  p.headerLayout='custom';
  p.blueprint={role:'scenario-blueprint',altitude:'scenario',scenarioId,nodes:semantic.nodes.map(n=>n.id),edges:semantic.edges.map(e=>e.id),providerReferences:involvement,disclosedOperationIds:[...new Set(involvement.flatMap(e=>e.via.map(v=>v.operationId)))]};
- p.interpretation='Input/Event/Outcome are scenario semantics. Provider wires retain exact binding or testimony references. Disclosed operations are a subset; the complete Event is linked. No execution or monotonic proof is asserted.';
+ p.interpretation='Input/Event/Outcome are scenario semantics. Provider wires retain exact binding or testimony references. Disclosed operations are a subset; the complete Event is linked. Their component shapes follow the same declared-binding rules as the complete execution circuit, with identifier-prefix action colors. Decorative contacts add no declared ports. No execution or monotonic proof is asserted.';
  const link=target=>({slideIndex:Number(target.id.slice(6))-1});
  const textFrames=[];
  const label=(value,x,y,w,h,size=12,color=C.white,bold=false,target)=>{
@@ -73,18 +73,18 @@ export function appendScenarioSheet({snapshot,model,page,slides,scenarioId=model
    const op=model.nodes.find(n=>n.id===use.operationId),y=227+j*(portH+3),w=providerWidth-20;
    const target=slides.find(s=>s.blueprint?.role==='provider-detail'&&s.blueprint.operationIds.includes(op.id));
    const opBox={x,y,w,h:portH},isTestimony=use.basis!=='declared provider';
+   const component=eventComponent(model,op),action=eventAction(op),anchor=glyphAnchor(op,opBox,'right',COMPONENT_STYLE,component.glyph);
    // Lanes outside the operation boxes prevent a later port's wire crossing an
    // earlier operation. Each edge retains its exact source operation and binding.
    const lane=x+w+3+(j+1)*14/(uses.length+1);
-   p.add('route',[[x+w,y+portH/2],[lane,y+portH/2],[lane,181]],C.violet,{arrow:false,dash:isTestimony,glow:false,width:1,routing:'orthogonal'});
-   p.add('port',lane,181,C.violet,2);p.add('port',x+w,y+portH/2,C.violet,2);
-   p.add('shape','ROUND_RECTANGLE',x,y,w,portH,{fill:'#07253B',stroke:C.blue,sw:.8});
+   p.add('route',[anchor,[lane,anchor[1]],[lane,181]],C.violet,{arrow:false,dash:isTestimony,glow:false,width:1,routing:'orthogonal'});
+   p.add('port',lane,181,C.violet,2);p.add('port',...anchor,C.violet,2);
+   const frames=drawComponentGlyph(p,op,opBox,action.color,{glyphName:component.glyph,scale:.75,fill:action.category==='bind'?'#17132F':action.category==='select'?'#20251B':'#04263A'});
    const words=identifierCaption(op.label,model.capabilityId).split(' ');
    const caption=[...new Set([words[0],words.at(-1)])].join(' ');
-   p.add('shape','ELLIPSE',x+5,y+(portH-15)/2,15,15,{fill:'#031B2F',stroke:C.blue,sw:.7});
-   p.text(String(op.ordinal).padStart(2,'0'),x-2,y+(portH-21)/2,29,21,8,C.blue,true,'center');
-   label(caption,x+21,y,w-21,portH,9,C.white,false,target);
-   ports.push({operationId:op.id,portId:use.portId,bindingId:use.bindingId,providerId:provider.id,basis:use.basis,sourceEdgeIds:use.sourceEdgeIds,bounds:opBox});
+   p.text(String(op.ordinal).padStart(2,'0'),frames.heading.x-8,y+(portH-21)/2,frames.heading.w+16,21,8,action.color,true,'center');
+   label(caption,frames.label.x,frames.label.y,frames.label.w,frames.label.h,9,C.white,false,target);
+   ports.push({operationId:op.id,portId:use.portId,bindingId:use.bindingId,providerId:provider.id,basis:use.basis,sourceEdgeIds:use.sourceEdgeIds,bounds:opBox,anchor,component,action});
   });
  }
  if(!count)p.text('No declared external provider references',215,250,530,45,16,C.muted,false,'center');
