@@ -1,0 +1,515 @@
+{
+  "contractId": "capability-presentation-snapshot.v1",
+  "identity": {
+    "capabilityId": "sda-cli-invoke",
+    "namespaceId": "sidefx:capabilities",
+    "estateModelId": "34",
+    "capabilityPk": "100909",
+    "capabilityVersionPk": "1161235",
+    "definitionPk": "211112",
+    "definitionDigest": "173e019f19780c9585afe11747ea8c816f2ab84036fe427f4b3ff55b9bdca345",
+    "name": "sda-cli-invoke",
+    "actor": "caller",
+    "intent": "write a database-defined message to standard output",
+    "outcome": "the caller observes the configured message",
+    "experiencePromise": "the configured message is delivered through the sda-json-cli.v1 standard-output interface",
+    "rootScenarioId": "invoke",
+    "declaredRootScenarioId": "sda-cli-invoke",
+    "mode": "capability",
+    "experienceId": "sda-cli-invoke.v1",
+    "observableConditions": [
+      {
+        "id": "message-delivered-to-standard-output",
+        "statement": ""
+      }
+    ],
+    "meaningSourceRef": "model:semantic_object_definition/211112/semantics/authority"
+  },
+  "provenance": {
+    "adapter": "sql-server-snapshot.v1",
+    "isolation": "SNAPSHOT",
+    "queryDigest": "d4cf37c005fe731eccc3ff522c37390b1ad610f1c1f17d4bcf800bf7c7468de3",
+    "graphFunctionDigest": "c12b3855f06d765b401438aa82caedf4d248bd88713a44d1aff3c9092c14700a",
+    "graphDigest": "8a1b20cf7531b622d7e452e1f13dd969feff3cdb955a6a124cf2063a9ea231b8",
+    "selection": "current estate capability version and its declared scenario closure"
+  },
+  "scenarios": [
+    {
+      "id": "invoke",
+      "name": "Invoke a declared capability",
+      "versionPk": "102140",
+      "definitionDigest": "b72f3ed40127d65cc1c01a7c5f731b6c45218b7dd2a2aa43dacc645ca1d146eb",
+      "authorityId": "sda-cli-invoke.v1",
+      "eventId": "sda-cli-invoke-requested",
+      "inputId": "sda-cli-invoke-request",
+      "inputContractId": "sda-cli-invoke-request.v1",
+      "outcomeId": "sda-cli-invoke-result",
+      "outcomeContractId": "sda-cli-invoke-result.v1",
+      "terminal": true,
+      "variants": [],
+      "owned": true,
+      "authored": {
+        "keyword": "Scenario",
+        "name": "Invoke a declared capability",
+        "description": "",
+        "tags": [
+          "@capability:sda-cli-invoke",
+          "@event:sda-cli-invoke-requested",
+          "@event-authority:sda-cli-invoke.v1",
+          "@input:sda-cli-invoke-request",
+          "@input-contract:sda-cli-invoke-request.v1",
+          "@outcome:sda-cli-invoke-result",
+          "@outcome-contract:sda-cli-invoke-result.v1",
+          "@root-scenario:invoke",
+          "@scenario:invoke",
+          "@outcome-terminal"
+        ],
+        "steps": [
+          {
+            "keyword": "Given",
+            "keywordType": "Context",
+            "text": "one declared capability identity and admitted input"
+          },
+          {
+            "keyword": "When",
+            "keywordType": "Action",
+            "text": "the CLI invoke carrier runs the selected capability"
+          },
+          {
+            "keyword": "Then",
+            "keywordType": "Outcome",
+            "text": "the declared scenario output is delivered"
+          }
+        ],
+        "examples": []
+      },
+      "inputDescription": "one declared capability identity and admitted input",
+      "eventDescription": "the CLI invoke carrier runs the selected capability",
+      "outcomeDescription": "the declared scenario output is delivered",
+      "terminalDisposition": "",
+      "meaningSourceRef": "model:scenario_version/102140",
+      "sourceRef": "graph:/scenarios/0"
+    }
+  ],
+  "transitions": [],
+  "authorities": [
+    {
+      "id": "sda-cli-invoke.v1",
+      "scenarioId": "invoke",
+      "sourceRef": "graph:/executionAuthorities/0",
+      "digest": "86dbecb4837206ea7c22f3f5e2f702e72bbdafcf0b680dbd13ab3cecbe54bb69",
+      "operations": [
+        {
+          "id": "sda-cli-invoke.0",
+          "ordinal": 1,
+          "kind": "invoke-port",
+          "portId": "sda-cli-invoke-port",
+          "variants": [],
+          "digest": "c854a15dcd88f5282daedcc52714951a1125fc80deeda6f83fcb7a4a6da2ac0c",
+          "sourceRef": "graph:/executionAuthorities/0/operations/0"
+        }
+      ]
+    }
+  ],
+  "bindings": [
+    {
+      "portId": "sda-cli-invoke-port",
+      "platformCapabilityId": "sda-node-consumer-runtime.v1",
+      "transformationId": "",
+      "configurationDigest": "8c7135a44fc72a94bf964f9765f582f7b3032fad4b128f84193938dc344ccccb",
+      "providerIds": [],
+      "endpoints": [],
+      "credentialReferences": [],
+      "realizations": [],
+      "selectors": {
+        "authoritySource": "DATABASE",
+        "capabilityIdPath": "capabilityId",
+        "requestPath": "input",
+        "namespacePath": "namespace",
+        "scenarioPath": "scenario",
+        "resultPath": "result",
+        "lineageMode": "retain-nested-execution"
+      },
+      "inputAdmission": {
+        "description": "",
+        "fields": [
+          {
+            "path": "$",
+            "type": "object",
+            "description": "",
+            "required": false,
+            "reference": ""
+          },
+          {
+            "path": "$/capabilityId",
+            "type": "string",
+            "description": "",
+            "required": true,
+            "reference": "",
+            "minLength": 1
+          },
+          {
+            "path": "$/inputType",
+            "type": "string",
+            "description": "",
+            "required": false,
+            "reference": ""
+          },
+          {
+            "path": "$/input",
+            "type": "",
+            "description": "",
+            "required": false,
+            "reference": ""
+          },
+          {
+            "path": "$/namespace",
+            "type": "string",
+            "description": "",
+            "required": false,
+            "reference": "",
+            "minLength": 1
+          },
+          {
+            "path": "$/scenario",
+            "type": "string",
+            "description": "",
+            "required": false,
+            "reference": "",
+            "minLength": 1
+          }
+        ]
+      },
+      "sourceRef": "graph:/interfaceAuthority/portBindings/0"
+    }
+  ],
+  "transformations": [
+    {
+      "id": "sda-cli-invoke-transform.v1",
+      "nodeCount": 5,
+      "branchCount": 0,
+      "operatorCounts": {
+        "object": 2,
+        "literal": 1,
+        "format": 1,
+        "path": 1
+      },
+      "preview": [
+        {
+          "path": "/expression",
+          "parent": null,
+          "op": "object",
+          "outputFields": [
+            "contractId",
+            "payload"
+          ]
+        },
+        {
+          "path": "/expression/fields/contractId",
+          "parent": "/expression",
+          "op": "literal",
+          "literalType": "string"
+        },
+        {
+          "path": "/expression/fields/payload",
+          "parent": "/expression",
+          "op": "object",
+          "outputFields": [
+            "message"
+          ]
+        },
+        {
+          "path": "/expression/fields/payload/fields/message",
+          "parent": "/expression/fields/payload",
+          "op": "format"
+        }
+      ],
+      "inputPaths": [
+        {
+          "expressionPath": "/expression/fields/payload/fields/message/values/name",
+          "inputPath": "payload.name"
+        }
+      ],
+      "previewComplete": false,
+      "expressionDigest": "ed1bcfc11018a3e8b69cf953feba0d3c3a53a539f3da34f605d72fc2278f3f3e",
+      "sourceRef": "graph:/semanticTransformations/0"
+    }
+  ],
+  "contracts": [
+    {
+      "id": "sda-cli-invoke-request.v1",
+      "schemaId": "",
+      "title": "sda-cli-invoke-request.v1",
+      "type": "object",
+      "required": [
+        "capabilityId"
+      ],
+      "properties": [
+        "capabilityId",
+        "inputType",
+        "input",
+        "namespace",
+        "scenario"
+      ],
+      "description": "",
+      "fields": [
+        {
+          "path": "$",
+          "type": "object",
+          "description": "",
+          "required": false,
+          "reference": "",
+          "additionalProperties": false
+        },
+        {
+          "path": "$/capabilityId",
+          "type": "string",
+          "description": "",
+          "required": true,
+          "reference": "",
+          "minLength": 1
+        },
+        {
+          "path": "$/inputType",
+          "type": "string",
+          "description": "",
+          "required": false,
+          "reference": "",
+          "minLength": 1
+        },
+        {
+          "path": "$/input",
+          "type": "",
+          "description": "",
+          "required": false,
+          "reference": ""
+        },
+        {
+          "path": "$/namespace",
+          "type": "string",
+          "description": "",
+          "required": false,
+          "reference": "",
+          "minLength": 1
+        },
+        {
+          "path": "$/scenario",
+          "type": "string",
+          "description": "",
+          "required": false,
+          "reference": "",
+          "minLength": 1
+        }
+      ],
+      "schemaDigest": "901c13a0cfb3d7eedebe871908d690fc1a2435f27dee397d3e179e8ab112e85c",
+      "sourceRef": "graph:/contractAuthorities/contracts/sda-cli-invoke-request.v1"
+    },
+    {
+      "id": "sda-cli-invoke-result.v1",
+      "schemaId": "",
+      "title": "sda-cli-invoke-result.v1",
+      "type": "object",
+      "required": [
+        "capabilityId",
+        "disposition"
+      ],
+      "properties": [
+        "capabilityId",
+        "disposition",
+        "result"
+      ],
+      "description": "",
+      "fields": [
+        {
+          "path": "$",
+          "type": "object",
+          "description": "",
+          "required": false,
+          "reference": "",
+          "additionalProperties": false
+        },
+        {
+          "path": "$/capabilityId",
+          "type": "string",
+          "description": "",
+          "required": true,
+          "reference": ""
+        },
+        {
+          "path": "$/disposition",
+          "type": "string",
+          "description": "",
+          "required": true,
+          "reference": ""
+        },
+        {
+          "path": "$/result",
+          "type": "",
+          "description": "",
+          "required": false,
+          "reference": ""
+        }
+      ],
+      "schemaDigest": "12b22a57c2816ad0b9dced329a6860bc4ca6281a657eada47b227e1e4d554881",
+      "sourceRef": "graph:/contractAuthorities/contracts/sda-cli-invoke-result.v1"
+    }
+  ],
+  "interfaces": [
+    {
+      "id": "sda-cli-invoke-cli",
+      "profile": "cli",
+      "configurationDigest": "4c5f86533a88ee799bed740acec827afe03fb4eda2a416f4881458d10bc6373d",
+      "configurationKeys": [
+        "input",
+        "display"
+      ],
+      "rootScenarioId": "sda-cli-invoke",
+      "platformCapabilityId": "sda-json-cli.v1",
+      "inputType": "json",
+      "displaySelect": "outcome",
+      "displayAs": "json",
+      "sourceRef": "graph:/interfaceAuthority/interfaces/0"
+    }
+  ],
+  "features": [
+    {
+      "id": "sda-cli-invoke",
+      "name": "sda-cli-invoke",
+      "role": "IDENTITY_CONTEXT",
+      "versionPk": "171665",
+      "definitionDigest": "1171d76b2702836574237d5cc531da6c6f96775e395db6465a0eda0ec36307a8",
+      "title": "sda-cli-invoke greeting",
+      "description": "A caller supplies a name and receives the configured greeting with that name substituted.",
+      "language": "en",
+      "tags": [],
+      "sourceTitle": "Write the configured text to standard output",
+      "sourceNarrative": "",
+      "sourcePath": "features/sda-cli-invoke.feature",
+      "sourceText": "@capability:sda-cli-invoke\n@root-scenario:sda-cli-invoke\nFeature: Write the configured text to standard output\n\n  @scenario:sda-cli-invoke\n  @input:sda-cli-invoke-request\n  @input-contract:sda-cli-invoke-request.v1\n  @event:sda-cli-invoke\n  @event-authority:sda-cli-invoke.v1\n  @outcome:sda-cli-invoke-result\n  @outcome-contract:sda-cli-invoke-result.v1\n  @outcome-terminal\n  Scenario: Write the database-defined message\n    Given the message configured in the database\n    When the sda-json-cli.v1 standard-output interface executes with that message\n    Then the caller observes the greeting for the supplied name on standard output\n",
+      "sourceContentDigest": "7f2a7f93a06e5a9322827276ef7732339a43c5254128cd95918fd83fa7d7bc49",
+      "sourceContentRef": "source:content_object/184877",
+      "selectionSource": "capability.feature_pk / selected estate definition",
+      "versionBound": false,
+      "scenarios": [
+        {
+          "id": "sda-cli-invoke",
+          "versionPk": "102139",
+          "ordinal": 0,
+          "definitionDigest": "39b8c295a94cc406eb6c00865543b1d69c7f814fe46a008ffc91ef5af2b744b1",
+          "keyword": "Scenario",
+          "name": "sda-cli-invoke greeting",
+          "description": "",
+          "tags": [
+            "@scenario:sda-cli-invoke",
+            "@input:sda-cli-invoke-request",
+            "@input-contract:sda-cli-invoke-request.v1",
+            "@event:sda-cli-invoke",
+            "@event-authority:sda-cli-invoke.v1",
+            "@outcome:sda-cli-invoke-result",
+            "@outcome-contract:sda-cli-invoke-result.v1",
+            "@outcome-terminal"
+          ],
+          "steps": [
+            {
+              "keyword": "Given",
+              "keywordType": "Context",
+              "text": "a caller name"
+            },
+            {
+              "keyword": "When",
+              "keywordType": "Action",
+              "text": "the greeting is requested"
+            },
+            {
+              "keyword": "Then",
+              "keywordType": "Outcome",
+              "text": "the caller receives the greeting with the name substituted"
+            }
+          ],
+          "examples": [],
+          "sourceRef": "model:scenario_version/102139"
+        }
+      ],
+      "sourceRef": "model:feature_version/171665"
+    }
+  ],
+  "fixtures": [],
+  "obligations": [],
+  "altitudeCatalog": [
+    {
+      "id": "altitude-10-fixtures-proof",
+      "name": "STUB altitude 10: Fixtures and proof",
+      "definitionDigest": "06b6d6a33ef8651a85dc5c08d99a5713f171ce1a505fd37878df834b312d52ae",
+      "sourceRef": "model:scenario_version/91981"
+    },
+    {
+      "id": "altitude-11-alignment-evaluation",
+      "name": "STUB altitude 11: Alignment evaluation",
+      "definitionDigest": "601a707f0b98efdc52665f772fbd0034e4ecfc6062544c1e4cdb8f6f8fa29eef",
+      "sourceRef": "model:scenario_version/91982"
+    },
+    {
+      "id": "altitude-2-capability-meaning",
+      "name": "STUB altitude 2: Capability meaning",
+      "definitionDigest": "f766c963478b819fbb06398950ad6155d089bc6bf6e520e4a8e24c453f094e51",
+      "sourceRef": "model:scenario_version/91973"
+    },
+    {
+      "id": "altitude-3-scenario-io",
+      "name": "STUB altitude 3: Scenario inputs/events/outcomes",
+      "definitionDigest": "bd17c2e29afa0e21dca05d38fd999e6f8a6b31d91811c111638e80346263c9c1",
+      "sourceRef": "model:scenario_version/91974"
+    },
+    {
+      "id": "altitude-4-contracts-schemas",
+      "name": "STUB altitude 4: Contracts and schemas",
+      "definitionDigest": "a4228d47b0b9d2f7101a0ce54dc830592ddb345c959feb704346af9d4727bef0",
+      "sourceRef": "model:scenario_version/91975"
+    },
+    {
+      "id": "altitude-5-semantic-authority-envelope",
+      "name": "STUB altitude 5: Semantic authority envelope",
+      "definitionDigest": "10fe01062f8235484b4fa56366201b4f80d429695e68a1a813eaae9a4975c1b1",
+      "sourceRef": "model:scenario_version/91976"
+    },
+    {
+      "id": "altitude-6-transformation-ast",
+      "name": "STUB altitude 6: Transformation AST",
+      "definitionDigest": "e18cf7b7b2ffa58208c582bab74d27d1f354e876319f0bcc8fb7b50b51fb5e01",
+      "sourceRef": "model:scenario_version/91977"
+    },
+    {
+      "id": "altitude-7-execution-authorities-ports",
+      "name": "STUB altitude 7: Execution authorities and ports",
+      "definitionDigest": "6b2a3fd14238d832b5c45dc97323fc6757e2e3a6c1d464ac57866e5b72167532",
+      "sourceRef": "model:scenario_version/91978"
+    },
+    {
+      "id": "altitude-8-providers-bindings-overlays",
+      "name": "STUB altitude 8: Providers, bindings, overlays",
+      "definitionDigest": "34d2865e5550d14509570b56431717583e48299be026b8a39f9a3b4cc3f6f6f4",
+      "sourceRef": "model:scenario_version/91979"
+    },
+    {
+      "id": "altitude-9-interface-cli-display",
+      "name": "STUB altitude 9: Interface and CLI display",
+      "definitionDigest": "0701e08fe5dc600237a1c98fdab76731dbbc3a48293706724b88f977260d269a",
+      "sourceRef": "model:scenario_version/91980"
+    },
+    {
+      "id": "authoring-altitude-model-stubs",
+      "name": "STUB altitude 1: Feature parse",
+      "definitionDigest": "703c5d7653297e008b6f9b163cc68d603585983b23b3f33bf8e651593270023e",
+      "sourceRef": "model:scenario_version/91972"
+    }
+  ],
+  "conditions": [],
+  "contextReaderVersion": "feature-prose-and-altitudes.v2",
+  "graphFeatures": {
+    "graphType": "legacy declaration",
+    "requiredExecutionFeatures": [],
+    "edgeGroups": [],
+    "dispatchAuthorities": []
+  },
+  "snapshotDigest": "2e0aab026d6a6a30692741259ee01288460cbeff78c01224a6f24262046f6023"
+}

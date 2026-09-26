@@ -68,7 +68,8 @@ capability, calls its providers, or installs authority. Each read pins:
 * The current estate and its selected capability version/definition.
 * Scenario versions from that capability and its declared invocation closure.
 * `analysis.capability_graph_source` with namespace qualification.
-* Linked selected features, fixture cases and proof obligations.
+* Linked feature versions, exact retained Gherkin bytes, authored scenario prose,
+  fixture assertions, observable conditions and proof obligations.
 * The eleven context declarations in `authoring-altitude-model-stubs`.
 
 The recipe follows the selected-version and closure probes in the supplied
@@ -96,21 +97,44 @@ Each of the eleven authoring layers has its own evidence interpretation:
 
 | # | Layer | Evidence carried into the presentation |
 | ---: | --- | --- |
-| 1 | Feature | Selected feature association, identity and version |
+| 1 | Feature | Original Gherkin writeup, feature title/narrative, exact source digest, version selection, parsed feature scenarios and their descriptions/steps/examples |
 | 2 | Capability meaning | Retained actor, intent, outcome and experience promise, including the selected authority envelope when normalized prose columns are empty |
-| 3 | Scenario | Input, event, outcome, contracts and terminal declaration |
-| 4 | Contract | Schema identities, required fields, property names and digests |
-| 5 | Semantic authority | Estate selection, version/definition identities and source digests |
-| 6 | Transformation | AST operator structure, branch counts and expression digests |
+| 3 | Scenario | Selected scenario Given/When/Then, descriptions, tables, doc strings and examples, alongside input/event/outcome responsibilities and contracts |
+| 4 | Contract | Field types, required members, descriptions, constraints, references and digests |
+| 5 | Semantic authority | Estate selection, feature-version provenance, authority root versus graph root and source digests |
+| 6 | Transformation | AST operator structure, input paths, literal types, branch counts and expression digests |
 | 7 | Execution authority | Ordered operations, port and scenario references |
-| 8 | Provider | Binding, platform, provider, credential-reference and destination metadata |
-| 9 | Interface | Selected interface identity, configuration keys and digest |
-| 10 | Fixtures and proof | Declared case expectations, assertion counts and obligations; no invented passing test result |
-| 11 | Alignment | Computed reference checks and explicit evidence gaps; no invented estate alignment decision |
+| 8 | Provider | Binding, selector paths, authority source, nested-execution lineage policy, input admission, platform/provider and destination metadata |
+| 9 | Interface | Input type, display selection/format, platform and declared root scenario |
+| 10 | Fixtures and proof | Case expectations, assertion paths/operators/expected-value digests and obligation statements; no invented passing result |
+| 11 | Alignment | Feature/scenario version correspondence, root consistency and all reference checks, including gaps and unqueried receipts |
 
 Missing associations or prose are reported, not invented. The current reader
 does not fetch execution or alignment receipts. A digest establishes content
 identity, not semantic correctness or successful execution.
+
+Feature selection first reads exact `estate_capability_feature` and
+`capability_feature` version bindings. If neither exists, it follows
+`capability.feature_pk` through `analysis.v_selected_semantic_definition`.
+That fallback is **identity context**, not an invented canonical version binding.
+It never selects an arbitrary historical feature by filename or maximum version.
+The database view's estate-selection semantics remain explicit in provenance.
+Feature definitions resolve `semantics.content_digest` to `source.content_object`;
+the reader verifies the SHA-256 of the retained UTF-8 writeup. The English source
+header extractor supplies a display title/narrative only. Authored scenario
+structure comes from declared scenario JSON, not an ad hoc Gherkin parser.
+Non-English writeups remain intact and use the normalized title when needed.
+
+Feature scenarios and selected execution scenarios remain separate. A mismatch
+in IDs or versions is a finding, as is parsed scenario text that differs from
+retained feature bytes. The renderer does not repair or overwrite estate meaning.
+Long prose paginates. Exact source, tags and structured attachments remain in the
+snapshot and notes. Schema defaults/examples/literal enum values, arbitrary
+provider config, credentials and literal AST payloads are not projected.
+
+Every run writes `context-audit.json` with all eleven context summaries, evidence
+references, remaining context gaps and cross-layer findings. See the
+[sda-cli-invoke audit](capability-presentation-context-audit.md) for a live example.
 
 ## Inference seam
 
@@ -144,7 +168,7 @@ Schemas live in `contracts/capability-presentation/`. The existing
 directly with `presentCapability(input, {readEstate, narrator})` for tests or a
 future declared adapter.
 
-The CLI retains `request.json`, the compact content-addressed `snapshot.json`,
+The CLI retains `request.json`, `context-audit.json`, the compact content-addressed `snapshot.json`,
 `circuit-model.json`, `storyboard.json`, and `receipt.json`. Each `volume-NN/`
 contains editable Google request batches, notes, SVGs, `presentation.json`, and
 optional `presentation.pptx`. Large decks are divided into 32-slide volumes.

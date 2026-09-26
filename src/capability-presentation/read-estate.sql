@@ -30,26 +30,64 @@ FROM analysis.capability_graph_source(@capability_id,0,(SELECT namespace_id FROM
 
 SELECT s.scenario_id,sv.name,sv.scenario_version_pk,sv.semantic_object_definition_pk,
  LOWER(CONVERT(varchar(64),sv.definition_digest,2)) AS definition_digest,
- se.execution_authority_version_pk,se.event_id
+ se.execution_authority_version_pk,se.event_id,si.name AS input_name,se.name AS event_name,
+ se.responsibility,so.name AS outcome_name,so.experience,so.terminal_disposition,
+ CASE WHEN EXISTS(SELECT 1 FROM model.capability_scenario cs WHERE cs.capability_version_pk=@cv AND cs.scenario_version_pk=sv.scenario_version_pk) THEN 1 ELSE 0 END AS owned,
+ CONVERT(nvarchar(max),CONVERT(varchar(max),co.content_bytes) COLLATE Latin1_General_100_BIN2_UTF8) AS definition_json
 FROM @sv v JOIN model.scenario_version sv ON sv.scenario_version_pk=v.scenario_version_pk
 JOIN model.scenario s ON s.scenario_pk=sv.scenario_pk
 LEFT JOIN model.scenario_event se ON se.scenario_version_pk=sv.scenario_version_pk
+LEFT JOIN model.scenario_input si ON si.scenario_version_pk=sv.scenario_version_pk
+LEFT JOIN model.scenario_outcome so ON so.scenario_version_pk=sv.scenario_version_pk
+JOIN model.semantic_object_definition d ON d.semantic_object_definition_pk=sv.semantic_object_definition_pk
+JOIN source.content_object co ON co.content_object_pk=d.canonical_content_pk
 ORDER BY s.scenario_id,sv.scenario_version_pk;
 
+-- Version bindings take precedence. The forward feature identity remains useful
+-- context when a capability version has no binding. Label that fallback rather
+-- than treating an estate-selected feature as a canonical version binding.
+DECLARE @features TABLE(feature_version_pk bigint PRIMARY KEY,binding_role varchar(80),selection_source varchar(100));
+INSERT @features
+SELECT feature_version_pk,MIN(binding_role),'estate_capability_feature' FROM model.estate_capability_feature
+WHERE estate_model_pk=@estate AND capability_version_pk=@cv GROUP BY feature_version_pk;
+INSERT @features
+SELECT cf.feature_version_pk,MIN(cf.binding_role),'capability_feature' FROM model.capability_feature cf
+WHERE cf.capability_version_pk=@cv AND NOT EXISTS(SELECT 1 FROM @features f WHERE f.feature_version_pk=cf.feature_version_pk)
+GROUP BY cf.feature_version_pk;
+IF NOT EXISTS(SELECT 1 FROM @features)
+ INSERT @features
+ SELECT fv.feature_version_pk,'IDENTITY_CONTEXT','capability.feature_pk / selected estate definition'
+ FROM @cap p JOIN model.capability c ON c.capability_pk=p.capability_pk
+ JOIN model.feature_version fv ON fv.feature_pk=c.feature_pk
+ JOIN analysis.v_selected_semantic_definition sd ON sd.semantic_object_definition_pk=fv.semantic_object_definition_pk AND sd.estate_model_pk=@estate;
 SELECT f.feature_id,fv.name,fv.feature_version_pk,fv.semantic_object_definition_pk,
- LOWER(CONVERT(varchar(64),fv.definition_digest,2)) AS definition_digest,ecf.binding_role,
- CONVERT(nvarchar(max),CONVERT(varchar(max),co.content_bytes) COLLATE Latin1_General_100_BIN2_UTF8) AS definition_json
-FROM model.estate_capability_feature ecf
-JOIN model.feature_version fv ON fv.feature_version_pk=ecf.feature_version_pk
+ LOWER(CONVERT(varchar(64),fv.definition_digest,2)) AS definition_digest,sf.binding_role,sf.selection_source,
+ decoded.definition_json,source_co.content_object_pk AS source_content_pk,
+ LOWER(CONVERT(varchar(64),source_co.content_digest,2)) AS source_content_digest,
+ CONVERT(nvarchar(max),CONVERT(varchar(max),source_co.content_bytes) COLLATE Latin1_General_100_BIN2_UTF8) AS source_text,
+ (SELECT fs.ordinal,s.scenario_id,fs.scenario_version_pk,
+  LOWER(CONVERT(varchar(64),sv.definition_digest,2)) AS definition_digest,
+  CONVERT(nvarchar(max),CONVERT(varchar(max),sc.content_bytes) COLLATE Latin1_General_100_BIN2_UTF8) AS definition_json
+  FROM model.feature_scenario fs JOIN model.scenario s ON s.scenario_pk=fs.scenario_pk
+  JOIN model.scenario_version sv ON sv.scenario_version_pk=fs.scenario_version_pk
+  JOIN model.semantic_object_definition sd ON sd.semantic_object_definition_pk=sv.semantic_object_definition_pk
+  JOIN source.content_object sc ON sc.content_object_pk=sd.canonical_content_pk
+  WHERE fs.feature_version_pk=fv.feature_version_pk ORDER BY fs.ordinal,s.scenario_id FOR JSON PATH) AS scenarios_json
+FROM @features sf
+JOIN model.feature_version fv ON fv.feature_version_pk=sf.feature_version_pk
 JOIN model.feature f ON f.feature_pk=fv.feature_pk
 JOIN model.semantic_object_definition d ON d.semantic_object_definition_pk=fv.semantic_object_definition_pk
 JOIN source.content_object co ON co.content_object_pk=d.canonical_content_pk
-WHERE ecf.estate_model_pk=@estate AND ecf.capability_version_pk=@cv
+CROSS APPLY(SELECT CONVERT(nvarchar(max),CONVERT(varchar(max),co.content_bytes) COLLATE Latin1_General_100_BIN2_UTF8) AS definition_json) decoded
+LEFT JOIN source.content_object source_co ON source_co.content_digest=TRY_CONVERT(binary(32),REPLACE(JSON_VALUE(decoded.definition_json,'$.semantics.content_digest'),'sha256:',''),2)
 ORDER BY f.feature_id,fv.feature_version_pk;
 
 SELECT DISTINCT fx.fixture_id,fx.semantic_object_definition_pk,fc.case_id,fc.expected_disposition,
  LOWER(CONVERT(varchar(64),fx.definition_digest,2)) AS definition_digest,
- (SELECT COUNT(*) FROM model.fixture_assertion fa WHERE fa.fixture_case_pk=fc.fixture_case_pk) AS assertion_count
+ (SELECT COUNT(*) FROM model.fixture_assertion fa WHERE fa.fixture_case_pk=fc.fixture_case_pk) AS assertion_count,
+ (SELECT fa.ordinal,fa.condition_id,fa.path,fa.operator,LOWER(CONVERT(varchar(64),co.content_digest,2)) AS expected_digest
+  FROM model.fixture_assertion fa LEFT JOIN source.content_object co ON co.content_object_pk=fa.expected_value_content_pk
+  WHERE fa.fixture_case_pk=fc.fixture_case_pk ORDER BY fa.ordinal FOR JSON PATH) AS assertions_json
 FROM model.fixture fx
 JOIN analysis.v_selected_semantic_definition sd ON sd.semantic_object_definition_pk=fx.semantic_object_definition_pk AND sd.estate_model_pk=@estate
 LEFT JOIN model.fixture_case fc ON fc.fixture_pk=fx.fixture_pk
@@ -76,3 +114,7 @@ WHERE ec.estate_model_pk=@estate AND c.capability_id=N'authoring-altitude-model-
 ORDER BY s.scenario_id;
 
 SELECT LOWER(CONVERT(varchar(64),HASHBYTES('SHA2_256',CONVERT(varbinary(max),OBJECT_DEFINITION(OBJECT_ID(N'analysis.capability_graph_source')))),2)) AS graph_function_digest;
+
+SELECT oc.condition_id,oc.statement,oc.semantic_object_definition_pk,LOWER(CONVERT(varchar(64),oc.definition_digest,2)) AS definition_digest
+FROM model.observable_condition oc WHERE oc.owner_definition_pk IN (SELECT definition_pk FROM @cap)
+ORDER BY oc.condition_id;

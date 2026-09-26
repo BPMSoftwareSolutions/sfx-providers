@@ -15,12 +15,63 @@ import { createCircuitRequestHandler,CAPABILITY_INVOKE } from '../src/circuit-pr
 import * as api from '../src/capability-presentation/provider.mjs';
 import {rawFixture,snapshotFixture} from './fixtures/capability-presentation.mjs';
 import {buildStoryboard} from '../src/capability-presentation/storyboard.mjs';
+import {createHash} from 'node:crypto';
 const input={contractId:inputShape.contractId,capabilityId:'review-request'};
 const readEstate=async()=>snapshotFixture();
 
 test('selected story survives empty projected columns and preserves declaration provenance',()=>{
   const raw=rawFixture();raw.capability.actor='';raw.capability.intent='';raw.capability.outcome='';raw.capability.definition_json=JSON.stringify({semantics:{authority:{userStory:{actor:'Declared actor',intent:'Declared meaning',outcome:'Declared result'}}}});
   const s=normalizeSnapshot(raw);assert.equal(s.identity.intent,'Declared meaning');assert.match(s.identity.meaningSourceRef,/semantic_object_definition\/11/);
+});
+
+function authoredFixture(){
+  const raw=rawFixture();
+  const scenario={keyword:'Scenario Outline',name:'Review a named request',description:'Keep the authored rationale.',tags:[{name:'@scenario:review'}],
+    steps:[{keyword:'Given ',keywordType:'Context',text:'a request named <name>',dataTable:{rows:[{cells:[{value:'name'},{value:'status'}]},{cells:[{value:'Ada'},{value:'ready'}]}]}},
+      {keyword:'When ',keywordType:'Action',text:'review begins',docString:{mediaType:'text/plain',content:'Authored attachment'}},
+      {keyword:'Then ',keywordType:'Outcome',text:'the caller receives a decision'}],
+    examples:[{name:'Known caller',tableHeader:{cells:[{value:'name'}]},tableBody:[{cells:[{value:'Ada'}]}]}]};
+  const source='@capability:review-request\nFeature: Review the caller’s request\n  As a reviewer I need a retained decision.\n  @scenario:review\n  Scenario Outline: Review a named request\n    Given a request named <name>\n    When review begins\n    Then the caller receives a decision\n';
+  raw.features=[{...raw.features[0],selection_source:'capability_feature',binding_role:'CANONICAL',source_content_pk:'77',source_text:source,source_content_digest:createHash('sha256').update(source).digest('hex'),
+    definition_json:JSON.stringify({semantics:{name:'Review the caller’s request',description:'Keep the original business intention.',source_path:'features/review.feature'}}),
+    scenarios_json:JSON.stringify([{scenario_id:'review',scenario_version_pk:101,ordinal:0,definition_digest:'f'.repeat(64),definition_json:JSON.stringify({semantics:{scenario}})}])}];
+  raw.scenarios=[{scenario_id:'review',scenario_version_pk:101,owned:1,definition_json:JSON.stringify({semantics:{scenario}})}];
+  return raw;
+}
+
+test('feature prose, exact source bytes, scenario steps and examples survive into the deck',async()=>{
+  const raw=authoredFixture(),s=normalizeSnapshot(raw),f=s.features[0];
+  assert.equal(f.sourceTitle,'Review the caller’s request');assert.match(f.sourceNarrative,/As a reviewer/);assert.equal(f.description,'Keep the original business intention.');
+  assert.equal(f.sourceText,raw.features[0].source_text);assert.equal(f.versionBound,true);
+  assert.equal(s.scenarios[0].authored.steps[0].dataTable[1][0],'Ada');assert.equal(s.scenarios[0].authored.steps[1].docString.content,'Authored attachment');
+  assert.equal(s.scenarios[0].authored.examples[0].rows[0][0],'Ada');
+  const r=await handle(input,{readEstate:async()=>s});assert.equal(r.disposition,'AUTHORED',JSON.stringify(r.findings));
+  const text=r.candidate.storyboard.slides.flatMap(p=>p.commands.filter(c=>c.op==='t').map(c=>c.args[0])).join('\n');
+  for(const phrase of ['original business intention','a request named <name>','Authored attachment','Ada'])assert.ok(text.includes(phrase),phrase);
+  raw.features[0].source_text+='tamper';assert.throws(()=>normalizeSnapshot(raw),/source digest mismatch/i);
+});
+
+test('feature identity fallback and stale roots become alignment findings without replacing current scenarios',()=>{
+  const raw=authoredFixture();raw.features[0].selection_source='capability.feature_pk / selected estate definition';
+  raw.features[0].scenarios_json=raw.features[0].scenarios_json.replace('"scenario_version_pk":101','"scenario_version_pk":100');
+  raw.capability.definition_json=JSON.stringify({semantics:{authority:{rootScenarioId:'old-root'}}});
+  raw.graph.interfaceAuthority.interfaces[0].rootScenarioId='old-root';
+  const s=normalizeSnapshot(raw),m=buildCircuitModel(s,'scenario');
+  assert.equal(s.scenarios[0].versionPk,'101');assert.equal(s.features[0].scenarios[0].versionPk,'100');assert.equal(s.identity.rootScenarioId,'review');
+  for(const code of ['FEATURE_VERSION_BINDING_NOT_READ','FEATURE_SCENARIO_SELECTION_DIFFERS','AUTHORITY_GRAPH_ROOT_DIFFERS','INTERFACE_ROOT_NOT_IN_GRAPH'])assert.ok(m.findings.some(f=>f.code===code),code);
+  const story=buildStoryboard(s,m);assert.ok(story.checks.some(c=>c.status==='gap'));assert.ok(story.slides.filter(p=>p.title==='11 · Alignment evaluation').length>1);
+  assert.ok(story.contexts.every(c=>Array.isArray(c.missingContext)));
+});
+
+test('contract constraints and provider selectors are retained without arbitrary configuration or schema values',()=>{
+  const raw=rawFixture();raw.graph.contractAuthorities.contracts['request.v1'].schema.properties.approved={type:'string',description:'Reviewer decision',minLength:1,default:'never-keep',examples:['never-keep']};
+  const b=raw.graph.interfaceAuthority.portBindings[0];b.configuration={...b.configuration,capabilityIdPath:'capabilityId',requestPath:'input',lineageMode:'retain-nested-execution',arbitrary:'never-keep',inputAdmission:{type:'object',required:['capabilityId'],properties:{capabilityId:{type:'string',minLength:1}}}};
+  const s=normalizeSnapshot(raw);assert.ok(!JSON.stringify(s).includes('never-keep'));
+  const field=s.contracts[0].fields.find(f=>f.path==='$/approved');assert.equal(field.description,'Reviewer decision');assert.equal(field.minLength,1);assert.equal(field.required,true);
+  assert.equal(s.bindings[0].selectors.capabilityIdPath,'capabilityId');assert.equal(s.bindings[0].inputAdmission.fields[1].required,true);
+  const slides=buildStoryboard(s,buildCircuitModel(s,'scenario')).slides;assert.ok(slides.some(p=>p.title==='Provider input and result bindings'));
+  raw.graph.contractAuthorities.contracts['request.v1'].schema.properties.forbidden=false;
+  assert.equal(normalizeSnapshot(raw).contracts[0].fields.find(f=>f.path==='$/forbidden').booleanSchema,false);
 });
 test('snapshot is deterministic, content addressed and rejects tampering or identity ambiguity',()=>{
   const s=snapshotFixture();assert.deepEqual(s,snapshotFixture());s.scenarios[0].id='tampered';assert.throws(()=>validateSnapshot(s),/digest/);

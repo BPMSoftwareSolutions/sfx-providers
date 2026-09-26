@@ -19,12 +19,12 @@ export function createSqlEstateReader({ openSql }) {
       request.input('capability_id', sql.NVarChar(400), capabilityId);
       request.input('namespace_id', sql.NVarChar(400), namespaceId ?? null);
       const result = await request.query(query);
-      const [capabilities, graphs, scenarios, features, fixtures, obligations, altitudeCatalog, functions] = result.recordsets;
+      const [capabilities, graphs, scenarios, features, fixtures, obligations, altitudeCatalog, functions, conditions] = result.recordsets;
       if (capabilities?.length !== 1 || graphs?.length !== 1) throw new Error('CAPABILITY_ID_NOT_UNIQUE_OR_NOT_FOUND');
       if (Buffer.byteLength(graphs[0].graph_source) > 64 * 1024 * 1024) throw new Error('CAPABILITY_GRAPH_SOURCE_TOO_LARGE');
       return normalizeSnapshot({
         capability: capabilities[0], graph: JSON.parse(graphs[0].graph_source),
-        scenarios, features, fixtures, obligations, altitudeCatalog,
+        scenarios, features, fixtures, obligations, altitudeCatalog, conditions,
         provenance: { adapter: 'sql-server-snapshot.v1', isolation: 'SNAPSHOT',
           queryDigest: createHash('sha256').update(query.replaceAll('\r\n', '\n')).digest('hex'),
           graphFunctionDigest: functions[0]?.graph_function_digest ?? null },

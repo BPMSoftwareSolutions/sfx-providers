@@ -1,5 +1,6 @@
 import { C } from '../circuit-presentation/design.mjs';
 import { ALTITUDES, buildContexts, humanize, structuralChecks } from './model.mjs';
+import {appendContextSlides} from './context-slides.mjs';
 
 const chunks = (a, n) => Array.from({ length: Math.ceil(a.length / n) }, (_, i) => a.slice(i*n,(i+1)*n));
 const short = (value, max=65) => String(value ?? '').length > max ? String(value).slice(0,max-1)+'…' : String(value ?? '');
@@ -43,7 +44,7 @@ export function buildStoryboard(snapshot, model, { contextAltitude='all' } = {})
   p.wire([[80,262],[275,262]],C.amber);p.add('terminal',62,262,'IN',C.amber,{r:24,size:12});
   p.wire([[677,262],[880,262]],C.green);p.add('terminal',903,262,'OUT',C.green,{r:24,size:12});
   p.text(`Estate ${s.identity.estateModelId}  /  version ${s.identity.capabilityVersionPk}`,280,349,425,32,17,C.muted,false,'center');
-  p.text(s.identity.intent?short(s.identity.intent,130):'Declared structure, selected versions, and traceable context',150,406,665,50,18,C.white,false,'center');
+  p.text(s.features[0]?.sourceTitle?short('Feature: '+s.features[0].sourceTitle,130):s.identity.intent?short('Declared intent: '+s.identity.intent,130):'Declared structure, selected versions, and traceable context',150,406,665,50,18,C.white,false,'center');
 
   for(const group of chunks(contexts,6)){
     p=page('The capability’s authoring context',`ALTITUDES ${group[0].altitude}–${group.at(-1).altitude}  ·  EACH LAYER ANSWERS A DIFFERENT QUESTION`,group.flatMap(c=>[c.catalogRef,...c.evidenceRefs]),group.map(c=>`${c.altitude}. ${c.name}\n${c.question}\n${c.summary}`).join('\n\n'));
@@ -61,7 +62,10 @@ export function buildStoryboard(snapshot, model, { contextAltitude='all' } = {})
   for(const c of focus){
     p=page(`${String(c.altitude).padStart(2,'0')} · ${c.name}`,c.question,[c.catalogRef,...c.evidenceRefs],c.summary);
     switch(c.altitude){
-      case 1: fan(p,s.identity.capabilityId,s.features.map(f=>({label:f.name||f.id})), 'selected feature association');p.detail+='\n'+JSON.stringify(s.features,null,2);break;
+      case 1:
+        fan(p,s.identity.capabilityId,s.features.map(f=>({label:f.sourceTitle||f.title||f.name||f.id})), 'linked feature writeup; version selection retained in notes');
+        if(s.features[0]?.description)p.text(short(s.features[0].description,170),68,357,425,91,16,C.white);
+        p.detail+='\n'+JSON.stringify(s.features,null,2);break;
       case 2:
         fan(p,s.identity.capabilityId,[{label:s.identity.actor||'Actor prose not retained',color:s.identity.actor?C.amber:C.muted},{label:s.identity.intent||'Intent prose not retained',color:s.identity.intent?C.blue:C.muted},{label:s.identity.outcome||'Outcome prose not retained',color:s.identity.outcome?C.green:C.muted}], 'retained meaning fields');
         p.interpretation=`The identity “${humanize(s.identity.capabilityId)}” suggests the subject. This wording is an interpretation when intent prose is absent.`;break;
@@ -91,12 +95,14 @@ export function buildStoryboard(snapshot, model, { contextAltitude='all' } = {})
         if(children.length)fan(p,root?.op??'Expression',children.map(n=>({label:`${n.op}\n${n.path.split('/').at(-1)}`,color:['if','switch','case'].includes(n.op)?C.amber:C.violet})),caption);
         else {p.chip(68,245,220,85,root?.op??'Expression',C.violet,18);p.text(caption,332,118,540,27,12,C.muted);p.text(root?'No child operators in this preview':'Operator preview unavailable',380,258,470,70,20,C.muted);}
         p.text(short(t.id,95),50,438,850,27,13,C.white);
+        if(t.inputPaths?.length)p.text('Input paths:\n'+short([...new Set(t.inputPaths.map(v=>v.inputPath))].join(', '),62),68,359,285,59,13,C.muted);
         p.detail+='\nExpression preview: '+JSON.stringify(t,null,2);
         p.interpretation=`This expression contains ${t.nodeCount} mechanic nodes and ${t.branchCount} conditional operator nodes. ${referenced?'An invoked port binding references this expression.':'The snapshot retains this expression, but no invoked port binding references it.'} This is declaration evidence, not an observed execution trace. Larger subexpressions are collapsed; operator counts and the digest remain in the snapshot.`;break;
       }
       case 7: {
         const a=s.authorities.find(a=>a.scenarioId===s.identity.rootScenarioId)??s.authorities[0];
         fan(p,a?.id??'Execution authority',a?.operations.map(o=>({label:`${o.ordinal}. ${o.portId||o.scenarioId||o.kind}`,color:o.kind==='invoke-scenario'?C.blue:C.amber}))??[], 'authority membership; declared ordinal retained');
+        if(a?.operations.length===1)p.text('Operation: '+a.operations[0].kind,68,360,500,35,17,C.white);
         p.detail+='\n'+JSON.stringify(a,null,2);break;
       }
       case 8: {
@@ -108,11 +114,17 @@ export function buildStoryboard(snapshot, model, { contextAltitude='all' } = {})
         p.detail+='\n'+JSON.stringify(s.bindings,null,2);break;
       }
       case 9: fan(p,'Caller interface',s.interfaces.map(i=>({label:i.id||i.profile,color:C.blue})), 'declared interface configuration, identified by digest');p.detail+='\n'+JSON.stringify(s.interfaces,null,2);break;
-      case 10: fan(p,'Declared expectations',s.fixtures.map(f=>({label:f.caseId||f.id,color:C.violet})), 'fixture declarations; execution results are not queried');p.detail+='\n'+JSON.stringify({fixtures:s.fixtures,obligations:s.obligations},null,2);break;
-      case 11:
-        fan(p,'Snapshot consistency',checks.slice(0,4).map(c=>({label:`${c.label}\n${c.status}`,color:c.status==='resolved'?C.green:C.red})), 'computed reference checks; not an estate admission decision');
-        p.detail+='\n'+JSON.stringify(checks,null,2);break;
+      case 10: fan(p,'Declared expectations',[...s.fixtures.map(f=>({label:f.caseId||f.id,color:C.violet})),...s.obligations.map(o=>({label:o.statement||o.id,color:C.amber}))], 'fixture and proof declarations; execution results are not queried');p.detail+='\n'+JSON.stringify({fixtures:s.fixtures,obligations:s.obligations},null,2);break;
+      case 11: {
+        const orderedChecks=[...checks.filter(c=>c.status==='gap'),...checks.filter(c=>c.status==='resolved'),...checks.filter(c=>c.status==='not-read')];
+        for(const [i,group]of chunks(orderedChecks,4).entries()){
+          if(i)p=page('11 · Alignment evaluation',`REFERENCE CHECKS / ${i+1}`,group.map(c=>c.sourceRef),JSON.stringify(group,null,2));
+          fan(p,'Cross-layer consistency',group.map(c=>({label:`${c.label}\n${c.status}`,color:c.status==='resolved'?C.green:c.status==='gap'?C.red:C.muted})), 'computed reference checks; not an estate admission decision');
+          p.detail+='\n'+JSON.stringify(group,null,2);
+        }break;
+      }
     }
+    appendContextSlides({snapshot:s,altitude:c.altitude,page});
   }
 
   // Deterministic breadth-first page order. No topology is synthesized by layout.
@@ -183,7 +195,7 @@ export function buildStoryboard(snapshot, model, { contextAltitude='all' } = {})
   if(model.findings.length){
     for(const group of chunks(model.findings,4)){
       p=page('Evidence gaps and circuit boundaries','DECLARED STRUCTURE AND OBSERVED EXECUTION ARE DIFFERENT EVIDENCE',[],JSON.stringify(group,null,2));
-      for(const [i,f]of group.entries()){p.add('stop',67,160+i*70,C.red);p.text(wrap(f.code,43,2),93,136+i*70,420,55,16,C.white,true);p.text(short(f.message,105),525,139+i*70,378,52,13,C.muted);}
+      for(const [i,f]of group.entries()){p.add('stop',67,160+i*70,C.red);p.text(wrap(f.label||f.code,32,2),93,136+i*70,320,55,15,C.white,true);p.text(short(f.message,105),525,139+i*70,378,52,13,C.muted);}
     }
   }
   p=page('Evidence and replay','ONE SELECTED SNAPSHOT  ·  IDENTITIES AND DIGESTS RETAINED',[identityRef],JSON.stringify({identity:s.identity,provenance:s.provenance,snapshotDigest:s.snapshotDigest,checks},null,2));

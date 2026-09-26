@@ -1,4 +1,5 @@
 import { createHash } from 'node:crypto';
+import {json,gherkinScenario,featureContext,schemaContext,bindingContext,interfaceContext} from './context-evidence.mjs';
 
 export const SNAPSHOT_ID = 'capability-presentation-snapshot.v1';
 export const canonical = value => value === null || typeof value !== 'object' ? JSON.stringify(value)
@@ -14,22 +15,26 @@ export const fail = (message, code = 'CAPABILITY_PRESENTATION_INVALID') => { thr
 const pointer = value => str(value).replaceAll('~','~0').replaceAll('/','~1');
 
 function mechanics(expression) {
-  const counts = {}, preview = [];
+  const counts = {}, preview = [], inputPaths=[];
   let count = 0, branchCount = 0;
   const walk = (value, path, parent, depth) => {
     if (!value || typeof value !== 'object') return;
     // Literal payloads are data, even if they contain an "op" member.
     if (typeof value.op === 'string') {
       count++; counts[value.op] = (counts[value.op] ?? 0) + 1;
+      if(value.op==='path'&&typeof value.path==='string')inputPaths.push({expressionPath:path,inputPath:value.path});
       if (['if','switch','case','match','coalesce'].includes(value.op)) branchCount++;
-      if (depth < 3 && preview.length < 40) preview.push({ path, parent, op: value.op });
+      if (depth < 3 && preview.length < 40) preview.push({ path, parent, op: value.op,
+        ...(value.op==='path'&&typeof value.path==='string'?{inputPath:value.path}:{}),
+        ...(value.op==='literal'?{literalType:value.value===null?'null':Array.isArray(value.value)?'array':typeof value.value}:{}),
+        ...(value.op==='object'?{outputFields:Object.keys(value.fields??{})}:{}) });
       if (value.op === 'literal') return;
       parent = path; depth++;
     }
     for (const [key, child] of Object.entries(value)) if (key !== 'op') walk(child, path + '/' + pointer(key), parent, depth);
   };
   walk(expression, '/expression', null, 0);
-  return { nodeCount: count, branchCount, operatorCounts: counts, preview,
+  return { nodeCount: count, branchCount, operatorCounts: counts, preview,inputPaths,
     previewComplete: preview.length === count, expressionDigest: digest(expression ?? null) };
 }
 
@@ -58,7 +63,7 @@ function physicalFields(config) {
   return { providerIds: [...providers].sort(), endpoints, credentialReferences: [...credentials].sort(), realizations };
 }
 
-export function normalizeSnapshot({ capability: c, graph: g, scenarios = [], features = [], fixtures = [], obligations = [], altitudeCatalog = [], provenance = {} }) {
+export function normalizeSnapshot({ capability: c, graph: g, scenarios = [], features = [], fixtures = [], obligations = [], altitudeCatalog = [], conditions = [], provenance = {} }) {
   if (g.declaredExecutionGraphRefused) fail(g.declaredExecutionGraphRefused, 'CAPABILITY_GRAPH_REFUSED');
   if (c.capability_id !== g.capabilityId) fail('The graph and selected capability identity disagree.');
   const declared = c.definition_json ? JSON.parse(c.definition_json)?.semantics?.authority ?? {} : {};
@@ -80,6 +85,8 @@ export function normalizeSnapshot({ capability: c, graph: g, scenarios = [], fea
     identity: { capabilityId: c.capability_id, namespaceId: c.namespace_id, estateModelId: str(c.estate_model_pk),
       capabilityPk: str(c.capability_pk), capabilityVersionPk: str(c.capability_version_pk), definitionPk: str(c.definition_pk), definitionDigest: str(c.definition_digest),
       name: str(c.name || declared.name || c.capability_id), actor: str(c.actor || declared.userStory?.actor), intent: str(c.intent || declared.userStory?.intent), outcome: str(c.outcome || declared.userStory?.outcome), experiencePromise: str(c.experience_promise || declared.experience?.promise), rootScenarioId: g.rootScenarioId,
+      declaredRootScenarioId:str(declared.rootScenarioId),mode:str(declared.mode),experienceId:str(declared.experience?.experienceId),
+      observableConditions:list(declared.experience?.observableConditions).map(v=>({id:str(v.conditionId),statement:str(v.statement)})),
       meaningSourceRef: `model:semantic_object_definition/${c.definition_pk}/semantics/authority` },
     provenance: { ...provenance, graphDigest: digest(g), selection: 'current estate capability version and its declared scenario closure' },
     scenarios: list(g.scenarios).map((s, i) => {
@@ -87,27 +94,33 @@ export function normalizeSnapshot({ capability: c, graph: g, scenarios = [], fea
       return { id: s.scenarioId, name: str(row.name || s.scenarioId), versionPk: str(row.scenario_version_pk), definitionDigest: str(row.definition_digest),
         authorityId: str(s.event?.executionAuthorityId), eventId: str(s.event?.eventId), inputId: str(s.input?.inputId), inputContractId: str(s.input?.contract?.contractId),
         outcomeId: str(s.outcome?.outcomeId), outcomeContractId: str(s.outcome?.contract?.contractId), terminal: s.outcome?.terminal === true,
-        variants: outcomeMap.get(s.scenarioId) ?? [], sourceRef: `graph:/scenarios/${i}` };
+        variants: outcomeMap.get(s.scenarioId) ?? [], owned:row.owned==null?null:Boolean(row.owned),
+        authored:gherkinScenario(json(row.definition_json).semantics?.scenario),
+        inputDescription:str(row.input_name),eventDescription:str(row.responsibility||row.event_name),outcomeDescription:str(row.experience||row.outcome_name),terminalDisposition:str(row.terminal_disposition),
+        meaningSourceRef:row.scenario_version_pk?`model:scenario_version/${row.scenario_version_pk}`:'',sourceRef: `graph:/scenarios/${i}` };
     }),
     transitions: list(g.transitions).map((t, i) => ({ id: t.transitionId ?? `transition:${i}`, from: t.from?.scenarioId, to: t.to?.scenarioId,
       variant: str(t.selectsVariant), topologyKind: str(t.topologyKind), bindingAuthorityId: str(t.bindingAuthorityId), digest: digest(t), sourceRef: `graph:/transitions/${i}` })),
     authorities,
     bindings: list(g.interfaceAuthority?.portBindings).map((b, i) => ({ portId: b.portId, platformCapabilityId: str(b.platformCapabilityId),
       transformationId: str(b.configuration?.transformationId), configurationDigest: digest(b.configuration ?? {}),
-      ...physicalFields(b.configuration ?? {}), sourceRef: `graph:/interfaceAuthority/portBindings/${i}` })),
+      ...physicalFields(b.configuration ?? {}),...bindingContext(b.configuration), sourceRef: `graph:/interfaceAuthority/portBindings/${i}` })),
     transformations: list(g.semanticTransformations).map((t, i) => ({ id: t.id, ...mechanics(t.expression), sourceRef: `graph:/semanticTransformations/${i}` })),
     contracts: Object.entries(g.contractAuthorities?.contracts ?? {}).map(([id, c]) => ({ id, schemaId: str(c.schemaId || c.schema?.$id),
       title: str(c.schema?.title || id), type: str(c.schema?.type), required: list(c.schema?.required), properties: Object.keys(c.schema?.properties ?? {}),
-      schemaDigest: digest(c.schema ?? {}), sourceRef: `graph:/contractAuthorities/contracts/${pointer(id)}` })),
+      ...schemaContext(c.schema),schemaDigest: digest(c.schema ?? {}), sourceRef: `graph:/contractAuthorities/contracts/${pointer(id)}` })),
     interfaces: list(g.interfaceAuthority?.interfaces).map((i, n) => ({ id: str(i.interfaceId ?? i.id ?? `interface:${n}`),
       profile: str(i.profile ?? i.kind ?? i.interfaceType), configurationDigest: digest(i.configuration ?? {}),
-      configurationKeys: Object.keys(i.configuration ?? {}), sourceRef: `graph:/interfaceAuthority/interfaces/${n}` })),
+      configurationKeys: Object.keys(i.configuration ?? {}),...interfaceContext(i), sourceRef: `graph:/interfaceAuthority/interfaces/${n}` })),
     features: features.map(f => ({ id: f.feature_id, name: str(f.name), role: str(f.binding_role), versionPk: str(f.feature_version_pk),
-      definitionDigest: str(f.definition_digest), sourceRef: `model:feature_version/${f.feature_version_pk}` })),
+      definitionDigest: str(f.definition_digest),...featureContext(f), sourceRef: `model:feature_version/${f.feature_version_pk}` })),
     fixtures: fixtures.map(f => ({ id: f.fixture_id, caseId: str(f.case_id), expectedDisposition: str(f.expected_disposition), assertionCount: Number(f.assertion_count),
+      assertions:list(json(f.assertions_json,[])).map(a=>({ordinal:a.ordinal,conditionId:str(a.condition_id),path:str(a.path),operator:str(a.operator),expectedDigest:str(a.expected_digest)})),
       definitionDigest: str(f.definition_digest), sourceRef: `model:fixture/${f.semantic_object_definition_pk}/${pointer(f.case_id)}` })),
     obligations: obligations.map(o => ({ id: o.proof_obligation_id, statement: str(o.statement), kind: str(o.obligation_kind), definitionDigest: str(o.definition_digest), sourceRef: `model:proof_obligation/${o.semantic_object_definition_pk}` })),
     altitudeCatalog: altitudeCatalog.map(a => ({ id: a.scenario_id, name: str(a.name), definitionDigest: str(a.definition_digest), sourceRef: `model:scenario_version/${a.scenario_version_pk}` })),
+    conditions:conditions.map(v=>({id:str(v.condition_id),statement:str(v.statement),definitionDigest:str(v.definition_digest),sourceRef:`model:observable_condition/${v.semantic_object_definition_pk}`})),
+    contextReaderVersion:'feature-prose-and-altitudes.v2',
     graphFeatures: { graphType: str(g.graphType || 'legacy declaration'), requiredExecutionFeatures: list(g.requiredExecutionFeatures),
       edgeGroups: list(g.edgeGroups).map((e, i) => ({ id: str(e.edgeGroupId ?? e.id ?? i), digest: digest(e), sourceRef: `graph:/edgeGroups/${i}` })),
       dispatchAuthorities: list(g.dispatchAuthorities).map((d, i) => ({ id: str(d.id ?? i), digest: digest(d), sourceRef: `graph:/dispatchAuthorities/${i}` })) },
