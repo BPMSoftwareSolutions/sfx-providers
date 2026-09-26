@@ -16,7 +16,8 @@ eight-step sequence and telemetry channels are not estate declarations.
 The user’s six rules are the rendering contract:
 
 1. **One observation altitude per primary projection.** Capability shows
-   root-connected scenario topology. Scenario shows its declared Input, Event
+   root-connected scenario topology with declared provider involvement summarized
+   above its owning scenarios. Scenario shows its declared Input, Event
    and Outcome. Event shows its own operations. Provider and mechanic detail
    are separate projections, reached through disclosure.
 2. **Diagnostics are overlays, not topology.** Affected identities receive
@@ -24,7 +25,9 @@ The user’s six rules are the rendering contract:
 3. **Unconnected declarations belong in inventory.** Retained scenarios,
    operations and bindings without a root path stay outside the active circuit.
 4. **Every provider has explicit ownership.** Provider detail retains the
-   operation → port → binding → platform → provider chain. No floating providers.
+   operation → port → binding → platform → provider chain for explicit binding
+   configuration. A provider named in a transformation connects directly to its
+   owning binding with a dashed reference edge. No floating providers.
 5. **No invented cells, edges or ports.** Missing targets are references in the
    review, not fabricated target nodes. No semantic grouping is inferred merely
    to reduce the operation count. Outcome variants express membership unless
@@ -48,6 +51,24 @@ Capability call edges collapse the owning operation but retain the source edge
 ID. Shared execution authorities retain each owning scenario. Declared
 transitions preserve selectors, topology kind and progress metadata. Layout
 does not turn multiple incoming alternatives into an all-required convergence.
+
+Capability provider links collapse the exact scenario → operation → port →
+binding → platform → provider path. Each link retains all contributing operation
+IDs, binding IDs and source edge references; repeated uses share one provider
+glyph. The provider label opens an involvement register with every contributing
+operation, declaration basis and binding; operation links open the binding view.
+These violet links express declared involvement, not calls between providers or
+evidence of execution. Unused bindings and unreachable scenarios contribute no
+providers. Sharing a platform capability does not grant another binding's
+providers. No execution cells are flattened into this summary.
+
+Transformation AST object fields with literal `providerId` values are retained
+as provider references, with their expression paths and optional `bindingId`.
+References under `providerTestimony` are identified as declared testimony.
+They establish a declared output identity, not ownership of another operation's
+HTTP exchange or evidence of execution. Literal payload objects are not walked
+as AST authority. Arbitrary payloads, credentials and request bodies remain
+excluded. Older snapshots without this inspection data generate a refresh gap.
 
 The current reader retains ordered operation declarations. Wires labelled
 “declared order” show those declarations, not proven runtime routing. It does
@@ -77,6 +98,31 @@ transport volumes are not separate navigable PowerPoint files.
 - Outcome membership is separate from selected routing or measured success.
 - The observation band says “unobserved” until identified testimony exists.
 
+### Automatic geometry and text fitting
+
+Each projection uses one scale factor, the smaller of its available width and
+height ratios, capped at 1. Node shapes, ports and route coordinates share that
+factor. Text then wraps by measured glyph advances and shrinks in quarter-point
+steps within its scaled frame. Provider identifiers are preserved without
+ellipsis. Ordinal text frames reserve native insets around the circle's digits.
+Review markers reserve space for all attached finding IDs.
+
+`scripts/blueprint_font_metrics.py` uses Python Pillow/FreeType to measure Arial
+regular and bold. The larger advance for each glyph is retained in
+`src/circuit-presentation/font-metrics/arial.json`, with font hashes. Generation
+uses those versioned measurements without requiring Python on every invocation.
+Unknown glyphs receive a conservative one-em advance.
+
+The fit contract reserves 16 points horizontally, 7.2 points vertically and a
+1.24 line-height factor for native text-frame padding, line metrics and rounding.
+It permits a 4-point micro-label floor on dense overviews; full-size SVGs,
+identity registers and operation links provide the inspection detail. If text
+cannot fit at that floor, rendering fails with
+`CAPABILITY_BLUEPRINT_TEXT_OVERFLOW`; it must not clip or drop declarations.
+The Python `--inspect` pass independently measures generated blueprint labels.
+Native Google/PPTX rendering still requires visual review because font
+substitution and application layout can differ from these measurements.
+
 ### Connector routing validation
 
 Every generated blueprint route carries an explicit rendering policy. When a
@@ -100,8 +146,10 @@ a policy retain their prior behavior.
 `circuit-review.json` distinguishes errors from incomplete evidence. Findings
 identify affected nodes and retained sources. Checks include disconnected
 scenarios, absent targets/bindings, unused bindings, unresolved selectors,
-self-calls without retained bounds, and missing branch selector/variant
-declarations. This is a bounded structural review, not exhaustive verification
+self-calls without retained bounds, missing branch selector/variant declarations,
+and endpoint bindings without a declared provider identity. A later
+transformation's testimony identity does not erase the latter finding.
+This is a bounded structural review, not exhaustive verification
 of all possible circuit defects or an admission decision.
 
 `applyObservationFrame` is a presentation-side adapter function. It requires

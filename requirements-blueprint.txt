@@ -1,0 +1,3 @@
+# Font measurement and blueprint fit inspection; normal Node generation uses
+# committed metrics and does not require this Python dependency.
+Pillow==12.3.0

@@ -16,10 +16,10 @@ test('published request and output schemas stay aligned with the executable prov
 test('capability topology collapses calls with their source edge identity and preserves branch/join/recurrence declarations',()=>{
  const raw=rawFixture();raw.graph.transitions.push({transitionId:'join',from:{scenarioId:'accept'},to:{scenarioId:'refuse'},topologyKind:'join'},{transitionId:'again',from:{scenarioId:'refuse'},to:{scenarioId:'review'},topologyKind:'recurrence'});
  const b=buildBlueprint(normalizeSnapshot(raw)),p=projectBlueprint(b);
- assert.equal(p.nodes.length,3);assert.ok(p.nodes.every(n=>n.kind==='scenario'));assert.equal(p.edges.length,5);
+ assert.equal(p.nodes.filter(n=>n.kind==='scenario').length,3);assert.equal(p.nodes.filter(n=>n.kind==='provider').length,1);assert.equal(p.edges.filter(e=>e.kind!=='scenario-provider').length,5);
  assert.ok(p.edges.some(e=>e.topologyKind==='join'));assert.ok(p.edges.some(e=>e.topologyKind==='recurrence'));
  const call=p.edges.find(e=>e.kind==='call');assert.equal(call.from,'scenario:review');assert.equal(call.to,'scenario:accept');assert.ok(b.edges.some(e=>e.id===call.sourceEdgeIds[0]&&e.from==='operation:review.v1:2'));
- const l=layoutBlueprint(p);assert.equal(l.routes.length,5);assert.ok(l.routes.every(e=>e.points.every(p=>p.every(Number.isFinite))));
+ const l=layoutBlueprint(p);assert.equal(l.routes.length,6);assert.ok(l.routes.every(e=>e.points.every(p=>p.every(Number.isFinite))));
 });
 test('scenario meaning and Event operations occupy distinct projections without invented responsibilities',()=>{
  const b=buildBlueprint(normalizeSnapshot(rawFixture())),sc=projectBlueprint(b,{altitude:'scenario'}),ev=projectBlueprint(b,{altitude:'event'});
@@ -34,7 +34,7 @@ test('a complete 35-operation Event survives independently of the primary capabi
  const s=normalizeSnapshot(raw),r=await handle({contractId:'capability-presentation-request.v1',capabilityId:s.identity.capabilityId,contextAltitude:7},{readEstate:async()=>s});
  assert.equal(r.disposition,'AUTHORED',JSON.stringify(r.findings));
  const story=r.candidate.storyboard,primary=story.slides[1];
- assert.equal(primary.blueprint.altitude,'capability');assert.equal(primary.blueprint.nodes.length,3);
+ assert.equal(primary.blueprint.altitude,'capability');assert.equal(primary.blueprint.nodes.length,4);
  const event=story.slides.find(s=>s.blueprint?.altitude==='event'&&s.blueprint?.scenarioId==='review'&&s.blueprint?.role==='projection');
  assert.equal(event.blueprint.nodes.length,35);assert.equal(event.blueprint.edges.length,34);
  assert.ok(!primary.blueprint.nodes.some(id=>id.startsWith('binding:')));

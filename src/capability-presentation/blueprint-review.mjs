@@ -19,6 +19,10 @@ export function reviewBlueprint(snapshot,model){
  for(const n of model.nodes){
   if(n.missing)add('error',n.kind==='binding'?'PORT_BINDING_MISSING':'TARGET_OR_AUTHORITY_MISSING','A referenced binding, target or owning authority is absent.',[n.id],[n.ref]);
   if(n.kind==='binding'&&n.used===false)add('warning','BINDING_NOT_INVOKED',`Binding ${n.portId} has no invoking operation in the selected graph.`,[n.id],[n.ref]);
+  if(n.kind==='binding'&&n.used&&n.endpoints?.length&&!n.providerIds?.length){
+   const ops=model.nodes.filter(op=>op.kind==='operation'&&op.portId===n.portId);
+   add('warning','ENDPOINT_BINDING_WITHOUT_PROVIDER_ID',`Binding ${n.portId} declares an endpoint but no provider identity. A provider named by a route transformation does not establish this exchange binding's ownership.`,[n.id,...ops.map(op=>op.id)],[n.ref]);
+  }
   if(n.kind==='dynamic')add('warning','RUNTIME_TARGET_UNRESOLVED',`The target is selected from ${n.selector}; this source does not identify the executed capability.`,[n.id],[n.ref]);
  }
  for(const a of snapshot.authorities)for(const op of a.operations){
@@ -34,6 +38,7 @@ export function reviewBlueprint(snapshot,model){
   ADVANCED_ROUTING_NOT_PROJECTED:'Advanced routing declarations are retained as digests; their paths are not expanded by this projection.',
   OBSERVABILITY_CONTRACT_NOT_RETAINED:'The reader did not retain a per-cell observation contract. Runtime state is separate and unobserved.',
   MONOTONIC_PROGRESS_NOT_PROVEN:'No complete semantic-progress proof was retained. Forward placement must not imply proven monotonicity.'
+  ,TRANSFORMATION_PROVIDER_REFERENCES_NOT_RETAINED:'This snapshot predates transformation provider inspection. Refresh it from the estate to establish provider coverage.'
  }[gap.code]??gap.code,[],gap.ref?[gap.ref]:[]);
  return {contractId:'capability-blueprint-review.v1',signal:issues.some(i=>i.severity==='error')?'ISSUES_FOUND':issues.length?'EVIDENCE_INCOMPLETE':'NO_DETECTED_ISSUES',
   isAdmissionReceipt:false,errors:issues.filter(i=>i.severity==='error').length,warnings:issues.filter(i=>i.severity==='warning').length,issues};

@@ -146,3 +146,49 @@ for fan-out, upward branches and necessary obstacle detours. The regenerated
 PowerPoint passed package, layout and import checks. The current local deck is
 `outputs/capability-estate/equity-connector-fixed/presentation.pptx`; Google repair
 and render evidence is in `outputs/google-slides/equity-connector-fix`.
+
+### Provider inspection and automatic scaling
+
+The follow-up live estate read retains provider identities from explicit binding
+configuration and transformation AST declarations. The equity overview now
+contains three market-data identities plus `google/gemini`. Each provider label
+opens an involvement register, whose operation links disclose the exact binding
+and source evidence. Five exchange bindings still lack explicit provider IDs;
+the review exposes these gaps instead of borrowing ownership from a shared
+platform or a later testimony transformation. The result has 12 warnings and no
+detected structural errors. It remains an incomplete authority projection, not
+proof of successful execution or monotonic progress.
+
+The regenerated 68-slide deck retains all 35 operations, the feature writeup and
+the eleven-layer context map. Geometry scales uniformly into the blueprint;
+measured text fitting then wraps and shrinks labels. Python Pillow supplies the
+font measurements and an independent label-fit inspection command:
+
+```powershell
+python -m pip install -r requirements-blueprint.txt
+python scripts/blueprint_font_metrics.py --font C:/Windows/Fonts/arial.ttf --bold-font C:/Windows/Fonts/arialbd.ttf --inspect outputs/capability-estate/equity-provider-inspection-scaled/storyboard.json
+```
+
+Use `--output src/circuit-presentation/font-metrics/arial.json` to rebuild the
+metrics when intentionally changing the installed reference fonts. Font files
+are not redistributed. Ordinary capability regeneration consumes the committed
+metrics and needs neither a Python subprocess nor code edits.
+
+All 78 relevant tests pass. Pillow checked 433 blueprint labels with no fit
+findings. The PowerPoint passed package, layout and artifact-import checks.
+The native Google deck was updated in place; all 21 slides affected by the final
+fit repair were visually inspected, and the other 47 rendered pages were
+pixel-identical to the preceding render. Native readback returned zero structured
+issues and all 124 text-link destinations resolved, including the four provider
+inspection pages. These checks do not assert native PowerPoint font rendering.
+
+[Current capability overview](https://docs.google.com/presentation/d/1aVqW3lBWqnWoWFxdBvaOYVlg49Yxkt_Sl9M0yEVTMy0/edit#slide=id.p3)
+
+Current PowerPoint and generation evidence:
+`outputs/capability-estate/equity-provider-inspection-scaled/presentation.pptx`.
+Native readback and render evidence:
+`outputs/google-slides/equity-scenario-providers/scaled-*`.
+The source snapshot digest is
+`4a6456984cec25c4430218f477b0bb54a092094630749d161b682772290f95f5`.
+The pasted CLI run is contextual evidence only; no invocation was attached to
+the observation layer, and this workflow did not execute the capability.

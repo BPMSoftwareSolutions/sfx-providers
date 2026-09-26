@@ -15,13 +15,19 @@ export const fail = (message, code = 'CAPABILITY_PRESENTATION_INVALID') => { thr
 const pointer = value => str(value).replaceAll('~','~0').replaceAll('/','~1');
 
 function mechanics(expression) {
-  const counts = {}, preview = [], inputPaths=[], cells=[];
+  const counts = {}, preview = [], inputPaths=[], cells=[], providerReferences=[];
   let count = 0, branchCount = 0;
   const walk = (value, path, parent, depth) => {
     if (!value || typeof value !== 'object') return;
     // Literal payloads are data, even if they contain an "op" member.
     if (typeof value.op === 'string') {
       count++; counts[value.op] = (counts[value.op] ?? 0) + 1;
+      if(value.op==='object'){
+        const literalId=v=>v?.op==='literal'&&typeof v.value==='string'&&/^[A-Za-z0-9][A-Za-z0-9._:/-]{0,399}$/.test(v.value)?v.value:null;
+        const providerId=literalId(value.fields?.providerId);
+        if(providerId)providerReferences.push({providerId,bindingId:literalId(value.fields?.bindingId),expressionPath:path+'/fields/providerId/value',
+          basis:path.includes('/fields/providerTestimony')?'declared provider testimony':'declared provider identity',conditional:/\/(then|else|cases)\//.test(path)});
+      }
       cells.push({path,parent,op:value.op,operand:parent===null?'root':path.slice(parent.length+1),
         ...(value.op==='path'&&typeof value.path==='string'?{inputPath:value.path}:{}),
         ...(value.op==='literal'?{literalType:value.value===null?'null':Array.isArray(value.value)?'array':typeof value.value}:{}),
@@ -38,7 +44,7 @@ function mechanics(expression) {
     for (const [key, child] of Object.entries(value)) if (key !== 'op') walk(child, path + '/' + pointer(key), parent, depth);
   };
   walk(expression, '/expression', null, 0);
-  return { nodeCount: count, branchCount, operatorCounts: counts, preview,inputPaths,cells,
+  return { nodeCount: count, branchCount, operatorCounts: counts, preview,inputPaths,cells,providerReferences,
     previewComplete: preview.length === count, expressionDigest: digest(expression ?? null) };
 }
 
@@ -126,7 +132,7 @@ export function normalizeSnapshot({ capability: c, graph: g, scenarios = [], fea
     obligations: obligations.map(o => ({ id: o.proof_obligation_id, statement: str(o.statement), kind: str(o.obligation_kind), definitionDigest: str(o.definition_digest), sourceRef: `model:proof_obligation/${o.semantic_object_definition_pk}` })),
     altitudeCatalog: altitudeCatalog.map(a => ({ id: a.scenario_id, name: str(a.name), definitionDigest: str(a.definition_digest), sourceRef: `model:scenario_version/${a.scenario_version_pk}` })),
     conditions:conditions.map(v=>({id:str(v.condition_id),statement:str(v.statement),definitionDigest:str(v.definition_digest),sourceRef:`model:observable_condition/${v.semantic_object_definition_pk}`})),
-    contextReaderVersion:'feature-prose-and-altitudes.v2',
+    contextReaderVersion:'feature-prose-altitudes-provider-references.v3',
     blueprintSources:blueprintSources.map(b=>({id:str(b.blueprint_id),versionPk:str(b.blueprint_version_pk),
       capabilityVersionPk:str(b.capability_version_pk),disposition:str(b.source_disposition),
       nodeCount:Number(b.node_count),edgeCount:Number(b.edge_count),definitionDigest:str(b.definition_digest),

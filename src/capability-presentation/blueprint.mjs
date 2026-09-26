@@ -45,12 +45,19 @@ export function buildBlueprint(s){
   add('binding:'+b.portId,'binding',b.platformCapabilityId,b.sourceRef,{...b,used,ref:b.sourceRef});
   wire('port:'+b.portId,'binding:'+b.portId,'binding',b.sourceRef,'bound to');
   if(b.platformCapabilityId){add('platform:'+b.platformCapabilityId,'platform',b.platformCapabilityId,b.sourceRef);wire('binding:'+b.portId,'platform:'+b.platformCapabilityId,'realization',b.sourceRef,'platform capability');}
-  for(const providerId of b.providerIds??[]){add('provider:'+providerId,'provider',providerId,b.sourceRef);wire('platform:'+b.platformCapabilityId,'provider:'+providerId,'provider-selection',b.sourceRef,'declared provider');}
+  for(const providerId of b.providerIds??[]){add('provider:'+providerId,'provider',providerId,b.sourceRef);wire('platform:'+b.platformCapabilityId,'provider:'+providerId,'provider-selection',b.sourceRef,'declared provider',{bindingId:'binding:'+b.portId});}
+  const transformation=s.transformations.find(t=>t.id===b.transformationId);
+  for(const reference of transformation?.providerReferences??[]){
+   const ref=transformation.sourceRef+reference.expressionPath;
+   add('provider:'+reference.providerId,'provider',reference.providerId,ref);
+   wire('binding:'+b.portId,'provider:'+reference.providerId,'provider-reference',ref,reference.basis,{bindingId:'binding:'+b.portId,transformationId:transformation.id,providerBindingId:reference.bindingId,conditional:reference.conditional});
+  }
   for(const [i,e]of (b.endpoints??[]).entries()){const id=add(`endpoint:${b.portId}:${i}`,'endpoint',e.origin+e.path,b.sourceRef+'/configuration'+e.sourcePointer);wire('binding:'+b.portId,id,'physical',b.sourceRef,'declared destination');}
   for(const [i,r]of (b.realizations??[]).entries()){const id=add(`physical:${b.portId}:${i}`,'physical',r.field+': '+r.value,b.sourceRef+'/configuration'+r.sourcePointer);wire('binding:'+b.portId,id,'physical',b.sourceRef,'declared metadata');}
   if(b.selectors?.capabilityIdPath)references.push({code:'RUNTIME_TARGET_UNRESOLVED',nodeIds:['binding:'+b.portId],sourceRef:b.sourceRef,targetId:b.selectors.capabilityIdPath});
  }
  const gaps=[];
+ if(s.transformations.some(t=>!Array.isArray(t.providerReferences)))gaps.push({code:'TRANSFORMATION_PROVIDER_REFERENCES_NOT_RETAINED'});
  for(const sc of scenarios)if(!sc.operationIds.length)gaps.push({code:'EXECUTION_AUTHORITY_EMPTY',ref:sc.ref,scenarioId:sc.id});
  if(!(s.blueprintSources??[]).some(b=>b.edgeCount>0))gaps.push({code:'CANONICAL_BLUEPRINT_EDGES_NOT_AVAILABLE'});
  if(s.graphFeatures?.edgeGroups?.length||s.graphFeatures?.dispatchAuthorities?.length)gaps.push({code:'ADVANCED_ROUTING_NOT_PROJECTED'});

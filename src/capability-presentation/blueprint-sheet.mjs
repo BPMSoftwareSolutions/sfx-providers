@@ -1,5 +1,6 @@
 import {C,Slide} from '../circuit-presentation/design.mjs';
 import {validateConnectorRoute} from '../circuit-presentation/contracts.mjs';
+import {fitBlueprintText} from '../circuit-presentation/text-fit.mjs';
 import {humanize} from './model.mjs';
 import {projectBlueprint,projectionOverlays,reachableScenarios,declarationInventory} from './projection.mjs';
 
@@ -48,18 +49,30 @@ export function layoutBlueprint(projection){
  }else{
   // A breadth-first order makes the topology readable without assigning a
   // convergence or execution meaning to shared geometry.
-  const ordered=[],seen=new Set(),queue=[nodes.find(n=>n.scenarioId===projection.scenarioId)?.id??nodes[0]?.id];
-  while(ordered.length<nodes.length){if(!queue.length)queue.push(nodes.find(n=>!seen.has(n.id)).id);const id=queue.shift();if(seen.has(id))continue;seen.add(id);ordered.push(nodes.find(n=>n.id===id));for(const e of edges)if(e.from===id&&!seen.has(e.to))queue.push(e.to);}
-  ordered.forEach((n,i)=>positions[n.id]={x:50+(i%3)*380,y:95+Math.floor(i/3)*225,w:290,h:130});
+  const scenarios=nodes.filter(n=>n.kind==='scenario'),providers=nodes.filter(n=>n.kind==='provider');
+  const ordered=[],seen=new Set(),queue=[scenarios.find(n=>n.scenarioId===projection.scenarioId)?.id??scenarios[0]?.id];
+  while(ordered.length<scenarios.length){if(!queue.length)queue.push(scenarios.find(n=>!seen.has(n.id)).id);const id=queue.shift();if(seen.has(id))continue;seen.add(id);ordered.push(scenarios.find(n=>n.id===id));for(const e of edges)if(e.from===id&&e.kind!=='scenario-provider'&&!seen.has(e.to))queue.push(e.to);}
+  if(providers.length){
+   const span=Math.max(740,ordered.length*350+80,providers.length*320+80);
+   providers.forEach((n,i)=>positions[n.id]={x:(span-(providers.length*320-70))/2+i*320,y:20,w:250,h:110});
+   ordered.forEach((n,i)=>positions[n.id]={x:(span-(ordered.length*350-60))/2+i*350,y:235,w:290,h:130});
+  }else ordered.forEach((n,i)=>positions[n.id]={x:50+(i%3)*380,y:95+Math.floor(i/3)*225,w:290,h:130});
  }
  const compact=['provider','physical'].includes(altitude);
- const width=Math.max(compact?300:700,...Object.values(positions).map(b=>b.x+b.w))+(compact?35:80),height=Math.max(compact?100:320,...Object.values(positions).map(b=>b.y+b.h))+(compact?25:85);
+ const width=Math.max(compact?300:700,...Object.values(positions).map(b=>b.x+b.w))+(compact?35:80);let height=Math.max(compact?100:320,...Object.values(positions).map(b=>b.y+b.h))+(compact?25:85);
  if(nodes.length===1){const b=positions[nodes[0].id];b.x=(width-b.w)/2;b.y=(height-b.h)/2;}
  for(const [i,e]of edges.entries()){
   const a=positions[e.from],b=positions[e.to];let points,routing='orthogonal';
   const start=[a.x+a.w,a.y+a.h/2],end=[b.x,b.y+b.h/2],middle=(start[0]+end[0])/2;
   const forward=start[1]===end[1]?[start,end]:[start,[middle,start[1]],[middle,end[1]],end];
-  if(e.from===e.to){const y=a.y-30;points=[[a.x+a.w*.7,a.y],[a.x+a.w*.7,y],[a.x+a.w*.3,y],[a.x+a.w*.3,a.y]];}
+  if(e.kind==='provider-reference'){
+   const y=Math.max(a.y+a.h,b.y+b.h)+32;
+   points=[[a.x+a.w/2,a.y+a.h],[a.x+a.w/2,y],[b.x+b.w/2,y],[b.x+b.w/2,b.y+b.h]];
+   height=Math.max(height,y+25);
+  }else if(e.kind==='scenario-provider'){
+   points=[[a.x+a.w/2,a.y],[a.x+a.w/2,180],[b.x+b.w/2,180],[b.x+b.w/2,b.y+b.h]];
+   points=points.filter((p,i)=>!i||p[0]!==points[i-1][0]||p[1]!==points[i-1][1]);
+  }else if(e.from===e.to){const y=a.y-30;points=[[a.x+a.w*.7,a.y],[a.x+a.w*.7,y],[a.x+a.w*.3,y],[a.x+a.w*.3,a.y]];}
   else if(end[0]>start[0]&&clearCorridor(forward,positions,e,nodes)){points=forward;routing='forward';}
   else{const y=Math.min(a.y,b.y)-16-(i%3)*8;points=[[a.x+a.w,a.y+a.h/2],[a.x+a.w+15,a.y+a.h/2],[a.x+a.w+15,y],[b.x-12,y],[b.x-12,b.y+b.h/2],[b.x,b.y+b.h/2]];}
   validateConnectorRoute(points,routing);
@@ -80,21 +93,20 @@ function draftingSurface(p,model,projection){
  p.text('Unobserved · no invocation selected',310,466,586,20,10,C.muted);
  const keys=[['INPUT',C.amber],['EXECUTION',C.blue],['PROVIDER',C.violet],['OUTCOME',C.green]];
  keys.forEach(([label,color],i)=>{const x=34+i*135;p.add('shape','RECTANGLE',x,445,10,10,{fill:'none',stroke:color,sw:1});p.text(label,x+16,441,112,20,9,color);});
- p.text('Dashed: declared order / call',626,442,298,20,9,C.muted);
+ p.text(projection.edges?.some(e=>e.kind==='scenario-provider')?'Violet: declared provider involvement':'Dashed: declared order / call',626,442,298,20,9,C.muted);
 }
 
 function drawProjection(p,model,projection,{x=28,y=161,w=904,h=262,diagnostics=true,links={}}={}){
  const l=layoutBlueprint(projection),scale=Math.min(w/l.width,h/l.height,1),ox=x+(w-l.width*scale)/2,oy=y+(h-l.height*scale)/2;
  const at=(x,y)=>[ox+x*scale,oy+y*scale],overlay=projectionOverlays(model,projection,{diagnostics});
  const text=(value,b,size=20,color=C.white,bold=false,link)=>{
-  const font=Math.max(6,size*scale),width=b.w*scale,height=b.h*scale;
-  const maxLines=Math.max(1,Math.floor((height-5)/(font*1.08)));
-  p.add('t',wrap(value,Math.max(8,Math.floor((width-10)/(font*.54))),maxLines),...at(b.x,b.y),width,Math.max(height,font*1.1+6),font,color,bold,'center',...(link?[link]:[]));
+  const width=b.w*scale,height=Math.max(b.h*scale,12.2),fitted=fitBlueprintText(value,{width,height,fontSize:size*scale});
+  p.add('t',fitted.text,...at(b.x,b.y),width,height,fitted.fontSize,color,bold,'center',...(link?[link]:[]));
  };
  for(const e of l.routes){
-  const color=['port','binding','realization','provider-selection','operand'].includes(e.kind)?C.violet:e.kind==='semantic-input'?C.amber:e.kind==='semantic-outcome'?C.green:C.blue;
-  p.add('route',e.points.map(pt=>at(...pt)),color,{width:Math.max(.7,1.6*scale),arrow:true,dash:['call','sequence'].includes(e.kind),glow:false,routing:e.routing});
-  if(projection.altitude==='capability')text(e.kind==='call'?'CALL · '+(e.sourceEdgeIds?.[0]||e.id):brief(e.label||e.kind,35),{x:e.points[0][0]-5,y:Math.min(...e.points.map(pt=>pt[1]))-25,w:140,h:23},14,color);
+  const color=['port','binding','realization','provider-selection','provider-reference','scenario-provider','operand'].includes(e.kind)?C.violet:e.kind==='semantic-input'?C.amber:e.kind==='semantic-outcome'?C.green:C.blue;
+  p.add('route',e.points.map(pt=>at(...pt)),color,{width:Math.max(.7,1.6*scale),arrow:!['scenario-provider','provider-reference'].includes(e.kind),dash:['call','sequence','provider-reference'].includes(e.kind),glow:false,routing:e.routing});
+  if(projection.altitude==='capability'&&e.kind!=='scenario-provider')text(e.kind==='call'?'CALL · '+(e.sourceEdgeIds?.[0]||e.id):brief(e.label||e.kind,35),{x:e.points[0][0]-5,y:Math.min(...e.points.map(pt=>pt[1]))-25,w:140,h:23},14,color);
  }
  for(const n of projection.nodes){
   const b=l.positions[n.id],color=paint(n),issues=overlay.issues.filter(i=>i.visibleNodeIds.includes(n.id)),marker=issues.some(i=>i.severity==='error')?C.red:C.amber;
@@ -103,15 +115,17 @@ function drawProjection(p,model,projection,{x=28,y=161,w=904,h=262,diagnostics=t
   const heading=projection.altitude==='scenario'?({input:'GIVEN / INPUT',event:'WHEN / EVENT',outcome:'THEN / OUTCOME',terminal:'THEN / OUTCOME'}[n.kind]):n.kind==='operation'?String(n.ordinal).padStart(2,'0')+' · '+n.operationKind.toUpperCase():n.kind.toUpperCase();
   if(n.kind==='operation'&&scale>=.6){
    p.add('shape','ELLIPSE',...at(b.x+12,b.y+8),26*scale,26*scale,{fill:'#072D49',stroke:C.blue,sw:Math.max(.6,scale)});
-   text(String(n.ordinal).padStart(2,'0'),{x:b.x+12,y:b.y+10,w:26,h:22},11,C.blue,true);
+   // The text frame includes native side insets; its visible digits remain
+   // centered inside the smaller circle rather than wrapping into two lines.
+   text(String(n.ordinal).padStart(2,'0'),{x:b.x+4,y:b.y+10,w:42,h:22},11,C.blue,true);
    text(n.operationKind,{x:b.x+45,y:b.y+10,w:b.w-52,h:25},12,C.blue);
   }else text(n.kind==='operation'?String(n.ordinal).padStart(2,'0'):heading,{x:b.x+4,y:b.y+6,w:b.w-8,h:n.kind==='operation'?18:30},14,color,true);
-  const label=projection.altitude==='scenario'?humanize(n.label):n.kind==='scenario'?(/\s/.test(n.label)?n.label:humanize(n.label)):identifierCaption(n.kind==='binding'?(n.transformationId||n.label):n.label,model.capabilityId);
+  const label=n.kind==='provider'?n.label:projection.altitude==='scenario'?humanize(n.label):n.kind==='scenario'?(/\s/.test(n.label)?n.label:humanize(n.label)):identifierCaption(n.kind==='binding'?(n.transformationId||n.label):n.label,model.capabilityId);
   const providerView=['provider','physical'].includes(projection.altitude);
   const labelY=providerView?36:n.kind==='operation'&&scale<.6?27:42;
   text(label,{x:b.x+8,y:b.y+labelY,w:b.w-16,h:b.h-labelY-6},projection.altitude==='scenario'?23:n.kind==='scenario'?20:providerView?14:16,C.white,true,links[n.id]);
   for(const edge of l.routes){if(edge.from===n.id){const pt=edge.points[0];p.add('port',...at(...pt),color,Math.max(1.5,3*scale));}if(edge.to===n.id){const pt=edge.points.at(-1);p.add('port',...at(...pt),color,Math.max(1.5,3*scale));}}
-  if(issues.length)text(issues.map(i=>i.id).join(' '),{x:b.x+b.w-98,y:b.y-25,w:98,h:23},14,marker,true);
+  if(issues.length){const markerWidth=Math.max(98,issues.length*36);text(issues.map(i=>i.id).join(' '),{x:b.x+b.w-markerWidth,y:b.y-25,w:markerWidth,h:23},14,marker,true);}
  }
  if(!projection.nodes.length)p.text('No matching declaration is retained for this selection.',60,240,825,85,23,C.muted,false,'center');
  return l;
@@ -136,7 +150,7 @@ export function appendBlueprintSlides({snapshot,model,page,view='capability',sce
  const first=projectionPage(primary,'overview');
  const capability=projectionPage(projectBlueprint(model));
  const active=reachableScenarios(model),selected=model.scenarios.filter(s=>active.has(s.id)||s.id===scenarioId);
- const scenarioPages=new Map(),eventPages=new Map(),providerPages=new Map();
+ const scenarioPages=new Map(),eventPages=new Map(),providerPages=new Map(),providerInspectionPages=new Map();
  for(const sc of selected){
   scenarioPages.set(sc.id,projectionPage(projectBlueprint(model,{altitude:'scenario',scenarioId:sc.id})));
   eventPages.set(sc.id,projectionPage(projectBlueprint(model,{altitude:'event',scenarioId:sc.id})));
@@ -171,6 +185,22 @@ export function appendBlueprintSlides({snapshot,model,page,view='capability',sce
    nav(p,'Back to scenario meaning',scenarioPages.get(sc.id),35);
   }
  }
+ const involvement=projectBlueprint(model).edges.filter(e=>e.kind==='scenario-provider');
+ for(const providerId of [...new Set(involvement.map(e=>e.to))]){
+  const provider=model.nodes.find(n=>n.id===providerId),links=involvement.filter(e=>e.to===providerId);
+  const uses=links.flatMap(e=>e.via.map(v=>({...v,scenarioId:e.from.slice(9),sourceRefs:e.sourceRefs})));
+  for(const group of chunks(uses,3)){
+   const p=page('Provider involvement',provider.label,group.flatMap(v=>v.sourceRefs),JSON.stringify({provider,uses:group},null,2));
+   p.blueprint={role:'provider-inspection',providerId};providerInspectionPages.set(providerId,providerInspectionPages.get(providerId)??p);
+   group.forEach((use,i)=>{const y=139+i*105,op=model.nodes.find(n=>n.id===use.operationId),target=providerPages.get(op.id);
+    p.add('t',wrap(op.label,76,2),38,y,870,44,17,C.white,true,'left',...(target?[{slideIndex:Number(target.id.slice(6))-1}]:[]));
+    p.text(use.basis+' · '+use.scenarioId,38,y+46,870,25,12,C.violet);
+    p.text(wrap('Port binding: '+use.bindingId.slice(8),97,2),38,y+72,870,36,11,C.muted);
+   });
+   p.text('Declared references; execution and successful testimony are separate evidence.',38,468,874,22,11,C.muted);
+   nav(p,'Back to capability blueprint',capability,35);
+  }
+ }
  let review;
  for(const group of chunks(model.review.issues,4)){
   const p=page('Blueprint review',model.review.signal.replaceAll('_',' ')+' · SOURCE-BOUND FINDINGS',group.flatMap(i=>i.sourceRefs),JSON.stringify(group,null,2));review??=p;p.blueprint={role:'review'};
@@ -185,7 +215,10 @@ export function appendBlueprintSlides({snapshot,model,page,view='capability',sce
  }
  for(const {projection,page:p}of projections){
   const links={};
-  if(projection.altitude==='capability')for(const n of projection.nodes)links[n.id]={slideIndex:Number(scenarioPages.get(n.scenarioId).id.slice(6))-1};
+  if(projection.altitude==='capability')for(const n of projection.nodes){
+   const target=n.kind==='scenario'?scenarioPages.get(n.scenarioId):providerInspectionPages.get(n.id);
+   if(target)links[n.id]={slideIndex:Number(target.id.slice(6))-1};
+  }
   if(projection.altitude==='scenario')links['event:'+projection.scenarioId]={slideIndex:Number(eventPages.get(projection.scenarioId).id.slice(6))-1};
   if(projection.altitude==='event')for(const n of projection.nodes)if(providerPages.has(n.id))links[n.id]={slideIndex:Number(providerPages.get(n.id).id.slice(6))-1};
   draftingSurface(p,model,projection);

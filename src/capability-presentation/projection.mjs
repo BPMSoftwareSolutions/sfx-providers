@@ -19,6 +19,23 @@ export function projectBlueprint(model,{altitude='capability',scenarioId=model.r
  if(altitude==='capability'){
   nodes=model.nodes.filter(n=>n.kind==='scenario'&&active.has(n.scenarioId));
   edges=model.edges.filter(e=>['call','transition'].includes(e.kind)).flatMap(e=>e.kind==='call'?(byId.get(e.from).scenarioIds??[]).map(id=>({...e,id:e.id+':'+id,from:'scenario:'+id,sourceEdgeIds:[e.id],collapsed:true})):[{...e,sourceEdgeIds:[e.id],collapsed:false}]);
+  // Summarize exact operation/port ownership at capability altitude, without
+  // flattening its execution cells or treating shared platforms as provider grants.
+  const involvement=new Map(),providers=new Map();
+  for(const scenario of model.scenarios.filter(s=>active.has(s.id)))for(const opId of scenario.operationIds){
+   const op=byId.get(opId);if(!op?.portId)continue;
+   const detail=projectBlueprint(model,{altitude:'provider',scenarioId:scenario.id,operationId:opId});
+   for(const provider of detail.nodes.filter(n=>n.kind==='provider')){
+    const selected=detail.edges.filter(e=>!['provider-selection','provider-reference'].includes(e.kind)||e.to===provider.id);
+    const id=`scenario-provider:${scenario.id}:${provider.id}`;
+    const edge=involvement.get(id)??{id,from:'scenario:'+scenario.id,to:provider.id,kind:'scenario-provider',collapsed:true,label:'declared provider involvement',basis:'owning scenario operations and explicit port bindings',ref:scenario.ref,sourceEdgeIds:[],sourceRefs:[],via:[]};
+    edge.via.push({operationId:opId,portId:op.portId,bindingId:'binding:'+op.portId,sourceEdgeIds:selected.map(e=>e.id),basis:selected.find(e=>e.to===provider.id)?.label});
+    edge.sourceEdgeIds=[...new Set([...edge.sourceEdgeIds,...selected.map(e=>e.id)])];
+    edge.sourceRefs=[...new Set([...edge.sourceRefs,...selected.map(e=>e.ref)])];
+    involvement.set(id,edge);providers.set(provider.id,provider);
+   }
+  }
+  nodes.push(...providers.values());edges.push(...involvement.values());
  }else if(altitude==='scenario'){
   nodes=model.nodes.filter(n=>n.scenarioId===scenarioId&&['input','event','outcome','terminal'].includes(n.kind));
   edges=model.edges.filter(e=>['semantic-input','semantic-outcome'].includes(e.kind));
@@ -27,8 +44,10 @@ export function projectBlueprint(model,{altitude='capability',scenarioId=model.r
  }else if(['provider','physical'].includes(altitude)){
   const op=operationId?byId.get(operationId):sc.operationIds.map(id=>byId.get(id)).find(n=>n.portId);
   if(operationId&&(!op||!sc.operationIds.includes(op.id)||!op.portId))fail('Selected operation has no declared port in this scenario.');
-  if(op){operationId=op.id;const ids=new Set([op.id]),kinds=['port','binding','realization','provider-selection',...(altitude==='physical'?['physical']:[])];for(const kind of kinds)for(const e of model.edges)if(e.kind===kind&&ids.has(e.from))ids.add(e.to);
-   nodes=model.nodes.filter(n=>ids.has(n.id));edges=model.edges.filter(e=>kinds.includes(e.kind));}
+  if(op){operationId=op.id;const ids=new Set([op.id]),kinds=['port','binding','realization','provider-selection','provider-reference',...(altitude==='physical'?['physical']:[])];
+   const owned=e=>e.kind!=='provider-selection'||e.bindingId==='binding:'+op.portId;
+   for(const kind of kinds)for(const e of model.edges)if(e.kind===kind&&ids.has(e.from)&&owned(e))ids.add(e.to);
+   nodes=model.nodes.filter(n=>ids.has(n.id));edges=model.edges.filter(e=>kinds.includes(e.kind)&&owned(e));}
  }else{
   const operation=operationId?byId.get(operationId):sc.operationIds.map(id=>byId.get(id)).find(n=>byId.get('binding:'+n.portId)?.transformationId);
   if(operationId&&(!operation||!sc.operationIds.includes(operationId)))fail('Selected operation is not in this scenario.');
@@ -40,7 +59,7 @@ export function projectBlueprint(model,{altitude='capability',scenarioId=model.r
  }
  const ids=new Set(nodes.map(n=>n.id));edges=edges.filter(e=>ids.has(e.from)&&ids.has(e.to));
  const body={contractId:'capability-blueprint-projection.v1',altitude,capabilityId:model.capabilityId,scenarioId,...(operationId?{operationId}:{}),...(transformationId?{transformationId}:{}),snapshotDigest:model.snapshotDigest,nodes,edges,
-  scope:altitude==='event'?'All selected Event operations; wires retain declared order, not proven runtime routing.':altitude==='scenario'?'Scenario semantic positions; not execution sequencing.':altitude==='capability'?'Root-connected scenario topology; call edges collapse their owning operation.':altitude==='mechanic'?'Declared expression operands; not scenario transitions.':'Selected operation, explicit port and binding ownership.'};
+  scope:altitude==='event'?'All selected Event operations; wires retain declared order, not proven runtime routing.':altitude==='scenario'?'Scenario semantic positions; not execution sequencing.':altitude==='capability'?'Root-connected scenario topology and declared provider involvement; collapsed links retain exact operation and binding evidence, not observed execution.':altitude==='mechanic'?'Declared expression operands; not scenario transitions.':'Selected operation, explicit port and binding ownership.'};
  return {...body,topologyDigest:digest(body)};
 }
 

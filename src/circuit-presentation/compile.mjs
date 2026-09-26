@@ -14,7 +14,7 @@ function checkGeometry(requests) {
     const x2=t.translateX+w*t.scaleX,y2=t.translateY+h*t.scaleY;
     if(![w,h,t.translateX,t.translateY,t.scaleX,t.scaleY].every(Number.isFinite)||w<=0||h<=0||
       Math.min(t.translateX,x2)<-.1||Math.max(t.translateX,x2)>960.1||Math.min(t.translateY,y2)<-.1||Math.max(t.translateY,y2)>540.1)throw error(`Element ${o.objectId} lies outside the 960 x 540 point canvas or has invalid geometry.`);
-    if(o.text&&(o.textStyle.fontSize.magnitude<6||o.textStyle.fontSize.magnitude>96))throw error(`Element ${o.objectId} requires a font size from 6 to 96 points.`);
+    if(o.text&&(o.textStyle.fontSize.magnitude<4||o.textStyle.fontSize.magnitude>96))throw error(`Element ${o.objectId} requires a font size from 4 to 96 points.`);
   }
 }
 
