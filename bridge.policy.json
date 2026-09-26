@@ -207,5 +207,6 @@
     }
   ],
   "surfaceListIsClosed": true,
-  "failureDisposition": "PROVIDER_BRIDGE_ADMISSION_REJECTED"
+  "failureDisposition": "PROVIDER_BRIDGE_ADMISSION_REJECTED",
+  "presentationScopeClarification": "The user-requested hand-authored sfx-circuit-presentation provider (2026-09-26; docs/circuit-presentation.md) is outside the eleven-altitude admitted surface and is not declared in the estate. The baseline and shrink-only rule for the listed altitude providers are unchanged."
 }

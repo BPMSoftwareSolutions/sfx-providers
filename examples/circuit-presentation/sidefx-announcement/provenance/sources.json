@@ -1,0 +1,152 @@
+[
+  {
+    "id": "S01",
+    "title": "The Protection of Information in Computer Systems — Basic Principles of Information Protection",
+    "shortTitle": "Protection principles (MIT)",
+    "url": "https://web.mit.edu/Saltzer/www/publications/protection/Basic.html",
+    "publisher": "Jerome H. Saltzer and Michael D. Schroeder; MIT author-hosted copy",
+    "date": "1975-09",
+    "claim": "Protection should default to denial, mediate every access, minimize privilege, and keep enforcement mechanisms simple enough to analyze.",
+    "limit": "These are established design principles, not evidence that SideFX satisfies them in every deployment."
+  },
+  {
+    "id": "S02",
+    "title": "Reference monitor — CSRC Glossary",
+    "shortTitle": "Reference monitor (NIST)",
+    "url": "https://csrc.nist.gov/glossary/term/reference_monitor",
+    "publisher": "NIST",
+    "date": "Undated glossary; definition cites SP 800-53 Rev. 5 (2020)",
+    "claim": "A reference validation mechanism should always mediate access, resist tampering, and be small enough for analysis and testing.",
+    "limit": "SideFX's non-bypassability, tamper resistance, and verifiability require implementation evidence."
+  },
+  {
+    "id": "S03",
+    "title": "CHERI Frequently Asked Questions",
+    "shortTitle": "Capability security (Cambridge)",
+    "url": "https://www.cl.cam.ac.uk/research/security/ctsrd/cheri/cheri-faq.html",
+    "publisher": "University of Cambridge Computer Laboratory, CHERI project",
+    "date": "Undated maintained FAQ",
+    "claim": "Capability systems restrict executing code to objects for which it holds authority, with enforcement possible at multiple system layers.",
+    "limit": "A business capability is not automatically an unforgeable security capability or evidence of CHERI protection."
+  },
+  {
+    "id": "S04",
+    "title": "Advanced Topics — Proving Safety Properties; Hiding, Refinement, and Auxiliary Variables",
+    "shortTitle": "Refinement (Lamport)",
+    "url": "https://lamport.azurewebsites.net/tla/advanced.html",
+    "publisher": "Leslie Lamport",
+    "date": "2019-06-27",
+    "claim": "Refinement relates an implementation to a higher-level specification, while machine-checked proofs require work beyond informal correctness arguments.",
+    "limit": "Tests, hashes, deterministic execution, and provenance records are not themselves formal proofs."
+  },
+  {
+    "id": "S05",
+    "title": "Getting Started with Dafny: A Guide",
+    "shortTitle": "Contracts (Dafny)",
+    "url": "https://dafny.org/dafny/OnlineTutorial/guide#pre--and-postconditions",
+    "publisher": "Dafny project",
+    "date": "Undated maintained guide using Dafny 4 syntax",
+    "claim": "Dafny verifies that code satisfies stated preconditions and postconditions, which express behavioral requirements beyond ordinary type constraints.",
+    "limit": "Schema validation and correct implementation of an incomplete specification do not establish real-world safety."
+  },
+  {
+    "id": "S06",
+    "title": "Certification Strategies using Run-Time Safety Assurance for Part 23 Autopilot Systems",
+    "shortTitle": "Runtime assurance (NASA)",
+    "url": "https://ntrs.nasa.gov/citations/20170007254",
+    "publisher": "Loyd R. Hook et al.; NASA Technical Reports Server",
+    "date": "2016-03-05",
+    "claim": "Runtime verification and independent safety mechanisms can support assurance of complex autopilot behavior and supplement certification.",
+    "limit": "This is an engineering precedent, not evidence that SideFX has aviation certification or physical-control guarantees."
+  },
+  {
+    "id": "S07",
+    "title": "Guidance on the Implementation of an Objectives-Driven, Risk-Informed, and Case-Assured Framework for Safety and Mission Success",
+    "shortTitle": "Safety cases (NASA)",
+    "url": "https://ntrs.nasa.gov/citations/20250002210",
+    "publisher": "NASA",
+    "date": "2025-03-03",
+    "claim": "Safety assurance connects explicit risk objectives to an evolving argument supported by evidence throughout a program's lifecycle.",
+    "limit": "A demonstration alone does not establish a safety case across domains, hazards, and operating conditions."
+  },
+  {
+    "id": "S08",
+    "title": "PostgreSQL Documentation, 3.4 Transactions",
+    "shortTitle": "Transactions (PostgreSQL)",
+    "url": "https://www.postgresql.org/docs/current/tutorial-transactions.html",
+    "publisher": "PostgreSQL Global Development Group",
+    "date": "Undated; version 18 documentation at access",
+    "claim": "A database transaction commits a group of changes together or rolls them back while hiding incomplete intermediate states from other transactions.",
+    "limit": "A database transaction does not automatically undo external API effects or provide exactly-once provider execution."
+  },
+  {
+    "id": "S09",
+    "title": "PROV-Overview — An Overview of the PROV Family of Documents",
+    "shortTitle": "Provenance (W3C)",
+    "url": "https://www.w3.org/TR/prov-overview/",
+    "publisher": "W3C",
+    "date": "2013-04-30",
+    "claim": "Provenance records entities, activities, and responsible agents involved in producing artifacts so their derivation and trustworthiness can be assessed.",
+    "limit": "Provenance alone does not prove factual truth, provide tamper evidence, or establish SideFX's PROV conformance."
+  },
+  {
+    "id": "S10",
+    "title": "Designing AI agents to resist prompt injection",
+    "shortTitle": "Agent security (OpenAI)",
+    "url": "https://openai.com/index/designing-agents-to-resist-prompt-injection/",
+    "publisher": "OpenAI; Thomas Shadwell and Adrian Spânu",
+    "date": "2026-03-11",
+    "claim": "Agent systems should constrain the consequences of manipulation even when it succeeds, including through deterministic limits outside the model.",
+    "limit": "This corroborates the engineering problem and principle, not OpenAI endorsement or unique invention by SideFX."
+  },
+  {
+    "id": "S11",
+    "title": "How we contain Claude across products",
+    "shortTitle": "Containment (Anthropic)",
+    "url": "https://www.anthropic.com/engineering/how-we-contain-claude",
+    "publisher": "Anthropic Engineering",
+    "date": "2026-05-25",
+    "claim": "Environmental isolation, egress controls, credential separation, and granular tool permissions complement probabilistic model defenses.",
+    "limit": "Provider isolation and infrastructure security remain necessary considerations; this source does not show that SideFX makes sandboxing obsolete."
+  },
+  {
+    "id": "S12",
+    "title": "Artificial Intelligence Risk Management Framework (AI RMF 1.0)",
+    "shortTitle": "AI RMF (NIST)",
+    "url": "https://www.nist.gov/publications/artificial-intelligence-risk-management-framework-ai-rmf-10",
+    "publisher": "NIST; Elham Tabassi",
+    "date": "2023-01-26",
+    "claim": "The voluntary AI RMF organizes continuous risk work under Govern, Map, Measure, and Manage, including documented evaluation and limitations.",
+    "limit": "An architecture mapping is not NIST certification or complete framework compliance; a revision is in progress at access."
+  },
+  {
+    "id": "S13",
+    "title": "United Nations adopts ground-breaking Pact for the Future to transform global governance",
+    "shortTitle": "Global Digital Compact (UN)",
+    "url": "https://www.un.org/sustainabledevelopment/blog/2024/09/press-release-sotf-2024/",
+    "publisher": "United Nations Department of Global Communications",
+    "date": "2024-09-22",
+    "claim": "The adopted Global Digital Compact includes commitments to AI governance, data governance, scientific assessment, and international dialogue.",
+    "limit": "This establishes cooperation context, not UN endorsement or selection of SideFX; official indexed text was checked after direct fetch returned 403."
+  },
+  {
+    "id": "S14",
+    "title": "Independent International Scientific Panel on AI",
+    "shortTitle": "Scientific Panel on AI (UN)",
+    "url": "https://www.un.org/independent-international-scientific-panel-ai/en",
+    "publisher": "United Nations",
+    "date": "Established 2025-08-26 by A/RES/79/325; maintained page",
+    "claim": "The UN established a scientific panel and Global Dialogue on AI Governance to connect independent scientific evidence with international deliberation.",
+    "limit": "Collaboration is an invitation, not an existing relationship; official indexed content was verified while direct pages used access protection."
+  },
+  {
+    "id": "S15",
+    "title": "Defeating Prompt Injections by Design",
+    "shortTitle": "CaMeL paper (2025)",
+    "url": "https://arxiv.org/abs/2503.18813v2",
+    "publisher": "Edoardo Debenedetti et al., Google, Google DeepMind and ETH Zurich",
+    "date": "2025-06-24, version 2",
+    "claim": "CaMeL separates planning from untrusted data processing and enforces data-flow policies through an interpreter at tool calls.",
+    "limit": "Its guarantees depend on a stated threat model, policies, trusted prompts and implementation assumptions. It is not a proof of SideFX or a universal AI-safety result."
+  }
+]

@@ -16,3 +16,7 @@ For the broader architectural rationale, see
 [evidence model](modernization-evidence-model.md), and the
 [absorption playbook](capability-absorption-playbook.md). Those proposals do not
 change this bridge's admission ceiling, successor requirements, or retirement proof.
+
+The separately requested [circuit-presentation provider](circuit-presentation.md)
+(2026-09-26) is hand-authored and not declared in the estate. Its reusable diagram
+compiler sits outside the eleven-altitude admitted surface; the baseline stays 11.

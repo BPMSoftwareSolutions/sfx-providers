@@ -10,6 +10,7 @@ The documentation below develops the architecture discussion supplied on
 
 | Document | Purpose |
 | --- | --- |
+| [Circuit-presentation provider](circuit-presentation.md) | Reusable native diagrams, retained announcement design, JSON/HTTPS/CLI contracts and editable PowerPoint export. |
 | [Capability estate modernization](capability-estate-modernization.md) | Architectural thesis, boundaries, terminology, determinism topology, scenario-based migration, and the role of AI. Start here. |
 | [Modernization evidence model](modernization-evidence-model.md) | Proposed classification records, evidence and lineage, metrics, dashboard semantics, and worked measurements. |
 | [Capability absorption playbook](capability-absorption-playbook.md) | Progression from an unknown dependency to governed use, characterization, candidate execution, admission, and retirement; includes cutover and rollback criteria. |

@@ -1,0 +1,30 @@
+{
+  "contractId": "circuit-presentation-request.v1",
+  "objectPrefix": "example_circuit",
+  "deck": {
+    "title": "Declared provider dispatch",
+    "sources": [{ "id": "mediation", "title": "Reference monitor", "url": "https://csrc.nist.gov/glossary/term/reference_monitor" }],
+    "slides": [{
+      "title": "A proposal needs a declared route",
+      "subtitle": "One admitted provider path, one explicit refusal outcome",
+      "notes": "Illustrative mechanism, not a claim of certification. The violet gate resolves the proposal against the amber authority. Green carries admitted effects. Red denotes refusal.",
+      "commands": [
+        { "op": "chip", "args": [374, 124, 212, 54, "Declared authority", "#F6B94D", { "size": 17 }] },
+        { "op": "route", "args": [[[480, 178], [480, 245]], "#F6B94D", { "arrow": true }] },
+        { "op": "terminal", "args": [110, 285, "AI", "#45A7FF", { "r": 30, "size": 16 }] },
+        { "op": "route", "args": [[[140, 285], [438, 285]], "#45A7FF", { "arrow": true }] },
+        { "op": "label", "args": ["Capability + input", 195, 242, 204, "#45A7FF", 16] },
+        { "op": "gate", "args": [480, 285, "", "#A98AF2", 40] },
+        { "op": "route", "args": [[[520, 285], [630, 285], [630, 220], [810, 220]], "#4DE0B0", { "arrow": true }] },
+        { "op": "junction", "args": [630, 285, "#4DE0B0"] },
+        { "op": "socket", "args": [742, 220, { "label": "Provider binding" }] },
+        { "op": "chip", "args": [821, 190, 105, 60, "Provider", "#4DE0B0", { "size": 14 }] },
+        { "op": "route", "args": [[[480, 325], [480, 400], [700, 400]], "#FF5F70", { "arrow": true }] },
+        { "op": "stop", "args": [714, 400, "#FF5F70"] },
+        { "op": "label", "args": ["Refusal", 738, 383, 148, "#FF5F70", 17] },
+        { "op": "foot", "args": ["Authority is supplied independently of the model proposal."] },
+        { "op": "source", "args": [["mediation"]] }
+      ]
+    }]
+  }
+}

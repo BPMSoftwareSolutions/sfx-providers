@@ -10,6 +10,7 @@
   "scripts": {
     "setup-cert": "powershell -ExecutionPolicy Bypass -NoProfile -File ./setup-cert.ps1",
     "start": "node runner.mjs",
-    "test": "node --test tests"
+    "test": "node --test tests",
+    "circuit-deck": "node circuit-deck.mjs"
   }
 }

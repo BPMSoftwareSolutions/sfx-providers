@@ -1,0 +1,87 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "circuit-presentation-output.v1",
+  "type": "object",
+  "properties": {
+    "contractId": {
+      "const": "circuit-presentation-output.v1"
+    },
+    "title": {
+      "type": "string"
+    },
+    "pageSize": {
+      "type": "object",
+      "properties": {
+        "width": {
+          "const": 960
+        },
+        "height": {
+          "const": 540
+        },
+        "unit": {
+          "const": "PT"
+        }
+      },
+      "required": [
+        "width",
+        "height",
+        "unit"
+      ],
+      "additionalProperties": false
+    },
+    "inputDigest": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "contentDigest": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "slides": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 64,
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "notes": {
+            "type": "string"
+          },
+          "svg": {
+            "type": "string"
+          },
+          "requests": {
+            "type": "array"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "notes",
+          "svg",
+          "requests"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "requests": {
+      "type": "array"
+    }
+  },
+  "required": [
+    "contractId",
+    "title",
+    "pageSize",
+    "inputDigest",
+    "contentDigest",
+    "slides",
+    "requests"
+  ],
+  "additionalProperties": false
+}

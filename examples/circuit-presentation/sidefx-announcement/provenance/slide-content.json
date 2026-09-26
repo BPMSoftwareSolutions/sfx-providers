@@ -1,0 +1,661 @@
+[
+  {
+    "number": 1,
+    "title": "Accelerating AI safety",
+    "appendix": false,
+    "notes": "Opening, about 40 seconds. Today I am announcing an engineering result: SideFX separates model inference from the authority that produces operational effects. We have built and demonstrated this boundary in a capability estate. I will show the problem, the actual mechanism and the execution evidence, then propose independent evaluation with model developers, public institutions and the research community. The claim is specific enough to test. It concerns reachability of effects through the SideFX-controlled path, rather than a claim to have solved every issue in AI safety.\n\nVisual: original conceptual illustration generated with OpenAI image generation on 26 September 2026. It depicts an architectural analogy, not an actual device.",
+    "refs": [],
+    "texts": [
+      "SideFX",
+      "Accelerating\nAI safety",
+      "Engineering the boundary\nbetween inference and effect",
+      "Architecture announcement"
+    ]
+  },
+  {
+    "number": 2,
+    "title": "The engineering result",
+    "appendix": false,
+    "notes": "About 60 seconds. A model can propose useful work, but a proposal is data. SideFX resolves that data against an independently declared capability estate. The operational circuit exists before this particular model response and has its own input, scenarios, provider bindings and outcome. This is the concrete boundary we have implemented and demonstrated. It does not say a model can never be wrong or that every declared action is wise. It says the model response does not itself create a new operational execution path. The rest of the presentation explains how that boundary works and where the evidence stops.\n\nSIDEFX IMPLEMENTATION EVIDENCE\nE01: C:/lab/repos/sfx-embody/docs/agent-lane.md, especially lines 25–101; C:/lab/repos/sfx-embody/sql/migrations/declare-agent-capability.sql, lines 158–239.\n\nE02: C:/lab/repos/sfx-embody/evidence/vault-20260916/csharp-seams/receipt.json, lines 111–159. Recorded 18 September 2026. Direct and model-assisted quote outcome EQUITY_MARKET_PRICE_EVIDENCE_RESOLVED. The model-assisted trace has 716 cell testimony entries. Its isolation configuration predates the later Windows hardening receipts.\n\nE03: C:/lab/repos/sfx-embody/evidence/vault-20260916/lane-relevance/after-filter/invoke-purchase.stdout.json. Recorded 19 September 2026. Objective: Buy $1,000 worth of Broadcom. Gemini 2.5 Pro proposed buy_stock with AVGO. Capability resolution declared=false and returned CAPABILITY_NOT_FOUND. Inference and refusal processing executed. The requested trade execution child was not entered.\n\nReview date: 26 September 2026. Retained local evidence and source review, not a newly executed end-to-end security evaluation.",
+    "refs": [],
+    "texts": [
+      "The engineering result",
+      "02",
+      "The model proposes\na capability and its input",
+      "The declared circuit determines\nthe provider path",
+      "Implemented and demonstrated in retained SideFX executions. Independent evaluation is the next step."
+    ]
+  },
+  {
+    "number": 3,
+    "title": "When inference reaches operational tools",
+    "appendix": false,
+    "notes": "About 60 seconds. This is a common failure pattern, not a claim that every existing agent uses this design. A runtime can take model-selected actions and execute them with access to tools, credentials and persistent state. Then a misunderstanding or a malicious instruction embedded in external content can influence a consequential operation. The point of the illustration is the path to the actuator. We need to understand which part of the system possesses the authority to change a database, send information or operate a device. OpenAI and Anthropic both explicitly recognize that consequences must be constrained outside probabilistic model behavior.\n\nSources: https://openai.com/index/designing-agents-to-resist-prompt-injection/\nhttps://www.anthropic.com/engineering/how-we-contain-claude\nVisual: generated conceptual engineering analogy, 26 September 2026.",
+    "refs": [
+      "S10",
+      "S11"
+    ],
+    "texts": [
+      "When inference reaches operational tools",
+      "Model-selected action",
+      "General-purpose runner",
+      "Operational effects",
+      "Common failure pattern: uncertain or manipulated output can travel along an authorized effect path.",
+      "Agent security (OpenAI)",
+      "03"
+    ]
+  },
+  {
+    "number": 4,
+    "title": "A shared engineering direction",
+    "appendix": false,
+    "notes": "About 55 seconds. The industry already recognizes this engineering problem. OpenAI describes systems that constrain consequences even when prompt injection succeeds, including deterministic limits outside the model. Anthropic describes isolation, network controls, credential separation and granular tool permission. SideFX is not claiming these engineers overlooked the problem. Our contribution is the concrete capability-estate composition: capability meaning, scenario circuits, declared provider bindings and addressed execution evidence. That is the artifact we can bring to a serious collaboration. These sources corroborate the problem and the engineering direction. They do not endorse SideFX.",
+    "refs": [
+      "S10",
+      "S11"
+    ],
+    "texts": [
+      "A shared engineering direction",
+      "Agent security (OpenAI)",
+      "Containment (Anthropic)",
+      "04",
+      "OpenAI",
+      "Constrain consequences even when\nprompt injection succeeds",
+      "11 March 2026",
+      "Anthropic",
+      "Bound environmental reach,\ncredentials and tool permissions",
+      "25 May 2026",
+      "SideFX contributes an independently operable capability estate, explicit circuits and provider bindings."
+    ]
+  },
+  {
+    "number": 5,
+    "title": "The SideFX capability circuit",
+    "appendix": false,
+    "notes": "About 80 seconds. Follow the path from left to right. A model provider receives an objective and produces a proposal: a capability identity and input. The runtime resolves that identity against the estate. A resolved capability brings its independently declared circuit. Provider bindings connect the circuit to actual providers. The providers produce outcomes. The estate sits above this path because its declarations supply the authority. The inference provider is not on the estate write path. Evidence returns below the circuit. Inference may also appear inside a capability when needed, but it is still a bound provider with a defined role. The model never becomes the estate.\n\nSIDEFX IMPLEMENTATION EVIDENCE\nE01: C:/lab/repos/sfx-embody/docs/agent-lane.md, especially lines 25–101; C:/lab/repos/sfx-embody/sql/migrations/declare-agent-capability.sql, lines 158–239.\n\nE05: C:/lab/repos/sfx-embody/docs/architecture-achieved.md, lines 38–138 and 461–582; C:/lab/repos/scenario-driven-architecture/kernel/schemas/cell-execution-testimony.schema.json. Database is the execution authority source. Canonical, realized and observed graph digests are distinct. These are local implementation/evidence sources, not independent certification.\n\nReview date: 26 September 2026. Retained local evidence and source review, not a newly executed end-to-end security evaluation.",
+    "refs": [],
+    "texts": [
+      "The SideFX capability circuit",
+      "05",
+      "Capability estate\nDeclared authority",
+      "Model\nprovider",
+      "Proposal\nCapability + input",
+      "Capability\ncircuit",
+      "Provider\nbinding",
+      "Provider",
+      "Inference",
+      "Data",
+      "Resolved execution path",
+      "Outcome + execution evidence",
+      "The inference provider proposes. Estate declarations supply the operational path."
+    ]
+  },
+  {
+    "number": 6,
+    "title": "Two requests, different declared paths",
+    "appendix": false,
+    "notes": "About 75 seconds. These are retained runs, not simulated examples. On 18 September, the installed C# path resolved market-price evidence and the model-assisted invocation returned the expected outcome. The retained record contains 716 cell testimony entries. On 19 September, the objective to buy one thousand dollars of Broadcom led Gemini 2.5 Pro to propose buy_stock with AVGO. That capability was not declared, so the lane returned CAPABILITY_NOT_FOUND. These were different runs and isolation configurations. The architectural contrast is admission of an existing capability versus refusal of an absent one. It is not a benchmark or a matched adversarial experiment.\n\nSIDEFX IMPLEMENTATION EVIDENCE\nE02: C:/lab/repos/sfx-embody/evidence/vault-20260916/csharp-seams/receipt.json, lines 111–159. Recorded 18 September 2026. Direct and model-assisted quote outcome EQUITY_MARKET_PRICE_EVIDENCE_RESOLVED. The model-assisted trace has 716 cell testimony entries. Its isolation configuration predates the later Windows hardening receipts.\n\nE03: C:/lab/repos/sfx-embody/evidence/vault-20260916/lane-relevance/after-filter/invoke-purchase.stdout.json. Recorded 19 September 2026. Objective: Buy $1,000 worth of Broadcom. Gemini 2.5 Pro proposed buy_stock with AVGO. Capability resolution declared=false and returned CAPABILITY_NOT_FOUND. Inference and refusal processing executed. The requested trade execution child was not entered.\n\nReview date: 26 September 2026. Retained local evidence and source review, not a newly executed end-to-end security evaluation.",
+    "refs": [],
+    "texts": [
+      "Two requests, different declared paths",
+      "06",
+      "Market-price request",
+      "18 September 2026",
+      "Declared capability",
+      "Price evidence returned",
+      "Purchase request",
+      "19 September 2026",
+      "buy_stock is undeclared",
+      "CAPABILITY_NOT_FOUND",
+      "The trade execution path was never entered. The inference provider and refusal processing did run."
+    ]
+  },
+  {
+    "number": 7,
+    "title": "A proposal cannot create its own route",
+    "appendix": false,
+    "notes": "About 65 seconds. This is a compact rendering of the actual purchase refusal fields. The model supplied a purchase proposal. The declared resolution read returned declared false. The refusal code was CAPABILITY_NOT_FOUND. In this run there was no selected trade-execution child and no trade provider dispatch through that child. The entire invocation still did work, including model inference, capability resolution and refusal shaping. This is why the narrower caption matters. The result demonstrates absence of an undeclared business path. It does not demonstrate a per-user grant system or prove that every already declared capability is safe.\n\nSIDEFX IMPLEMENTATION EVIDENCE\nE03: C:/lab/repos/sfx-embody/evidence/vault-20260916/lane-relevance/after-filter/invoke-purchase.stdout.json. Recorded 19 September 2026. Objective: Buy $1,000 worth of Broadcom. Gemini 2.5 Pro proposed buy_stock with AVGO. Capability resolution declared=false and returned CAPABILITY_NOT_FOUND. Inference and refusal processing executed. The requested trade execution child was not entered.\n\nE01: C:/lab/repos/sfx-embody/docs/agent-lane.md, especially lines 25–101; C:/lab/repos/sfx-embody/sql/migrations/declare-agent-capability.sql, lines 158–239.\n\nReview date: 26 September 2026. Retained local evidence and source review, not a newly executed end-to-end security evaluation.",
+    "refs": [],
+    "texts": [
+      "A proposal cannot create its own route",
+      "07",
+      "Retained purchase refusal",
+      "proposal.capability",
+      "buy_stock",
+      "resolution.declared",
+      "false",
+      "Capability resolution",
+      "CAPABILITY_NOT_FOUND",
+      "No trade-provider dispatch",
+      "This demonstrates refusal by absence in the tested SideFX lane."
+    ]
+  },
+  {
+    "number": 8,
+    "title": "Inside a declared capability",
+    "appendix": false,
+    "notes": "About 90 seconds. A capability circuit is an executable structure, not simply an API name in a prompt. The input contract defines the accepted state. Declared transformations prepare the data. Declared scenarios, operations and routing select how processing proceeds. A provider binding resolves the physical work. The returned state must be classified into an outcome. The drawing is a conceptual projection of those declared parts, rather than the complete graph for every capability. Composite capabilities can call other capability circuits through declared bindings. This nesting is how the architecture stays small in vocabulary while supporting complex behavior. Provider outcomes can remain variable even when routing and authority resolution are deterministic.\n\nSIDEFX IMPLEMENTATION EVIDENCE\nE01: C:/lab/repos/sfx-embody/docs/agent-lane.md, especially lines 25–101; C:/lab/repos/sfx-embody/sql/migrations/declare-agent-capability.sql, lines 158–239.\n\nE05: C:/lab/repos/sfx-embody/docs/architecture-achieved.md, lines 38–138 and 461–582; C:/lab/repos/scenario-driven-architecture/kernel/schemas/cell-execution-testimony.schema.json. Database is the execution authority source. Canonical, realized and observed graph digests are distinct. These are local implementation/evidence sources, not independent certification.\n\nE08: C:/lab/repos/scenario-driven-architecture/docs/transistor-model.md, lines 31–179; docs/deterministic-execution.md, around line 399. Language-neutral declared meaning remains distinct from admitted native resolver mechanics. The transistor comparison is an analogy, not a physical security proof.\n\nReview date: 26 September 2026. Retained local evidence and source review, not a newly executed end-to-end security evaluation.",
+    "refs": [],
+    "texts": [
+      "Inside a declared capability",
+      "08",
+      "Input",
+      "Event",
+      "Outcome",
+      "Input contract",
+      "Execution authority",
+      "Outcome contract + route",
+      "Inside the event",
+      "Declared operations and transformations\nProvider bindings or nested capability circuits",
+      "Canonical scenario: Input, Event, Outcome. The same structure composes recursively."
+    ]
+  },
+  {
+    "number": 9,
+    "title": "Provider bindings make effects explicit",
+    "appendix": false,
+    "notes": "About 80 seconds. The provider boundary is where the logical circuit reaches physical realization. In the governed HTTP implementation, the declared endpoint and method constrain the request. Credential application happens at the seam. One-use bindings are checked for endpoint identity and expiry. The runtime controls headers, redirects, response size and failures. This is source-backed implementation, not a claim that every imaginable provider has the same protections. A provider may be a hosted model, a market-data service, a database or native mechanism. Providers still execute code and still need operational security. Their behavior cannot be assumed safe simply because it has a binding.\n\nSIDEFX IMPLEMENTATION EVIDENCE\nE04: C:/lab/repos/scenario-driven-architecture/languages/typescript/runtimes/node/governed-http-exchange-provider.mjs, lines 46–158. One-use credential binding, expiry and endpoint identity checks, HTTPS endpoint/method validation, header rules, manual redirects and bounded responses.\n\nReview date: 26 September 2026. Retained local evidence and source review, not a newly executed end-to-end security evaluation.",
+    "refs": [],
+    "texts": [
+      "Provider bindings make effects explicit",
+      "09",
+      "Circuit port",
+      "Declared binding",
+      "Provider",
+      "Declared endpoint + method",
+      "Credential binding + expiry",
+      "Response bounds + failure outcome",
+      "Logical\ncapability",
+      "Shown: implemented governed HTTP seam. Other providers need their own conformance evidence."
+    ]
+  },
+  {
+    "number": 10,
+    "title": "An effect has an inspectable history",
+    "appendix": false,
+    "notes": "About 70 seconds. SideFX distinguishes the declared or canonical graph, its realized placement and the path actually observed during execution. Cell testimony records identities and digests tied to inputs, authority, provider realization and outcomes. An evaluator can therefore ask which circuit ran and how a particular outcome came about. This is a stronger basis for an engineering discussion than an assurance written into a prompt. It is still important to distinguish provenance from truth. A digest identifies bytes. It does not prove that the bytes are correct, that a goal was safe, or that the entire real world has been observed. W3C PROV provides established vocabulary for this kind of traceability.\n\nSIDEFX IMPLEMENTATION EVIDENCE\nE05: C:/lab/repos/sfx-embody/docs/architecture-achieved.md, lines 38–138 and 461–582; C:/lab/repos/scenario-driven-architecture/kernel/schemas/cell-execution-testimony.schema.json. Database is the execution authority source. Canonical, realized and observed graph digests are distinct. These are local implementation/evidence sources, not independent certification.\n\nReview date: 26 September 2026. Retained local evidence and source review, not a newly executed end-to-end security evaluation.",
+    "refs": [
+      "S09"
+    ],
+    "texts": [
+      "An effect has an inspectable history",
+      "Provenance (W3C)",
+      "10",
+      "01",
+      "Declared graph",
+      "02",
+      "Realized graph",
+      "03",
+      "Observed path",
+      "What the estate says",
+      "Which runtime and providers",
+      "What actually ran and returned",
+      "Source-addressed testimony supports audit and reproduction. It does not replace semantic or safety validation."
+    ]
+  },
+  {
+    "number": 11,
+    "title": "The estate is operational data",
+    "appendix": false,
+    "notes": "About 75 seconds. The authority store is operational because the runtime reads its declarations to resolve the circuit, routing and provider bindings. It is not merely documentation next to a separate capability-specific application. The generic executor still runs code. The database still needs administrative control, integrity and version discipline. And providers still realize the physical effect. This separation lets capability meaning remain durable across a change of model provider or deployment arrangement. It does not mean storing any JSON makes it trustworthy. The claim depends on which rows are authoritative, who can change them and how the runtime selects them.\n\nSIDEFX IMPLEMENTATION EVIDENCE\nE05: C:/lab/repos/sfx-embody/docs/architecture-achieved.md, lines 38–138 and 461–582; C:/lab/repos/scenario-driven-architecture/kernel/schemas/cell-execution-testimony.schema.json. Database is the execution authority source. Canonical, realized and observed graph digests are distinct. These are local implementation/evidence sources, not independent certification.\n\nE08: C:/lab/repos/scenario-driven-architecture/docs/transistor-model.md, lines 31–179; docs/deterministic-execution.md, around line 399. Language-neutral declared meaning remains distinct from admitted native resolver mechanics. The transistor comparison is an analogy, not a physical security proof.\n\nReview date: 26 September 2026. Retained local evidence and source review, not a newly executed end-to-end security evaluation.",
+    "refs": [],
+    "texts": [
+      "The estate is operational data",
+      "11",
+      "Capability estate",
+      "Contracts\nScenarios and routing\nExecution authority\nProvider bindings",
+      "Generic executor",
+      "Bound providers",
+      "Reads declared\nmeaning",
+      "Capability meaning remains independent of any one model. Hosts and providers still perform execution."
+    ]
+  },
+  {
+    "number": 12,
+    "title": "The circuit and the host boundary work together",
+    "appendix": false,
+    "notes": "About 65 seconds. Circuit mediation does not make isolation obsolete. The latest reviewed Windows source implements low-integrity execution by default and optional AppContainer execution. Later retained AppContainer receipts record acceptance, denied host writes and denied child-process launch. These controls are bounded: container-owned storage remains writable, and low-integrity mode has different residual access. The accepted quote and refused purchase shown earlier used different historical configurations. Do not combine them into a single imaginary hardened run. Independent evaluators should test the circuit, process environment and provider seam together on each supported host. Windows evidence is not proof of equivalent acceptance on every operating system.\n\nSIDEFX IMPLEMENTATION EVIDENCE\nE06: C:/lab/repos/scenario-driven-architecture/languages/csharp/src/ScenarioKernel/bootstrap/ProcessIsolation.cs. C:/lab/repos/sfx-embody/evidence/vault-20260916/cross-host/windows-csharp-appcontainer/windows-csharp-appcontainer.kernel-acceptance-receipt.json and windows-csharp-appcontainer.live-invoke.process.json, 19 September 2026. Later AppContainer acceptance supersedes the earlier C# write-isolation gap. Host-write and child-process denial are bounded controls; container-owned storage remains writable.\n\nE02: C:/lab/repos/sfx-embody/evidence/vault-20260916/csharp-seams/receipt.json, lines 111–159. Recorded 18 September 2026. Direct and model-assisted quote outcome EQUITY_MARKET_PRICE_EVIDENCE_RESOLVED. The model-assisted trace has 716 cell testimony entries. Its isolation configuration predates the later Windows hardening receipts.\n\nE03: C:/lab/repos/sfx-embody/evidence/vault-20260916/lane-relevance/after-filter/invoke-purchase.stdout.json. Recorded 19 September 2026. Objective: Buy $1,000 worth of Broadcom. Gemini 2.5 Pro proposed buy_stock with AVGO. Capability resolution declared=false and returned CAPABILITY_NOT_FOUND. Inference and refusal processing executed. The requested trade execution child was not entered.\n\nReview date: 26 September 2026. Retained local evidence and source review, not a newly executed end-to-end security evaluation.",
+    "refs": [
+      "S11",
+      "S02"
+    ],
+    "texts": [
+      "The circuit and the host boundary work together",
+      "Containment (Anthropic)",
+      "Reference monitor (NIST)",
+      "12",
+      "Declared circuit",
+      "Runtime isolation",
+      "Provider constraints",
+      "Selects the operational path",
+      "Limits host reach",
+      "Bounds the physical seam",
+      "Retained Windows AppContainer acceptance: 19 September 2026. Cross-platform and deployment claims require separate evidence."
+    ]
+  },
+  {
+    "number": 13,
+    "title": "Established engineering principles",
+    "appendix": false,
+    "notes": "About 85 seconds. This architecture should be assessable in concepts engineers already know. Complete mediation asks whether every effect path goes through the enforcement boundary. Fail-safe defaults ask what happens when declared authority is absent. Least privilege asks whether the inference side has more operational authority than it needs. Contracts make the required state explicit at boundaries. These are established principles, not new terminology invented to defend SideFX. The public challenge is to test how the actual circuit, executor and providers satisfy them. A principle appearing in this table does not certify the implementation or eliminate the need for bypass analysis.\n\nSIDEFX IMPLEMENTATION EVIDENCE\nE01: C:/lab/repos/sfx-embody/docs/agent-lane.md, especially lines 25–101; C:/lab/repos/sfx-embody/sql/migrations/declare-agent-capability.sql, lines 158–239.\n\nE04: C:/lab/repos/scenario-driven-architecture/languages/typescript/runtimes/node/governed-http-exchange-provider.mjs, lines 46–158. One-use credential binding, expiry and endpoint identity checks, HTTPS endpoint/method validation, header rules, manual redirects and bounded responses.\n\nReview date: 26 September 2026. Retained local evidence and source review, not a newly executed end-to-end security evaluation.",
+    "refs": [
+      "S01",
+      "S02",
+      "S05"
+    ],
+    "texts": [
+      "Established engineering principles",
+      "Protection principles (MIT)",
+      "Reference monitor (NIST)",
+      "Contracts (Dafny)",
+      "13",
+      "Engineering principle",
+      "SideFX expression",
+      "Complete mediation",
+      "Circuit and binding resolution before provider dispatch",
+      "Fail-safe defaults",
+      "An absent capability has no selected business path",
+      "Least privilege",
+      "Inference needs no general operational credentials",
+      "Design by contract",
+      "Explicit input, state and outcome obligations",
+      "These are design correspondences. Each requires implementation evidence and adversarial testing."
+    ],
+    "nativeTable": true
+  },
+  {
+    "number": 14,
+    "title": "One capability meaning, multiple realizations",
+    "appendix": false,
+    "notes": "About 65 seconds. Logical capability meaning need not belong to the physical machine that hosts a model or a client application. The same circuit vocabulary can support local invocation, an API service and remote providers. The kernel and providers still execute on actual machines. What moves is physical realization, while the declared capability remains the semantic reference. The API service has implemented run and evidence routes. A globally durable service, cross-platform acceptance and deployment-specific security are separate validation tasks. This is also the careful interpretation of the data-center thesis: an operable capability estate is an asset alongside compute, not a replacement for the need for hardware.\n\nSIDEFX IMPLEMENTATION EVIDENCE\nE07: C:/lab/repos/scenario-driven-architecture/services/sda-api/src/server.ts, run submission/read/events/graph/output/evidence routes and scoped authorization. C:/lab/repos/scenario-driven-architecture/docs/enterprise-capability-operating-system-reference-architecture.md explicitly describes proposed production architecture and acceptance gates.\n\nE08: C:/lab/repos/scenario-driven-architecture/docs/transistor-model.md, lines 31–179; docs/deterministic-execution.md, around line 399. Language-neutral declared meaning remains distinct from admitted native resolver mechanics. The transistor comparison is an analogy, not a physical security proof.\n\nReview date: 26 September 2026. Retained local evidence and source review, not a newly executed end-to-end security evaluation.",
+    "refs": [],
+    "texts": [
+      "One capability meaning, multiple realizations",
+      "14",
+      "Capability meaning + circuit",
+      "Local runtime",
+      "API service",
+      "Remote providers",
+      "Physical placement can change without giving the model ownership of the capability"
+    ]
+  },
+  {
+    "number": 15,
+    "title": "Inference expands the capability estate",
+    "appendix": false,
+    "notes": "About 65 seconds. The architecture preserves the value of inference. Models can propose new ideas, drafts and candidate capabilities. The durable step is separate: evaluate the candidate, establish the required evidence and admit a declaration through controlled governance. Later requests can invoke that reusable capability instead of asking the model to reinvent the known procedure. Some capabilities will continue to call an inference provider because the task itself needs inference. The diagram is an architectural direction for governed improvement, not evidence that automatic admission or all formal proof stages are complete. Repetition alone does not turn a model result into a scientific fact.\n\nSIDEFX IMPLEMENTATION EVIDENCE\nE08: C:/lab/repos/scenario-driven-architecture/docs/transistor-model.md, lines 31–179; docs/deterministic-execution.md, around line 399. Language-neutral declared meaning remains distinct from admitted native resolver mechanics. The transistor comparison is an analogy, not a physical security proof.\n\nE05: C:/lab/repos/sfx-embody/docs/architecture-achieved.md, lines 38–138 and 461–582; C:/lab/repos/scenario-driven-architecture/kernel/schemas/cell-execution-testimony.schema.json. Database is the execution authority source. Canonical, realized and observed graph digests are distinct. These are local implementation/evidence sources, not independent certification.\n\nReview date: 26 September 2026. Retained local evidence and source review, not a newly executed end-to-end security evaluation.",
+    "refs": [],
+    "texts": [
+      "Inference expands the capability estate",
+      "15",
+      "Inference\nproposal",
+      "Candidate\ncapability",
+      "Validation +\nadmission",
+      "Capability\nestate",
+      "Discovery can remain open-ended",
+      "Operational authority changes\nthrough a separate process",
+      "Architecture direction: useful inference becomes reusable capability only after the required evidence and admission."
+    ]
+  },
+  {
+    "number": 16,
+    "title": "Formal verification needs a stated property",
+    "appendix": false,
+    "notes": "About 75 seconds. Formal verification naturally fits this architecture, but we should reserve the term for an actual proof of an explicit property. A verifier can be a provider whose input contains a specification and implementation model and whose outcome supplies a proof artifact, counterexample or inconclusive result. Any proof is relative to the specification, model and assumptions. That result can feed a declared admission decision. A useful target invariant would relate every provider dispatch to an admitted circuit and matching binding. It must state the threat model and trusted assumptions. Today the retained runtime tests, schemas and digests establish narrower properties. They do not turn into a universal proof because we call them evidence. This is a concrete opportunity for research collaborators.\n\nSIDEFX IMPLEMENTATION EVIDENCE\nE05: C:/lab/repos/sfx-embody/docs/architecture-achieved.md, lines 38–138 and 461–582; C:/lab/repos/scenario-driven-architecture/kernel/schemas/cell-execution-testimony.schema.json. Database is the execution authority source. Canonical, realized and observed graph digests are distinct. These are local implementation/evidence sources, not independent certification.\n\nReview date: 26 September 2026. Retained local evidence and source review, not a newly executed end-to-end security evaluation.",
+    "refs": [
+      "S04",
+      "S05",
+      "S06"
+    ],
+    "texts": [
+      "Formal verification needs a stated property",
+      "Refinement (Lamport)",
+      "Contracts (Dafny)",
+      "Runtime assurance (NASA)",
+      "16",
+      "Every provider dispatch has a matching\nadmitted circuit and binding",
+      "Candidate invariant for independent formalization",
+      "Stated property\n+ model",
+      "Verification\nprovider",
+      "Proof, counterexample\nor inconclusive",
+      "Proposed extension. Runtime tests, schema checks and hashes are not whole-system formal proofs."
+    ]
+  },
+  {
+    "number": 17,
+    "title": "What the evidence establishes today",
+    "appendix": false,
+    "notes": "About 80 seconds. This slide makes the status legible. Retained runs demonstrate admitted execution and an undeclared purchase refusal. Reviewed source implements authority reads, explicit provider seams and addressed execution testimony. Later Windows receipts cover particular isolation configurations. These are substantial engineering results, but they are not the same as an independent security assessment, a complete caller authorization model, formal proof of the whole system or global production durability. Distinguishing those categories makes the next collaboration useful. We can ask partners to reproduce concrete behavior, look for bypasses and extend the assurance case, rather than asking them to accept a broad claim on confidence alone.\n\nSIDEFX IMPLEMENTATION EVIDENCE\nE02: C:/lab/repos/sfx-embody/evidence/vault-20260916/csharp-seams/receipt.json, lines 111–159. Recorded 18 September 2026. Direct and model-assisted quote outcome EQUITY_MARKET_PRICE_EVIDENCE_RESOLVED. The model-assisted trace has 716 cell testimony entries. Its isolation configuration predates the later Windows hardening receipts.\n\nE03: C:/lab/repos/sfx-embody/evidence/vault-20260916/lane-relevance/after-filter/invoke-purchase.stdout.json. Recorded 19 September 2026. Objective: Buy $1,000 worth of Broadcom. Gemini 2.5 Pro proposed buy_stock with AVGO. Capability resolution declared=false and returned CAPABILITY_NOT_FOUND. Inference and refusal processing executed. The requested trade execution child was not entered.\n\nE04: C:/lab/repos/scenario-driven-architecture/languages/typescript/runtimes/node/governed-http-exchange-provider.mjs, lines 46–158. One-use credential binding, expiry and endpoint identity checks, HTTPS endpoint/method validation, header rules, manual redirects and bounded responses.\n\nE06: C:/lab/repos/scenario-driven-architecture/languages/csharp/src/ScenarioKernel/bootstrap/ProcessIsolation.cs. C:/lab/repos/sfx-embody/evidence/vault-20260916/cross-host/windows-csharp-appcontainer/windows-csharp-appcontainer.kernel-acceptance-receipt.json and windows-csharp-appcontainer.live-invoke.process.json, 19 September 2026. Later AppContainer acceptance supersedes the earlier C# write-isolation gap. Host-write and child-process denial are bounded controls; container-owned storage remains writable.\n\nE07: C:/lab/repos/scenario-driven-architecture/services/sda-api/src/server.ts, run submission/read/events/graph/output/evidence routes and scoped authorization. C:/lab/repos/scenario-driven-architecture/docs/enterprise-capability-operating-system-reference-architecture.md explicitly describes proposed production architecture and acceptance gates.\n\nReview date: 26 September 2026. Retained local evidence and source review, not a newly executed end-to-end security evaluation.",
+    "refs": [],
+    "texts": [
+      "What the evidence establishes today",
+      "17",
+      "Status",
+      "Concrete evidence or next obligation",
+      "Demonstrated in retained runs",
+      "Declared price execution; undeclared purchase refusal; specific Windows acceptance",
+      "Implemented in reviewed source",
+      "Database authority, circuit resolution, provider mediation and execution testimony",
+      "Requires independent validation",
+      "Bypass resistance, allowed-capability misuse, formal guarantees and production scale",
+      "Source and retained-evidence review: 26 September 2026. Demonstrations are configuration-specific."
+    ],
+    "nativeTable": true
+  },
+  {
+    "number": 18,
+    "title": "The next step is a reproducible engineering test",
+    "appendix": false,
+    "notes": "About 75 seconds. The collaboration should start with a concrete protocol. First reproduce the positive and negative paths from a pinned estate and runtime. Then attempt to cause effects through a missing capability, an overly broad admitted provider, hostile input, changed bindings and failure handling. Finally test operational realities: authority changes during a run, timeouts after a provider has acted, duplicate delivery, revoked credentials and tenant boundaries. We should record both whether a prohibited effect occurs and whether legitimate work is unnecessarily blocked. The targets here are proposed evaluation criteria, not measured success rates. NASA safety-case practice and the NIST AI RMF both support evidence-driven, continuing evaluation.",
+    "refs": [
+      "S07",
+      "S12"
+    ],
+    "texts": [
+      "The next step is a reproducible engineering test",
+      "Safety cases (NASA)",
+      "AI RMF (NIST)",
+      "18",
+      "Evaluation",
+      "Observable result",
+      "Reproduce the declared paths",
+      "Same pinned circuit and outcome classification",
+      "Attempt bypass and misuse",
+      "Effect reachability, including admitted-capability abuse",
+      "Inject faults and authority changes",
+      "Trace continuity, revocation, retry and recovery behavior",
+      "Publish the protocol and results as a joint evaluation"
+    ],
+    "nativeTable": true
+  },
+  {
+    "number": 19,
+    "title": "A collaboration agenda",
+    "appendix": false,
+    "notes": "About 75 seconds. These are invitations, not announced partnerships. For OpenAI and Anthropic, the practical contribution would be diverse model behavior and adversarial prompt-injection tests against the same declared capability boundary. United States government evaluators can help define high-consequence test domains, assurance requirements and procurement-relevant evidence. The United Nations scientific and policy dialogue can support international comparison and inclusive discussion of the findings. Independent researchers can examine specifications, threat assumptions and proofs. The UN has established a Scientific Panel on AI and a Global Dialogue on AI Governance. SideFX can offer a reproducible engineering artifact for scrutiny within that larger effort, not claim to be its appointed solution.",
+    "refs": [
+      "S12",
+      "S14"
+    ],
+    "texts": [
+      "A collaboration agenda",
+      "AI RMF (NIST)",
+      "Scientific Panel on AI (UN)",
+      "19",
+      "Intended collaborator",
+      "Proposed contribution",
+      "OpenAI and Anthropic",
+      "Model diversity, adversarial tests and provider integration",
+      "U.S. government evaluators",
+      "Domain assurance requirements and independent trials",
+      "UN scientific and policy communities",
+      "International evidence exchange and inclusive evaluation",
+      "Independent engineers and researchers",
+      "Threat-model review, reproduction and formal methods",
+      "Proposed collaborators and workstreams. No partnership or endorsement is implied."
+    ],
+    "nativeTable": true
+  },
+  {
+    "number": 20,
+    "title": "An open engineering challenge",
+    "appendix": false,
+    "notes": "Closing, about 45 seconds. We have built and demonstrated a specific execution boundary. The invitation is to challenge it, reproduce it and help extend it. A global solution will require reliable engineering, domain expertise, accountable governance and independent evidence across many organizations. SideFX offers a concrete architecture and retained execution artifacts with which that work can begin. The proposed first step is a joint reproduction and adversarial evaluation of a bounded capability set.\n\nVisual: original generated conceptual scientific still life, 26 September 2026. It does not depict a real international agreement or event.",
+    "refs": [],
+    "texts": [
+      "An open\nengineering\nchallenge",
+      "Challenge the boundary.\nReproduce the evidence.\nExtend the architecture.",
+      "SideFX"
+    ]
+  },
+  {
+    "number": 21,
+    "title": "The vocabulary stays small",
+    "appendix": true,
+    "notes": "Technical appendix. The word capability is used here for an independently declared operational ability, not automatically for an unforgeable security token. Security literature has its own precise object-capability meaning. Provider and binding retain the same meaning at each level of composition. A model can be one provider inside a capability circuit.\n\nSIDEFX IMPLEMENTATION EVIDENCE\nE01: C:/lab/repos/sfx-embody/docs/agent-lane.md, especially lines 25–101; C:/lab/repos/sfx-embody/sql/migrations/declare-agent-capability.sql, lines 158–239.\n\nE08: C:/lab/repos/scenario-driven-architecture/docs/transistor-model.md, lines 31–179; docs/deterministic-execution.md, around line 399. Language-neutral declared meaning remains distinct from admitted native resolver mechanics. The transistor comparison is an analogy, not a physical security proof.\n\nReview date: 26 September 2026. Retained local evidence and source review, not a newly executed end-to-end security evaluation.",
+    "refs": [
+      "S03"
+    ],
+    "texts": [
+      "The vocabulary stays small",
+      "Capability security (Cambridge)",
+      "A1",
+      "Term",
+      "Role in the architecture",
+      "Capability",
+      "An independently defined operational ability",
+      "Scenario circuit",
+      "Declared state, operations, routes and outcomes",
+      "Provider binding",
+      "The declared connection to physical realization",
+      "Provider",
+      "The implementation that supplies a result or effect",
+      "Capability estate",
+      "The operable collection of declared capabilities",
+      "Evidence",
+      "Addressed observations of an actual execution"
+    ],
+    "nativeTable": true
+  },
+  {
+    "number": 22,
+    "title": "The two retained traces",
+    "appendix": true,
+    "notes": "Technical appendix. Do not imply these were matched runs under identical software and isolation settings. The accepted objective run was recorded on 18 September 2026, and the selected raw purchase refusal was recorded on 19 September. The earlier accepted managed-host receipt does not have the later low-integrity/AppContainer write protection. The purchase trace contains hundreds of overall cells because model invocation, resolution and refusal processing still ran. The absent business-execution child is the relevant boundary.\n\nSIDEFX IMPLEMENTATION EVIDENCE\nE02: C:/lab/repos/sfx-embody/evidence/vault-20260916/csharp-seams/receipt.json, lines 111–159. Recorded 18 September 2026. Direct and model-assisted quote outcome EQUITY_MARKET_PRICE_EVIDENCE_RESOLVED. The model-assisted trace has 716 cell testimony entries. Its isolation configuration predates the later Windows hardening receipts.\n\nE03: C:/lab/repos/sfx-embody/evidence/vault-20260916/lane-relevance/after-filter/invoke-purchase.stdout.json. Recorded 19 September 2026. Objective: Buy $1,000 worth of Broadcom. Gemini 2.5 Pro proposed buy_stock with AVGO. Capability resolution declared=false and returned CAPABILITY_NOT_FOUND. Inference and refusal processing executed. The requested trade execution child was not entered.\n\nE06: C:/lab/repos/scenario-driven-architecture/languages/csharp/src/ScenarioKernel/bootstrap/ProcessIsolation.cs. C:/lab/repos/sfx-embody/evidence/vault-20260916/cross-host/windows-csharp-appcontainer/windows-csharp-appcontainer.kernel-acceptance-receipt.json and windows-csharp-appcontainer.live-invoke.process.json, 19 September 2026. Later AppContainer acceptance supersedes the earlier C# write-isolation gap. Host-write and child-process denial are bounded controls; container-owned storage remains writable.\n\nReview date: 26 September 2026. Retained local evidence and source review, not a newly executed end-to-end security evaluation.",
+    "refs": [],
+    "texts": [
+      "The two retained traces",
+      "A2",
+      "Field",
+      "Price evidence",
+      "Purchase refusal",
+      "Recorded date",
+      "18 Sep 2026",
+      "19 Sep 2026",
+      "Executed path / proposal",
+      "Market-price capability executed",
+      "buy_stock proposed",
+      "Declared resolution",
+      "Existing capability path",
+      "declared: false",
+      "Business result",
+      "Price evidence resolved",
+      "CAPABILITY_NOT_FOUND",
+      "Interpretation",
+      "Provider path executed",
+      "Trade path never entered",
+      "Source artifacts E02 and E03. Configurations differ. Recorded market data is historical, not a current quote."
+    ],
+    "nativeTable": true
+  },
+  {
+    "number": 23,
+    "title": "The claim depends on these boundaries",
+    "appendix": true,
+    "notes": "Technical appendix. To claim that model data cannot open an undeclared operational path, the authority store and its change process must be protected, and all relevant effect paths must be mediated. The native executor and provider implementations are trusted components that need their own assessment. Existing capabilities can be overpowered or misused. Shape validation is not equivalent to caller, resource or tenant authorization. Provider-internal side effects and channels outside the controlled path remain separate subjects. These are conditions for evaluating the claim, not assertions that every listed failure has been observed in SideFX.",
+    "refs": [
+      "S01",
+      "S02"
+    ],
+    "texts": [
+      "The claim depends on these boundaries",
+      "Protection principles (MIT)",
+      "Reference monitor (NIST)",
+      "A3",
+      "Authority integrity",
+      "Model-controlled data cannot rewrite the estate, bindings or credentials.",
+      "Complete mediation",
+      "Every relevant effect path passes through the declared runtime boundary.",
+      "Provider trust",
+      "Implementations, native mechanics and external services honor their contracts.",
+      "Capability scope",
+      "Already admitted capabilities still need input, caller and resource constraints."
+    ]
+  },
+  {
+    "number": 24,
+    "title": "External effects need explicit recovery semantics",
+    "appendix": true,
+    "notes": "Technical appendix. A database transaction can keep related estate changes atomic, but it cannot automatically roll back a payment, message or physical action already performed by a remote provider. If a provider acts and its reply is lost, the runtime needs a declared way to reconcile what happened. Idempotency keys, retry policy, compensation and provider receipts are domain-specific engineering obligations. This slide states a validation requirement, not an assertion that one generic solution covers every provider. Evidence records the observed sequence and uncertainty rather than erasing that uncertainty.",
+    "refs": [
+      "S08",
+      "S09"
+    ],
+    "texts": [
+      "External effects need explicit recovery semantics",
+      "Transactions (PostgreSQL)",
+      "Provenance (W3C)",
+      "A4",
+      "Runtime request",
+      "Provider acts",
+      "Reply is lost",
+      "A database rollback cannot undo every remote effect",
+      "Evaluate idempotency, retries, reconciliation and compensation at each provider boundary."
+    ]
+  },
+  {
+    "number": 25,
+    "title": "Adjacent work is part of the engineering review",
+    "appendix": true,
+    "notes": "Technical appendix. CaMeL is important adjacent research, not a strawman. It separates planning from untrusted-data processing, tracks provenance and readers, and enforces policies with an interpreter at tool calls. Its guarantees depend on the stated threat model and assumptions. SideFX makes independently declared operational capability meaning, circuits, provider bindings and the estate central. A serious comparison should test equivalent semantics, attack coverage, authority-change behavior and implementation assumptions. Differences in vocabulary are not proof of novelty. This presentation makes no historical-first or patentability claim.",
+    "refs": [
+      "S15",
+      "S10"
+    ],
+    "texts": [
+      "Adjacent work is part of the engineering review",
+      "CaMeL paper (2025)",
+      "Agent security (OpenAI)",
+      "A5",
+      "CaMeL",
+      "Generated plans\nData-flow tracking\nInterpreter policy enforcement",
+      "SideFX",
+      "Independent capability estate\nDeclared scenario circuits\nExplicit provider bindings",
+      "Compare mechanisms and assumptions. Terminology alone neither establishes nor disproves novelty."
+    ]
+  },
+  {
+    "number": 26,
+    "title": "Principles extend across the engineering stack",
+    "appendix": true,
+    "notes": "Technical appendix. Capability security contributes a least-authority lens, but a business capability is not automatically an unforgeable security capability. Formal refinement relates an implementation to a precise specification. Runtime assurance demonstrates the value of independent safety mechanisms under explicit operating assumptions. Provenance gives an interoperable model for tracing artifacts and activities. SideFX mappings are analytical correspondences. They are neither claims of CHERI or PROV conformance nor NASA certification. Each correspondence should become a testable obligation in a joint evaluation.",
+    "refs": [
+      "S03",
+      "S04",
+      "S06",
+      "S09"
+    ],
+    "texts": [
+      "Principles extend across the engineering stack",
+      "Capability security (Cambridge)",
+      "Refinement (Lamport)",
+      "Runtime assurance (NASA)",
+      "Provenance (W3C)",
+      "A6",
+      "Principle",
+      "SideFX evaluation question",
+      "Capability security",
+      "Does the inference side hold only the authority it needs?",
+      "Formal refinement",
+      "Does each runtime step preserve a specified circuit invariant?",
+      "Runtime assurance",
+      "Can an independent mechanism reject an unsafe effect path?",
+      "Provenance",
+      "Can evidence link the request, authority, provider and outcome?",
+      "Engineering correspondences, with explicit assumptions and evidence obligations."
+    ],
+    "nativeTable": true
+  },
+  {
+    "number": 27,
+    "title": "Primary sources: protection and assurance",
+    "appendix": true,
+    "notes": "Primary references checked 26 September 2026. Click each title to open the original source. These references support engineering principles and public context, not claims of endorsement or certification. Full source registry and claim limits accompany the local authoring materials.",
+    "refs": [],
+    "texts": [
+      "Primary sources: protection and assurance",
+      "A7",
+      "S01",
+      "The Protection of Information in Computer Systems",
+      "Jerome H. Saltzer and Michael D. Schroeder (1975-09)",
+      "S02",
+      "Reference monitor",
+      "NIST (Undated glossary; definition cites SP 800-53 Rev. 5 (2020))",
+      "S03",
+      "CHERI: capability security",
+      "University of Cambridge Computer Laboratory, CHERI project (Undated maintained FAQ)",
+      "S04",
+      "TLA+: safety properties and refinement",
+      "Leslie Lamport (2019-06-27)",
+      "S05",
+      "Dafny: preconditions and postconditions",
+      "Dafny project (Undated maintained guide using Dafny 4 syntax)",
+      "S06",
+      "Certification strategies using run-time safety assurance",
+      "Loyd R. Hook et al. (2016-03-05)",
+      "S07",
+      "Risk-informed, case-assured safety and mission success",
+      "NASA (2025-03-03)"
+    ]
+  },
+  {
+    "number": 28,
+    "title": "Primary sources: systems and AI governance",
+    "appendix": true,
+    "notes": "Primary references checked 26 September 2026. Click each title to open the original source. These references support engineering principles and public context, not claims of endorsement or certification. Full source registry and claim limits accompany the local authoring materials.",
+    "refs": [],
+    "texts": [
+      "Primary sources: systems and AI governance",
+      "A8",
+      "S08",
+      "PostgreSQL transactions",
+      "PostgreSQL Global Development Group (Undated; version 18 documentation at access)",
+      "S09",
+      "PROV: provenance of entities, activities and agents",
+      "W3C (2013-04-30)",
+      "S10",
+      "Designing AI agents to resist prompt injection",
+      "OpenAI (2026-03-11)",
+      "S11",
+      "How we contain Claude across products",
+      "Anthropic Engineering (2026-05-25)",
+      "S12",
+      "Artificial Intelligence Risk Management Framework 1.0",
+      "NIST (2023-01-26)",
+      "S13",
+      "Pact for the Future and Global Digital Compact",
+      "United Nations Department of Global Communications (2024-09-22)",
+      "S14",
+      "Independent International Scientific Panel on AI",
+      "United Nations (Established 2025-08-26 by A/RES/79/325; maintained page)",
+      "S15",
+      "Defeating Prompt Injections by Design (CaMeL)",
+      "Edoardo Debenedetti et al., Google, Google DeepMind and ETH Zurich (2025-06-24)"
+    ]
+  },
+  {
+    "number": 29,
+    "title": "SideFX evidence index",
+    "appendix": true,
+    "notes": "Local evidence for an independent replication package. The presentation uses retained artifacts and reviewed source, not public third-party validation. Baselines reviewed: scenario-driven-architecture commit 6e3d174f1630b7271d232a700e158ed9ea3e2899 and sfx-embody commit bde1d72dd92798422ff73589d3ae7352cfc50681. Some evidence predates those baselines and must be reproduced against a jointly pinned configuration.\n\nE01: C:/lab/repos/sfx-embody/docs/agent-lane.md, especially lines 25–101; C:/lab/repos/sfx-embody/sql/migrations/declare-agent-capability.sql, lines 158–239.\n\nE02: C:/lab/repos/sfx-embody/evidence/vault-20260916/csharp-seams/receipt.json, lines 111–159. Recorded 18 September 2026. Direct and model-assisted quote outcome EQUITY_MARKET_PRICE_EVIDENCE_RESOLVED. The model-assisted trace has 716 cell testimony entries. Its isolation configuration predates the later Windows hardening receipts.\n\nE03: C:/lab/repos/sfx-embody/evidence/vault-20260916/lane-relevance/after-filter/invoke-purchase.stdout.json. Recorded 19 September 2026. Objective: Buy $1,000 worth of Broadcom. Gemini 2.5 Pro proposed buy_stock with AVGO. Capability resolution declared=false and returned CAPABILITY_NOT_FOUND. Inference and refusal processing executed. The requested trade execution child was not entered.\n\nE04: C:/lab/repos/scenario-driven-architecture/languages/typescript/runtimes/node/governed-http-exchange-provider.mjs, lines 46–158. One-use credential binding, expiry and endpoint identity checks, HTTPS endpoint/method validation, header rules, manual redirects and bounded responses.\n\nE05: C:/lab/repos/sfx-embody/docs/architecture-achieved.md, lines 38–138 and 461–582; C:/lab/repos/scenario-driven-architecture/kernel/schemas/cell-execution-testimony.schema.json. Database is the execution authority source. Canonical, realized and observed graph digests are distinct. These are local implementation/evidence sources, not independent certification.\n\nE06: C:/lab/repos/scenario-driven-architecture/languages/csharp/src/ScenarioKernel/bootstrap/ProcessIsolation.cs. C:/lab/repos/sfx-embody/evidence/vault-20260916/cross-host/windows-csharp-appcontainer/windows-csharp-appcontainer.kernel-acceptance-receipt.json and windows-csharp-appcontainer.live-invoke.process.json, 19 September 2026. Later AppContainer acceptance supersedes the earlier C# write-isolation gap. Host-write and child-process denial are bounded controls; container-owned storage remains writable.\n\nE07: C:/lab/repos/scenario-driven-architecture/services/sda-api/src/server.ts, run submission/read/events/graph/output/evidence routes and scoped authorization. C:/lab/repos/scenario-driven-architecture/docs/enterprise-capability-operating-system-reference-architecture.md explicitly describes proposed production architecture and acceptance gates.\n\nE08: C:/lab/repos/scenario-driven-architecture/docs/transistor-model.md, lines 31–179; docs/deterministic-execution.md, around line 399. Language-neutral declared meaning remains distinct from admitted native resolver mechanics. The transistor comparison is an analogy, not a physical security proof.",
+    "refs": [],
+    "texts": [
+      "SideFX evidence index",
+      "A9",
+      "Evidence",
+      "Artifact or source",
+      "E01  Declared lane",
+      "agent-lane.md; declare-agent-capability.sql",
+      "E02  Price execution",
+      "csharp-seams/receipt.json (18 Sep 2026)",
+      "E03  Purchase refusal",
+      "after-filter/invoke-purchase.stdout.json (19 Sep 2026)",
+      "E04–E05  Mediation and testimony",
+      "Governed HTTP provider; execution testimony schema",
+      "E06–E08  Isolation and architecture",
+      "AppContainer receipts; API source; transistor model",
+      "Exact local paths, dates and reviewed source baselines are in the speaker notes."
+    ],
+    "nativeTable": true
+  }
+]

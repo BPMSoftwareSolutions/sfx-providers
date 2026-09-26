@@ -1,5 +1,18 @@
 # sfx-providers
 
+The hand-authored **circuit-presentation provider** packages the reusable diagram
+design used for the SideFX announcement: native circuits, branches, junctions,
+provider bindings, signal colors, source links and speaker notes. See
+[Circuit presentations](docs/circuit-presentation.md) for the JSON contract,
+HTTPS endpoint, CLI, PowerPoint export and retained authoring sources.
+
+```powershell
+node circuit-deck.mjs --preset sidefx-announcement --output outputs/circuit-replay
+```
+
+This user-requested provider is separate from the eleven-altitude migration bridge
+and is not yet declared in the estate.
+
 Eleven local model-provider services, one per authoring altitude, implementing each
 altitude's deterministic work in code and exposed over HTTPS so the estate can declare
 them through the admitted `provider add` (`provider-binding`) path.
@@ -123,7 +136,7 @@ powershell -ExecutionPolicy Bypass -NoProfile -File .\setup-cert.ps1
 
 # start all providers (default port 8790; override with PROVIDER_PORT)
 $env:PROVIDER_PORT = '8790'
-node .\runner.mjs            # prints: PROVIDERS_READY port=8790 providers=11
+node .\runner.mjs            # prints: PROVIDERS_READY port=8790 providers=12
 
 # health (all 11)
 1..11 | ForEach-Object {

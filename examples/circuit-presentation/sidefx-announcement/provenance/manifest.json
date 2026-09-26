@@ -1,0 +1,66 @@
+{
+  "origin": "SideFX Google Slides circuit redesign, 2026-09-26",
+  "presentationId": "1VkxmW1jt7hxBn0puVKskPsmSdPpPfXVlg1izLnM5wm0",
+  "files": [
+    {
+      "path": "redesign-lib.mjs",
+      "sha256": "f0c7d93297c7729b1ecc60baaef1626a70a6faeff3ebcb9978f1c8f2c564957b",
+      "preservation": "exact"
+    },
+    {
+      "path": "redesign-opening.mjs",
+      "sha256": "783981ef2b84c9d3c5429ee5a0fbcfa099916c5a88f35dbe230426e4e717e82b",
+      "preservation": "exact"
+    },
+    {
+      "path": "redesign-middle.mjs",
+      "sha256": "e788b80e635be051625bbaccf4ac2c65996ae2ff19dd2043ce0db8a941b2a934",
+      "preservation": "exact"
+    },
+    {
+      "path": "redesign-appendix.mjs",
+      "sha256": "fd5b0aa9b3278c8de631381edeb187fc4f7a112a268d5e2580dba6b04d828426",
+      "preservation": "exact"
+    },
+    {
+      "path": "build-redesign-pptx.mjs",
+      "sha256": "b1f25da76722b9ca969d343690cc65cddff7ea59572cce3dfa43df20bfd25eaa",
+      "preservation": "exact"
+    },
+    {
+      "path": "sources.json",
+      "sha256": "86402bcb72db6b926261ca0c2f146fca76bc0a4bf0fcbe1d1f2faf3793d926b5",
+      "preservation": "exact"
+    },
+    {
+      "path": "slide-content.json",
+      "sha256": "df1a65b51f03c3d4f96104e830195b0afe4534f61e9d4f30226811c1ca6827bc",
+      "preservation": "exact"
+    },
+    {
+      "path": "redesign-topologies.md",
+      "sha256": "4f0787a37e56a94bbf3e0e8485a25fb42655350a379f9e3ddefdbb3ef0959470",
+      "preservation": "exact"
+    },
+    {
+      "path": "redesign-content.md",
+      "sha256": "ede935844fa9c7bd478192d911a60aad327ce0e1b3a2ef15e5d2a32145bda492",
+      "preservation": "exact"
+    },
+    {
+      "path": "redesign-google-repairs.json",
+      "sha256": "d537afc99ca3e96b2384db91d43ed38e77589f8217a5dbd0c38cbf41662e05e0",
+      "preservation": "exact"
+    },
+    {
+      "path": "redesign-google-repairs-2.json",
+      "sha256": "c55c882ee7349d26775199f69e3b44eaf76497f485bcd366d1b16a6820fdb5b9",
+      "preservation": "exact"
+    },
+    {
+      "path": "redesign-google-before.json",
+      "preservation": "dependency projection: slide IDs, element IDs and speaker notes; expired media/connector URLs omitted"
+    }
+  ],
+  "requests": "requests/slide-01.json through slide-29.json are the original per-slide batches; apply the two repair manifests in order for the delivered design."
+}

@@ -5,6 +5,9 @@ import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { boundedSlices, MAX_REQUEST_BYTES, REQUEST_CONTRACT_ID, requestBytesOf } from './src/request-contract.mjs';
 
+import * as circuitProvider from './providers/circuit-presentation.mjs';
+import { createCircuitRequestHandler } from './src/circuit-presentation/http.mjs';
+
 const here = path.dirname(fileURLToPath(import.meta.url));
 const DEFAULT_PORT = 8790;
 const DEFAULT_CERT_PASSWORD = 'sfx-providers';
@@ -251,6 +254,7 @@ function healthBody(provider, port, modelCallConfigured) {
 }
 
 function createRequestHandler(providers, port) {
+  const handleCircuitRequest = createCircuitRequestHandler();
   const byAltitude = new Map(providers.map((provider) => [provider.altitude, provider]));
   const byTool = new Map();
   for (const provider of providers) {
@@ -261,12 +265,15 @@ function createRequestHandler(providers, port) {
   return async (req, res) => {
     const url = new URL(req.url ?? '/', `https://localhost:${port}`);
     try {
+      if (await handleCircuitRequest(req, res, url.pathname)) return;
       if (req.method === 'GET' && url.pathname === '/health') {
         sendJson(res, 200, {
           status: 'ok',
           service: 'sfx-providers',
           port,
-          providerCount: providers.length,
+          providerCount: providers.length + 1,
+          altitudeProviderCount: providers.length,
+          handAuthoredProviders: [circuitProvider.providerId],
           modelCallConfigured: Boolean(apiKey),
           defaultProviderExecution: apiKey ? 'model' : 'stub',
           requestContract: REQUEST_CONTRACT_ID,
@@ -400,7 +407,7 @@ export async function startServer() {
   const shutdown = () => server.close(() => process.exit(0));
   process.on('SIGINT', shutdown);
   process.on('SIGTERM', shutdown);
-  return { server, port, providerCount: providers.length, providers };
+  return { server, port, providerCount: providers.length + 1, providers: [...providers, circuitProvider] };
 }
 
 const invokedDirectly =

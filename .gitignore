@@ -1,3 +1,5 @@
 certs/
 node_modules/
 *.log
+.cache/
+outputs/
