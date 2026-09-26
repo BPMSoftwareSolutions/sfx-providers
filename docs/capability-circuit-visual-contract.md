@@ -13,6 +13,15 @@ numbered cells, explicit connector ownership and stable signal colors. The
 retained for design lineage. Their illustrative cells, provider names, metrics,
 eight-step sequence and telemetry channels are not estate declarations.
 
+The [readable execution reference](references/readable-execution-circuit.png)
+sets the full Event sheet's row rhythm, numbered rails and action colors. The
+[scenario reference](references/scenario-circuit-summary.png) and its
+[Input/Event](references/scenario-input-event-detail.png),
+[Outcome](references/scenario-outcome-detail.png), and
+[observation](references/scenario-observation-detail.png) details establish card,
+icon and boundary fidelity. Their stage labels and illustrative execution cells
+are not copied into authority.
+
 The user’s six rules are the rendering contract:
 
 1. **One observation altitude per primary projection.** Capability shows
@@ -82,6 +91,23 @@ SVG projections. They do not force all bindings and AST nodes onto that sheet.
 Short diagram captions remove repeated identifier context deterministically;
 full identifiers remain in source registers, notes and JSON.
 
+The linked scenario blueprint keeps Input → Event → Outcome as its primary
+semantics. Inside When, numbered provider-reference cells disclose only real
+operations that contribute a provider identity. Every wire terminates at that
+operation's provider; solid violet means explicit binding identity and dashed
+violet means a declared testimony reference. The disclosed operations are not
+joined into a fabricated execution sequence. The Event cell opens the complete
+execution sheet. Input field paths and outcome variants come from the selected
+contracts. Check/cross icons reflect declared success/failure classification,
+not an observed result. Unknown classification gets a document symbol.
+
+An amber annotation exposes exchange operations missing provider identities.
+The separate observation band reports invocation selection and circuit state;
+it does not invent the reference image's telemetry channels. The renderer places
+this scenario blueprint directly after the cover, as slide 02, and follows it
+with the selected primary projection. All native destinations and slide numbers
+are remapped deterministically; the selected Event links back to this blueprint.
+
 Native PowerPoint links connect capability → scenario → Event → operation port
 detail and back. Google migration checks the converted internal destinations.
 The complete `presentation.pptx` owns the global slide navigation; JSON
@@ -94,7 +120,9 @@ transport volumes are not separate navigable PowerPoint files.
 - Green: Outcome; red: declared failure classification or an error overlay.
 - Connector circles terminate existing edges; they are drafting anchors, not
   newly declared governed ports.
-- Dashed wires identify calls or retained order, and are labelled as such.
+- Dashed wires identify calls or retained order in the older altitude sheets.
+  The full Event sheet uses solid arrows with an explicit “declared order” legend.
+  Dashed violet provider wires identify testimony references, not exchange calls.
 - Outcome membership is separate from selected routing or measured success.
 - The observation band says “unobserved” until identified testimony exists.
 
@@ -122,6 +150,24 @@ cannot fit at that floor, rendering fails with
 The Python `--inspect` pass independently measures generated blueprint labels.
 Native Google/PPTX rendering still requires visual review because font
 substitution and application layout can differ from these measurements.
+
+### Readable full Event sheet
+
+`event-sheet.mjs` gives the complete selected Event a full-slide drafting surface.
+It places at most seven cells per row and sizes row heights to the available
+surface. Row headings and ordinal ranges are layout groups, never inferred
+semantic stages. Cells retain exact operation IDs and links to binding detail.
+Action colors classify only identifier prefixes: build, bind, observe, and
+select/normalize; other identifiers retain neutral execution blue.
+
+The `event-sheet-layout.v1` rendering record contains every cell, fitted text
+frame, source identity and routed edge. Its validator rejects omitted or duplicate
+identities, changed endpoints, out-of-bounds cells, invalid connector segments,
+and wires crossing unrelated cells. Continuations run through the outer margins
+and inter-row gutters; no extra operation or edge is introduced by wrapping.
+Labels fit from 10.25 down to an 8-point floor. A sheet that cannot preserve that
+floor fails rather than hiding operations or overflowing a card. Ordinary
+regeneration uses the same grammar for any selected capability or scenario.
 
 ### Connector routing validation
 

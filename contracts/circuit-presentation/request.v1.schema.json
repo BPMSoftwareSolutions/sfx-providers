@@ -72,6 +72,12 @@
                 "type": "string",
                 "maxLength": 5000
               },
+              "headerLayout": {
+                "enum": [
+                  "standard",
+                  "custom"
+                ]
+              },
               "notes": {
                 "type": "string",
                 "maxLength": 20000

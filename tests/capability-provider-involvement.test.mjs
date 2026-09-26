@@ -50,7 +50,7 @@ test('unconnected scenarios and platform-only bindings do not invent provider in
 test('capability provider captions link to an operation with that exact declared provider',async()=>{
  const s=fixture(),r=await handle({contractId:'capability-presentation-request.v1',capabilityId:s.identity.capabilityId,contextAltitude:7},{readEstate:async()=>s});
  assert.equal(r.disposition,'AUTHORED',JSON.stringify(r.findings));
- const slides=r.candidate.storyboard.slides,cap=slides[1];
+ const slides=r.candidate.storyboard.slides,cap=slides.find(s=>s.blueprint?.role==='overview');
  for(const label of ['policy-provider','example-provider']){
   const text=cap.commands.find(c=>c.op==='t'&&c.args[0].replaceAll('\n','')===label);assert.ok(text,label);
   const dest=slides[text.args[9].slideIndex];assert.equal(dest.blueprint.role,'provider-inspection');

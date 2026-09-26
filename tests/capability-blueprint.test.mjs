@@ -33,7 +33,7 @@ test('a complete 35-operation Event survives independently of the primary capabi
  raw.graph.interfaceAuthority.portBindings.push(...raw.graph.executionAuthorities[0].operations.map(o=>({portId:o.portId,platformCapabilityId:'transform.v1',configuration:{}})));
  const s=normalizeSnapshot(raw),r=await handle({contractId:'capability-presentation-request.v1',capabilityId:s.identity.capabilityId,contextAltitude:7},{readEstate:async()=>s});
  assert.equal(r.disposition,'AUTHORED',JSON.stringify(r.findings));
- const story=r.candidate.storyboard,primary=story.slides[1];
+ const story=r.candidate.storyboard,primary=story.slides.find(s=>s.blueprint?.role==='overview');
  assert.equal(primary.blueprint.altitude,'capability');assert.equal(primary.blueprint.nodes.length,4);
  const event=story.slides.find(s=>s.blueprint?.altitude==='event'&&s.blueprint?.scenarioId==='review'&&s.blueprint?.role==='projection');
  assert.equal(event.blueprint.nodes.length,35);assert.equal(event.blueprint.edges.length,34);
@@ -67,7 +67,7 @@ test('diagnostics and observation frames cannot mutate topology or geometry',()=
 test('native drill-down links resolve to a slide at the intended altitude',async()=>{
  const s=normalizeSnapshot(rawFixture()),r=await handle({contractId:'capability-presentation-request.v1',capabilityId:s.identity.capabilityId},{readEstate:async()=>s});
  assert.equal(r.disposition,'AUTHORED');
- const slides=r.candidate.storyboard.slides,cap=slides[1],scenarioLinks=cap.commands.filter(c=>c.op==='t'&&c.args[9]?.slideIndex!=null&&slides[c.args[9].slideIndex]?.blueprint?.altitude==='scenario');
+ const slides=r.candidate.storyboard.slides,cap=slides.find(s=>s.blueprint?.role==='overview'),scenarioLinks=cap.commands.filter(c=>c.op==='t'&&c.args[9]?.slideIndex!=null&&slides[c.args[9].slideIndex]?.blueprint?.altitude==='scenario');
  assert.equal(scenarioLinks.length,3);
  for(const slide of slides)for(const c of slide.commands)if(c.op==='t'&&typeof c.args[9]==='object')assert.ok(slides[c.args[9].slideIndex]);
  const scenario=slides[scenarioLinks[0].args[9].slideIndex];

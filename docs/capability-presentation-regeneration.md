@@ -192,3 +192,54 @@ The source snapshot digest is
 `4a6456984cec25c4430218f477b0bb54a092094630749d161b682772290f95f5`.
 The pasted CLI run is contextual evidence only; no invocation was attached to
 the observation layer, and this workflow did not execute the capability.
+
+### Readable execution and scenario blueprints
+
+The next regeneration keeps the same retained snapshot and produces 69 slides.
+[Slide 03](https://docs.google.com/presentation/d/1aVqW3lBWqnWoWFxdBvaOYVlg49Yxkt_Sl9M0yEVTMy0/edit#slide=id.p2)
+uses the full drafting surface for all 35 operations in five rows, with all 34
+declared-order edges and four explicit row continuations. Its measured labels
+range from 8.75 to 10.25 points. Row numbers are layout groups; no semantic stages
+were invented. The sheet still identifies canonical routing and monotonic proof
+as unverified.
+
+The linked
+[scenario blueprint](https://docs.google.com/presentation/d/1aVqW3lBWqnWoWFxdBvaOYVlg49Yxkt_Sl9M0yEVTMy0/edit#slide=id.sfx_scenario_blueprint_69)
+is slide 02, immediately after the cover. It uses the requested amber input cards, blue numbered
+operation references, violet provider ports, teal/red outcome cards, native
+drafting icons, signal legend and separate observation band. Its four provider
+identities connect to eight exact operation references. Five exchange operations
+without direct provider identities remain marked for inspection. The input
+fields, Event and three outcome variants come from retained declarations; the
+reference image's illustrative eight operations and telemetry channels were not
+introduced as authority.
+
+This ordering is part of the generator: scenario blueprint, then the selected
+primary projection. Internal destinations and slide numbers are remapped before
+compilation, so the placement persists across ordinary capability regeneration.
+
+Regenerate without code edits:
+
+```powershell
+node capability-deck.mjs --snapshot outputs/capability-estate/equity-provider-inspection-scaled/snapshot.json --view event --context-altitude 7 --output outputs/capability-estate/equity-readable-circuit-next --pptx
+```
+
+For current estate state, substitute `--capability-id` for `--snapshot` as shown
+above. The complete eleven-layer context map remains in the deck. The renderer,
+schema, visual references and regression tests are versioned; regeneration does
+not require an assistant. The standalone Google migration host still creates a
+new native deck; this reviewed update used the connected Google API in place.
+
+All 83 relevant tests passed. Python checked 415 labels with no fit findings.
+The PowerPoint passed package, layout, font-policy and artifact-import checks.
+Google readback reported zero structural issues and all 168 text links resolved.
+The two new renderings were visually inspected from Google's PDF. Before the
+requested reordering, the other 67 slides were pixel-identical and their native
+slide resources were unchanged. Moving the scenario blueprint to slide 02 then
+updated 68 page numbers while preserving all other 4,519 native elements and all
+168 links. This verifies rendering and retained identities, not runtime behavior.
+
+Current local PowerPoint and generation evidence:
+`outputs/capability-estate/equity-scenario-first/presentation.pptx`.
+Native readback, edit payload and PDF render evidence:
+`outputs/google-slides/equity-readable-circuit`.

@@ -34,7 +34,7 @@ test('scenario SVG shows only the semantic frame while the Event projection reta
 });
 test('review signals are visible on the overview, repeated beside affected cells, and machine-readable',async()=>{
  const s=normalizeSnapshot(rawFixture()),r=await handle({contractId:'capability-presentation-request.v1',capabilityId:s.identity.capabilityId},{readEstate:async()=>s});
- assert.equal(r.disposition,'AUTHORED');const b=r.candidate.storyboard.blueprint,slide=r.candidate.storyboard.slides[1];
+ assert.equal(r.disposition,'AUTHORED');const b=r.candidate.storyboard.blueprint,slide=r.candidate.storyboard.slides.find(s=>s.blueprint?.role==='overview');
  const texts=slide.commands.filter(c=>c.op==='t').map(c=>c.args[0]);
  assert.ok(texts.some(t=>t.includes('Review ·')));
  const empty=b.review.issues.find(i=>i.code==='EXECUTION_AUTHORITY_EMPTY');assert.ok(texts.includes(empty.id));

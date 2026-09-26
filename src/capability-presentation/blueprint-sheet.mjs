@@ -2,15 +2,13 @@ import {C,Slide} from '../circuit-presentation/design.mjs';
 import {validateConnectorRoute} from '../circuit-presentation/contracts.mjs';
 import {fitBlueprintText} from '../circuit-presentation/text-fit.mjs';
 import {humanize} from './model.mjs';
+import {identifierCaption} from './caption.mjs';
+import {drawEventSheet} from './event-sheet.mjs';
 import {projectBlueprint,projectionOverlays,reachableScenarios,declarationInventory} from './projection.mjs';
 
 const chunks=(a,n)=>Array.from({length:Math.ceil(a.length/n)},(_,i)=>a.slice(i*n,(i+1)*n));
 const paint=n=>({input:C.amber,event:C.blue,operation:C.blue,scenario:C.blue,outcome:C.green,terminal:C.green,variant:C.green,port:C.violet,binding:C.violet,platform:C.violet,provider:C.violet,mechanic:C.violet}[n.kind]??C.blue);
 const brief=(s,n=80)=>s.length>n?s.slice(0,n-1)+'…':s;
-const identifierCaption=(value,context)=>{
- const omitted=new Set(context.split(/[-_.]/).filter(w=>w.length>3));
- return value.replace(/\.v\d+$/,'').split(/[-_.]/).filter((w,i,a)=>!['sda','authority'].includes(w)&&(i===0||i===a.length-1||!omitted.has(w))).join(' ');
-};
 const wrap=(s,width=28,maxLines=5)=>{
  const words=String(s??'').split(/\s+/).flatMap(w=>w.length>width?w.match(new RegExp('.{1,'+width+'}','g')):[w]),lines=[];let line='';
  for(const word of words){if(line&&line.length+word.length+1>width){lines.push(line);line='';}line+=(line?' ':'')+word;}if(line)lines.push(line);
@@ -142,7 +140,7 @@ export function appendBlueprintSlides({snapshot,model,page,view='capability',sce
  const projectionPage=(projection,role='projection')=>{
   const key=[projection.altitude,projection.scenarioId,projection.operationId??'',projection.transformationId??''].join('|');
   if(pages.has(key))return pages.get(key);
-  const title={capability:'Capability blueprint',scenario:'Scenario meaning',event:'Complete Event circuit',provider:'Provider port ownership',physical:'Physical realization',mechanic:'Mechanic operand circuit'}[projection.altitude];
+  const title={capability:'Capability blueprint',scenario:'Scenario meaning',event:'Complete execution circuit',provider:'Provider port ownership',physical:'Physical realization',mechanic:'Mechanic operand circuit'}[projection.altitude];
   const p=page(title,projection.altitude.toUpperCase()+' ALTITUDE · '+brief(projection.altitude==='capability'?model.capabilityId:projection.scenarioId,95),projection.nodes.map(n=>n.ref));
   mark(p,model,projection,role);pages.set(key,p);projections.push({projection,page:p});
   return p;
@@ -221,12 +219,14 @@ export function appendBlueprintSlides({snapshot,model,page,view='capability',sce
   }
   if(projection.altitude==='scenario')links['event:'+projection.scenarioId]={slideIndex:Number(eventPages.get(projection.scenarioId).id.slice(6))-1};
   if(projection.altitude==='event')for(const n of projection.nodes)if(providerPages.has(n.id))links[n.id]={slideIndex:Number(providerPages.get(n.id).id.slice(6))-1};
-  draftingSurface(p,model,projection);
-  drawProjection(p,model,projection,{links});
-  nav(p,'Capability',capability,35,495,115);
-  if(projection.altitude!=='capability')nav(p,'Scenario',scenarioPages.get(projection.scenarioId),160,495,112);
-  if(review)nav(p,'Review · '+model.review.errors+' errors / '+model.review.warnings+' warnings',review,300,495,315);
-  if(inventoryPage)nav(p,'Inventory · '+inventory.length,inventoryPage,680,495,200);
+  const fullEvent=projection.altitude==='event';
+  if(fullEvent){p.headerLayout='custom';drawEventSheet(p,model,projection,{links});}
+  else {draftingSurface(p,model,projection);drawProjection(p,model,projection,{links});}
+  const navY=fullEvent?500:495;
+  nav(p,'Capability',capability,fullEvent?14:35,navY,115);
+  if(projection.altitude!=='capability')nav(p,'Scenario',scenarioPages.get(projection.scenarioId),160,navY,fullEvent?140:112);
+  if(review)nav(p,'Review · '+model.review.errors+' errors / '+model.review.warnings+' warnings',review,fullEvent?385:300,navY,315);
+  if(inventoryPage)nav(p,'Inventory · '+inventory.length,inventoryPage,fullEvent?780:680,navY,fullEvent?150:200);
  }
  return {primary,projections:projections.map(v=>v.projection),inventory};
 }
@@ -234,6 +234,10 @@ export function appendBlueprintSlides({snapshot,model,page,view='capability',sce
 export function renderBlueprintSvg(model,selection={}){
  const projection=projectBlueprint(model,selection),layout=layoutBlueprint(projection),native=new Slide(1,'');native.svg=[];
  const p={add:(op,...args)=>Slide.prototype[op].apply(native,args),text:(...args)=>native.t(...args)};
+ if(projection.altitude==='event'){
+  p.blueprint={};p.interpretation='';drawEventSheet(p,model,projection);
+  return '<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 960 540"><rect width="960" height="540" fill="'+C.bg+'"/>'+native.svg.join('')+'</svg>';
+ }
  p.text(model.capabilityId,24,12,layout.width,40,25,C.white,true);
  p.text(projection.altitude.toUpperCase()+' ALTITUDE',24,56,layout.width,30,17,C.blue,true);
  drawProjection(p,model,projection,{x:20,y:110,w:layout.width,h:layout.height});

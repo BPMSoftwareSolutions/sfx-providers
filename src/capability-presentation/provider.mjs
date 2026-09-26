@@ -54,7 +54,7 @@ export async function presentCapability(input, { readEstate, narrator } = {}) {
   const volumes=[];
   for(let i=0;i<storyboard.slides.length;i+=32){
     const subset=storyboard.slides.slice(i,i+32),volume=i/32+1;
-    const deck={title:`${snapshot.identity.capabilityId} — ${view} — ${volume}`,startSlideNumber:i+1,slides:subset.map(({title,subtitle,notes,commands})=>({title,subtitle,notes,commands}))};
+    const deck={title:`${snapshot.identity.capabilityId} — ${view} — ${volume}`,startSlideNumber:i+1,slides:subset.map(({title,subtitle,headerLayout,notes,commands})=>({title,subtitle,...(headerLayout?{headerLayout}:{}),notes,commands}))};
     const compiled=await compilePresentation({contractId:'circuit-presentation-request.v1',objectPrefix:`${input.objectPrefix??'capability'}_v${volume}`,deck});
     volumes.push({volume,firstSlide:i+1,lastSlide:i+subset.length,presentation:compiled});
   }

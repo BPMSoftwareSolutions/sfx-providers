@@ -40,7 +40,7 @@ export const deckSchema = object({
   title: {type:'string',minLength:1,maxLength:240},
   startSlideNumber: {type:'integer',minimum:1,maximum:256},
   sources: array(sourceSchema,100),
-  slides: {...array(object({title:{type:'string',minLength:1,maxLength:160},subtitle:text,notes:{type:'string',maxLength:20000},commands:array(commandSchema,500)},['title','commands']),64),minItems:1},
+  slides: {...array(object({title:{type:'string',minLength:1,maxLength:160},subtitle:text,headerLayout:enumOf('standard','custom'),notes:{type:'string',maxLength:20000},commands:array(commandSchema,500)},['title','commands']),64),minItems:1},
 },['title','slides']);
 export const requestSchema = {
   $schema: 'https://json-schema.org/draft/2020-12/schema', $id: REQUEST_ID,

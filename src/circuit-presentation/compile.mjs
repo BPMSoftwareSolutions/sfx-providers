@@ -46,7 +46,7 @@ export async function compilePresentation(input) {
     if(new Set(sources.map(s=>s.id)).size!==sources.length)throw error('Source IDs must be unique.','CIRCUIT_REQUEST_INVALID');
     let nativeCount=0;
     slides=input.deck.slides.map((spec,i)=>{
-      const id=`${prefix}_s${i+1}`,s=new Slide((input.deck.startSlideNumber??1)+i,spec.title,spec.subtitle??'',{id,sources});
+      const id=`${prefix}_s${i+1}`,s=new Slide((input.deck.startSlideNumber??1)+i,spec.title,spec.subtitle??'',{id,sources,headerLayout:spec.headerLayout});
       for(const command of spec.commands){
         if(!Object.hasOwn(operations,command.op))throw error('Unsupported diagram operation.','CIRCUIT_REQUEST_INVALID');
         if(command.op==='source'&&command.args[0].some(id=>!sources.some(s=>s.id===id)))throw error('Unknown source reference.','CIRCUIT_REQUEST_INVALID');

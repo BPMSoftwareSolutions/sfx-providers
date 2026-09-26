@@ -32,13 +32,18 @@ if args.inspect:
     checked = 0
     findings = []
     for index, slide in enumerate(story['slides'], 1):
-        if slide.get('blueprint', {}).get('role') not in ('overview', 'projection', 'provider-detail'):
+        blueprint = slide.get('blueprint', {})
+        if blueprint.get('role') not in ('overview', 'projection', 'provider-detail', 'scenario-blueprint'):
             continue
+        frames = blueprint.get('textFrames')
+        if blueprint.get('render', {}).get('contractId') == 'event-sheet-layout.v1':
+            frames = [cell['bounds'] for cell in blueprint['render']['cells']]
         for command in slide['commands']:
             if command['op'] != 't':
                 continue
             text, x, y, w, h, size, *_ = command['args']
-            if not (160 <= y < 437):
+            selected = any(all(abs(frame[key]-value) < .001 for key, value in zip(('x','y','w','h'), (x,y,w,h))) for frame in frames) if frames is not None else 160 <= y < 437
+            if not selected:
                 continue
             checked += 1
             widths = [sum(metrics['advances'].get(c, 1000) for c in line) * size / 1000 for line in text.split('\n')]

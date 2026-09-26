@@ -2,6 +2,7 @@ import { C } from '../circuit-presentation/design.mjs';
 import { ALTITUDES, buildContexts, humanize, structuralChecks } from './model.mjs';
 import {appendContextSlides} from './context-slides.mjs';
 import {buildBlueprint,appendBlueprintSlides} from './blueprint.mjs';
+import {appendScenarioSheet} from './scenario-sheet.mjs';
 
 const chunks = (a, n) => Array.from({ length: Math.ceil(a.length / n) }, (_, i) => a.slice(i*n,(i+1)*n));
 const short = (value, max=65) => String(value ?? '').length > max ? String(value).slice(0,max-1)+'…' : String(value ?? '');
@@ -154,6 +155,19 @@ export function buildStoryboard(snapshot, model, { contextAltitude='all',view=mo
   fan(p,'Selected estate snapshot',[{label:`Snapshot ${s.snapshotDigest.slice(0,16)}`,color:C.amber},{label:`Graph ${s.provenance.graphDigest.slice(0,16)}`,color:C.blue},{label:`Circuit ${model.digest.slice(0,16)}`,color:C.green}], 'snapshot → semantic projection → editable presentation');
   p.interpretation='Hashes identify retained evidence; they do not certify the capability’s behavior or the truth of an inferred explanation.';
 
+  const scenarioSheet=appendScenarioSheet({snapshot:s,model:blueprint,page,slides,scenarioId:scenarioId??blueprint.rootScenarioId});
+  // Author with stable temporary indices, then place scenario meaning directly
+  // after the cover and remap every native destination before compilation.
+  slides.splice(slides.indexOf(scenarioSheet),1);slides.splice(1,0,scenarioSheet);
+  const destinations=new Map(slides.map((slide,index)=>[Number(slide.id.slice(6))-1,index]));
+  for(const [index,slide]of slides.entries()){
+    slide.id='slide-'+(index+1);
+    for(const command of slide.commands){
+      const link=command.op==='t'?command.args[9]:undefined;
+      if(link?.slideIndex!=null)command.args[9]={...link,slideIndex:destinations.get(link.slideIndex)};
+    }
+  }
+
   // Details live in the machine-readable sidecars; bounded notes keep the deck
   // usable even when bindings or transformation declarations are very large.
   return { contexts,checks,blueprint,disclosure,slides:slides.map(p=>{
@@ -161,7 +175,8 @@ export function buildStoryboard(snapshot, model, { contextAltitude='all',view=mo
       'Snapshot: '+s.snapshotDigest,'Full identities, relationships, and detail: snapshot.json, circuit-model.json, storyboard.json.'].filter(Boolean).join('\n\n');
     const footer=`Estate ${s.identity.estateModelId} · ${model.view} view · snapshot ${s.snapshotDigest.slice(0,12)}`;
     p.commands.push(p.blueprint?{op:'t',args:[footer,36,522,840,16,8,C.muted]}:{op:'foot',args:[footer]});
-    return {id:p.id,title:p.title,subtitle:p.subtitle,commands:p.commands,notes:notes.length>19000?notes.slice(0,18500)+'\n\nNotes abbreviated. Full detail is retained in storyboard.json.':notes,
+    if(p.headerLayout==='custom')p.commands.push({op:'t',args:[p.id.slice(6).padStart(2,'0'),900,522,42,16,8,C.muted,false,'right']});
+    return {id:p.id,title:p.title,subtitle:p.subtitle,...(p.headerLayout?{headerLayout:p.headerLayout}:{}),commands:p.commands,notes:notes.length>19000?notes.slice(0,18500)+'\n\nNotes abbreviated. Full detail is retained in storyboard.json.':notes,
       evidenceRefs:p.evidenceRefs,detail:p.detail,interpretation:p.interpretation,coverage:p.coverage,...(p.blueprint?{blueprint:p.blueprint}:{})};
   }) };
 }
