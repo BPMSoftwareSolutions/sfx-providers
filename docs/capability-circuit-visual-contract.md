@@ -77,6 +77,24 @@ transport volumes are not separate navigable PowerPoint files.
 - Outcome membership is separate from selected routing or measured success.
 - The observation band says “unobserved” until identified testimony exists.
 
+### Connector routing validation
+
+Every generated blueprint route carries an explicit rendering policy. When a
+forward corridor between cell boundaries is unobstructed, use `routing: forward`:
+a straight connector or an orthogonal connector with at most two bends. Its path
+length must equal the Manhattan distance between its anchors. Reversals, spikes,
+and extra zigzags are rejected with `CIRCUIT_CONNECTOR_INVALID` before native
+PowerPoint, Google Slides or SVG output is authored. Each segment must be nonzero
+and horizontal or vertical. The public `route` command exposes the same policy.
+
+The router checks other cell bounds, including provider double frames, before
+selecting this policy. Fan-out branches share the midpoint of the clear column
+gap. Wrapped rows, recurrence and blocked corridors use `routing: orthogonal`,
+which permits necessary detours but still rejects invalid segments. This is a
+rendering rule, not a claim that execution is monotonic; route choices never
+alter the source edge IDs or endpoints. Existing hand-authored commands without
+a policy retain their prior behavior.
+
 ## Review and observation boundaries
 
 `circuit-review.json` distinguishes errors from incomplete evidence. Findings

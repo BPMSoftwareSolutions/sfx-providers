@@ -1,4 +1,5 @@
 import {C,Slide} from '../circuit-presentation/design.mjs';
+import {validateConnectorRoute} from '../circuit-presentation/contracts.mjs';
 import {humanize} from './model.mjs';
 import {projectBlueprint,projectionOverlays,reachableScenarios,declarationInventory} from './projection.mjs';
 
@@ -14,6 +15,20 @@ const wrap=(s,width=28,maxLines=5)=>{
  for(const word of words){if(line&&line.length+word.length+1>width){lines.push(line);line='';}line+=(line?' ':'')+word;}if(line)lines.push(line);
  return lines.length>maxLines?[...lines.slice(0,maxLines-1),brief(lines.slice(maxLines-1).join(' '),width)].join('\n'):lines.join('\n');
 };
+
+// A corridor must be clear of other cells, including a provider's double frame.
+// This is a drafting choice only; edge identities and endpoint ownership stay fixed.
+function clearCorridor(points,positions,edge,nodes){
+ return Object.entries(positions).every(([id,b])=>{
+  if(id===edge.from||id===edge.to)return true;
+  const pad=nodes.find(n=>n.id===id)?.kind==='provider'?4:0;
+  const left=b.x-pad,right=b.x+b.w+pad,top=b.y-pad,bottom=b.y+b.h+pad;
+  return points.slice(1).every(([x,y],i)=>{const [px,py]=points[i];
+   return y===py ? !(y>top&&y<bottom&&Math.max(x,px)>left&&Math.min(x,px)<right)
+    : !(x>left&&x<right&&Math.max(y,py)>top&&Math.min(y,py)<bottom);
+  });
+ });
+}
 
 // Coordinates depend only on this projection's known identities and edges.
 // Toggling review/runtime overlays never moves a cell or changes the routes.
@@ -41,11 +56,14 @@ export function layoutBlueprint(projection){
  const width=Math.max(compact?300:700,...Object.values(positions).map(b=>b.x+b.w))+(compact?35:80),height=Math.max(compact?100:320,...Object.values(positions).map(b=>b.y+b.h))+(compact?25:85);
  if(nodes.length===1){const b=positions[nodes[0].id];b.x=(width-b.w)/2;b.y=(height-b.h)/2;}
  for(const [i,e]of edges.entries()){
-  const a=positions[e.from],b=positions[e.to];let points;
+  const a=positions[e.from],b=positions[e.to];let points,routing='orthogonal';
+  const start=[a.x+a.w,a.y+a.h/2],end=[b.x,b.y+b.h/2],middle=(start[0]+end[0])/2;
+  const forward=start[1]===end[1]?[start,end]:[start,[middle,start[1]],[middle,end[1]],end];
   if(e.from===e.to){const y=a.y-30;points=[[a.x+a.w*.7,a.y],[a.x+a.w*.7,y],[a.x+a.w*.3,y],[a.x+a.w*.3,a.y]];}
-  else if(b.x>a.x&&Math.abs(b.y-a.y)<5)points=[[a.x+a.w,a.y+a.h/2],[b.x,b.y+b.h/2]];
+  else if(end[0]>start[0]&&clearCorridor(forward,positions,e,nodes)){points=forward;routing='forward';}
   else{const y=Math.min(a.y,b.y)-16-(i%3)*8;points=[[a.x+a.w,a.y+a.h/2],[a.x+a.w+15,a.y+a.h/2],[a.x+a.w+15,y],[b.x-12,y],[b.x-12,b.y+b.h/2],[b.x,b.y+b.h/2]];}
-  routes.push({...e,points});
+  validateConnectorRoute(points,routing);
+  routes.push({...e,points,routing});
  }
  return {width,height,positions,routes};
 }
@@ -75,7 +93,7 @@ function drawProjection(p,model,projection,{x=28,y=161,w=904,h=262,diagnostics=t
  };
  for(const e of l.routes){
   const color=['port','binding','realization','provider-selection','operand'].includes(e.kind)?C.violet:e.kind==='semantic-input'?C.amber:e.kind==='semantic-outcome'?C.green:C.blue;
-  p.add('route',e.points.map(pt=>at(...pt)),color,{width:Math.max(.7,1.6*scale),arrow:true,dash:['call','sequence'].includes(e.kind),glow:false});
+  p.add('route',e.points.map(pt=>at(...pt)),color,{width:Math.max(.7,1.6*scale),arrow:true,dash:['call','sequence'].includes(e.kind),glow:false,routing:e.routing});
   if(projection.altitude==='capability')text(e.kind==='call'?'CALL · '+(e.sourceEdgeIds?.[0]||e.id):brief(e.label||e.kind,35),{x:e.points[0][0]-5,y:Math.min(...e.points.map(pt=>pt[1]))-25,w:140,h:23},14,color);
  }
  for(const n of projection.nodes){

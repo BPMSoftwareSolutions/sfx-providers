@@ -13,6 +13,7 @@ const options = keys => object(Object.fromEntries(keys.map(k => [k, {
   sa: { ...number, maximum: 1 }, dash: { type: 'boolean' }, arrow: { type: 'boolean' },
   glow: { type: 'boolean' }, size: number, sub: text, label: text, height: number,
   pins: { type: 'integer', minimum: 1, maximum: 12 }, r: number,
+  routing: { enum: ['orthogonal', 'forward'] },
 }[k]])));
 const point = { type: 'array', prefixItems: [number, number], minItems: 2, maxItems: 2 };
 const array = (items, maxItems = 128) => ({ type: 'array', items, maxItems });
@@ -21,7 +22,7 @@ export const operations = {
   shape: [5, [enumOf('RECTANGLE','ROUND_RECTANGLE','ELLIPSE','DIAMOND','HEXAGON'),number,number,number,number,options(['fill','stroke','sw','alpha','sa'])]],
   t: [5, [text,number,number,number,number,number,color,{type:'boolean'},enumOf('left','center','right'),{oneOf:[{type:'string',format:'http-url'},object({slideIndex:{type:'integer',minimum:0,maximum:255}},['slideIndex'])]}]],
   line: [4, [number,number,number,number,color,number,options(['dash','alpha','arrow'])]],
-  route: [1, [{...array(point),minItems:2},color,options(['width','dash','arrow','glow'])]],
+  route: [1, [{...array(point),minItems:2},color,options(['width','dash','arrow','glow','routing'])]],
   port: [2, [number,number,color,number]], junction: [2, [number,number,color,number]],
   stop: [2, [number,number,color]], gate: [2, [number,number,text,color,number]],
   chip: [5, [number,number,number,number,text,color,options(['size','sub','pins'])]],
@@ -54,6 +55,30 @@ export const outputSchema = {
     requests:{type:'array'},
   },['contractId','title','pageSize','inputDigest','contentDigest','slides','requests']),
 };
+
+// Geometry constraints complement JSON Schema. A forward route is selected only
+// for an unobstructed corridor: it cannot spend length on a reversal or a spike.
+// Wrapped rows, recurrence and obstacle detours use the orthogonal policy.
+export function validateConnectorRoute(points, routing) {
+  if (routing == null) return; // Retained hand-authored diagrams predate this policy.
+  const reject = message => { throw Object.assign(new Error(message), {code:'CIRCUIT_CONNECTOR_INVALID'}); };
+  if (!['orthogonal','forward'].includes(routing) || !Array.isArray(points) || points.length < 2 ||
+      points.some(p => !Array.isArray(p) || p.length !== 2 || !p.every(Number.isFinite))) reject('Connector requires finite points and a supported routing policy.');
+  const epsilon = 1e-6;
+  let length = 0, bends = 0, previousAxis;
+  for (let i=1;i<points.length;i++) {
+    const dx=points[i][0]-points[i-1][0],dy=points[i][1]-points[i-1][1];
+    if ((Math.abs(dx)>epsilon && Math.abs(dy)>epsilon) || (Math.abs(dx)<=epsilon && Math.abs(dy)<=epsilon)) reject('Connector segments must be nonzero and orthogonal.');
+    const axis=Math.abs(dx)>epsilon?'x':'y';
+    if(previousAxis && previousAxis!==axis)bends++;
+    previousAxis=axis;length+=Math.abs(dx)+Math.abs(dy);
+  }
+  if (routing==='forward') {
+    const start=points[0],end=points.at(-1),distance=Math.abs(end[0]-start[0])+Math.abs(end[1]-start[1]);
+    if(end[0]<start[0]-epsilon || length>distance+epsilon || bends>2)
+      reject('Forward connector has an unnecessary detour: use a straight segment or at most two bends without backtracking.');
+  }
+}
 
 // Validator for the schema vocabulary used by these contracts (no eval or refs).
 export function validate(value, schema, at = '$') {

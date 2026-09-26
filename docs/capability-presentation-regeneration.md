@@ -130,3 +130,19 @@ Final local evidence is under
 directories under `outputs/google-slides`. Each contains retained generation or
 migration receipts; generated artifacts remain ignored. The provider, schemas,
 projection rules, regression tests and supplied reference assets are versioned.
+
+### Connector repair
+
+The follow-up routing validation rejects spikes, reversals and unnecessary bends
+in clear forward corridors. Regeneration from the same equity snapshot repaired
+the provider branches on slides 14, 17, 20, 22, 25, 27 and 30. The existing Google
+deck was repaired in place using those generated coordinates; its slide IDs,
+content, links and notes remain unchanged. Native readback found no changes to
+the other 4,343 elements. All seven repaired slides were visually checked, and
+the other 56 Google PDF pages were pixel-identical to the prior render.
+
+All 68 relevant tests pass, including refusal of the reported spike and coverage
+for fan-out, upward branches and necessary obstacle detours. The regenerated
+PowerPoint passed package, layout and import checks. The current local deck is
+`outputs/capability-estate/equity-connector-fixed/presentation.pptx`; Google repair
+and render evidence is in `outputs/google-slides/equity-connector-fix`.
