@@ -5,6 +5,10 @@ For database-driven decks from any selected capability, see
 `presentation.from-capability` tool combines a semantic circuit view with all
 eleven authoring context layers.
 
+For an existing PowerPoint deck, use the additional
+[`presentation.to-google-slides` operation](google-slides-migration.md) to create
+a native Google deck with a durable receipt and content readback.
+
 `sfx-circuit-presentation` is the hand-authored provider behind the reusable
 diagram design extracted from the SideFX announcement. Its tool is
 `presentation.compile`. It compiles a JSON drawing description or the retained

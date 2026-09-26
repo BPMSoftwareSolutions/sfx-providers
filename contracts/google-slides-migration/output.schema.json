@@ -1,0 +1,48 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contractId",
+    "providerId",
+    "toolId",
+    "disposition"
+  ],
+  "properties": {
+    "contractId": {
+      "const": "google-slides-migration-output.v1"
+    },
+    "providerId": {
+      "const": "sfx-circuit-presentation"
+    },
+    "toolId": {
+      "const": "presentation.to-google-slides"
+    },
+    "disposition": {
+      "enum": [
+        "MIGRATED",
+        "NEEDS_REVIEW",
+        "HELD"
+      ]
+    },
+    "fileId": {
+      "type": "string"
+    },
+    "url": {
+      "type": "string"
+    },
+    "sourceSha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "verification": {
+      "type": "object"
+    },
+    "findings": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    }
+  },
+  "$id": "google-slides-migration-output.v1"
+}

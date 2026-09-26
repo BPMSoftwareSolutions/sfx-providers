@@ -4,6 +4,10 @@ The circuit provider now also serves `presentation.from-capability`: select a
 `capabilityId`, read its current estate declarations, and generate editable
 PowerPoint/Google Slides diagrams and evidence sidecars.
 
+After PowerPoint export, the [Google Slides migration provider](google-slides-migration.md)
+can create and verify a native Google deck. The migration job retains the source
+hash and observed file ID, so repeated runs reuse the converted presentation.
+
 The two altitude axes work together:
 
 * **Semantic view** (`view`): `scenario`, `mechanic`, `provider`, or `physical`.

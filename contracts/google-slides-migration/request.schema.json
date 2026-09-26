@@ -1,0 +1,39 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contractId",
+    "artifactId",
+    "sha256",
+    "title",
+    "parentFolderId",
+    "idempotencyKey"
+  ],
+  "properties": {
+    "contractId": {
+      "const": "google-slides-migration-request.v1"
+    },
+    "artifactId": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9._-]{1,128}$"
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200
+    },
+    "parentFolderId": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_-]{10,200}$"
+    },
+    "idempotencyKey": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_-]{8,128}$"
+    }
+  },
+  "$id": "google-slides-migration-request.v1"
+}
