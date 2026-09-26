@@ -1,4 +1,4 @@
-import { compilePresentation } from '../circuit-presentation/compile.mjs';
+import { compilePresentation, MAX_DIAGRAM_COMMANDS } from '../circuit-presentation/compile.mjs';
 import { validate } from '../circuit-presentation/contracts.mjs';
 import { validateSnapshot, digest, fail } from './snapshot.mjs';
 import { buildCircuitModel, VIEWS } from './model.mjs';
@@ -52,11 +52,18 @@ export async function presentCapability(input, { readEstate, narrator } = {}) {
   if(!overview||overview.altitude!==view||primary.nodes.some(n=>!overview.nodes.includes(n.id))||primary.edges.some(e=>!overview.edges.includes(e.id)))fail('The selected projection lost a node or edge.','CAPABILITY_BLUEPRINT_INCOMPLETE');
   if(model.nodes.some(n=>!coveredNodes.has(n.id))||model.edges.some(e=>!coveredEdges.has(e.id)))fail('Circuit projection lost a node or edge.','CAPABILITY_COVERAGE_INCOMPLETE');
   const volumes=[];
-  for(let i=0;i<storyboard.slides.length;i+=32){
-    const subset=storyboard.slides.slice(i,i+32),volume=i/32+1;
-    const deck={title:`${snapshot.identity.capabilityId} — ${view} — ${volume}`,startSlideNumber:i+1,slides:subset.map(({title,subtitle,headerLayout,notes,commands})=>({title,subtitle,...(headerLayout?{headerLayout}:{}),notes,commands}))};
-    const compiled=await compilePresentation({contractId:'circuit-presentation-request.v1',objectPrefix:`${input.objectPrefix??'capability'}_v${volume}`,deck});
-    volumes.push({volume,firstSlide:i+1,lastSlide:i+subset.length,presentation:compiled});
+  for(let i=0;i<storyboard.slides.length;){
+    const volume=volumes.length+1;
+    if(volume>8)fail('This projection exceeds eight bounded transport volumes.','CAPABILITY_PRESENTATION_TOO_LARGE');
+    let end=Math.min(i+32,storyboard.slides.length),compiled;
+    while(end>i+1&&storyboard.slides.slice(i,end).reduce((n,s)=>n+s.commands.length,0)>MAX_DIAGRAM_COMMANDS)end--;
+    for(;;){
+      const subset=storyboard.slides.slice(i,end);
+      const deck={title:`${snapshot.identity.capabilityId} — ${view} — ${volume}`,startSlideNumber:i+1,slides:subset.map(({title,subtitle,headerLayout,notes,commands})=>({title,subtitle,...(headerLayout?{headerLayout}:{}),notes,commands}))};
+      try{compiled=await compilePresentation({contractId:'circuit-presentation-request.v1',objectPrefix:`${input.objectPrefix??'capability'}_v${volume}`,deck});break;}
+      catch(error){if(error.code!=='CIRCUIT_REQUEST_OVERSIZED'||end===i+1)throw error;end=i+Math.max(1,Math.floor((end-i)/2));}
+    }
+    volumes.push({volume,firstSlide:i+1,lastSlide:end,presentation:compiled});i=end;
   }
   const body={contractId:outputShape.contractId,capabilityId:input.capabilityId,view,contextAltitude:input.contextAltitude??'all',snapshot,model,storyboard,inference,
     coverage:{nodeCount:model.nodes.length,edgeCount:model.edges.length,coveredNodes:coveredNodes.size,coveredEdges:coveredEdges.size,inventoryScope:'source registers, not primary geometry',contextLayers:11,blueprint:blueprint.coverage,projection:{altitude:view,nodes:primary.nodes.length,edges:primary.edges.length,topologyDigest:primary.topologyDigest}},volumes};

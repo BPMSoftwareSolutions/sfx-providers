@@ -4,6 +4,7 @@ import {fitBlueprintText} from '../circuit-presentation/text-fit.mjs';
 import {humanize} from './model.mjs';
 import {identifierCaption} from './caption.mjs';
 import {drawEventSheet} from './event-sheet.mjs';
+import {componentGlyph,drawComponentGlyph,glyphFrame,glyphAnchor} from './component-glyphs.mjs';
 import {projectBlueprint,projectionOverlays,reachableScenarios,declarationInventory} from './projection.mjs';
 
 const chunks=(a,n)=>Array.from({length:Math.ceil(a.length/n)},(_,i)=>a.slice(i*n,(i+1)*n));
@@ -15,12 +16,12 @@ const wrap=(s,width=28,maxLines=5)=>{
  return lines.length>maxLines?[...lines.slice(0,maxLines-1),brief(lines.slice(maxLines-1).join(' '),width)].join('\n'):lines.join('\n');
 };
 
-// A corridor must be clear of other cells, including a provider's double frame.
+// A corridor must be clear of other cells and their complete glyph envelopes.
 // This is a drafting choice only; edge identities and endpoint ownership stay fixed.
 function clearCorridor(points,positions,edge,nodes){
  return Object.entries(positions).every(([id,b])=>{
   if(id===edge.from||id===edge.to)return true;
-  const pad=nodes.find(n=>n.id===id)?.kind==='provider'?4:0;
+  const pad=0;
   const left=b.x-pad,right=b.x+b.w+pad,top=b.y-pad,bottom=b.y+b.h+pad;
   return points.slice(1).every(([x,y],i)=>{const [px,py]=points[i];
    return y===py ? !(y>top&&y<bottom&&Math.max(x,px)>left&&Math.min(x,px)<right)
@@ -61,18 +62,21 @@ export function layoutBlueprint(projection){
  if(nodes.length===1){const b=positions[nodes[0].id];b.x=(width-b.w)/2;b.y=(height-b.h)/2;}
  for(const [i,e]of edges.entries()){
   const a=positions[e.from],b=positions[e.to];let points,routing='orthogonal';
-  const start=[a.x+a.w,a.y+a.h/2],end=[b.x,b.y+b.h/2],middle=(start[0]+end[0])/2;
+  const from=nodes.find(n=>n.id===e.from),to=nodes.find(n=>n.id===e.to);
+  const start=glyphAnchor(from,a,'right'),end=glyphAnchor(to,b,'left'),middle=(start[0]+end[0])/2;
   const forward=start[1]===end[1]?[start,end]:[start,[middle,start[1]],[middle,end[1]],end];
   if(e.kind==='provider-reference'){
    const y=Math.max(a.y+a.h,b.y+b.h)+32;
-   points=[[a.x+a.w/2,a.y+a.h],[a.x+a.w/2,y],[b.x+b.w/2,y],[b.x+b.w/2,b.y+b.h]];
+   const fromBottom=glyphAnchor(from,a,'bottom'),toBottom=glyphAnchor(to,b,'bottom');
+   points=[fromBottom,[fromBottom[0],y],[toBottom[0],y],toBottom];
    height=Math.max(height,y+25);
   }else if(e.kind==='scenario-provider'){
-   points=[[a.x+a.w/2,a.y],[a.x+a.w/2,180],[b.x+b.w/2,180],[b.x+b.w/2,b.y+b.h]];
+   const fromTop=glyphAnchor(from,a,'top'),toBottom=glyphAnchor(to,b,'bottom');
+   points=[fromTop,[fromTop[0],180],[toBottom[0],180],toBottom];
    points=points.filter((p,i)=>!i||p[0]!==points[i-1][0]||p[1]!==points[i-1][1]);
   }else if(e.from===e.to){const y=a.y-30;points=[[a.x+a.w*.7,a.y],[a.x+a.w*.7,y],[a.x+a.w*.3,y],[a.x+a.w*.3,a.y]];}
   else if(end[0]>start[0]&&clearCorridor(forward,positions,e,nodes)){points=forward;routing='forward';}
-  else{const y=Math.min(a.y,b.y)-16-(i%3)*8;points=[[a.x+a.w,a.y+a.h/2],[a.x+a.w+15,a.y+a.h/2],[a.x+a.w+15,y],[b.x-12,y],[b.x-12,b.y+b.h/2],[b.x,b.y+b.h/2]];}
+  else{const y=Math.min(a.y,b.y)-16-(i%3)*8;points=[start,[a.x+a.w+15,start[1]],[a.x+a.w+15,y],[b.x-12,y],[b.x-12,end[1]],end];}
   validateConnectorRoute(points,routing);
   routes.push({...e,points,routing});
  }
@@ -108,8 +112,8 @@ function drawProjection(p,model,projection,{x=28,y=161,w=904,h=262,diagnostics=t
  }
  for(const n of projection.nodes){
   const b=l.positions[n.id],color=paint(n),issues=overlay.issues.filter(i=>i.visibleNodeIds.includes(n.id)),marker=issues.some(i=>i.severity==='error')?C.red:C.amber;
-  p.add('shape',['operation','scenario'].includes(n.kind)?'ROUND_RECTANGLE':'RECTANGLE',...at(b.x,b.y),b.w*scale,b.h*scale,{fill:'#041C32',stroke:color,sw:Math.max(.8,1.6*scale)});
-  if(n.kind==='provider')p.add('shape','RECTANGLE',...at(b.x-4,b.y-4),(b.w+8)*scale,(b.h+8)*scale,{fill:'none',stroke:color,sw:.6});
+  const [gx,gy]=at(b.x,b.y),glyph=componentGlyph(n);
+  drawComponentGlyph(p,n,{x:gx,y:gy,w:b.w*scale,h:b.h*scale},color,{scale});
   const heading=projection.altitude==='scenario'?({input:'GIVEN / INPUT',event:'WHEN / EVENT',outcome:'THEN / OUTCOME',terminal:'THEN / OUTCOME'}[n.kind]):n.kind==='operation'?String(n.ordinal).padStart(2,'0')+' · '+n.operationKind.toUpperCase():n.kind.toUpperCase();
   if(n.kind==='operation'&&scale>=.6){
    p.add('shape','ELLIPSE',...at(b.x+12,b.y+8),26*scale,26*scale,{fill:'#072D49',stroke:C.blue,sw:Math.max(.6,scale)});
@@ -117,11 +121,10 @@ function drawProjection(p,model,projection,{x=28,y=161,w=904,h=262,diagnostics=t
    // centered inside the smaller circle rather than wrapping into two lines.
    text(String(n.ordinal).padStart(2,'0'),{x:b.x+4,y:b.y+10,w:42,h:22},11,C.blue,true);
    text(n.operationKind,{x:b.x+45,y:b.y+10,w:b.w-52,h:25},12,C.blue);
-  }else text(n.kind==='operation'?String(n.ordinal).padStart(2,'0'):heading,{x:b.x+4,y:b.y+6,w:b.w-8,h:n.kind==='operation'?18:30},14,color,true);
+  }else text(n.kind==='operation'?String(n.ordinal).padStart(2,'0'):heading,glyphFrame(b,glyph.heading),14,color,true);
   const label=n.kind==='provider'?n.label:projection.altitude==='scenario'?humanize(n.label):n.kind==='scenario'?(/\s/.test(n.label)?n.label:humanize(n.label)):identifierCaption(n.kind==='binding'?(n.transformationId||n.label):n.label,model.capabilityId);
   const providerView=['provider','physical'].includes(projection.altitude);
-  const labelY=providerView?36:n.kind==='operation'&&scale<.6?27:42;
-  text(label,{x:b.x+8,y:b.y+labelY,w:b.w-16,h:b.h-labelY-6},projection.altitude==='scenario'?23:n.kind==='scenario'?20:providerView?14:16,C.white,true,links[n.id]);
+  text(label,glyphFrame(b,glyph.label),projection.altitude==='scenario'?23:n.kind==='scenario'?20:providerView?14:16,C.white,true,links[n.id]);
   for(const edge of l.routes){if(edge.from===n.id){const pt=edge.points[0];p.add('port',...at(...pt),color,Math.max(1.5,3*scale));}if(edge.to===n.id){const pt=edge.points.at(-1);p.add('port',...at(...pt),color,Math.max(1.5,3*scale));}}
   if(issues.length){const markerWidth=Math.max(98,issues.length*36);text(issues.map(i=>i.id).join(' '),{x:b.x+b.w-markerWidth,y:b.y-25,w:markerWidth,h:23},14,marker,true);}
  }

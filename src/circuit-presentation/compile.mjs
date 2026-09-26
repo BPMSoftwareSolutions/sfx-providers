@@ -6,6 +6,7 @@ import { objectsFromRequests, renderSvg } from './render.mjs';
 const hash=value=>createHash('sha256').update(JSON.stringify(value)).digest('hex');
 const presetUrl=new URL('./presets/sidefx-announcement.json',import.meta.url);
 let presetPromise;
+export const MAX_DIAGRAM_COMMANDS=4000;
 const error=(message,code='CIRCUIT_LAYOUT_INVALID')=>Object.assign(new Error(message),{code});
 
 function checkGeometry(requests) {
@@ -41,7 +42,7 @@ export async function compilePresentation(input) {
     });
   } else {
     title=input.deck.title;
-    if(input.deck.slides.reduce((n,s)=>n+s.commands.length,0)>4000)throw error('Maximum 4,000 diagram commands per deck.','CIRCUIT_REQUEST_OVERSIZED');
+    if(input.deck.slides.reduce((n,s)=>n+s.commands.length,0)>MAX_DIAGRAM_COMMANDS)throw error('Maximum 4,000 diagram commands per deck.','CIRCUIT_REQUEST_OVERSIZED');
     const sources=input.deck.sources??[];
     if(new Set(sources.map(s=>s.id)).size!==sources.length)throw error('Source IDs must be unique.','CIRCUIT_REQUEST_INVALID');
     let nativeCount=0;

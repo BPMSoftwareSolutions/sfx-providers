@@ -115,6 +115,54 @@ transport volumes are not separate navigable PowerPoint files.
 
 ## Geometry and signal language
 
+### Component symbols from data
+
+The retained [component reference](references/component-shape-fidelity.png) comes
+from the announcement deck's provider-binding design. Active blueprint nodes now
+use a shared, versioned
+[JSON shape map](../src/capability-presentation/styles/component-glyphs.v1.json).
+The renderer selects symbols by declared component kind:
+
+| Declared component | Native drafting symbol |
+| --- | --- |
+| Port | Socket with a central contact and crossbars |
+| Binding | Adapter body with edge contacts |
+| Provider | Pinned module with a header accent |
+| Platform capability | Hexagon |
+| Input / Outcome | Double-ring terminal |
+| Operation / Event / Scenario | Execution body with a header accent |
+| Physical metadata / endpoint | Document form |
+| Declared `if` expression | Diamond gate |
+
+`roles` maps kinds to named glyphs. `glyphs` contains normalized native primitives,
+heading/label frames and connector anchors. Editing those recipes changes future
+generation without per-capability code changes. Exact-kind/exact-label rules may
+select a declared construct such as an `if` expression. An operation named
+`select-route` does not become a gate merely because its identifier sounds like
+one. Unknown kinds retain a neutral execution body.
+
+Glyph coordinates scale with their node envelope. Routing uses glyph anchors,
+including the narrow socket contacts, and retains the original edge identities.
+The dense Event sheet preserves its numbered rail and measured caption frames;
+the scenario summary preserves its contract cards and provider-reference layout.
+These are disclosure layouts around the shared component symbols.
+
+Contacts and header accents are drafting details. Their decorative pin count
+does not declare additional ports, binding fields, branches, or runtime state.
+Shared-looking paths cannot introduce a junction or alter source topology.
+Each rendered symbol records its source node ID, selected glyph, envelope and
+anchors; the blueprint records the style contract and digest.
+
+`validateComponentStyle` rejects unknown recipes, unsupported primitives,
+nonfinite/out-of-range coordinates, clipped text frames, invalid contact lines
+and invalid paint tokens. Label fitting and connector validation still apply.
+All output remains editable native PowerPoint/Google shapes and lines, with SVG
+generated from the same rendering commands.
+
+Transport volumes adapt to the existing command and native-request budgets as
+composite symbols add primitives. This does not split, omit, or renumber logical
+slides; the complete presentation retains all global navigation destinations.
+
 - Amber: Input; blue: scenario, Event and execution responsibility.
 - Violet: explicit port/binding/provider relationships.
 - Green: Outcome; red: declared failure classification or an error overlay.

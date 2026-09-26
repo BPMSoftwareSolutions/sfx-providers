@@ -243,3 +243,31 @@ Current local PowerPoint and generation evidence:
 `outputs/capability-estate/equity-scenario-first/presentation.pptx`.
 Native readback, edit payload and PDF render evidence:
 `outputs/google-slides/equity-readable-circuit`.
+
+### Data-driven component shapes
+
+The next 69-slide regeneration applies the versioned component shape map to the
+same snapshot. Ports use sockets, bindings use adapters, providers use pinned
+modules, platforms use hexagons, and scenario Input/Outcome use double-ring
+terminals. The scenario blueprint remains slide 02 and the complete circuit
+remains slide 03. The declaration graph, provider ownership, review findings and
+slide order are unchanged.
+
+To adjust these shapes, edit
+`src/capability-presentation/styles/component-glyphs.v1.json`, then run the normal
+capability generation command. Existing native primitives can be composed into
+new recipes without changing JavaScript. Shape anchors and text frames belong
+to the same validated data contract. A new primitive or new interpretation of
+estate semantics would still require implementation and validation.
+
+The updated Google deck has 23 restyled slides. All were visually inspected from
+Google's PDF render; the other 46 slides are pixel-identical and their native
+resources are unchanged. All text-link destinations resolve. The 87 relevant
+tests pass, Python reports no fit findings across 415 labels, and the PowerPoint
+passes package, layout, font-policy and artifact-import checks. Native PowerPoint
+font rendering was not independently executed.
+
+Current PowerPoint and generation evidence:
+`outputs/capability-estate/equity-component-glyphs/presentation.pptx`.
+Native update and render evidence:
+`outputs/google-slides/equity-component-glyphs`.

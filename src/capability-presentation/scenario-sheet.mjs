@@ -3,6 +3,7 @@ import {fitBlueprintText} from '../circuit-presentation/text-fit.mjs';
 import {projectBlueprint} from './projection.mjs';
 import {identifierCaption} from './caption.mjs';
 import {blueprintGrid} from './event-sheet.mjs';
+import {drawComponentGlyph} from './component-glyphs.mjs';
 
 // Native drafting symbols describe visual roles only; they never add authority.
 function documentIcon(p,x,y,color){
@@ -65,7 +66,7 @@ export function appendScenarioSheet({snapshot,model,page,slides,scenarioId=model
  for(const [i,edge]of involvement.entries()){
   const x=180+i*colW,provider=model.nodes.find(n=>n.id===edge.to),inspection=slides.find(s=>s.blueprint?.role==='provider-inspection'&&s.blueprint.providerId===provider.id);
   const box={x,y:115,w:providerWidth,h:66};
-  p.add('shape','RECTANGLE',x,115,providerWidth,66,{fill:'#101A35',stroke:C.violet,sw:1.2});
+  drawComponentGlyph(p,provider,box,C.violet,{fill:'#101A35'});
   p.text('PROVIDER',x,117,providerWidth,21,10,C.violet,true,'center');label(provider.label,x,138,providerWidth,40,10,C.white,true,inspection);
   const uses=edge.via,portH=Math.min(27,90/Math.max(1,uses.length));
   uses.forEach((use,j)=>{
@@ -87,7 +88,7 @@ export function appendScenarioSheet({snapshot,model,page,slides,scenarioId=model
   });
  }
  if(!count)p.text('No declared external provider references',215,250,530,45,16,C.muted,false,'center');
- p.add('shape','ROUND_RECTANGLE',event.x,event.y,event.w,event.h,{fill:'#082C47',stroke:C.blue,sw:1.4});
+ drawComponentGlyph(p,semantic.nodes.find(n=>n.kind==='event'),event,C.blue,{fill:'#082C47'});
  label(sc.eventId?sc.eventId.replaceAll('-',' '):sc.authorityId,event.x,event.y+2,event.w,38,13,C.white,true,eventPage);
  label(sc.operationIds.length+' declared operations · open complete circuit',event.x,event.y+36,event.w,25,10,C.blue,false,eventPage);
  p.text('Provider operation references',180,314,602,16,8,C.muted,false,'center');
