@@ -26,6 +26,7 @@ export async function run(args=process.argv.slice(2)) {
   const write=(name,value)=>fs.writeFile(path.join(output,name),typeof value==='string'?value:JSON.stringify(value,null,2)+'\n',{flag:'wx'});
   const c=result.candidate;
   await write('request.json',input);await write('snapshot.json',c.snapshot);await write('circuit-model.json',c.model);await write('storyboard.json',c.storyboard);
+  await write('circuit-blueprint.json',c.storyboard.blueprint);
   await write('context-audit.json',{capabilityId:c.capabilityId,snapshotDigest:c.snapshot.snapshotDigest,altitudes:c.storyboard.contexts,checks:c.storyboard.checks,findings:c.model.findings});
   await write('receipt.json',{providerId:result.providerId,toolId:result.toolId,contentDigest:c.contentDigest,snapshotDigest:c.snapshot.snapshotDigest,view:c.view,contextAltitude:c.contextAltitude,coverage:c.coverage,inference:c.inference,volumes:c.volumes.map(v=>({volume:v.volume,firstSlide:v.firstSlide,lastSlide:v.lastSlide,contentDigest:v.presentation.contentDigest}))});
   for(const v of c.volumes){

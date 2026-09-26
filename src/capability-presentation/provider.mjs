@@ -47,6 +47,8 @@ export async function presentCapability(input, { readEstate, narrator } = {}) {
     inference={mode:'host-narrator',applied:enriched.size};
   }
   const coveredNodes=new Set(storyboard.slides.flatMap(s=>s.coverage.nodes)),coveredEdges=new Set(storyboard.slides.flatMap(s=>s.coverage.edges));
+  const blueprint=storyboard.blueprint,overview=storyboard.slides.find(s=>s.blueprint?.role==='overview')?.blueprint;
+  if(!overview||blueprint.nodes.some(n=>!overview.nodes.includes(n.id))||blueprint.edges.some(e=>!overview.edges.includes(e.id)))fail('The complete blueprint lost a node or edge.','CAPABILITY_BLUEPRINT_INCOMPLETE');
   if(model.nodes.some(n=>!coveredNodes.has(n.id))||model.edges.some(e=>!coveredEdges.has(e.id)))fail('Circuit projection lost a node or edge.','CAPABILITY_COVERAGE_INCOMPLETE');
   const volumes=[];
   for(let i=0;i<storyboard.slides.length;i+=32){
@@ -56,7 +58,7 @@ export async function presentCapability(input, { readEstate, narrator } = {}) {
     volumes.push({volume,firstSlide:i+1,lastSlide:i+subset.length,presentation:compiled});
   }
   const body={contractId:outputShape.contractId,capabilityId:input.capabilityId,view,contextAltitude:input.contextAltitude??'all',snapshot,model,storyboard,inference,
-    coverage:{nodeCount:model.nodes.length,edgeCount:model.edges.length,coveredNodes:coveredNodes.size,coveredEdges:coveredEdges.size,contextLayers:11},volumes};
+    coverage:{nodeCount:model.nodes.length,edgeCount:model.edges.length,coveredNodes:coveredNodes.size,coveredEdges:coveredEdges.size,contextLayers:11,blueprint:blueprint.coverage},volumes};
   return {...body,contentDigest:digest(body)};
 }
 

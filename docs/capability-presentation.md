@@ -18,6 +18,49 @@ Every deck retains all eleven context layers and their evidence references. With
 context map and expands the chosen layer. These numbers organize meaning; they
 are not an execution sequence or a claim that eleven authoring steps completed.
 
+## Complete circuit blueprint
+
+Every generated deck now places a **complete capability circuit sheet immediately
+after its cover**, regardless of semantic view or authoring-altitude focus.
+It combines the selected scenarios' input and outcome boundaries, every declared
+operation, ordered continuation, scenario transitions, nested calls and returns,
+and port bindings on one sheet. Outcome-selection diamonds, branching wires,
+join junctions, provider sockets, and terminal boundaries keep their distinct
+roles. Declared recurrence is retained rather than removed to make a DAG.
+
+The whole sheet supplements the detailed, paginated semantic projections. Large
+circuits keep all components and wires on the overview and use stable component
+IDs with a readable register. Unused bindings remain in a separate region.
+Missing bindings and unresolved call targets remain visible. Generation checks
+that the overview contains every blueprint node and edge, and emits
+`circuit-blueprint.json` with the source references and coverage counts.
+
+The blueprint is complete at the **declared scenario/operation circuit level**.
+Transformations appear as named subcircuits; this sheet does not expand every
+expression predicate. Variant membership is distinct from a declared transition.
+Sequence, binding, call and return wires also have separate types, so a nested
+return does not assert a backward semantic transition. A drawing alone is not an
+admission receipt or a proof of monotonic execution.
+
+Runtime-selected capabilities appear as explicit wired boundaries. To show a
+specific invocation such as `sda-cli-invoke` targeting
+`resolve-equity-market-price-evidence`, include a separate blueprint from the
+selected target snapshot. The updated example deck contains both: the wrapper
+and the target's 35 operations, 39 bindings and declared result variants.
+
+To build just the blueprint sheets for an existing presentation:
+
+```powershell
+node scripts/build-blueprint-slides.mjs --snapshot examples/capability-presentation/sda-cli-invoke.snapshot.json --output outputs/cli-blueprint
+```
+
+Repeat `--snapshot` to include additional capability sheets. The output contains
+native presentation requests, SVG sheets, and blueprint models. A Google Slides
+host should use an inspected layout ID when an imported deck has no `BLANK`
+layout, retain existing slide IDs, add notes from the emitted source, and
+renumber/reorder only after native readback. New generation includes the sheet
+automatically through the existing capability CLI and provider operation.
+
 ## Run
 
 From this repository:

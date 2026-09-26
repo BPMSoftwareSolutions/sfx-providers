@@ -1,6 +1,7 @@
 import { C } from '../circuit-presentation/design.mjs';
 import { ALTITUDES, buildContexts, humanize, structuralChecks } from './model.mjs';
 import {appendContextSlides} from './context-slides.mjs';
+import {buildBlueprint,appendBlueprintSlides} from './blueprint.mjs';
 
 const chunks = (a, n) => Array.from({ length: Math.ceil(a.length / n) }, (_, i) => a.slice(i*n,(i+1)*n));
 const short = (value, max=65) => String(value ?? '').length > max ? String(value).slice(0,max-1)+'…' : String(value ?? '');
@@ -45,6 +46,9 @@ export function buildStoryboard(snapshot, model, { contextAltitude='all' } = {})
   p.wire([[677,262],[880,262]],C.green);p.add('terminal',903,262,'OUT',C.green,{r:24,size:12});
   p.text(`Estate ${s.identity.estateModelId}  /  version ${s.identity.capabilityVersionPk}`,280,349,425,32,17,C.muted,false,'center');
   p.text(s.features[0]?.sourceTitle?short('Feature: '+s.features[0].sourceTitle,130):s.identity.intent?short('Declared intent: '+s.identity.intent,130):'Declared structure, selected versions, and traceable context',150,406,665,50,18,C.white,false,'center');
+
+  const blueprint=buildBlueprint(s);
+  appendBlueprintSlides({snapshot:s,model:blueprint,page});
 
   for(const group of chunks(contexts,6)){
     p=page('The capability’s authoring context',`ALTITUDES ${group[0].altitude}–${group.at(-1).altitude}  ·  EACH LAYER ANSWERS A DIFFERENT QUESTION`,group.flatMap(c=>[c.catalogRef,...c.evidenceRefs]),group.map(c=>`${c.altitude}. ${c.name}\n${c.question}\n${c.summary}`).join('\n\n'));
@@ -204,11 +208,11 @@ export function buildStoryboard(snapshot, model, { contextAltitude='all' } = {})
 
   // Details live in the machine-readable sidecars; bounded notes keep the deck
   // usable even when bindings or transformation declarations are very large.
-  return { contexts,checks,slides:slides.map(p=>{
+  return { contexts,checks,blueprint,slides:slides.map(p=>{
     const notes=[p.detail, p.interpretation?'Interpretation / scope: '+p.interpretation:'', 'Evidence references:\n'+p.evidenceRefs.join('\n'),
       'Snapshot: '+s.snapshotDigest,'Full identities, relationships, and detail: snapshot.json, circuit-model.json, storyboard.json.'].filter(Boolean).join('\n\n');
     p.commands.push({op:'foot',args:[`Estate ${s.identity.estateModelId} · ${model.view} view · snapshot ${s.snapshotDigest.slice(0,12)}`]});
     return {id:p.id,title:p.title,subtitle:p.subtitle,commands:p.commands,notes:notes.length>19000?notes.slice(0,18500)+'\n\nNotes abbreviated. Full detail is retained in storyboard.json.':notes,
-      evidenceRefs:p.evidenceRefs,detail:p.detail,interpretation:p.interpretation,coverage:p.coverage};
+      evidenceRefs:p.evidenceRefs,detail:p.detail,interpretation:p.interpretation,coverage:p.coverage,...(p.blueprint?{blueprint:p.blueprint}:{})};
   }) };
 }
