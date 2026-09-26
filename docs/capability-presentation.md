@@ -4,6 +4,27 @@ The circuit provider now also serves `presentation.from-capability`: select a
 `capabilityId`, read its current estate declarations, and generate editable
 PowerPoint/Google Slides diagrams and evidence sidecars.
 
+## Generation contract
+
+**Generate a slide show for capability X.** One request selects one root capability
+by identity, with optional namespace qualification. The same reader, context
+projection, blueprint builder and renderer apply to every requested capability;
+there is no per-capability slide authoring or example-specific selection step.
+
+The selected estate declarations supply the feature/Gherkin intent, eleven
+authoring context layers, scenarios, operations, transitions and bindings. The
+declared scenario invocation closure belongs to that selection. A capability
+mentioned in prose, a prior conversation or an example invocation does not become
+another selected root. Missing evidence stays missing; inferred explanations
+cannot supply circuit facts or select additional capabilities.
+
+The acceptance path is `capabilityId` → selected estate snapshot → slide show.
+Snapshot replay supports reproducibility. Combining separately selected snapshots
+is an explicit composition utility, not evidence that this acceptance path works.
+The provider is intended for the entire estate; tests cover representative
+structures and identity isolation, not a completed validation of every estate
+capability. The size bounds and unexpanded subcircuits below remain applicable.
+
 After PowerPoint export, the [Google Slides migration provider](google-slides-migration.md)
 can create and verify a native Google deck. The migration job retains the source
 hash and observed file ID, so repeated runs reuse the converted presentation.
@@ -42,11 +63,15 @@ Sequence, binding, call and return wires also have separate types, so a nested
 return does not assert a backward semantic transition. A drawing alone is not an
 admission receipt or a proof of monotonic execution.
 
-Runtime-selected capabilities appear as explicit wired boundaries. To show a
-specific invocation such as `sda-cli-invoke` targeting
-`resolve-equity-market-price-evidence`, include a separate blueprint from the
-selected target snapshot. The updated example deck contains both: the wrapper
-and the target's 35 operations, 39 bindings and declared result variants.
+Runtime-selected capabilities appear as explicit wired boundaries. A selector
+path declares where an identity will come from at execution time; it does not
+declare that identity. Generation does not guess a target or fetch a capability
+from example input. Request that target's own ID to generate its own slide show.
+
+The earlier demonstration deck combined a CLI wrapper and an equity-price
+capability from two separately selected snapshots. It is a composite example,
+not the output of one `presentation.from-capability` request and not an acceptance
+artifact for single-capability generation.
 
 To build just the blueprint sheets for an existing presentation:
 
@@ -66,9 +91,9 @@ automatically through the existing capability CLI and provider operation.
 From this repository:
 
 ```powershell
-node capability-deck.mjs --capability-id request-capability-from-objective --view scenario --context-altitude all --output outputs/objective-scenario --pptx
-node capability-deck.mjs --capability-id resolve-equity-market-price-evidence --view provider --context-altitude 8 --output outputs/equity-providers --pptx
-node capability-deck.mjs --snapshot outputs/objective-scenario/snapshot.json --view mechanic --output outputs/objective-mechanics --pptx
+$capabilityId = Read-Host 'Capability ID'
+node capability-deck.mjs --capability-id $capabilityId --view scenario --context-altitude all --output outputs/selected-capability --pptx
+node capability-deck.mjs --snapshot outputs/selected-capability/snapshot.json --view mechanic --output outputs/selected-mechanics --pptx
 ```
 
 Use `--namespace-id` when the capability ID is ambiguous. Unknown or ambiguous
@@ -221,6 +246,9 @@ contains editable Google request batches, notes, SVGs, `presentation.json`, and
 optional `presentation.pptx`. Large decks are divided into 32-slide volumes.
 Long labels may be shortened visually; full identities and details remain in
 notes and the sidecars. Large notes are explicitly abbreviated in the deck.
+The receipt records the requested capability/namespace and the selected estate,
+capability version and root scenario beside the snapshot digest, so a generated
+artifact can be checked against the request without relying on its slide title.
 
 Bounds are explicit: 16 KiB request, 64 MiB source graph, 8 MiB compact snapshot,
 256 generated slides / 8 volumes, and 48 MiB output. Oversized inputs are refused
