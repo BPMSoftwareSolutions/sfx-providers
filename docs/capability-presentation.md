@@ -39,15 +39,21 @@ Every deck retains all eleven context layers and their evidence references. With
 context map and expands the chosen layer. These numbers organize meaning; they
 are not an execution sequence or a claim that eleven authoring steps completed.
 
-## Complete circuit blueprint
+## Circuit overview and required blueprint correction
 
-Every generated deck now places a **complete capability circuit sheet immediately
-after its cover**, regardless of semantic view or authoring-altitude focus.
-It combines the selected scenarios' input and outcome boundaries, every declared
-operation, ordered continuation, scenario transitions, nested calls and returns,
-and port bindings on one sheet. Outcome-selection diamonds, branching wires,
-join junctions, provider sockets, and terminal boundaries keep their distinct
-roles. Declared recurrence is retained rather than removed to make a DAG.
+Every generated deck places a circuit overview immediately after its cover,
+regardless of semantic view or authoring-altitude focus. The current slide is
+titled “Complete capability circuit,” but that title overstates its coverage.
+The [capability circuit visual contract](capability-circuit-visual-contract.md)
+records the user's reference lens, the required Given/When/Then geometry and
+the concrete gaps in the current implementation.
+
+The current overview combines the selected scenarios' input and outcome
+boundaries, operations, ordered continuation, scenario transitions, nested calls
+and returns, and port bindings on one sheet. It preserves declared recurrence.
+Its glyphs distinguish some wire and node types, but do not establish the full
+typed semantics of cells, convergence requirements, authority descent, or
+evidence return.
 
 The whole sheet supplements the detailed, paginated semantic projections. Large
 circuits keep all components and wires on the overview and use stable component
@@ -56,12 +62,12 @@ Missing bindings and unresolved call targets remain visible. Generation checks
 that the overview contains every blueprint node and edge, and emits
 `circuit-blueprint.json` with the source references and coverage counts.
 
-The blueprint is complete at the **declared scenario/operation circuit level**.
-Transformations appear as named subcircuits; this sheet does not expand every
-expression predicate. Variant membership is distinct from a declared transition.
-Sequence, binding, call and return wires also have separate types, so a nested
-return does not assert a backward semantic transition. A drawing alone is not an
-admission receipt or a proof of monotonic execution.
+Coverage currently measures the renderer's reduced scenario/operation model;
+it does not prove a complete canonical circuit. Transformation identifiers appear
+as binding labels, without their internal cell topology. Variant membership is
+distinct from a declared transition. Sequence, binding, call and return wires
+have separate types, but do not supply missing contract or progress declarations.
+A drawing alone is not an admission receipt or a proof of monotonic execution.
 
 Runtime-selected capabilities appear as explicit wired boundaries. A selector
 path declares where an identity will come from at execution time; it does not

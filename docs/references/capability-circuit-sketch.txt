@@ -1,0 +1,484 @@
+Absolutely. The cleanest way to sketch a **SideFX capability circuit** is to keep the geometry consistent: the canonical blueprint is a typed semantic graph, and each altitude preserves the three-position cell pattern. Authority expands downward from meaning toward physical execution; evidence contracts back upward toward the promised experience. :chatgpt-content-reference{index="0"}
+
+### 1. The irreducible capability cell
+
+```text
+                 CAPABILITY / SCENARIO
+
+        ┌─────────────────────────────┐
+        │                             │
+        │          INPUT              │
+        │      admitted state         │
+        │             │               │
+        │             ▼               │
+        │          EVENT              │
+        │   bounded responsibility    │
+        │             │               │
+        │             ▼               │
+        │         OUTCOME             │
+        │    promised experience      │
+        │                             │
+        └─────────────────────────────┘
+```
+
+Semantically:
+
+```text
+GIVEN                WHEN                 THEN
+
+INPUT        ──────► EVENT       ──────► OUTCOME
+DATA                  ACTION               EXPERIENCE
+```
+
+That is the basic transistor.
+
+---
+
+### 2. Open the event and descend one altitude
+
+The scenario says **what must happen**.
+
+Opening the event reveals **how responsibility closes**:
+
+```text
+SCENARIO CELL
+─────────────────────────────────────────
+
+┌────────────┐
+│   INPUT    │
+└─────┬──────┘
+      │
+      ▼
+┌────────────┐
+│   EVENT    │
+└─────┬──────┘
+      │
+      │ expand authority
+      ▼
+      ┌─────────────────────────────┐
+      │      EXECUTION CELL         │
+      │                             │
+      │   Input                     │
+      │     │                       │
+      │     ▼                       │
+      │   Responsibility            │
+      │     │                       │
+      │     ▼                       │
+      │   Result                    │
+      └─────────────┬───────────────┘
+                    │
+                    ▼
+┌────────────┐
+│  OUTCOME   │
+└────────────┘
+```
+
+And it keeps going:
+
+```text
+SCENARIO
+Input → Event → Outcome
+          │
+          ▼
+EXECUTION
+Input → Responsibility → Result
+          │
+          ▼
+MECHANIC
+Input → Mechanic → Result
+          │
+          ▼
+PROVIDER
+Physical Input → Native Operation → Physical Result
+```
+
+That exact fractal structure is part of the accepted blueprint model. :chatgpt-content-reference{index="1"}
+
+---
+
+### 3. A realistic capability circuit
+
+Say the capability is:
+
+```text
+Resolve Equity Market Price Evidence
+```
+
+The circuit might look like:
+
+```text
+┌─────────────────────────────┐
+│ INPUT                       │
+│ MarketPriceRequest          │
+│                             │
+│ symbol = "AVGO"             │
+└──────────────┬──────────────┘
+               │
+               ▼
+┌─────────────────────────────┐
+│ SCENARIO                    │
+│ Resolve market price        │
+│ evidence                    │
+└──────────────┬──────────────┘
+               │
+               ▼
+        ┌───────────────┐
+        │ Resolve       │
+        │ provider      │
+        │ authority     │
+        └───────┬───────┘
+                │
+                ▼
+        ┌───────────────┐
+        │ Build         │
+        │ admitted HTTP │
+        │ request       │
+        └───────┬───────┘
+                │
+                ▼
+        ┌───────────────┐
+        │ Governed HTTP │
+        │ provider      │
+        │ invocation    │
+        └───────┬───────┘
+                │
+                ▼
+        ┌───────────────┐
+        │ Normalize     │
+        │ testimony     │
+        └───────┬───────┘
+                │
+                ▼
+        ┌───────────────┐
+        │ Admit market  │
+        │ price evidence│
+        └───────┬───────┘
+                │
+                ▼
+┌─────────────────────────────┐
+│ OUTCOME                     │
+│                             │
+│ Current market-price        │
+│ evidence is available       │
+└─────────────────────────────┘
+```
+
+Notice the model isn't sitting inside this circuit deciding arbitrary mechanics.
+
+---
+
+### 4. Branching capability circuit
+
+A proper capability isn't necessarily linear.
+
+```text
+                         ┌──────────────┐
+                         │    INPUT     │
+                         │ Request      │
+                         └──────┬───────┘
+                                │
+                                ▼
+                     ┌────────────────────┐
+                     │ Resolve eligibility │
+                     └─────────┬──────────┘
+                               │
+                        eligibility state
+                               │
+                ┌──────────────┼──────────────┐
+                │              │              │
+                ▼              ▼              ▼
+        ┌────────────┐  ┌────────────┐  ┌────────────┐
+        │ ELIGIBLE   │  │ REVIEW     │  │ INELIGIBLE │
+        └─────┬──────┘  └─────┬──────┘  └─────┬──────┘
+              │               │               │
+              ▼               ▼               ▼
+        ┌───────────┐   ┌───────────┐   ┌───────────┐
+        │ Continue  │   │ Human     │   │ Produce   │
+        │ processing│   │ approval  │   │ decision  │
+        └─────┬─────┘   └─────┬─────┘   └─────┬─────┘
+              │               │               │
+              └───────────┬───┴───────────────┘
+                          │
+                          ▼
+                  ┌───────────────┐
+                  │  CONVERGENCE  │
+                  │ admitted      │
+                  │ disposition   │
+                  └───────┬───────┘
+                          │
+                          ▼
+                  ┌───────────────┐
+                  │   OUTCOME     │
+                  │ Decision is   │
+                  │ established   │
+                  └───────────────┘
+```
+
+The important thing is that the branch is **part of the graph authority**, not an invisible `if/else` buried in implementation code. The blueprint explicitly models branching, convergence, altitude descent, termination, and monotonic advancement as graph semantics. :chatgpt-content-reference{index="2"}
+
+---
+
+### 5. Capability with provider substitution
+
+This is where the circuit model gets powerful.
+
+```text
+                       CAPABILITY
+                           │
+                           ▼
+                   ┌──────────────┐
+                   │ SCENARIO     │
+                   │ classify doc │
+                   └──────┬───────┘
+                          │
+                          ▼
+                   ┌──────────────┐
+                   │ RESPONSIBILITY│
+                   │ model infer  │
+                   └──────┬───────┘
+                          │
+                          ▼
+                    PROVIDER SLOT
+                          │
+          ┌───────────────┼────────────────┐
+          │               │                │
+          ▼               ▼                ▼
+   ┌────────────┐   ┌────────────┐   ┌────────────┐
+   │ OpenAI     │   │ Gemini     │   │ Local Model│
+   │ Provider   │   │ Provider   │   │ Provider   │
+   └──────┬─────┘   └──────┬─────┘   └──────┬─────┘
+          │                │                │
+          └────────────────┼────────────────┘
+                           │
+                           ▼
+                    ┌─────────────┐
+                    │ TESTIMONY   │
+                    └──────┬──────┘
+                           │
+                           ▼
+                    ┌─────────────┐
+                    │ ADMISSION   │
+                    └──────┬──────┘
+                           │
+                           ▼
+                    ┌─────────────┐
+                    │ OUTCOME     │
+                    └─────────────┘
+```
+
+The provider performs bounded mechanics; it doesn't own the capability's meaning.
+
+---
+
+### 6. Authority expands down; evidence contracts back up
+
+This is probably my favorite way to draw the architecture:
+
+```text
+                    HUMAN INTENT
+                         │
+                         ▼
+                    CAPABILITY
+                         │
+                         ▼
+                     SCENARIO
+                         │
+                authority expands
+                         │
+                         ▼
+                    EXECUTION
+                         │
+                         ▼
+                     MECHANIC
+                         │
+                         ▼
+                  PROVIDER SLOT
+                         │
+                         ▼
+                PHYSICAL PROVIDER
+                         │
+                         ▼
+                    REAL EFFECT
+
+
+                    REAL EFFECT
+                         │
+                         ▲
+                physical testimony
+                         │
+                         ▲
+                  provider result
+                         │
+                         ▲
+                  mechanic result
+                         │
+                         ▲
+                 execution receipt
+                         │
+                         ▲
+                  scenario outcome
+                         │
+                         ▲
+               PROMISED EXPERIENCE
+```
+
+Or compressed:
+
+```text
+               AUTHORITY ↓
+
+INTENT
+  ↓
+CAPABILITY
+  ↓
+SCENARIO
+  ↓
+EXECUTION
+  ↓
+MECHANIC
+  ↓
+PROVIDER
+  ↓
+PHYSICAL EFFECT
+  ↑
+TESTIMONY
+  ↑
+EVIDENCE
+  ↑
+OUTCOME
+  ↑
+EXPERIENCE
+
+               ↑ EVIDENCE
+```
+
+That downward-expansion/upward-evidence law is expressly built into the capability blueprint architecture. :chatgpt-content-reference{index="3"}
+
+---
+
+### 7. Multiple capabilities plugged into a semantic backplane
+
+At estate altitude, the circuit gets really interesting:
+
+```text
+                 CAPABILITY DATA CENTER
+
+ ┌─────────────────┐
+ │ Capability A    │
+ │ Identify User   │
+ └────────┬────────┘
+          │
+          │ product:
+          │ admitted-user
+          ▼
+ ┌─────────────────┐
+ │ Capability B    │
+ │ Resolve Credit  │
+ └────────┬────────┘
+          │
+          │ product:
+          │ credit-profile
+          ▼
+ ┌─────────────────┐
+ │ Capability C    │
+ │ Determine Terms │
+ └────────┬────────┘
+          │
+          │ product:
+          │ eligible-terms
+          ▼
+ ┌─────────────────┐
+ │ Capability D    │
+ │ Produce Offer   │
+ └─────────────────┘
+```
+
+The connection isn't:
+
+```text
+A calls B
+```
+
+It is:
+
+```text
+Capability A
+    │
+    │ produces
+    ▼
+Product / Observable State
+    │
+    │ satisfies
+    ▼
+Capability B Input Contract
+```
+
+That's the **semantic backplane**. ADR-001 defines the Capability Data Center as an estate of sealed circuits connected through governed identities, contracts, products, routes, dependencies, interfaces, observability, and evidence obligations. :chatgpt-content-reference{index="4"}
+
+---
+
+## And for the security presentation, I would use this one
+
+```text
+                  HUMAN INTENT
+                       │
+                       ▼
+            ┌─────────────────────┐
+            │ AUTHORIZED MODEL    │
+            │ CONTEXT             │
+            └──────────┬──────────┘
+                       │
+                       │ proposes
+                       ▼
+                CAPABILITY ID
+                       │
+                       ▼
+          ┌─────────────────────────┐
+          │ CAPABILITY ESTATE       │
+          │                         │
+          │ identity      ✓         │
+          │ admission     ✓         │
+          │ authorization ✓         │
+          │ contracts     ✓         │
+          │ execution     ✓         │
+          │ providers     ✓         │
+          └────────────┬────────────┘
+                       │
+                       ▼
+                CAPABILITY CIRCUIT
+                       │
+                       ▼
+             BOUNDED PHYSICAL EFFECT
+                       │
+                       ▼
+                    EVIDENCE
+```
+
+And then put the hostile model off to the side:
+
+```text
+      MALICIOUS / HIJACKED MODEL
+
+      "run PowerShell"
+      "call evil.com"
+      "read /etc/passwd"
+      "use root credentials"
+      "delete database"
+
+               │
+               ▼
+
+        ┌───────────────┐
+        │ What admitted │
+        │ capability ID?│
+        └───────┬───────┘
+                │
+                X
+
+          NO SEMANTIC PATH
+          NO PHYSICAL EFFECT
+```
+
+That picture makes the architecture almost self-explanatory:
+
+> **Intelligence can propose. Only the circuit can produce an effect.**
