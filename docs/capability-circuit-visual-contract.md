@@ -208,6 +208,23 @@ semantic stages. Cells retain exact operation IDs and links to binding detail.
 Action colors classify only identifier prefixes: build, bind, observe, and
 select/normalize; other identifiers retain neutral execution blue.
 
+The same JSON component contract also contains an `event` mapping. It selects
+compact shapes by exact bound `platformCapabilityId`, or by declared operation
+kind for scenario calls. Transformation operations have a hexagonal ordinal
+badge, credential adapters have rectangular contacts, and governed HTTP
+exchanges have pinned module bodies. Unknown platform identities keep a neutral
+execution symbol. The shape legend includes only component families actually
+present. Colors remain a separate identifier-prefix convention.
+
+Each rendered cell records its selected glyph, classification basis, platform
+ID, owning binding ID and retained source pointer. The rendering validator
+recomputes that selection and checks each wire against the selected glyph's
+anchors. Changing a JSON mapping or recipe changes symbols, anchors and fitted
+text frames without changing graph nodes, edges or operation kinds. A name such
+as `select-route` cannot create a branching gate; both request construction and
+route-selection transformations retain the same transformation symbol. Contacts
+are drafting details, not extra declared ports or evidence of provider ownership.
+
 The `event-sheet-layout.v1` rendering record contains every cell, fitted text
 frame, source identity and routed edge. Its validator rejects omitted or duplicate
 identities, changed endpoints, out-of-bounds cells, invalid connector segments,
@@ -216,6 +233,9 @@ and inter-row gutters; no extra operation or edge is introduced by wrapping.
 Labels fit from 10.25 down to an 8-point floor. A sheet that cannot preserve that
 floor fails rather than hiding operations or overflowing a card. Ordinary
 regeneration uses the same grammar for any selected capability or scenario.
+The per-slide command limit is 800 to accommodate dense composite symbols;
+the 4,000-command deck limit and 512 KiB request limit remain in force. Transport
+volumes continue to adapt to those bounds.
 
 ### Connector routing validation
 

@@ -2,6 +2,7 @@ export const REQUEST_ID = 'circuit-presentation-request.v1';
 export const OUTPUT_ID = 'circuit-presentation-output.v1';
 export const MAX_REQUEST_BYTES = 512 * 1024;
 export const MAX_OUTPUT_BYTES = 8 * 1024 * 1024;
+export const MAX_SLIDE_COMMANDS = 800;
 const number = { type: 'number', minimum: 0, maximum: 2000 };
 const text = { type: 'string', maxLength: 5000 };
 const color = { type: 'string', pattern: '^#[0-9a-fA-F]{6}$' };
@@ -40,7 +41,7 @@ export const deckSchema = object({
   title: {type:'string',minLength:1,maxLength:240},
   startSlideNumber: {type:'integer',minimum:1,maximum:256},
   sources: array(sourceSchema,100),
-  slides: {...array(object({title:{type:'string',minLength:1,maxLength:160},subtitle:text,headerLayout:enumOf('standard','custom'),notes:{type:'string',maxLength:20000},commands:array(commandSchema,500)},['title','commands']),64),minItems:1},
+  slides: {...array(object({title:{type:'string',minLength:1,maxLength:160},subtitle:text,headerLayout:enumOf('standard','custom'),notes:{type:'string',maxLength:20000},commands:array(commandSchema,MAX_SLIDE_COMMANDS)},['title','commands']),64),minItems:1},
 },['title','slides']);
 export const requestSchema = {
   $schema: 'https://json-schema.org/draft/2020-12/schema', $id: REQUEST_ID,

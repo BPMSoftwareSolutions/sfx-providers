@@ -4,13 +4,14 @@ import {rawFixture} from './fixtures/capability-presentation.mjs';
 import {normalizeSnapshot} from '../src/capability-presentation/snapshot.mjs';
 import {buildBlueprint} from '../src/capability-presentation/blueprint.mjs';
 import {projectBlueprint} from '../src/capability-presentation/projection.mjs';
-import {layoutEventCircuit,validateEventLayout,eventAction} from '../src/capability-presentation/event-sheet.mjs';
+import {layoutEventCircuit,validateEventLayout,eventAction,eventComponent} from '../src/capability-presentation/event-sheet.mjs';
+import {COMPONENT_STYLE,validateComponentStyle,glyphAnchor} from '../src/capability-presentation/component-glyphs.mjs';
 import {handle} from '../src/capability-presentation/provider.mjs';
 
-function denseFixture(){
+function denseFixture(platforms=['transform.v1']){
  const raw=rawFixture();
  raw.graph.executionAuthorities[0].operations=Array.from({length:35},(_,i)=>({kind:'invoke-port',portId:['build-binding-request','bind-provider-credential','build-exchange-request','observe-exchange','select-route'][i%5]+'-'+i}));
- raw.graph.interfaceAuthority.portBindings.push(...raw.graph.executionAuthorities[0].operations.map(o=>({portId:o.portId,platformCapabilityId:'transform.v1',configuration:{}})));
+ raw.graph.interfaceAuthority.portBindings.push(...raw.graph.executionAuthorities[0].operations.map((o,i)=>({portId:o.portId,platformCapabilityId:platforms[i%platforms.length],configuration:{}})));
  return normalizeSnapshot(raw);
 }
 
@@ -34,6 +35,49 @@ test('action styling derives only from declared identifier prefixes and has a ne
  for(const [label,kind]of [['build-request','build'],['bind-credential','bind'],['observe-response','observe'],['normalize-evidence','select'],['select-route','select'],['opaque-operation','other']]){
   const action=eventAction({label});assert.equal(action.category,kind);assert.equal(action.sourceLabel,label);assert.equal(action.basis,'identifier-prefix');
  }
+});
+
+test('Event symbols follow exact binding types even when labels suggest a different role',()=>{
+ const b=buildBlueprint(denseFixture()),p=projectBlueprint(b,{altitude:'event'}),n=p.nodes[0];
+ const binding=b.nodes.find(v=>v.id==='binding:'+n.portId);
+ const before=structuredClone(n);
+ for(const [id,glyph] of [['sda-external-credential-reference-binding-port.v1','event-adapter'],['sda-governed-http-exchange-port.v1','event-device'],['sda-authority-transformation-port.v1','event-transform']]){
+  binding.platformCapabilityId=id;const c=eventComponent(b,n);
+  assert.equal(c.glyph,glyph);assert.equal(c.basis,'declared-platform-binding');
+  assert.equal(c.bindingId,binding.id);assert.equal(c.sourceRef,binding.ref);assert.equal(c.platformCapabilityId,id);
+ }
+ assert.deepEqual(n,before);
+ binding.platformCapabilityId='unknown-http-lookalike';assert.equal(eventComponent(b,n).glyph,'event-execution');
+ binding.platformCapabilityId='constructor';assert.equal(eventComponent(b,n).glyph,'event-execution');
+ const unbound={...n,portId:'missing',label:'select-route'};
+ assert.equal(eventComponent(b,unbound).basis,'unclassified');assert.equal(eventComponent(b,unbound).glyph,'event-execution');
+ assert.equal(eventComponent(b,{...unbound,operationKind:'invoke-scenario'}).glyph,'event-call');
+});
+
+test('JSON Event mappings drive glyphs and connector anchors without changing the graph',()=>{
+ const b=buildBlueprint(denseFixture()),p=projectBlueprint(b,{altitude:'event'}),before=structuredClone(p),style=structuredClone(COMPONENT_STYLE);
+ style.event.platforms['transform.v1']={glyph:'socket',label:'Custom symbol'};validateComponentStyle(style);
+ const l=layoutEventCircuit(p,{model:b,style});assert.deepEqual(p,before);
+ for(const e of l.routes){
+  assert.deepEqual(e.points[0],glyphAnchor(p.nodes.find(n=>n.id===e.from),l.positions[e.from],'right',style,'socket'));
+  assert.deepEqual(e.points.at(-1),glyphAnchor(p.nodes.find(n=>n.id===e.to),l.positions[e.to],'left',style,'socket'));
+ }
+ const invalid=structuredClone(l);invalid.components[p.nodes[0].id].glyph='gate';
+ assert.throws(()=>validateEventLayout(p,invalid,{model:b,style}),{code:'CAPABILITY_EVENT_RENDER_INVALID'});
+});
+
+test('all three bound component families fit a dense Event and preserve operation and edge coverage',async()=>{
+ const s=denseFixture(['sda-authority-transformation-port.v1','sda-external-credential-reference-binding-port.v1','sda-governed-http-exchange-port.v1']);
+ const r=await handle({contractId:'capability-presentation-request.v1',capabilityId:s.identity.capabilityId,view:'event',contextAltitude:7},{readEstate:async()=>s});
+ assert.equal(r.disposition,'AUTHORED',JSON.stringify(r.findings));
+ const slide=r.candidate.storyboard.slides[2],render=slide.blueprint.render,p=projectBlueprint(r.candidate.storyboard.blueprint,{altitude:'event'});
+ assert.equal(render.cells.length,35);assert.equal(render.routes.length,34);
+ assert.equal(new Set(render.cells.map(c=>c.component.glyph)).size,3);
+ assert.ok(render.cells.every(c=>c.fontSize>=8&&c.component.bindingId&&c.component.sourceRef));
+ assert.deepEqual(render.cells.map(c=>c.nodeId),p.nodes.map(n=>n.id));
+ assert.deepEqual(render.routes.map(e=>[e.id,e.from,e.to]),p.edges.map(e=>[e.id,e.from,e.to]));
+ assert.equal(slide.blueprint.glyphs.length,35,'Legend symbols must not enter topology records');
+ assert.ok(!slide.blueprint.glyphs.some(g=>g.glyph==='gate'));
 });
 
 test('dense Event labels retain readable fonts and native operation links with a separate scenario blueprint',async()=>{

@@ -10,6 +10,7 @@ import { after, test } from 'node:test';
 import * as provider from '../providers/circuit-presentation.mjs';
 import { createCircuitRequestHandler,INVOKE,HEALTH } from '../src/circuit-presentation/http.mjs';
 import { objectsFromRequests } from '../src/circuit-presentation/render.mjs';
+import {MAX_SLIDE_COMMANDS,requestSchema,validate} from '../src/circuit-presentation/contracts.mjs';
 const example=JSON.parse(await fs.readFile(new URL('../examples/circuit-presentation/branching-provider.request.json',import.meta.url),'utf8'));
 const preset={contractId:provider.inputShape.contractId,preset:'sidefx-announcement'};
 const exec=promisify(execFile);
@@ -73,6 +74,14 @@ test('request byte limits apply to direct and transport-provided sizes',async()=
  for(const [input,options]of [[{...preset,padding:'x'.repeat(provider.MAX_REQUEST_BYTES)},{}],[preset,{requestBytes:provider.MAX_REQUEST_BYTES+1}]]){
   const r=await provider.handle(input,options);assert.equal(r.findings[0].code,'CIRCUIT_REQUEST_OVERSIZED');assert.equal(r.candidate,null);
  }
+});
+
+test('dense component sheets have a bounded command budget and a matching published schema',async()=>{
+ const input={contractId:preset.contractId,deck:{title:'Symbols',slides:[{title:'Components',commands:Array.from({length:MAX_SLIDE_COMMANDS},()=>({op:'line',args:[10,10,20,10]}))}]}};
+ validate(input,requestSchema);
+ input.deck.slides[0].commands.push({op:'line',args:[10,10,20,10]});
+ assert.throws(()=>validate(input,requestSchema),{code:'CIRCUIT_REQUEST_INVALID'});
+ assert.deepEqual(JSON.parse(await fs.readFile(new URL('../contracts/circuit-presentation/request.v1.schema.json',import.meta.url),'utf8')),requestSchema);
 });
 
 test('HTTPS adapter contract: health, compilation, bad JSON, wrong content type and size cap',async()=>{

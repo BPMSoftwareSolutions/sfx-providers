@@ -917,7 +917,7 @@
                     }
                   ]
                 },
-                "maxItems": 500
+                "maxItems": 800
               }
             },
             "required": [

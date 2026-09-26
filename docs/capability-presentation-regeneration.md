@@ -271,3 +271,37 @@ Current PowerPoint and generation evidence:
 `outputs/capability-estate/equity-component-glyphs/presentation.pptx`.
 Native update and render evidence:
 `outputs/google-slides/equity-component-glyphs`.
+
+### Complete execution component symbols
+
+The complete execution sheet now uses the component contract's `event` mapping
+as well. Exact platform bindings select transformation, credential-adapter and
+HTTP-exchange symbols. Scenario calls use their declared operation kind; unknown
+bindings remain unclassified. Add platform mappings and adjust compact recipes
+in the same JSON file, then regenerate normally. Operation labels do not create
+branching gates, and decorative contacts do not assert additional ports.
+
+The retained equity snapshot renders 21 transformations, 7 credential adapters
+and 7 HTTP exchanges. All 35 operation identities, 34 order edges, diagnostic
+markers and operation links remain. The scenario blueprint stays on slide 02;
+the complete execution circuit stays on slide 03 (native ID `p2`). Each cell's
+render record includes the binding ID, platform ID and source pointer that
+selected its symbol. These are rendering classifications, not runtime testimony.
+
+```powershell
+node capability-deck.mjs --snapshot outputs/capability-estate/equity-provider-inspection-scaled/snapshot.json --view event --context-altitude 7 --output outputs/capability-estate/equity-execution-components-next --pptx
+```
+
+The 91 relevant tests passed. Python measured 415 labels with no fit findings;
+the execution sheet's minimum label size is 8.5 points. The regenerated PowerPoint
+passed package, layout, font-policy and artifact-import checks. Google readback
+reported zero structural issues and 172 valid internal text links. Only slide 03
+changed: 211 unaffected objects on that slide were retained, and the other 68
+native slides and rendered pages are unchanged. Slide 03 was visually inspected
+from Google's PDF. Re-running the provider reproduces the saved content digest.
+Native PowerPoint font rendering was not independently executed.
+
+Current PowerPoint and generation evidence:
+`outputs/capability-estate/equity-execution-components-final/presentation.pptx`.
+Native update, PDF render and verification evidence:
+`outputs/google-slides/equity-execution-components`.

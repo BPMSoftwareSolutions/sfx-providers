@@ -113,7 +113,7 @@ The provider returns `{ providerId, toolId, disposition, candidate, findings }`.
 `AUTHORED` includes a `circuit-presentation-output.v1` candidate and
 `shapeConforms: true`. Invalid requests return `HELD` and `candidate: null`.
 The digest identifies the compiled content, not a proof of its claims. Limits:
-512 KiB request, 64 slides, 500 commands per slide, 4,000 commands per deck,
+512 KiB request, 64 slides, 800 commands per slide, 4,000 commands per deck,
 24,000 native requests and 8 MiB compiled output.
 
 ## HTTPS

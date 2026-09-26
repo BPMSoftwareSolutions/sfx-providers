@@ -18,6 +18,11 @@ export function validateComponentStyle(style){
    if(p.opacity!=null&&(!Number.isFinite(p.opacity)||p.opacity<0||p.opacity>1))bad('Invalid opacity.');
   }
  }
+ const event=style.event;
+ if(event){
+  if(!event.platforms||!event.operations||!event.fallback)bad('Invalid Event component selection.');
+  for(const entry of [...Object.values(event.platforms),...Object.values(event.operations),event.fallback])if(typeof entry.label!=='string'||!entry.label||!Object.hasOwn(style.glyphs,entry.glyph))bad('Invalid Event component rule.');
+ }
  for(const name of [style.fallback,...Object.values(style.roles),...(style.rules??[]).map(r=>r.glyph)])if(!Object.hasOwn(style.glyphs,name))bad('Unknown glyph reference.');
  for(const r of style.rules??[])if(typeof r.kind!=='string'||typeof r.label!=='string')bad('Rules must match exact declared kind and label.');
  return style;
@@ -25,18 +30,19 @@ export function validateComponentStyle(style){
 const freeze=v=>{if(v&&typeof v==='object'){Object.values(v).forEach(freeze);Object.freeze(v);}return v;};
 export const COMPONENT_STYLE=freeze(validateComponentStyle(JSON.parse(readFileSync(new URL('./styles/component-glyphs.v1.json',import.meta.url),'utf8'))));
 export const COMPONENT_STYLE_DIGEST=createHash('sha256').update(JSON.stringify(COMPONENT_STYLE)).digest('hex');
-export function componentGlyph(node,style=COMPONENT_STYLE){
- const name=style.rules?.find(r=>r.kind===node.kind&&r.label===node.label)?.glyph??style.roles[node.kind]??style.fallback;
+export function componentGlyph(node,style=COMPONENT_STYLE,glyphName){
+ const name=glyphName??style.rules?.find(r=>r.kind===node.kind&&r.label===node.label)?.glyph??style.roles[node.kind]??style.fallback;
+ if(!Object.hasOwn(style.glyphs,name))throw Object.assign(new Error('Unknown component glyph.'),{code:'CAPABILITY_GLYPH_STYLE_INVALID'});
  return {name,...style.glyphs[name]};
 }
 export const glyphFrame=(b,f)=>({x:b.x+f[0]*b.w,y:b.y+f[1]*b.h,w:f[2]*b.w,h:f[3]*b.h});
-export function glyphAnchor(node,b,side,style=COMPONENT_STYLE){const a=componentGlyph(node,style).anchors[side];return [b.x+a[0]*b.w,b.y+a[1]*b.h];}
-export function drawComponentGlyph(p,node,b,color,{scale=1,style=COMPONENT_STYLE,record=true,fill='#041C32'}={}){
- const glyph=componentGlyph(node,style),paint={none:'none',ink:color,panel:fill,shadow:'#020A14',background:C.bg};
+export function glyphAnchor(node,b,side,style=COMPONENT_STYLE,glyphName){const a=componentGlyph(node,style,glyphName).anchors[side];return [b.x+a[0]*b.w,b.y+a[1]*b.h];}
+export function drawComponentGlyph(p,node,b,color,{scale=1,style=COMPONENT_STYLE,glyphName,record=true,fill='#041C32'}={}){
+ const glyph=componentGlyph(node,style,glyphName),paint={none:'none',ink:color,panel:fill,shadow:'#020A14',background:C.bg};
  for(const q of glyph.primitives){const weight=Math.max(.5,(q.weight??1)*scale);
   if(q.type==='LINE'){const a=q.box;p.add('line',b.x+a[0]*b.w,b.y+a[1]*b.h,b.x+a[2]*b.w,b.y+a[3]*b.h,paint[q.stroke],weight,{alpha:q.opacity??1});}
   else{const f=glyphFrame(b,q.box);p.add('shape',q.type,f.x,f.y,f.w,f.h,{fill:paint[q.fill??'none'],stroke:paint[q.stroke??'none'],sw:weight,alpha:q.opacity??1});}
  }
- if(record&&p.blueprint){(p.blueprint.glyphs??=[]).push({nodeId:node.id,kind:node.kind,glyph:glyph.name,bounds:{...b},anchors:Object.fromEntries(['left','right','top','bottom'].map(side=>[side,glyphAnchor(node,b,side,style)]))});p.blueprint.style={contractId:style.contractId,digest:style===COMPONENT_STYLE?COMPONENT_STYLE_DIGEST:createHash('sha256').update(JSON.stringify(style)).digest('hex')};}
+ if(record&&p.blueprint){(p.blueprint.glyphs??=[]).push({nodeId:node.id,kind:node.kind,glyph:glyph.name,bounds:{...b},anchors:Object.fromEntries(['left','right','top','bottom'].map(side=>[side,glyphAnchor(node,b,side,style,glyphName)]))});p.blueprint.style={contractId:style.contractId,digest:style===COMPONENT_STYLE?COMPONENT_STYLE_DIGEST:createHash('sha256').update(JSON.stringify(style)).digest('hex')};}
  return {heading:glyphFrame(b,glyph.heading),label:glyphFrame(b,glyph.label)};
 }

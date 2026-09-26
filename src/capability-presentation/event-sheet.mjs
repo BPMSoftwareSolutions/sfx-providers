@@ -3,7 +3,7 @@ import {validateConnectorRoute} from '../circuit-presentation/contracts.mjs';
 import {fitBlueprintText} from '../circuit-presentation/text-fit.mjs';
 import {identifierCaption} from './caption.mjs';
 import {projectionOverlays} from './projection.mjs';
-import {drawComponentGlyph,glyphAnchor} from './component-glyphs.mjs';
+import {COMPONENT_STYLE,drawComponentGlyph,glyphAnchor} from './component-glyphs.mjs';
 
 const reject=message=>{throw Object.assign(new Error(message),{code:'CAPABILITY_EVENT_RENDER_INVALID'});};
 export const ACTION_COLORS={build:'#22BEFF',bind:'#BE83FF',observe:'#00D9CD',select:'#F3CC55',other:C.blue};
@@ -13,12 +13,24 @@ export function eventAction(node){
  return {category,color:ACTION_COLORS[category],basis:'identifier-prefix',sourceLabel:node.label};
 }
 
+// Symbols classify retained bindings, not identifier prefixes or inferred behavior.
+// Keep the operation identity and graph kind intact: this is a render annotation.
+export function eventComponent(model,node,style=COMPONENT_STYLE){
+ const binding=node.operationKind==='invoke-port'?model.nodes.find(n=>n.kind==='binding'&&n.portId===node.portId):undefined;
+ const platformRule=binding&&Object.hasOwn(style.event.platforms,binding.platformCapabilityId)?style.event.platforms[binding.platformCapabilityId]:undefined;
+ const operationRule=Object.hasOwn(style.event.operations,node.operationKind)?style.event.operations[node.operationKind]:undefined;
+ const rule=platformRule??operationRule??style.event.fallback;
+ return {...rule,basis:platformRule?'declared-platform-binding':operationRule?'declared-operation-kind':'unclassified',operationKind:node.operationKind,
+  sourceRef:platformRule?binding.ref:node.ref,...(binding?{bindingId:binding.id,platformCapabilityId:binding.platformCapabilityId,bindingSourceRef:binding.ref}:{})};
+}
+
 // Rows are pagination of declared order, never additional semantic stages.
-export function layoutEventCircuit(projection){
+export function layoutEventCircuit(projection,{model={nodes:[]},style=COMPONENT_STYLE}={}){
  if(projection.altitude!=='event')reject('Event rendering requires an Event projection.');
  const {nodes,edges}=projection,cols=Math.min(7,Math.max(1,nodes.length)),rowCount=Math.max(1,Math.ceil(nodes.length/cols));
  const band=Math.min(74,(394-(rowCount-1)*6)/rowCount),gap=16,w=Math.min(240,(928-gap*(cols-1))/cols);
  const offset=(960-(cols*w+(cols-1)*gap))/2,positions={},rows=[];
+ const components=Object.fromEntries(nodes.map(n=>[n.id,eventComponent(model,n,style)]));
  for(let r=0;r<rowCount;r++){
   const members=nodes.slice(r*cols,(r+1)*cols),y=68+r*(band+6);
   rows.push({index:r+1,y,height:band,nodeIds:members.map(n=>n.id),first:members[0]?.ordinal,last:members.at(-1)?.ordinal,basis:'layout-only'});
@@ -27,25 +39,26 @@ export function layoutEventCircuit(projection){
  const routes=edges.map(e=>{
   const a=positions[e.from],b=positions[e.to];if(!a||!b)reject('Unknown edge endpoint.');
   if(e.kind!=='sequence')reject('This sheet does not support the selected edge kind.');
-  const start=glyphAnchor(nodes.find(n=>n.id===e.from),a,'right'),end=glyphAnchor(nodes.find(n=>n.id===e.to),b,'left');let points,routing;
+  const start=glyphAnchor(nodes.find(n=>n.id===e.from),a,'right',style,components[e.from].glyph),end=glyphAnchor(nodes.find(n=>n.id===e.to),b,'left',style,components[e.to].glyph);let points,routing;
   if(a.row===b.row&&b.x>start[0]){points=[start,end];routing='forward';}
   else if(b.row===a.row+1){const y=rows[a.row].y+band+3;points=[start,[955,start[1]],[955,y],[5,y],[5,end[1]],end];routing='orthogonal';}
   else reject('A declared edge cannot be routed by the ordered row grammar.');
   return {...e,points,routing};
  });
- const layout={positions,rows,routes};validateEventLayout(projection,layout);return layout;
+ const layout={positions,rows,routes,components};validateEventLayout(projection,layout,{model,style});return layout;
 }
 
-export function validateEventLayout(projection,layout){
+export function validateEventLayout(projection,layout,{model={nodes:[]},style=COMPONENT_STYLE}={}){
  const nodes=new Set(projection.nodes.map(n=>n.id)),edges=new Set(projection.edges.map(e=>e.id));
  if(nodes.size!==projection.nodes.length||Object.keys(layout.positions).length!==nodes.size||Object.keys(layout.positions).some(id=>!nodes.has(id)))reject('Cell coverage changed.');
+ if(Object.keys(layout.components??{}).length!==nodes.size||projection.nodes.some(n=>JSON.stringify(layout.components[n.id])!==JSON.stringify(eventComponent(model,n,style))))reject('Component selection lost its declared source.');
  if(layout.routes.length!==edges.size||new Set(layout.routes.map(e=>e.id)).size!==edges.size||layout.routes.some(e=>!edges.has(e.id)))reject('Edge coverage changed.');
  for(const b of Object.values(layout.positions))if(![b.x,b.y,b.w,b.h].every(Number.isFinite)||b.w<=0||b.h<=0||b.x<0||b.y<68||b.x+b.w>960||b.y+b.h>462)reject('Cell leaves the execution surface.');
  for(const e of layout.routes){
   const declared=projection.edges.find(v=>v.id===e.id);if(declared.from!==e.from||declared.to!==e.to)reject('Edge ownership changed.');
   validateConnectorRoute(e.points,e.routing);
   const a=layout.positions[e.from],b=layout.positions[e.to],start=e.points[0],end=e.points.at(-1);
-  const ownedStart=glyphAnchor(projection.nodes.find(n=>n.id===e.from),a,'right'),ownedEnd=glyphAnchor(projection.nodes.find(n=>n.id===e.to),b,'left');
+  const ownedStart=glyphAnchor(projection.nodes.find(n=>n.id===e.from),a,'right',style,layout.components[e.from].glyph),ownedEnd=glyphAnchor(projection.nodes.find(n=>n.id===e.to),b,'left',style,layout.components[e.to].glyph);
   if(start.some((v,i)=>v!==ownedStart[i])||end.some((v,i)=>v!==ownedEnd[i]))reject('Edge misses its owned anchors.');
   for(const [id,cell] of Object.entries(layout.positions))if(id!==e.from&&id!==e.to)for(let i=1;i<e.points.length;i++){
    const [x,y]=e.points[i],[px,py]=e.points[i-1];
@@ -59,8 +72,8 @@ export function blueprintGrid(p){
  for(let x=0;x<=960;x+=12)p.add('line',x,0,x,540,C.blue,.35,{alpha:x%60===0?.15:.06});
  for(let y=0;y<=540;y+=12)p.add('line',0,y,960,y,C.blue,.35,{alpha:y%60===0?.15:.06});
 }
-export function drawEventSheet(p,model,projection,{links={},diagnostics=true}={}){
- const layout=layoutEventCircuit(projection),overlay=projectionOverlays(model,projection,{diagnostics});
+export function drawEventSheet(p,model,projection,{links={},diagnostics=true,style=COMPONENT_STYLE}={}){
+ const layout=layoutEventCircuit(projection,{model,style}),overlay=projectionOverlays(model,projection,{diagnostics});
  blueprintGrid(p);
  p.text('Complete execution circuit',12,3,928,38,29,C.white,true);
  p.text(model.capabilityId+'  ·  '+projection.nodes.length+' operations',14,40,930,25,17,C.blue,true);
@@ -73,24 +86,23 @@ export function drawEventSheet(p,model,projection,{links={},diagnostics=true}={}
  for(const e of layout.routes)p.add('route',e.points,'#78D8F5',{arrow:true,width:1.4,glow:false,routing:e.routing});
  const rendered=[];
  for(const n of projection.nodes){
-  const b=layout.positions[n.id],action=eventAction(n),issues=overlay.issues.filter(i=>i.visibleNodeIds.includes(n.id));
-  drawComponentGlyph(p,n,b,action.color,{fill:action.category==='bind'?'#17132F':action.category==='select'?'#20251B':'#04263A'});
-  p.add('line',b.x+23,b.y+2,b.x+23,b.y+b.h-2,action.color,.6,{alpha:.5});
-  p.add('t',String(n.ordinal).padStart(2,'0'),b.x-7,b.y+(b.h-25)/2,37,25,12,action.color,true,'center');
+  const b=layout.positions[n.id],action=eventAction(n),component=layout.components[n.id],issues=overlay.issues.filter(i=>i.visibleNodeIds.includes(n.id));
+  const frames=drawComponentGlyph(p,n,b,action.color,{style,glyphName:component.glyph,fill:action.category==='bind'?'#17132F':action.category==='select'?'#20251B':'#04263A'});
+  p.add('t',String(n.ordinal).padStart(2,'0'),frames.heading.x-8,frames.heading.y,frames.heading.w+16,frames.heading.h,12,action.color,true,'center');
   const caption=identifierCaption(n.label,model.capabilityId).replace(/(\d)([a-z])/g,'$1 $2');
-  const frame={x:b.x+24,y:b.y+1,w:b.w-23,h:b.h-2};
+  const frame=frames.label;
   const fitted=fitBlueprintText(caption,{width:frame.w,height:frame.h,fontSize:10.25,minFontSize:8});
   p.add('t',fitted.text,frame.x,frame.y,frame.w,frame.h,fitted.fontSize,C.white,false,'left',...(links[n.id]?[links[n.id]]:[]));
   if(issues.length)p.add('shape','ELLIPSE',b.x+b.w-5,b.y-3,6,6,{fill:issues.some(i=>i.severity==='error')?C.red:C.amber,stroke:C.bg,sw:.6});
-  rendered.push({nodeId:n.id,sourceRef:n.ref,caption:caption,fontSize:fitted.fontSize,bounds:frame,action,issues:issues.map(i=>i.id)});
+  rendered.push({nodeId:n.id,sourceRef:n.ref,caption:caption,fontSize:fitted.fontSize,bounds:frame,component,action,issues:issues.map(i=>i.id)});
  }
  if(!projection.nodes.length)p.text('No execution operations retained',220,240,550,50,22,C.muted);
- const legends=[['Build / request',ACTION_COLORS.build],['Bind / credential',ACTION_COLORS.bind],['Observe / exchange',ACTION_COLORS.observe],['Select / normalize',ACTION_COLORS.select]];
- legends.forEach(([label,color],i)=>{const x=17+i*174;p.add('shape','RECTANGLE',x,471,12,12,{fill:'none',stroke:color,sw:1.2});p.text(label,x+15,466,163,24,10,color);});
+ const legends=[...new Map(Object.values(layout.components).map(c=>[c.glyph,c])).values()],legendWidth=695/Math.max(1,legends.length);
+ legends.forEach((c,i)=>{const x=17+i*legendWidth;drawComponentGlyph(p,{kind:'operation'},{x,y:468,w:32,h:16},C.blue,{style,glyphName:c.glyph,record:false,scale:.7});p.text(c.label,x+35,464,legendWidth-35,24,9.5,C.blue);});
  p.text('Arrows: declared order',720,466,230,24,10,C.blue,false,'right');
- p.text('Rows group declarations for readability. Canonical routing and monotonic proof remain unverified.',14,485,790,18,8.5,C.muted);
- p.text('Unobserved',835,485,112,18,8.5,C.muted,false,'right');
+ p.text('Colors: build · bind · observe · select / normalize (identifier prefixes)',14,487,610,18,8.5,C.muted);
+ p.text('Routing / proof unverified · Unobserved',640,487,307,18,8.5,C.muted,false,'right');
  p.blueprint.render={contractId:'event-sheet-layout.v1',rows:layout.rows,cells:rendered,routes:layout.routes.map(({id,from,to,points,routing})=>({id,from,to,points,routing}))};
- p.interpretation+=' Rows are layout groups, not declared stages. Action colors classify identifier prefixes only. All operation IDs and source edges are preserved.';
+ p.interpretation+=' Rows are layout groups, not declared stages. Shapes follow exact platform bindings or operation kinds; unknown components remain unclassified. Glyph contacts are decorative, not additional declared ports. Action colors classify identifier prefixes only. All operation IDs and source edges are preserved. Canonical routing and monotonic proof remain unverified.';
  return layout;
 }

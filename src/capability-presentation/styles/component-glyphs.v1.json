@@ -80,6 +80,71 @@
       "heading":[0.23,0.23,0.54,0.22], "label":[0.24,0.48,0.52,0.26],
       "anchors":{"left":[0,0.5],"right":[1,0.5],"top":[0.5,0],"bottom":[0.5,1]},
       "primitives":[{"type":"DIAMOND","box":[0,0,1,1],"fill":"panel","stroke":"ink","weight":1.4}]
+    },
+    "event-transform": {
+      "heading":[0,0.2,0.2,0.6], "label":[0.2,0.02,0.78,0.96],
+      "anchors":{"left":[0,0.5],"right":[1,0.5],"top":[0.5,0],"bottom":[0.5,1]},
+      "primitives":[
+        {"type":"ROUND_RECTANGLE","box":[0.1,0.05,0.9,0.9],"fill":"panel","stroke":"ink","weight":1.3},
+        {"type":"HEXAGON","box":[0,0.23,0.2,0.54],"fill":"panel","stroke":"ink","weight":1.4},
+        {"type":"LINE","box":[0.23,0.09,0.94,0.09],"stroke":"ink","weight":0.7}
+      ]
+    },
+    "event-adapter": {
+      "heading":[0,0.2,0.2,0.6], "label":[0.2,0.02,0.78,0.96],
+      "anchors":{"left":[0,0.5],"right":[1,0.5],"top":[0.5,0],"bottom":[0.5,1]},
+      "primitives":[
+        {"type":"ROUND_RECTANGLE","box":[0.04,0,0.92,1],"fill":"panel","stroke":"ink","weight":1.3},
+        {"type":"RECTANGLE","box":[0,0.17,0.055,0.1],"fill":"background","stroke":"ink","weight":0.8},
+        {"type":"RECTANGLE","box":[0,0.45,0.055,0.1],"fill":"background","stroke":"ink","weight":0.8},
+        {"type":"RECTANGLE","box":[0,0.73,0.055,0.1],"fill":"background","stroke":"ink","weight":0.8},
+        {"type":"RECTANGLE","box":[0.945,0.17,0.055,0.1],"fill":"background","stroke":"ink","weight":0.8},
+        {"type":"RECTANGLE","box":[0.945,0.45,0.055,0.1],"fill":"background","stroke":"ink","weight":0.8},
+        {"type":"RECTANGLE","box":[0.945,0.73,0.055,0.1],"fill":"background","stroke":"ink","weight":0.8},
+        {"type":"LINE","box":[0.2,0.04,0.2,0.96],"stroke":"ink","weight":0.6}
+      ]
+    },
+    "event-device": {
+      "heading":[0,0.2,0.2,0.6], "label":[0.2,0.02,0.78,0.96],
+      "anchors":{"left":[0,0.5],"right":[1,0.5],"top":[0.5,0],"bottom":[0.5,1]},
+      "primitives":[
+        {"type":"ROUND_RECTANGLE","box":[0.055,0.08,0.94,0.92],"fill":"shadow","stroke":"none","weight":1.3},
+        {"type":"ROUND_RECTANGLE","box":[0.04,0,0.92,0.96],"fill":"panel","stroke":"ink","weight":1.3},
+        {"type":"RECTANGLE","box":[0.07,0.06,0.86,0.028],"fill":"ink","stroke":"none","weight":0.7},
+        {"type":"LINE","box":[0,0.25,0.04,0.25],"stroke":"ink","weight":1.2},
+        {"type":"LINE","box":[0,0.5,0.04,0.5],"stroke":"ink","weight":1.2},
+        {"type":"LINE","box":[0,0.75,0.04,0.75],"stroke":"ink","weight":1.2},
+        {"type":"LINE","box":[0.96,0.25,1.0,0.25],"stroke":"ink","weight":1.2},
+        {"type":"LINE","box":[0.96,0.5,1.0,0.5],"stroke":"ink","weight":1.2},
+        {"type":"LINE","box":[0.96,0.75,1.0,0.75],"stroke":"ink","weight":1.2},
+        {"type":"LINE","box":[0.2,0.12,0.2,0.89],"stroke":"ink","weight":0.6}
+      ]
+    },
+    "event-execution": {
+      "heading":[0,0.2,0.2,0.6], "label":[0.2,0.02,0.78,0.96],
+      "anchors":{"left":[0,0.5],"right":[1,0.5],"top":[0.5,0],"bottom":[0.5,1]},
+      "primitives":[
+        {"type":"ROUND_RECTANGLE","box":[0,0,1,1],"fill":"panel","stroke":"ink","weight":1.3},
+        {"type":"LINE","box":[0.2,0.04,0.2,0.96],"stroke":"ink","weight":0.6}
+      ]
+    },
+    "event-call": {
+      "heading":[0,0.2,0.2,0.6], "label":[0.2,0.02,0.78,0.96],
+      "anchors":{"left":[0,0.5],"right":[1,0.5],"top":[0.5,0],"bottom":[0.5,1]},
+      "primitives":[
+        {"type":"ROUND_RECTANGLE","box":[0,0,1,1],"fill":"panel","stroke":"ink","weight":1.3},
+        {"type":"LINE","box":[0.2,0.04,0.2,0.96],"stroke":"ink","weight":0.6},
+        {"type":"LINE","box":[0.95,0.07,0.95,0.93],"stroke":"ink","weight":0.8}
+      ]
     }
+  },
+  "event": {
+    "platforms": {
+      "sda-authority-transformation-port.v1": {"glyph":"event-transform","label":"Transformation"},
+      "sda-external-credential-reference-binding-port.v1": {"glyph":"event-adapter","label":"Credential adapter"},
+      "sda-governed-http-exchange-port.v1": {"glyph":"event-device","label":"HTTP exchange"}
+    },
+    "operations": {"invoke-scenario":{"glyph":"event-call","label":"Scenario call"}},
+    "fallback": {"glyph":"event-execution","label":"Other / unclassified"}
   }
 }

@@ -37,7 +37,7 @@ test('provider connectors terminate at socket contacts and retain every declared
 });
 
 test('rendering contract rejects invalid symbols, clipped frames, absent recipes and invalid contacts',()=>{
- for(const mutate of [s=>s.roles.port='absent',s=>s.glyphs.socket.label=[0.8,0.7,0.5,0.5],s=>s.glyphs.socket.anchors.left=[-0.1,0.5],s=>s.glyphs.device.primitives[0].type='untrusted',s=>s.glyphs.socket.primitives[1].box=[0,0,0,0]]){
+ for(const mutate of [s=>s.roles.port='absent',s=>s.glyphs.socket.label=[0.8,0.7,0.5,0.5],s=>s.glyphs.socket.anchors.left=[-0.1,0.5],s=>s.glyphs.device.primitives[0].type='untrusted',s=>s.glyphs.socket.primitives[1].box=[0,0,0,0],s=>s.event.fallback.glyph='absent',s=>s.event.operations['invoke-scenario'].label='',s=>delete s.event.platforms]){
   const style=structuredClone(COMPONENT_STYLE);mutate(style);assert.throws(()=>validateComponentStyle(style),{code:'CAPABILITY_GLYPH_STYLE_INVALID'});
  }
 });
