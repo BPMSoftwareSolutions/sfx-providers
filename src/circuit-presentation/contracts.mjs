@@ -9,12 +9,15 @@ const color = { type: 'string', pattern: '^#[0-9a-fA-F]{6}$' };
 const paint = { type: 'string', pattern: '^(#[0-9a-fA-F]{6}|none)$' };
 const enumOf = (...values) => ({ enum: values });
 const object = (properties, required = []) => ({ type: 'object', properties, required, additionalProperties: false });
+const normal = {type:'array',items:{enum:[-1,0,1]},minItems:2,maxItems:2};
+const attachment = object({sourceNormal:normal,targetNormal:normal,minimumLead:{type:'number',exclusiveMinimum:0,maximum:2000}},['sourceNormal','targetNormal','minimumLead']);
 const options = keys => object(Object.fromEntries(keys.map(k => [k, {
   fill: paint, stroke: paint, color, sw: number, width: number, alpha: { ...number, maximum: 1 },
   sa: { ...number, maximum: 1 }, dash: { type: 'boolean' }, arrow: { type: 'boolean' },
   glow: { type: 'boolean' }, size: number, sub: text, label: text, height: number,
   pins: { type: 'integer', minimum: 1, maximum: 12 }, r: number,
   routing: { enum: ['orthogonal', 'forward'] },
+  attachment,
 }[k]])));
 const point = { type: 'array', prefixItems: [number, number], minItems: 2, maxItems: 2 };
 const array = (items, maxItems = 128) => ({ type: 'array', items, maxItems });
@@ -23,7 +26,7 @@ export const operations = {
   shape: [5, [enumOf('RECTANGLE','ROUND_RECTANGLE','ELLIPSE','DIAMOND','HEXAGON'),number,number,number,number,options(['fill','stroke','sw','alpha','sa'])]],
   t: [5, [text,number,number,number,number,number,color,{type:'boolean'},enumOf('left','center','right'),{oneOf:[{type:'string',format:'http-url'},object({slideIndex:{type:'integer',minimum:0,maximum:255}},['slideIndex'])]}]],
   line: [4, [number,number,number,number,color,number,options(['dash','alpha','arrow'])]],
-  route: [1, [{...array(point),minItems:2},color,options(['width','dash','arrow','glow','routing'])]],
+  route: [1, [{...array(point),minItems:2},color,options(['width','dash','arrow','glow','routing','attachment'])]],
   port: [2, [number,number,color,number]], junction: [2, [number,number,color,number]],
   stop: [2, [number,number,color]], gate: [2, [number,number,text,color,number]],
   chip: [5, [number,number,number,number,text,color,options(['size','sub','pins'])]],
@@ -56,6 +59,21 @@ export const outputSchema = {
     requests:{type:'array'},
   },['contractId','title','pageSize','inputDigest','contentDigest','slides','requests']),
 };
+
+// Surface normals are supplied by the owning component's layout contract.
+// Endpoint ownership and surface selection remain that contract's responsibility.
+export function validateConnectorAttachment(points, {sourceNormal,targetNormal,minimumLead}={}) {
+  const reject=message=>{throw Object.assign(new Error(message),{code:'CIRCUIT_CONNECTOR_ATTACHMENT_INVALID'});};
+  const cardinal=n=>Array.isArray(n)&&n.length===2&&n.every(Number.isFinite)&&Math.abs(n[0])+Math.abs(n[1])===1&&(n[0]===0||n[1]===0);
+  if(!cardinal(sourceNormal)||!cardinal(targetNormal)||!Number.isFinite(minimumLead)||minimumLead<=0)reject('Connector attachments require outward cardinal normals and positive lead clearance.');
+  validateConnectorRoute(points,'orthogonal');
+  // The source leaves its surface outward. At the target, measure backward
+  // from the tip: the incoming shaft must lie outside the target's surface.
+  for(const [name,anchor,neighbor,n]of [['source',points[0],points[1],sourceNormal],['target',points.at(-1),points.at(-2),targetNormal]]){
+    const d=[neighbor[0]-anchor[0],neighbor[1]-anchor[1]],along=d[0]*n[0]+d[1]*n[1],across=d[0]*n[1]-d[1]*n[0];
+    if(Math.abs(across)>1e-6||along<minimumLead-1e-6)reject(`Connector ${name} must meet its surface perpendicularly from outside with at least ${minimumLead} units of straight lead; tangent, reversed and short approaches are invalid.`);
+  }
+}
 
 // Geometry constraints complement JSON Schema. A forward route is selected only
 // for an unobstructed corridor: it cannot spend length on a reversal or a spike.

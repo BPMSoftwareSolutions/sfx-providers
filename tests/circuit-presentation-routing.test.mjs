@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import {test} from 'node:test';
-import {validateConnectorRoute} from '../src/circuit-presentation/contracts.mjs';
+import {validateConnectorRoute,validateConnectorAttachment} from '../src/circuit-presentation/contracts.mjs';
 import {handle} from '../providers/circuit-presentation.mjs';
 import {layoutBlueprint} from '../src/capability-presentation/blueprint-sheet.mjs';
 
@@ -45,4 +45,23 @@ test('physical edges that skip an occupied column retain an obstacle detour',()=
  const {routes}=layoutBlueprint({altitude:'physical',nodes,edges:[{id:'physical-edge',from:'binding',to:'endpoint',kind:'physical'}]});
  assert.equal(routes[0].routing,'orthogonal');assert.ok(routes[0].points.length>4);
  assert.doesNotThrow(()=>validateConnectorRoute(routes[0].points,'orthogonal'));
+});
+
+test('attachment rule rejects tangent arrows, reversed approaches and insufficient arrowhead lead',async()=>{
+ const attachment={sourceNormal:[1,0],targetNormal:[-1,0],minimumLead:8};
+ const good=[[20,80],[40,80],[40,30],[80,30]];
+ assert.doesNotThrow(()=>validateConnectorAttachment(good,attachment));
+ const invalid=[
+  [[20,80],[40,80],[40,10],[80,10],[80,30]], // Vertical shaft along a left card border.
+  [[20,80],[20,60],[40,60],[40,30],[80,30]], // Tangent departure from the right border.
+  [[20,80],[90,80],[90,30],[80,30]],         // Target approached from its interior side.
+  [[20,80],[40,80],[40,10],[76,10],[76,30],[80,30]], // Arrowhead longer than its incoming lead.
+ ];
+ for(const points of invalid){
+  assert.doesNotThrow(()=>validateConnectorRoute(points,'orthogonal'),'Old orthogonal rule missed this defect');
+  assert.throws(()=>validateConnectorAttachment(points,attachment),{code:'CIRCUIT_CONNECTOR_ATTACHMENT_INVALID'});
+  const result=await handle({contractId:'circuit-presentation-request.v1',deck:{title:'Attachment regression',slides:[{title:'Scenario call',commands:[{op:'route',args:[points,'#45A7FF',{arrow:true,routing:'orthogonal',attachment}]}]}]}});
+  assert.equal(result.disposition,'HELD');assert.equal(result.findings[0].code,'CIRCUIT_CONNECTOR_ATTACHMENT_INVALID');
+ }
+ assert.doesNotThrow(()=>validateConnectorAttachment([[20,50],[20,10],[60,10],[60,50]],{sourceNormal:[0,-1],targetNormal:[0,-1],minimumLead:8}),'Top-attached self-calls remain valid');
 });

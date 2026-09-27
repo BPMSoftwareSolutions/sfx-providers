@@ -1,5 +1,5 @@
 import {C} from '../circuit-presentation/design.mjs';
-import {validateConnectorRoute} from '../circuit-presentation/contracts.mjs';
+import {validateConnectorRoute,validateConnectorAttachment} from '../circuit-presentation/contracts.mjs';
 import {fitBlueprintText} from '../circuit-presentation/text-fit.mjs';
 import {projectBlueprint,projectionOverlays} from './projection.mjs';
 import {blueprintGrid} from './event-sheet.mjs';
@@ -7,6 +7,9 @@ import {drawComponentGlyph} from './component-glyphs.mjs';
 
 const reject=message=>{throw Object.assign(new Error(message),{code:'CAPABILITY_PORTFOLIO_INVALID'});};
 const same=(a,b)=>JSON.stringify(a)===JSON.stringify(b);
+const LEAD=24,CLEARANCE=12;
+const compact=points=>points.filter((p,i,a)=>!i||i===a.length-1||!((a[i-1][0]===p[0]&&p[0]===a[i+1][0])||(a[i-1][1]===p[1]&&p[1]===a[i+1][1])));
+const attachmentFor=e=>({sourceNormal:e.from===e.to?[0,-1]:[1,0],targetNormal:e.from===e.to?[0,-1]:[-1,0],minimumLead:LEAD});
 
 // Visibility-grid routing keeps call and transition wires outside every card.
 // The cost favors short orthogonal paths with few bends; it adds no graph edges.
@@ -14,12 +17,17 @@ function clearSegment(a,b,boxes){return boxes.every(c=>a[1]===b[1]
  ? !(a[1]>c.y&&a[1]<c.y+c.h&&Math.max(a[0],b[0])>c.x&&Math.min(a[0],b[0])<c.x+c.w)
  : !(a[0]>c.x&&a[0]<c.x+c.w&&Math.max(a[1],b[1])>c.y&&Math.min(a[1],b[1])<c.y+c.h));}
 function routeCards(start,end,positions,width,height){
- const boxes=Object.values(positions),xs=[...new Set([start[0],end[0],10,width-10,...boxes.flatMap(b=>[b.x-12,b.x+b.w+12])])].sort((a,b)=>a-b),ys=[...new Set([start[1],end[1],10,height-10,...boxes.flatMap(b=>[b.y-12,b.y+b.h+12])])].sort((a,b)=>a-b);
+ // Route between exterior escape points, then attach perpendicular leads.
+ // Inflated obstacles prevent the search from using a card border as a lane.
+ const source=start,target=end;start=[source[0]+LEAD,source[1]];end=[target[0]-LEAD,target[1]];
+ const boxes=Object.values(positions).map(b=>({x:b.x-CLEARANCE,y:b.y-CLEARANCE,w:b.w+2*CLEARANCE,h:b.h+2*CLEARANCE}));
+ const xs=[...new Set([start[0],end[0],4,width-4,...boxes.flatMap(b=>[b.x,b.x+b.w])])].sort((a,b)=>a-b),ys=[...new Set([start[1],end[1],4,height-4,...boxes.flatMap(b=>[b.y,b.y+b.h])])].sort((a,b)=>a-b);
  const startIndex=[xs.indexOf(start[0]),ys.indexOf(start[1])],goal=[xs.indexOf(end[0]),ys.indexOf(end[1])];
  const key=(x,y,d)=>x+':'+y+':'+d,open=[{x:startIndex[0],y:startIndex[1],d:'',cost:0,path:[start]}],best=new Map();
  while(open.length){open.sort((a,b)=>a.cost-b.cost);const s=open.shift(),k=key(s.x,s.y,s.d);if((best.get(k)??Infinity)<s.cost)continue;
-  if(s.x===goal[0]&&s.y===goal[1])return s.path.filter((p,i,a)=>!i||i===a.length-1||!((a[i-1][0]===p[0]&&p[0]===a[i+1][0])||(a[i-1][1]===p[1]&&p[1]===a[i+1][1])));
+  if(s.x===goal[0]&&s.y===goal[1])return compact([source,...s.path,target]);
   for(const [dx,dy,d]of [[-1,0,'h'],[1,0,'h'],[0,-1,'v'],[0,1,'v']]){const x=s.x+dx,y=s.y+dy;if(x<0||y<0||x>=xs.length||y>=ys.length)continue;
+   if(dx<0&&(s.path.length===1||(x===goal[0]&&y===goal[1])))continue; // No reversal into an attachment lead.
    const a=[xs[s.x],ys[s.y]],b=[xs[x],ys[y]];if(!clearSegment(a,b,boxes))continue;
    const cost=s.cost+Math.abs(a[0]-b[0])+Math.abs(a[1]-b[1])+(s.d&&s.d!==d?16:0),next=key(x,y,d);
    if(cost>=(best.get(next)??Infinity))continue;best.set(next,cost);open.push({x,y,d,cost,path:[...s.path,b]});
@@ -72,10 +80,11 @@ export function validateCapabilityPortfolio(projection,layout){
  if(![layout.width,layout.height].every(v=>Number.isFinite(v)&&v>0))reject('Invalid portfolio surface.');
  for(const b of Object.values(layout.positions))if(![b.x,b.y,b.w,b.h].every(Number.isFinite)||b.x<0||b.y<0||b.w<=0||b.h<=0||b.x+b.w>layout.width||b.y+b.h>layout.height)reject('A scenario leaves the portfolio surface.');
  for(const e of layout.routes){validateConnectorRoute(e.points,e.routing);
+  validateConnectorAttachment(e.points,attachmentFor(e));
   if(e.points.some(([x,y])=>x<0||y<0||x>layout.width||y>layout.height))reject('A scenario wire leaves the portfolio surface.');
   const a=layout.positions[e.from],b=layout.positions[e.to],first=e.points[0],last=e.points.at(-1);
-  const owned=(pt,box)=>pt[0]>=box.x&&pt[0]<=box.x+box.w&&pt[1]>=box.y&&pt[1]<=box.y+box.h&&(pt[0]===box.x||pt[0]===box.x+box.w||pt[1]===box.y||pt[1]===box.y+box.h);
-  if(!owned(first,a)||!owned(last,b))reject('A scenario wire misses its owner.');
+  const onSide=(pt,box,side)=>side==='top'?pt[1]===box.y&&pt[0]>box.x&&pt[0]<box.x+box.w:pt[0]===(side==='left'?box.x:box.x+box.w)&&pt[1]>box.y&&pt[1]<box.y+box.h;
+  if(!onSide(first,a,e.from===e.to?'top':'right')||!onSide(last,b,e.from===e.to?'top':'left'))reject('A scenario wire misses its owned attachment side or lands on an ambiguous corner.');
   for(const [id,c]of Object.entries(layout.positions))if(id!==e.from&&id!==e.to)for(let i=1;i<e.points.length;i++){
    const [x,y]=e.points[i],[px,py]=e.points[i-1];
    if(y===py?(y>c.y&&y<c.y+c.h&&Math.max(x,px)>c.x&&Math.min(x,px)<c.x+c.w):(x>c.x&&x<c.x+c.w&&Math.max(y,py)>c.y&&Math.min(y,py)<c.y+c.h))reject('A scenario wire crosses an unrelated card.');
@@ -124,7 +133,7 @@ export function drawCapabilitySheet(p,snapshot,model,{slides=[],selectedScenario
  const scale=Math.min(584/layout.width,210/layout.height,1),ox=188+(584-layout.width*scale)/2,oy=176+(210-layout.height*scale)/2;
  const box=b=>({x:ox+b.x*scale,y:oy+b.y*scale,w:b.w*scale,h:b.h*scale}),point=pt=>[ox+pt[0]*scale,oy+pt[1]*scale];
  const rendered=[];
- for(const e of layout.routes){p.add('route',e.points.map(point),C.blue,{arrow:true,dash:e.kind==='call',glow:false,width:Math.max(.7,1.4*scale),routing:e.routing});}
+ for(const e of layout.routes){p.add('route',e.points.map(point),C.blue,{arrow:true,dash:e.kind==='call',glow:false,width:Math.max(.7,1.4*scale),routing:e.routing,attachment:{...attachmentFor(e),minimumLead:8}});}
  const cardNodes=projection.nodes.filter(n=>n.kind==='scenario').sort((a,b)=>Number(b.scenarioId===root.id)-Number(a.scenarioId===root.id));
  for(const [i,n]of cardNodes.entries()){
   const sc=model.scenarios.find(s=>s.id===n.scenarioId),b=box(layout.positions[n.id]),isSelected=sc.id===selected.id,paint=isSelected?'#49DDF7':C.blue;

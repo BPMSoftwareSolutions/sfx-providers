@@ -378,3 +378,22 @@ PowerPoint, snapshots, storyboard and receipts are retained locally in
 PDF renders and verification reports are in
 `outputs/google-slides/blueprint-inspection-portfolio` and
 `outputs/google-slides/equity-capability-portfolio`.
+
+### Scenario arrow attachment repair
+
+The eight-scenario portfolio revealed six incoming arrows whose final segments
+ran vertically along their target card borders. Their endpoints were correct,
+so the previous endpoint-ownership check accepted them. The new attachment rule
+rejects all six retained defective paths. All seven regenerated call arrows now
+enter their scenario cards perpendicularly with a clear straight lead.
+
+Slide 03 in the same Google deck was updated. All 221 unaffected objects on
+that slide were preserved, all 129 internal links resolve, and the other 82 slides
+are unchanged structurally and pixel-for-pixel. Native readback verified all seven
+arrow tips and horizontal incoming segments. The complete source graph is unchanged.
+Google structural checks report no issues, Python measured 192 labels with no fit
+findings, and the PowerPoint passes package, layout, font-policy and artifact-import
+checks with no findings or warnings. The 154 presentation and migration tests pass.
+
+Generation and PowerPoint evidence: `outputs/capability-estate/portfolio-arrow-fix`.
+Native update, PDF render and verification: `outputs/google-slides/portfolio-arrow-fix`.

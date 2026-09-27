@@ -374,6 +374,46 @@
                                     "orthogonal",
                                     "forward"
                                   ]
+                                },
+                                "attachment": {
+                                  "type": "object",
+                                  "properties": {
+                                    "sourceNormal": {
+                                      "type": "array",
+                                      "items": {
+                                        "enum": [
+                                          -1,
+                                          0,
+                                          1
+                                        ]
+                                      },
+                                      "minItems": 2,
+                                      "maxItems": 2
+                                    },
+                                    "targetNormal": {
+                                      "type": "array",
+                                      "items": {
+                                        "enum": [
+                                          -1,
+                                          0,
+                                          1
+                                        ]
+                                      },
+                                      "minItems": 2,
+                                      "maxItems": 2
+                                    },
+                                    "minimumLead": {
+                                      "type": "number",
+                                      "exclusiveMinimum": 0,
+                                      "maximum": 2000
+                                    }
+                                  },
+                                  "required": [
+                                    "sourceNormal",
+                                    "targetNormal",
+                                    "minimumLead"
+                                  ],
+                                  "additionalProperties": false
                                 }
                               },
                               "required": [],

@@ -1,4 +1,4 @@
-import {validateConnectorRoute} from './contracts.mjs';
+import {validateConnectorRoute,validateConnectorAttachment} from './contracts.mjs';
 import {fitBlueprintText,textWidth} from './text-fit.mjs';
 // Reusable native diagram primitives extracted from the retained SideFX design.
 export const C={bg:'#06111F',panel:'#102238',plane:'#142A43',white:'#F4F7FB',muted:'#A8B8CA',blue:'#45A7FF',amber:'#F6B94D',violet:'#A98AF2',green:'#4DE0B0',red:'#FF5F70',grid:'#263A51'};
@@ -47,8 +47,9 @@ export class Slide{
   this.svg.push(`<path d="M${x1} ${y1} L${x2} ${y2}" fill="none" stroke="${color}" stroke-width="${width}" opacity="${alpha}" ${dash?'stroke-dasharray="6 5"':''}/>`);
   if(arrow){const a=Math.atan2(dy,dx),z=6;this.svg.push(`<path d="M${x2-z*Math.cos(a-.5)} ${y2-z*Math.sin(a-.5)} L${x2} ${y2} L${x2-z*Math.cos(a+.5)} ${y2-z*Math.sin(a+.5)}" fill="none" stroke="${color}" stroke-width="${width}"/>`);}
  }
- route(points,color=C.green,{width=2.5,dash=false,arrow=false,glow=true,routing}={}){
+ route(points,color=C.green,{width=2.5,dash=false,arrow=false,glow=true,routing,attachment}={}){
   validateConnectorRoute(points,routing);
+  if(attachment)validateConnectorAttachment(points,attachment);
   if(glow)for(let i=1;i<points.length;i++)this.line(...points[i-1],...points[i],color,width+5,{alpha:.065,dash});
   for(let i=1;i<points.length;i++)this.line(...points[i-1],...points[i],color,width,{dash,arrow:arrow&&i===points.length-1});
  }

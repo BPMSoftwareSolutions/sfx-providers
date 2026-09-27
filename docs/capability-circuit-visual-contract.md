@@ -262,6 +262,24 @@ rendering rule, not a claim that execution is monotonic; route choices never
 alter the source edge IDs or endpoints. Existing hand-authored commands without
 a policy retain their prior behavior.
 
+### Boundary attachment validation
+
+A boundary endpoint alone does not establish a valid attachment. A wire running
+along a card's left border can end at the correct coordinate while its arrowhead
+points up or down. The `route` rendering contract therefore accepts `attachment`
+with `sourceNormal`, `targetNormal` (outward cardinal vectors) and `minimumLead`.
+`CIRCUIT_CONNECTOR_ATTACHMENT_INVALID` rejects tangent approaches, arrival from
+inside the target, departure into the source, and straight leads shorter than
+the reserved arrowhead clearance. This runs before native requests are authored.
+
+The capability portfolio requires this policy for every scenario edge. Ordinary
+calls leave the source's right side and enter the target's left side. Self-calls
+attach normally at the top. The layout reserves 24 logical units of straight lead
+and routes between exterior escape points around obstacles inflated by 12 units.
+After scaling, the same rule requires at least 8 slide points of straight lead.
+Arrow direction and clearance remain validation requirements as the diagram scales.
+Source scenario IDs, edge IDs, declared calls and transitions remain unchanged.
+
 ## Capability portfolio projection
 
 The capability sheet frames the root input contract, root-connected scenario
