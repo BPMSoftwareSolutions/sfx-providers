@@ -450,3 +450,41 @@ Local artifacts and source replay:
 `outputs/capability-estate/request-capability-from-objective`.
 Google readback, PDF renders, link verification and test log:
 `outputs/google-slides/request-capability-from-objective`.
+
+### Database capability invocation inspection
+
+The [invoke-database-capability deck](https://docs.google.com/presentation/d/1J7Qs6MpQZu1AIt7uxbJ3NZqukuaojZl6MZCOFli1Iio/edit?slide=id.p3#slide=id.p3)
+was generated directly from estate 34, capability version 150662, with the
+unchanged capability-ID provider. It has 16 slides: scenario blueprint on 02,
+capability portfolio on 03, complete execution circuit on 05, and explicit
+operation/port/binding/platform ownership on 07.
+
+```powershell
+node capability-deck.mjs --capability-id invoke-database-capability --view capability --context-altitude 7 --output outputs/capability-estate/invoke-database-capability --pptx
+```
+
+The selected graph contains one scenario, one operation, and one port binding
+to `sda-embodiment-plan-port.v1`. It contains no explicit external provider
+identity or statically selected child circuit. The deck preserves this scope;
+it does not fabricate the implementation behind the platform port or invoke it.
+
+Inspection retains three blueprint warnings and two context discrepancies:
+feature scenario version 91183 differs from selected scenario version 91184,
+and parsed Gherkin differs from retained source bytes. The source feature still
+describes greeting/standard-output behavior, while the selected scenario
+describes resolving and executing an invocation envelope. Both are retained.
+
+Snapshot digest:
+`43089c2554619692adb808558ee2dfe73aa09ec8d180d92b5f959cd31be06f8a`.
+Content digest:
+`eea623c637e829df1c34126efdc7774a7365089dda5c5feec60cf665bc133d0b`.
+
+PowerPoint package/layout validation and Google native issue checks passed with
+zero findings. All 16 PDF pages were visually reviewed; all 18 expected link
+destinations were verified against native readback (19 text-run link records).
+Python/Arial metrics found no overflow in 32 blueprint labels. No renderer code
+changes were required for this capability.
+
+Replay artifacts: `outputs/capability-estate/invoke-database-capability`.
+Native readback, PDF renders and verification:
+`outputs/google-slides/invoke-database-capability`.
