@@ -216,11 +216,13 @@ export function appendBlueprintSlides({snapshot,model,page,view='capability',sce
   nav(p,'Return to capability blueprint',capability,35);
  }
  for(const {projection,page:p}of projections){
-  const links={};
-  if(projection.altitude==='capability')for(const n of projection.nodes){
-   const target=n.kind==='scenario'?scenarioPages.get(n.scenarioId):providerInspectionPages.get(n.id);
-   if(target)links[n.id]={slideIndex:Number(target.id.slice(6))-1};
+  if(projection.altitude==='capability'){
+   // Render directly with the portfolio grammar. The legacy layered projection
+   // can overflow on deep call graphs before the final navigation pass runs.
+   drawCapabilitySheet(p,snapshot,model,{slides:[...pages.values(),...providerInspectionPages.values(),...[review,inventoryPage].filter(Boolean)],selectedScenarioId:scenarioId});
+   continue;
   }
+  const links={};
   if(projection.altitude==='scenario')links['event:'+projection.scenarioId]={slideIndex:Number(eventPages.get(projection.scenarioId).id.slice(6))-1};
   if(projection.altitude==='event')for(const n of projection.nodes)if(providerPages.has(n.id))links[n.id]={slideIndex:Number(providerPages.get(n.id).id.slice(6))-1};
   const fullEvent=projection.altitude==='event';
@@ -236,7 +238,7 @@ export function appendBlueprintSlides({snapshot,model,page,view='capability',sce
 }
 
 export function renderBlueprintSvg(model,selection={},snapshot){
- const projection=projectBlueprint(model,selection),layout=layoutBlueprint(projection),native=new Slide(1,'');native.svg=[];
+ const projection=projectBlueprint(model,selection),native=new Slide(1,'');native.svg=[];
  const p={add:(op,...args)=>Slide.prototype[op].apply(native,args),text:(...args)=>native.t(...args)};
  if(projection.altitude==='capability'&&snapshot){
   // Match the deck's zoomed-out semantic surface when contract context is available.
@@ -248,6 +250,7 @@ export function renderBlueprintSvg(model,selection={},snapshot){
   p.blueprint={};p.interpretation='';drawEventSheet(p,model,projection);
   return '<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 960 540"><rect width="960" height="540" fill="'+C.bg+'"/>'+native.svg.join('')+'</svg>';
  }
+ const layout=layoutBlueprint(projection);
  p.text(model.capabilityId,24,12,layout.width,40,25,C.white,true);
  p.text(projection.altitude.toUpperCase()+' ALTITUDE',24,56,layout.width,30,17,C.blue,true);
  drawProjection(p,model,projection,{x:20,y:110,w:layout.width,h:layout.height});

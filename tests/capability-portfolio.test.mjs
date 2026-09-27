@@ -77,3 +77,20 @@ test('portfolio validation catches the screenshot defect even when both endpoint
  wire.points.at(-1)[0]=box.x+box.w;wire.routing='orthogonal';
  assert.throws(()=>validateCapabilityPortfolio(p,wrongSide),{code:'CAPABILITY_PORTFOLIO_INVALID'},'A perpendicular arrow on the wrong side must still fail ownership validation');
 });
+
+test('deep nested scenario portfolio fits without an obsolete intermediate rendering',async()=>{
+ const raw=rawFixture(),root=raw.graph.scenarios[0];
+ const names=['resolve-request-routing-decision','execute-an-admitted-proposal','refuse-an-unavailable-proposal','obtain-governed-model-response','resolve-attributable-market-price-evidence','resolve-model-alias-embodiment','project-model-response-policy-to-provider-protocol','obtain-governed-provider-testimony','establish-governed-model-response-evidence'];
+ const ids=[root.scenarioId,...names],children=[[1,2,3],[4],[5],[],[6,7,8,9],[],[],[],[],[]];
+ raw.graph.transitions=[];raw.graph.scenarios=[root,...names.map(id=>({scenarioId:id,event:{eventId:id,executionAuthorityId:id+'.v1'},outcome:{outcomeId:id,terminal:true}}))];
+ raw.graph.executionAuthorities=ids.map((id,i)=>({id:i?id+'.v1':'review.v1',owningScenarioId:id,operations:[...children[i].map(j=>({kind:'invoke-scenario',scenarioId:ids[j]})),...(i===5?[0,1,2].map(j=>({kind:'invoke-port',portId:'remote-'+j})):[])]}));
+ raw.graph.interfaceAuthority.portBindings=[0,1,2].map(i=>({portId:'remote-'+i,platformCapabilityId:'http.v1',configuration:{providerId:'example/attributable-market-price-provider-'+i}}));
+ const s=normalizeSnapshot(raw),r=await handle({contractId:'capability-presentation-request.v1',capabilityId:s.identity.capabilityId,view:'capability',contextAltitude:7},{readEstate:async()=>s});
+ assert.equal(r.disposition,'AUTHORED',JSON.stringify(r.findings));
+ const story=r.candidate.storyboard,p=story.slides.find(p=>p.blueprint?.portfolio),portfolio=p.blueprint.portfolio;
+ assert.equal(portfolio.scenarioIds.length,10);assert.equal(portfolio.routes.length,9);assert.equal(portfolio.badges.length,3);
+ const links=p.commands.filter(c=>c.op==='t'&&c.args[9]?.slideIndex!=null).map(c=>story.slides[c.args[9].slideIndex].blueprint?.scenarioId);
+ for(const id of ids)assert.ok(links.includes(id),'Missing scenario drill-down: '+id);
+ assert.doesNotThrow(()=>renderBlueprintSvg(story.blueprint,{altitude:'capability'},s));
+ for(const c of p.commands.filter(c=>c.op==='route'&&c.args[2].attachment))assert.doesNotThrow(()=>validateConnectorAttachment(c.args[0],c.args[2].attachment));
+});

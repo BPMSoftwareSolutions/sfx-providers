@@ -48,9 +48,22 @@ export function layoutCapabilityPortfolio(projection){
  for(const n of nodes)if(!levels.has(n.id))reject('Portfolio contains a scenario outside the selected topology.');
  const columns=Math.max(1,...levels.values())+Number(nodes.length>1),top=edges.some(e=>e.from===e.to)?36+edges.length*7:24;
  const cardW=nodes.length===1?560:280;
- const cardH=n=>128+Math.ceil(involvement.filter(e=>e.from===n.id).length/(nodes.length===1?2:1))*44;
+ const badgePitch=nodes.length===1?44:60;
+ const cardH=n=>128+Math.ceil(involvement.filter(e=>e.from===n.id).length/(nodes.length===1?2:1))*badgePitch;
  const groups=Array.from({length:columns},(_,level)=>nodes.filter(n=>levels.get(n.id)===level));
- const packed=groups.map(group=>{const cols=Math.min(3,Math.max(1,Math.ceil(Math.sqrt(group.length)))),rows=Array.from({length:Math.ceil(group.length/cols)},(_,i)=>group.slice(i*cols,(i+1)*cols));return {group,cols,rows,heights:rows.map(r=>Math.max(...r.map(cardH)))};});
+ const choices=groups.map(group=>Array.from({length:Math.min(3,Math.max(1,group.length))},(_,i)=>{
+  const cols=i+1,rows=Array.from({length:Math.ceil(group.length/cols)},(_,r)=>group.slice(r*cols,(r+1)*cols)),heights=rows.map(r=>Math.max(...r.map(cardH)));
+  return {group,cols,rows,heights,height:heights.reduce((a,h)=>a+h+30,0)-30};
+ }));
+ // Optimize the entire nested graph for the actual viewport, rather than
+ // widening each depth independently. Every scenario and edge stays present.
+ let packed,bestScale=-1;
+ for(const maxHeight of [...new Set(choices.flat().map(c=>c.height))].sort((a,b)=>a-b)){
+  const candidate=choices.map(options=>options.find(c=>c.height<=maxHeight));if(candidate.some(c=>!c))continue;
+  const width=nodes.length===1?616:28+candidate.reduce((n,c)=>n+c.cols*(cardW+64),0)-36;
+  const scale=Math.min(584/width,210/(Math.max(220,maxHeight)+top+20),1);
+  if(scale>bestScale){bestScale=scale;packed=candidate;}
+ }
  const height=Math.max(220,...packed.map(g=>g.heights.reduce((a,h)=>a+h+30,0)-30))+top+20;
  let columnX=28;
  for(const group of packed){let y=top+(height-top-20-(group.heights.reduce((a,h)=>a+h+30,0)-30))/2;
@@ -68,7 +81,7 @@ export function layoutCapabilityPortfolio(projection){
   if(e.from!==e.to){try{validateConnectorRoute(points,'forward');routing='forward';}catch{}}
   return {...e,points,routing};
  });
- const layout={width,height,positions,routes,badges:involvement.map(e=>({...e}))};
+ const layout={width,height,positions,routes,badgePitch,badges:involvement.map(e=>({...e}))};
  validateCapabilityPortfolio(projection,layout);return layout;
 }
 
@@ -147,7 +160,7 @@ export function drawCapabilitySheet(p,snapshot,model,{slides=[],selectedScenario
   if(scenarioCount===1)text(sc.operationIds.length+' operations · '+(sc.terminal?'terminal scenario':'declared scenario'),sb(9,86,cw-18,24),11*scale,C.muted,false,undefined,'left',4);
   const badges=layout.badges.filter(e=>e.from===n.id),cols=projection.nodes.filter(v=>v.kind==='scenario').length===1?2:1,bw=(cw-24)/cols;
   badges.forEach((e,j)=>{
-   const provider=model.nodes.find(v=>v.id===e.to),pb=sb(12+(j%cols)*bw,119+Math.floor(j/cols)*44,bw-6,34);
+   const provider=model.nodes.find(v=>v.id===e.to),pb=sb(12+(j%cols)*bw,119+Math.floor(j/cols)*layout.badgePitch,bw-6,layout.badgePitch-8);
    const target=slides.find(s=>s.blueprint?.role==='provider-inspection'&&s.blueprint.providerId===provider.id);
    p.add('shape','ROUND_RECTANGLE',pb.x,pb.y,pb.w,pb.h,{fill:'#141E37',stroke:C.violet,sw:Math.max(.6,scale)});
    text(provider.label,pb,12*scale,C.violet,true,target,'center',4);

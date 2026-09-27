@@ -397,3 +397,56 @@ checks with no findings or warnings. The 154 presentation and migration tests pa
 
 Generation and PowerPoint evidence: `outputs/capability-estate/portfolio-arrow-fix`.
 Native update, PDF render and verification: `outputs/google-slides/portfolio-arrow-fix`.
+
+### Nested objective capability inspection
+
+The [request-capability-from-objective portfolio](https://docs.google.com/presentation/d/1GUqLaFcVr8-2hp5jzaQ6v0aiQ4Mx-iIkyVgEr9gOkPs/edit?slide=id.p3#slide=id.p3)
+was generated from estate 34, capability version 910966. Slide 02 is the root
+scenario blueprint; slide 03 is the linked capability portfolio. The 107-slide
+inspection deck retains 10 connected scenarios, 7 calls, 2 transitions, 49
+operations, 42 port bindings, and 3 exact provider identities. Model-provider
+port names do not establish additional provider identities by themselves.
+
+This nested graph exposed a generic layout limit: independently widening every
+call depth made labels unreadable. The portfolio now chooses column packing
+against the complete viewport, reserves room for wrapped provider badges, and
+renders directly through the portfolio grammar. It no longer attempts the
+obsolete layered capability diagram before drawing the final sheet. No
+capability-specific cells, scenario labels, edges, or provider mappings were added.
+
+Generate a fresh database selection with the existing entry point:
+
+```powershell
+node capability-deck.mjs --capability-id request-capability-from-objective --view capability --context-altitude 7 --output outputs/capability-estate/objective-fresh --pptx
+```
+
+For an exact replay, replace `--capability-id` with `--snapshot` pointing to the
+retained snapshot. This run first captured the database selection and then
+replayed that snapshot during renderer verification. All eleven context layers
+are included; altitude 7 supplies the expanded execution context.
+
+Retained snapshot digest:
+`3cb1b1493300753950622cba5adb5011df7512a5b1f866d6799273f8ba0d4c45`.
+Content digest:
+`6f47ed6e4777a6f23f80f97d79d3fb84f0cdef4e9e8a8f4dd642a719a1bf5c7f`.
+
+The deck retains five blueprint warnings and two contextual findings. The
+feature references `decide-agent-route@91539` while the selected graph uses
+`decide-agent-route@91665`; no version-owned feature binding was returned.
+The capability-level semantic intent still describes standard-output delivery,
+while the retained feature describes objective routing. These are source facts,
+not renderer-authored corrections. No runtime execution or admission proof is
+claimed.
+
+Validation: 155 regression tests passed; PowerPoint package/layout checks passed
+with no findings or warnings; Python/Arial metrics checked 542 blueprint labels
+without overflow. All 107 Google PDF pages were visually reviewed, including
+full-size scenario, portfolio, model-provider and equity execution sheets.
+Native readback verified every expected navigation destination (210 links;
+296 native text-run link records), every scenario edge, every provider badge,
+and operation coverage in all ten Event projections.
+
+Local artifacts and source replay:
+`outputs/capability-estate/request-capability-from-objective`.
+Google readback, PDF renders, link verification and test log:
+`outputs/google-slides/request-capability-from-objective`.
