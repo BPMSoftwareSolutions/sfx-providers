@@ -30,8 +30,8 @@ export function appendScenarioSheet({snapshot,model,page,slides,scenarioId=model
  p.interpretation='Input/Event/Outcome are scenario semantics. Provider wires retain exact binding or testimony references. Disclosed operations are a subset; the complete Event is linked. Their component shapes follow the same declared-binding rules as the complete execution circuit, with identifier-prefix action colors. Decorative contacts add no declared ports. No execution or monotonic proof is asserted.';
  const link=target=>({slideIndex:Number(target.id.slice(6))-1});
  const textFrames=[];
- const label=(value,x,y,w,h,size=12,color=C.white,bold=false,target)=>{
-  const fitted=fitBlueprintText(value,{width:w,height:h,fontSize:size,minFontSize:8});
+ const label=(value,x,y,w,h,size=12,color=C.white,bold=false,target,minFontSize=8)=>{
+  const fitted=fitBlueprintText(value,{width:w,height:h,fontSize:size,minFontSize});
   p.add('t',fitted.text,x,y,w,h,fitted.fontSize,color,bold,'center',...(target?[link(target)]:[]));
   textFrames.push({x,y,w,h});
  };
@@ -52,7 +52,7 @@ export function appendScenarioSheet({snapshot,model,page,slides,scenarioId=model
  const fields=(input?.fields??[]).filter(f=>/^\$\/payload\/[^/]+$/.test(f.path));
  const inputLabels=fields.length?fields.map(f=>f.path.replace('$/','').replaceAll('/','.')):[sc.inputContractId||'No input contract retained'];
  const itemH=Math.min(49,148/Math.max(1,inputLabels.length));
- inputLabels.forEach((value,i)=>{const y=284+i*itemH;p.add('shape','ROUND_RECTANGLE',23,y,128,itemH-6,{fill:'#18291E',stroke:C.amber,sw:1.1});documentIcon(p,31,y+(itemH-20)/2,C.amber);label(value,44,y+2,106,itemH-9,10.5,C.amber);});
+ inputLabels.forEach((value,i)=>{const y=284+i*itemH;p.add('shape','ROUND_RECTANGLE',23,y,128,itemH-6,{fill:'#18291E',stroke:C.amber,sw:1.1});documentIcon(p,31,y+(itemH-20)/2,C.amber);label(value,44,y+2,106,itemH-9,10.5,C.amber,false,undefined,4);});
  label(sc.outcomeId.replaceAll('-',' '),804,228,138,49,12,C.green,true);
  const outcomes=sc.variants.length?sc.variants:[{id:sc.outcomeContractId||sc.outcomeId,classification:''}];
  const outcomeH=Math.min(51,160/outcomes.length);

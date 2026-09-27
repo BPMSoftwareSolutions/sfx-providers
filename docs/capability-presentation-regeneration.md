@@ -326,3 +326,55 @@ Current PowerPoint and generation evidence:
 `outputs/capability-estate/equity-scenario-components/presentation.pptx`.
 Native update, PDF render and verification evidence:
 `outputs/google-slides/equity-scenario-components`.
+
+### Capability portfolio and a real multi-scenario example
+
+The capability overview now shows root-connected scenario cards, their actual
+call/transition edges, root input fields and outcome variants, provider involvement
+badges, and links into each scenario. The existing equity deck's capability view
+is slide 04; its scenario blueprint remains slide 02. The equity snapshot still
+contains exactly one scenario, 35 operations and four provider identities.
+
+Read-only database discovery selected `inspect-canonical-circuit-blueprint-candidate`
+from estate 34, namespace `sidefx:capabilities`, capability version 95. All eight
+declared scenarios are root-connected through seven nested scenario calls. Across
+the scenarios there are 17 operations and no declared external provider identities.
+The portfolio does not recast those calls as outcome transitions or parallel work.
+The discovery query is retained in
+`src/capability-presentation/sql/multi-scenario-capabilities.sql`.
+
+Regenerate directly from the database without changing code:
+
+```powershell
+node capability-deck.mjs --capability-id inspect-canonical-circuit-blueprint-candidate --view capability --context-altitude 7 --output outputs/capability-estate/blueprint-inspection-next --pptx
+```
+
+The 83-slide inspection deck keeps all eleven context summaries, scenario and
+execution drill-downs, the complete retained feature writeup, Gherkin scenarios,
+source registers and structural review. Context altitude 7 selects the expanded
+authoring context; it does not remove the other ten altitude summaries.
+
+The [eight-scenario portfolio is slide 03](https://docs.google.com/presentation/d/1Oxl5kwIcZjW9IRpmM_HiHzeKoK9VHNhch9bNfLuLKv0/edit?slide=id.p3#slide=id.p3).
+The [equity capability overview is slide 04](https://docs.google.com/presentation/d/1aVqW3lBWqnWoWFxdBvaOYVlg49Yxkt_Sl9M0yEVTMy0/edit?slide=id.p3#slide=id.p3).
+
+The 152 presentation and migration tests pass. Google structural checks report
+zero issues for both decks. All 129 internal text links in the multi-scenario
+deck and 168 in the equity deck resolve; every expected command-level drill-down
+destination was checked against native readback. The portfolio preserves exact
+scenario IDs, call endpoints, and provider source paths. The review reports
+0 errors / 3 warnings for the inspection capability and 0 errors / 12 warnings
+for the equity snapshot; these are bounded structural findings, not admission
+or monotonic-progress proofs. No selected capability was executed.
+
+Both PowerPoints pass package, layout, Arial font-policy and artifact-import
+checks with no findings or warnings. All Google pages were rendered for visual
+review. Only the equity capability overview changed; the other 68 pages are
+unchanged both structurally and pixel-for-pixel. Native PowerPoint font rendering
+was not independently executed.
+
+PowerPoint, snapshots, storyboard and receipts are retained locally in
+`outputs/capability-estate/blueprint-inspection-portfolio-verified` and
+`outputs/capability-estate/equity-capability-portfolio-verified`. Google readback,
+PDF renders and verification reports are in
+`outputs/google-slides/blueprint-inspection-portfolio` and
+`outputs/google-slides/equity-capability-portfolio`.

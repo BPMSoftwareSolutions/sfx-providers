@@ -1,4 +1,5 @@
 import {validateConnectorRoute} from './contracts.mjs';
+import {fitBlueprintText,textWidth} from './text-fit.mjs';
 // Reusable native diagram primitives extracted from the retained SideFX design.
 export const C={bg:'#06111F',panel:'#102238',plane:'#142A43',white:'#F4F7FB',muted:'#A8B8CA',blue:'#45A7FF',amber:'#F6B94D',violet:'#A98AF2',green:'#4DE0B0',red:'#FF5F70',grid:'#263A51'};
 const rgb=h=>({red:parseInt(h.slice(1,3),16)/255,green:parseInt(h.slice(3,5),16)/255,blue:parseInt(h.slice(5,7),16)/255});
@@ -8,7 +9,11 @@ export class Slide{
   this.n=n;this.id=id;this.sources=sources;this.req=[];this.svg=[];this.k=0;this.refs=[];this.title=title;
   this.req.push({updatePageProperties:{objectId:this.id,pageProperties:{pageBackgroundFill:{solidFill:{color:{rgbColor:rgb(C.bg)},alpha:1}}},fields:'pageBackgroundFill'}});
   if(headerLayout!=='custom'){
-   this.t(title,34,22,880,49,31,C.white,true);
+   // Reserve extra width for bold glyphs before wrapping, so long retained
+   // feature names cannot enter the subtitle band in native applications.
+   const titleSize=Math.min(31,31*864/Math.max(1,textWidth(title,31)*1.12));
+   const heading=fitBlueprintText(title,{width:880,height:49,fontSize:titleSize,minFontSize:18});
+   this.t(heading.text,34,22,880,49,heading.fontSize,C.white,true);
    if(subtitle)this.t(subtitle,36,77,876,44,14,C.muted);
    this.t(String(n).padStart(2,'0'),895,510,36,20,10,C.muted,false,'right');
   }

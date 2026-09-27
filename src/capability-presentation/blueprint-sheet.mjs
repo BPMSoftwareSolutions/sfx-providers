@@ -6,6 +6,7 @@ import {identifierCaption} from './caption.mjs';
 import {drawEventSheet} from './event-sheet.mjs';
 import {componentGlyph,drawComponentGlyph,glyphFrame,glyphAnchor} from './component-glyphs.mjs';
 import {projectBlueprint,projectionOverlays,reachableScenarios,declarationInventory} from './projection.mjs';
+import {drawCapabilitySheet} from './capability-sheet.mjs';
 
 const chunks=(a,n)=>Array.from({length:Math.ceil(a.length/n)},(_,i)=>a.slice(i*n,(i+1)*n));
 const paint=n=>({input:C.amber,event:C.blue,operation:C.blue,scenario:C.blue,outcome:C.green,terminal:C.green,variant:C.green,port:C.violet,binding:C.violet,platform:C.violet,provider:C.violet,mechanic:C.violet}[n.kind]??C.blue);
@@ -234,9 +235,15 @@ export function appendBlueprintSlides({snapshot,model,page,view='capability',sce
  return {primary,projections:projections.map(v=>v.projection),inventory};
 }
 
-export function renderBlueprintSvg(model,selection={}){
+export function renderBlueprintSvg(model,selection={},snapshot){
  const projection=projectBlueprint(model,selection),layout=layoutBlueprint(projection),native=new Slide(1,'');native.svg=[];
  const p={add:(op,...args)=>Slide.prototype[op].apply(native,args),text:(...args)=>native.t(...args)};
+ if(projection.altitude==='capability'&&snapshot){
+  // Match the deck's zoomed-out semantic surface when contract context is available.
+  const sheet={commands:[],blueprint:{},add:(op,...args)=>Slide.prototype[op].apply(native,args),text:(...args)=>native.t(...args)};
+  drawCapabilitySheet(sheet,snapshot,model,{selectedScenarioId:selection.scenarioId??model.rootScenarioId});
+  return '<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 960 540"><rect width="960" height="540" fill="'+C.bg+'"/>'+native.svg.join('')+'</svg>';
+ }
  if(projection.altitude==='event'){
   p.blueprint={};p.interpretation='';drawEventSheet(p,model,projection);
   return '<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 960 540"><rect width="960" height="540" fill="'+C.bg+'"/>'+native.svg.join('')+'</svg>';

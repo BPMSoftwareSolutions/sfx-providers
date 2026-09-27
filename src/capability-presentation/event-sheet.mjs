@@ -3,7 +3,7 @@ import {validateConnectorRoute} from '../circuit-presentation/contracts.mjs';
 import {fitBlueprintText} from '../circuit-presentation/text-fit.mjs';
 import {identifierCaption} from './caption.mjs';
 import {projectionOverlays} from './projection.mjs';
-import {COMPONENT_STYLE,drawComponentGlyph,glyphAnchor} from './component-glyphs.mjs';
+import {COMPONENT_STYLE,drawComponentGlyph,glyphAnchor,componentGlyph,glyphFrame} from './component-glyphs.mjs';
 
 const reject=message=>{throw Object.assign(new Error(message),{code:'CAPABILITY_EVENT_RENDER_INVALID'});};
 export const ACTION_COLORS={build:'#22BEFF',bind:'#BE83FF',observe:'#00D9CD',select:'#F3CC55',other:C.blue};
@@ -27,10 +27,22 @@ export function eventComponent(model,node,style=COMPONENT_STYLE){
 // Rows are pagination of declared order, never additional semantic stages.
 export function layoutEventCircuit(projection,{model={nodes:[]},style=COMPONENT_STYLE}={}){
  if(projection.altitude!=='event')reject('Event rendering requires an Event projection.');
- const {nodes,edges}=projection,cols=Math.min(7,Math.max(1,nodes.length)),rowCount=Math.max(1,Math.ceil(nodes.length/cols));
- const band=Math.min(74,(394-(rowCount-1)*6)/rowCount),gap=16,w=Math.min(240,(928-gap*(cols-1))/cols);
- const offset=(960-(cols*w+(cols-1)*gap))/2,positions={},rows=[];
+ const {nodes,edges}=projection,gap=16,positions={},rows=[];
  const components=Object.fromEntries(nodes.map(n=>[n.id,eventComponent(model,n,style)]));
+ // Prefer seven columns, but measure the retained labels in their component
+ // frames before committing to a row geometry. Long nested-call identifiers
+ // need wider cells; reducing columns preserves both identity and font floor.
+ let cols, rowCount, band, w;
+ for(cols=Math.min(7,Math.max(1,nodes.length));cols>=1;cols--){
+  rowCount=Math.max(1,Math.ceil(nodes.length/cols));band=Math.min(74,(394-(rowCount-1)*6)/rowCount);w=Math.min(240,(928-gap*(cols-1))/cols);
+  try{for(const n of nodes){const frame=glyphFrame({x:0,y:0,w,h:band-29},componentGlyph(n,style,components[n.id].glyph).label);
+   fitBlueprintText(identifierCaption(n.label,model.capabilityId??'').replace(/(\d)([a-z])/g,'$1 $2'),{width:frame.w,height:frame.h,fontSize:10.25,minFontSize:8});}break;
+  }catch(error){if(error.code!=='CAPABILITY_BLUEPRINT_TEXT_OVERFLOW')throw error;}
+ }
+ // Geometry-only callers can inspect an unsupported style. The rendering
+ // contract still rejects labels that cannot fit any candidate arrangement.
+ if(cols===0){cols=Math.min(7,Math.max(1,nodes.length));rowCount=Math.max(1,Math.ceil(nodes.length/cols));band=Math.min(74,(394-(rowCount-1)*6)/rowCount);w=Math.min(240,(928-gap*(cols-1))/cols);}
+ const offset=(960-(cols*w+(cols-1)*gap))/2;
  for(let r=0;r<rowCount;r++){
   const members=nodes.slice(r*cols,(r+1)*cols),y=68+r*(band+6);
   rows.push({index:r+1,y,height:band,nodeIds:members.map(n=>n.id),first:members[0]?.ordinal,last:members.at(-1)?.ordinal,basis:'layout-only'});

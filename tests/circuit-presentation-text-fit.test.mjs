@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import {test} from 'node:test';
 import {fitBlueprintText,textWidth} from '../src/circuit-presentation/text-fit.mjs';
+import {Slide} from '../src/circuit-presentation/design.mjs';
 
 test('font metrics distinguish wide glyphs and fit full provider identifiers without ellipses',()=>{
  assert.ok(textWidth('WWW',12)>textWidth('iii',12)*2);
@@ -24,4 +25,13 @@ test('dense execution captions reserve native vertical line boxes',()=>{
 
 test('labels that cannot fit are refused instead of clipped or silently omitted',()=>{
  assert.throws(()=>fitBlueprintText('a long label',{width:9,height:5,fontSize:20}),{code:'CAPABILITY_BLUEPRINT_TEXT_OVERFLOW'});
+});
+
+test('long feature titles stay within the heading band without losing text',()=>{
+ const title='Report exact conformance evidence for one blueprint candidate',slide=new Slide(1,title,'FEATURE SCENARIO');
+ const text=slide.req.find(r=>r.insertText)?.insertText;
+ const style=slide.req.find(r=>r.updateTextStyle?.objectId===text.objectId).updateTextStyle.style;
+ assert.equal(text.text,title);assert.ok(style.fontSize.magnitude<31);assert.ok(style.fontSize.magnitude>=18);
+ assert.ok(textWidth(title,style.fontSize.magnitude)*1.12<=864.001);
+ assert.ok(style.fontSize.magnitude*1.24+7.2<=49);
 });

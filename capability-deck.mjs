@@ -31,8 +31,8 @@ export async function run(args=process.argv.slice(2)) {
   await write('circuit-blueprint.json',c.storyboard.blueprint);
   await write('circuit-review.json',c.storyboard.blueprint.review);
   await write('circuit-projection.json',c.storyboard.disclosure.primary);
-  await write('circuit-blueprint.svg',renderBlueprintSvg(c.storyboard.blueprint,{altitude:input.view,scenarioId:input.scenarioId,operationId:input.operationId,transformationId:input.transformationId}));
-  for(const [i,projection]of c.storyboard.disclosure.projections.entries())await write(`projection-${String(i+1).padStart(2,'0')}-${projection.altitude}.svg`,renderBlueprintSvg(c.storyboard.blueprint,projection));
+  await write('circuit-blueprint.svg',renderBlueprintSvg(c.storyboard.blueprint,{altitude:input.view,scenarioId:input.scenarioId,operationId:input.operationId,transformationId:input.transformationId},c.snapshot));
+  for(const [i,projection]of c.storyboard.disclosure.projections.entries())await write(`projection-${String(i+1).padStart(2,'0')}-${projection.altitude}.svg`,renderBlueprintSvg(c.storyboard.blueprint,projection,c.snapshot));
   await write('context-audit.json',{capabilityId:c.capabilityId,snapshotDigest:c.snapshot.snapshotDigest,altitudes:c.storyboard.contexts,checks:c.storyboard.checks,findings:c.model.findings});
   await write('receipt.json',{providerId:result.providerId,toolId:result.toolId,request:input,
     selection:{capabilityId:c.snapshot.identity.capabilityId,namespaceId:c.snapshot.identity.namespaceId,estateModelId:c.snapshot.identity.estateModelId,capabilityVersionPk:c.snapshot.identity.capabilityVersionPk,rootScenarioId:c.snapshot.identity.rootScenarioId},

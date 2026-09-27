@@ -262,6 +262,34 @@ rendering rule, not a claim that execution is monotonic; route choices never
 alter the source edge IDs or endpoints. Existing hand-authored commands without
 a policy retain their prior behavior.
 
+## Capability portfolio projection
+
+The capability sheet frames the root input contract, root-connected scenario
+portfolio, and root outcome variants. It preserves scenario calls and transitions
+as distinct edge kinds. Dashed calls show declared invocation relationships;
+their arrangement does not assert parallel execution or outcome selection.
+Providers appear as badges inside their owning scenario, with each badge retaining
+its collapsed edge and exact operation/binding/testimony source paths. An empty
+provider set produces no badges. Execution operations never become scenario cards.
+
+Multiple-scenario cards display exact scenario identifiers with separators spaced
+for reading. Full scenario names and Gherkin intent remain in the linked scenario
+pages and source registers. Selection identifies the drill-down destination only.
+The selected scenario blueprint remains slide 02. The capability overview links
+to every visible scenario and to the review/inventory pages when present.
+
+An orthogonal visibility-grid router avoids unrelated card interiors. Validation
+rejects missing or invented scenario IDs, changed edge ownership, lost provider
+provenance, invalid surface bounds, unowned wire endpoints and crossed cards.
+Text and geometry scale together; compact contract field names retain their full
+values. Diagnostics decorate the projection and never enter the topology.
+Observation remains a separate unobserved boundary until testimony is selected.
+
+Complete Event sheets measure labels inside their selected component glyphs and
+reduce column count when long identifiers need wider cells. The 8-point Event
+label floor still applies. Standard slide headings fit within their header band,
+including a width allowance for bold text, before native export.
+
 ## Review and observation boundaries
 
 `circuit-review.json` distinguishes errors from incomplete evidence. Findings
