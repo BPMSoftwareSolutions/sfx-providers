@@ -4,6 +4,7 @@ import {appendContextSlides} from './context-slides.mjs';
 import {buildBlueprint,appendBlueprintSlides} from './blueprint.mjs';
 import {appendScenarioSheet} from './scenario-sheet.mjs';
 import {drawCapabilitySheet} from './capability-sheet.mjs';
+import {appendInspectionSlides} from './inspection-slides.mjs';
 
 const chunks = (a, n) => Array.from({ length: Math.ceil(a.length / n) }, (_, i) => a.slice(i*n,(i+1)*n));
 const short = (value, max=65) => String(value ?? '').length > max ? String(value).slice(0,max-1)+'…' : String(value ?? '');
@@ -156,6 +157,7 @@ export function buildStoryboard(snapshot, model, { contextAltitude='all',view=mo
   fan(p,'Selected estate snapshot',[{label:`Snapshot ${s.snapshotDigest.slice(0,16)}`,color:C.amber},{label:`Graph ${s.provenance.graphDigest.slice(0,16)}`,color:C.blue},{label:`Circuit ${model.digest.slice(0,16)}`,color:C.green}], 'snapshot → semantic projection → editable presentation');
   p.interpretation='Hashes identify retained evidence; they do not certify the capability’s behavior or the truth of an inferred explanation.';
 
+  appendInspectionSlides({model:blueprint,page});
   const scenarioSheet=appendScenarioSheet({snapshot:s,model:blueprint,page,slides,scenarioId:scenarioId??blueprint.rootScenarioId});
   for(const slide of slides.filter(p=>p.blueprint?.altitude==='capability'&&['overview','projection'].includes(p.blueprint.role)))drawCapabilitySheet(slide,s,blueprint,{slides,selectedScenarioId:scenarioId??blueprint.rootScenarioId});
   // Author with stable temporary indices, then place scenario meaning directly

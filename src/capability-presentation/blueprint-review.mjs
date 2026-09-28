@@ -2,8 +2,9 @@
 // name the source and visible components; missing evidence is not called failure.
 import {inspectInvocationPaths} from './invocation-evidence.mjs';
 import {inspectBoundaries} from './boundary-inspection.mjs';
+import {inspectEvidence} from './inspection-evidence.mjs';
 export function reviewBlueprint(snapshot,model){
- const issues=[];
+ let issues=[];
  const add=(severity,code,message,nodeIds=[],refs=[])=>issues.push({id:`R${String(issues.length+1).padStart(2,'0')}`,severity,code,message,nodeIds,sourceRefs:refs.filter(Boolean)});
  const scenarios=new Map(snapshot.scenarios.map(s=>[s.id,s]));
  const reachable=new Set([snapshot.identity.rootScenarioId]);let changed=true;
@@ -60,6 +61,7 @@ export function reviewBlueprint(snapshot,model){
   add(finding.severity,finding.code,finding.message,finding.nodeIds,finding.sourceRefs);
   issues.at(-1).evidence=finding.evidence;
  }
- return {contractId:'capability-blueprint-review.v1',signal:issues.some(i=>i.severity==='error')?'ISSUES_FOUND':issues.length?'EVIDENCE_INCOMPLETE':'NO_DETECTED_ISSUES',
+ const integrated=inspectEvidence(snapshot,model,issues);issues=integrated.issues;
+ return {contractId:'capability-blueprint-review.v1',inspection:integrated.inspection,signal:issues.some(i=>i.severity==='error')?'ISSUES_FOUND':issues.length?'EVIDENCE_INCOMPLETE':'NO_DETECTED_ISSUES',
   isAdmissionReceipt:false,errors:issues.filter(i=>i.severity==='error').length,warnings:issues.filter(i=>i.severity==='warning').length,issues};
 }

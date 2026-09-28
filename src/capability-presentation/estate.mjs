@@ -2,7 +2,7 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { createHash } from 'node:crypto';
-import { normalizeSnapshot } from './snapshot.mjs';
+import { normalizeSnapshot, digest } from './snapshot.mjs';
 
 export const queryUrl = new URL('./read-estate.sql', import.meta.url);
 export function createSqlEstateReader({ openSql }) {
@@ -19,12 +19,16 @@ export function createSqlEstateReader({ openSql }) {
       request.input('capability_id', sql.NVarChar(400), capabilityId);
       request.input('namespace_id', sql.NVarChar(400), namespaceId ?? null);
       const result = await request.query(query);
-      const [capabilities, graphs, scenarios, features, fixtures, obligations, altitudeCatalog, functions, conditions, blueprintSources, platformImplementations] = result.recordsets;
+      const [capabilities, graphs, scenarios, features, fixtures, obligations, altitudeCatalog, functions, conditions, blueprintSources, platformImplementations, inspectionRows] = result.recordsets;
       if (capabilities?.length !== 1 || graphs?.length !== 1) throw new Error('CAPABILITY_ID_NOT_UNIQUE_OR_NOT_FOUND');
       if (Buffer.byteLength(graphs[0].graph_source) > 64 * 1024 * 1024) throw new Error('CAPABILITY_GRAPH_SOURCE_TOO_LARGE');
+      const graph=JSON.parse(graphs[0].graph_source);
+      const inspection=inspectionRows?.[0]?.inspection_json ? {...JSON.parse(inspectionRows[0].inspection_json),
+        sourceGraphDigest:digest(graph),captureBasis:'same SQL snapshot transaction as graph_source'} : null;
       return normalizeSnapshot({
-        capability: capabilities[0], graph: JSON.parse(graphs[0].graph_source),
+        capability: capabilities[0], graph,
         scenarios, features, fixtures, obligations, altitudeCatalog, conditions, blueprintSources, platformImplementations,
+        inspection,
         provenance: { adapter: 'sql-server-snapshot.v1', isolation: 'SNAPSHOT',
           queryDigest: createHash('sha256').update(query.replaceAll('\r\n', '\n')).digest('hex'),
           graphFunctionDigest: functions[0]?.graph_function_digest ?? null },

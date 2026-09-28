@@ -30,6 +30,8 @@ export async function run(args=process.argv.slice(2)) {
   await write('request.json',input);await write('snapshot.json',c.snapshot);await write('circuit-model.json',c.model);await write('storyboard.json',c.storyboard);
   await write('circuit-blueprint.json',c.storyboard.blueprint);
   await write('circuit-review.json',c.storyboard.blueprint.review);
+  await write('inspection-evidence.json',c.snapshot.inspection??{status:'UNAVAILABLE'});
+  await write('inspection-projection.json',c.storyboard.blueprint.review.inspection);
   await write('circuit-projection.json',c.storyboard.disclosure.primary);
   await write('circuit-blueprint.svg',renderBlueprintSvg(c.storyboard.blueprint,{altitude:input.view,scenarioId:input.scenarioId,operationId:input.operationId,transformationId:input.transformationId},c.snapshot));
   for(const [i,projection]of c.storyboard.disclosure.projections.entries())await write(`projection-${String(i+1).padStart(2,'0')}-${projection.altitude}.svg`,renderBlueprintSvg(c.storyboard.blueprint,projection,c.snapshot));

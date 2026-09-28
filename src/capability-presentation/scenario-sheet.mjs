@@ -4,6 +4,7 @@ import {projectBlueprint} from './projection.mjs';
 import {identifierCaption} from './caption.mjs';
 import {blueprintGrid,eventAction,eventComponent} from './event-sheet.mjs';
 import {drawComponentGlyph,glyphAnchor,COMPONENT_STYLE} from './component-glyphs.mjs';
+import {scenarioInspection} from './inspection-evidence.mjs';
 
 // Native drafting symbols describe visual roles only; they never add authority.
 function documentIcon(p,x,y,color){
@@ -22,9 +23,11 @@ function outcomeIcon(p,x,y,color,classification){
 export function appendScenarioSheet({snapshot,model,page,slides,scenarioId=model.rootScenarioId}){
  const sc=model.scenarios.find(s=>s.id===scenarioId),semantic=projectBlueprint(model,{altitude:'scenario',scenarioId});
  const involvement=projectBlueprint(model).edges.filter(e=>e.kind==='scenario-provider'&&e.from==='scenario:'+scenarioId);
- const bindingIssues=model.review.issues.filter(i=>i.nodeIds.some(id=>sc.operationIds.includes(id)));
- const outcomeIssues=model.review.issues.filter(i=>i.nodeIds.includes('outcome:'+sc.id));
- const scopeIssues=[...new Map([...bindingIssues,...outcomeIssues].map(i=>[i.id,i])).values()];
+ const inspectionScope=scenarioInspection(model,sc.id);
+ const scopeIssues=inspectionScope.issues;
+ const bindingIssues=scopeIssues.filter(i=>i.resolvedNodeIds.some(id=>sc.operationIds.includes(id)||id.startsWith('binding:'))).map(i=>({...i,nodeIds:[...new Set([...i.nodeIds,...i.resolvedNodeIds.flatMap(id=>model.edges.filter(e=>e.to===id&&sc.operationIds.includes(e.from)).map(e=>e.from))])]}));
+ const outcomeIssues=scopeIssues.filter(i=>i.resolvedNodeIds.includes('outcome:'+sc.id));
+ const inputIssues=scopeIssues.filter(i=>i.resolvedNodeIds.includes('input:'+sc.id));
  const invocationIssues=bindingIssues.filter(i=>i.code.includes('INVOCATION_'));
  const inspectionColor=scopeIssues.some(i=>i.severity==='error')?C.red:C.amber;
  const affected=[...new Set(bindingIssues.flatMap(i=>i.nodeIds).filter(id=>sc.operationIds.includes(id)))];
@@ -36,6 +39,8 @@ export function appendScenarioSheet({snapshot,model,page,slides,scenarioId=model
  p.headerLayout='custom';
  p.blueprint={role:'scenario-blueprint',altitude:'scenario',scenarioId,nodes:semantic.nodes.map(n=>n.id),edges:semantic.edges.map(e=>e.id),providerReferences:involvement,disclosedOperationIds:[...new Set([...providerOperations,...unassigned.slice(0,3)])],diagnosticOperationReferences:[]};
  p.blueprint.scenarioIssueIds=scopeIssues.map(i=>i.id);p.blueprint.outcomeIssueIds=outcomeIssues.map(i=>i.id);
+ p.blueprint.inputIssueIds=inputIssues.map(i=>i.id);p.blueprint.globalIssueIds=inspectionScope.globalIssues.map(i=>i.id);
+ p.blueprint.inspection={status:model.review.inspection.status,checkIds:inspectionScope.checks.map(c=>c.id),unlocatedIssueIds:model.review.inspection.unlocatedIssueIds};
  p.interpretation='Input/Event/Outcome are scenario semantics. Provider wires retain exact binding or testimony references. Disclosed operations are a subset; the complete Event is linked. Binding findings expose affected declared operations with amber inspection overlays, without adding provider nodes or edges. Their component shapes follow the same declared-binding rules as the complete execution circuit. Decorative contacts add no declared ports. No installation, execution or monotonic proof is asserted.';
  const link=target=>({slideIndex:Number(target.id.slice(6))-1});
  const textFrames=[];
@@ -46,16 +51,20 @@ export function appendScenarioSheet({snapshot,model,page,slides,scenarioId=model
  };
  blueprintGrid(p);
  p.text(p.title,12,3,936,39,29,C.white,true);p.text(model.capabilityId,14,40,930,27,17,C.blue,true);
- p.add('shape','RECTANGLE',8,77,944,380,{fill:'none',stroke:C.blue,sw:1.2});
+ p.add('shape','RECTANGLE',8,77,944,387,{fill:'none',stroke:C.blue,sw:1.2});
  p.add('shape','RECTANGLE',9,78,942,25,{fill:'#05243B'});p.text('Capability boundary',16,77,550,26,13,C.blue,true);
  [['Input',C.amber],['Execution',C.blue],['Provider',C.violet],['Outcome',C.green],['Observation','#72D7EE']].forEach(([name,color],i)=>{
   const x=440+i*100;p.add('shape','RECTANGLE',x,86,8,8,{fill:'none',stroke:color,sw:.8});p.text(name,x+9,79,89,23,8.5,color);
  });
  const sections=[['GIVEN / INPUT',14,146,C.amber],['WHEN / EVENT',172,616,C.blue],['THEN / OUTCOME',800,146,C.green]];
  for(const [title,x,w,color]of sections){p.add('shape','RECTANGLE',x,198,w,249,{fill:'#031B2F',stroke:color,sw:1});p.text(title,x+3,199,w-6,25,12,color,true);}
+ if(inputIssues.length){
+  p.add('shape','RECTANGLE',14,198,146,249,{fill:'none',stroke:inputIssues.some(i=>i.severity==='error')?C.red:C.amber,sw:1.7});
+  label(inputIssues.map(i=>i.id).join(', ')+' · input inspection',14,177,146,19,9,C.amber,true,slides.find(s=>s.blueprint?.role==='inspection-evidence'&&s.blueprint.issueIds.some(id=>inputIssues.some(i=>i.id===id))));
+ }
  if(outcomeIssues.length){
   p.add('shape','RECTANGLE',800,198,146,249,{fill:'none',stroke:outcomeIssues.some(i=>i.severity==='error')?C.red:C.amber,sw:1.7});
-  const target=slides.find(s=>s.blueprint?.role==='boundary-inspection'&&s.blueprint.issueIds.some(id=>outcomeIssues.some(i=>i.id===id)));
+  const target=slides.find(s=>['boundary-inspection','inspection-evidence'].includes(s.blueprint?.role)&&s.blueprint.issueIds.some(id=>outcomeIssues.some(i=>i.id===id)));
   label(outcomeIssues.map(i=>i.id).join(', ')+' · display inspection',800,177,146,19,9,C.red,true,target);
  }
  const event={x:347,y:330,w:266,h:62};
@@ -86,7 +95,7 @@ export function appendScenarioSheet({snapshot,model,page,slides,scenarioId=model
   uses.forEach((use,j)=>{
    const op=model.nodes.find(n=>n.id===use.operationId),y=227+j*(portH+3),w=providerWidth-20;
    const issues=bindingIssues.filter(i=>i.nodeIds.includes(op.id)),ink=issues.some(i=>i.severity==='error')?C.red:undefined;
-   const target=slides.find(s=>s.blueprint?.role==='boundary-inspection'&&s.blueprint.operationIds.includes(op.id))??slides.find(s=>s.blueprint?.role==='invocation-inspection'&&s.blueprint.operationIds.includes(op.id))??slides.find(s=>s.blueprint?.role==='provider-detail'&&s.blueprint.operationIds.includes(op.id));
+   const target=slides.find(s=>s.blueprint?.role==='boundary-inspection'&&s.blueprint.operationIds.includes(op.id))??slides.find(s=>s.blueprint?.role==='invocation-inspection'&&s.blueprint.operationIds.includes(op.id))??slides.find(s=>s.blueprint?.role==='inspection-evidence'&&s.blueprint.issueIds.some(id=>issues.some(i=>i.id===id)))??slides.find(s=>s.blueprint?.role==='provider-detail'&&s.blueprint.operationIds.includes(op.id));
    const opBox={x,y,w,h:portH},isTestimony=use.basis!=='declared provider';
    const component=eventComponent(model,op),action=eventAction(op),anchor=glyphAnchor(op,opBox,'right',COMPONENT_STYLE,component.glyph);
    // Lanes outside the operation boxes prevent a later port's wire crossing an
@@ -113,7 +122,7 @@ export function appendScenarioSheet({snapshot,model,page,slides,scenarioId=model
   label(missingAssociation?'Installation and compatibility unverified':'Open inspection for source evidence',x,164,w,28,9,C.muted);
   unassigned.slice(0,3).forEach((id,j)=>{
    const op=model.nodes.find(n=>n.id===id),issues=bindingIssues.filter(i=>i.nodeIds.includes(id));
-   const target=slides.find(s=>s.blueprint?.role==='boundary-inspection'&&s.blueprint.operationIds.includes(id))??slides.find(s=>s.blueprint?.role==='provider-detail'&&s.blueprint.operationIds.includes(id));
+   const target=slides.find(s=>s.blueprint?.role==='boundary-inspection'&&s.blueprint.operationIds.includes(id))??slides.find(s=>s.blueprint?.role==='inspection-evidence'&&s.blueprint.issueIds.some(at=>issues.some(i=>i.id===at)))??slides.find(s=>s.blueprint?.role==='provider-detail'&&s.blueprint.operationIds.includes(id));
    const box={x,y:227+j*30,w:w-20,h:27},component=eventComponent(model,op);
    const frames=drawComponentGlyph(p,op,box,issues.some(i=>i.severity==='error')?C.red:C.amber,{glyphName:component.glyph,scale:.75,fill:'#282315'});
    p.text(String(op.ordinal).padStart(2,'0'),frames.heading.x-8,box.y+3,frames.heading.w+16,21,8,C.amber,true,'center');
@@ -135,8 +144,10 @@ export function appendScenarioSheet({snapshot,model,page,slides,scenarioId=model
  label(inspectionText,177,398,606,invocationIssues.length||outcomeIssues.length?22:30,10,scopeIssues.length?inspectionColor:C.muted,false,scopeIssues.length?slides.find(s=>s.blueprint?.role==='review'):undefined);
  p.blueprint.bindingIssueIds=bindingIssues.map(i=>i.id);
  if(invocationIssues.length||outcomeIssues.length){
-  const notes=[...invocationIssues.map(i=>(i.code==='INVOCATION_CONDITION_PATH_ABSENT'?'Gate: ':i.code.startsWith('NESTED_')?'Nested request: ':'Request: ')+(i.evidence?.path??'unverified')+(i.severity==='error'?' absent':' unverified')),
-   ...outcomeIssues.map(i=>'Display: '+(i.evidence?.path??'outcome')+' can hide details')];
+  const invocationNotes=[...invocationIssues].sort((a,b)=>Number(b.severity==='error')-Number(a.severity==='error')).map(i=>(i.code==='INVOCATION_CONDITION_PATH_ABSENT'?'Gate: ':i.code.startsWith('NESTED_')?'Nested request: ':'Request: ')+(i.evidence?.path??'unverified')+(i.severity==='error'?' absent':' unverified'));
+  const outcomeNotes=outcomeIssues.map(i=>'Display: '+(i.evidence?.path??'outcome')+' can hide details');
+  // Reserve a summary slot for each affected boundary before showing more of one class.
+  const notes=[...invocationNotes.slice(0,1),...outcomeNotes.slice(0,1),...invocationNotes.slice(1),...outcomeNotes.slice(1)];
   const paths=notes.slice(0,2).join(' · ')+(notes.length>2?' · +'+(notes.length-2)+' findings':'');
   label(paths,177,420,606,26,9,inspectionColor,false,undefined,7);
  }else p.text('Solid violet: binding identity. Dashed violet: testimony declaration.',180,428,605,18,8,C.muted,false,'center');
@@ -149,7 +160,18 @@ export function appendScenarioSheet({snapshot,model,page,slides,scenarioId=model
  }
  p.text('No live execution testimony attached',723,465,225,32,9,C.muted);
  if(eventPage)p.add('t','Complete execution circuit',14,501,310,22,12,C.blue,true,'left',link(eventPage));
- if(meaningPage)p.add('t','Scenario meaning',370,501,210,22,12,C.blue,true,'left',link(meaningPage));
+ const coveragePage=slides.find(s=>s.blueprint?.role==='inspection-coverage');
+ const summary=model.review.inspection.summary;
+ const status=model.review.inspection.status;
+ const held=model.review.inspection.readings.filter(r=>r.status!=='READ').map(r=>r.reading);
+ const heldLabel=held.length?' · Held: '+held.slice(0,2).join(', ')+(held.length>2?' +'+(held.length-2):''):'';
+ const signal=status==='SNAPSHOT_MATCH'?`${summary.read}/${summary.readings} readings${heldLabel} · ${summary.other} coverage rows · ${inspectionScope.globalIssues.length} unlocated/global findings`:'Inspection '+status.toLowerCase()+' · refresh evidence';
+ const coverageInk=status!=='SNAPSHOT_MATCH'||inspectionScope.globalIssues.some(i=>i.severity==='error')?C.red:C.amber;
+ // A distinct overlay strip; no diagnostic becomes a circuit node or wire.
+ p.add('shape','RECTANGLE',14,446,932,18,{fill:'#05243B',stroke:coverageInk,sw:.7});
+ label(signal,18,446,924,18,8,coverageInk,true,coveragePage,7);
+ if(coveragePage)p.add('t','Inspection evidence',370,501,210,22,12,C.blue,true,'left',link(coveragePage));
+ else if(meaningPage)p.add('t','Scenario meaning',370,501,210,22,12,C.blue,true,'left',link(meaningPage));
  const review=slides.find(s=>s.blueprint?.role==='review');if(review)p.add('t','Review · '+model.review.errors+' errors / '+model.review.warnings+' warnings',630,501,310,22,12,C.amber,true,'left',link(review));
  p.blueprint.providerPorts=ports;p.blueprint.inputFieldPaths=fields.map(f=>f.path);p.blueprint.textFrames=textFrames;
  if(eventPage){const nav=eventPage.commands.find(c=>c.op==='t'&&c.args[0]==='Scenario');if(nav){nav.args[0]='Scenario blueprint';nav.args[4]=24;nav.args[3]=200;nav.args[9]=link(p);}}

@@ -140,3 +140,9 @@ SELECT DISTINCT d.platform_capability_id,d.provider_id,d.target_language,d.decla
 FROM analysis.v_declared_platform_implementation d
 WHERE d.estate_model_pk=@estate
 ORDER BY d.platform_capability_id,d.provider_id,d.target_language;
+
+-- Optional installed inspection projection. Its profile and reading identities
+-- belong to the estate. Same transaction as the diagram prevents mixed snapshots.
+IF OBJECT_ID(N'analysis.read_capability_inspection',N'P') IS NOT NULL
+ EXEC analysis.read_capability_inspection @capability_id=@capability_id,@estate_model_pk=@estate;
+ELSE SELECT CAST(NULL AS nvarchar(max)) AS inspection_json;

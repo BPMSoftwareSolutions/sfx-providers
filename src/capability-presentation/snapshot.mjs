@@ -75,7 +75,7 @@ function physicalFields(config) {
   return { providerIds: [...providers].sort(), endpoints, credentialReferences: [...credentials].sort(), realizations };
 }
 
-export function normalizeSnapshot({ capability: c, graph: g, scenarios = [], features = [], fixtures = [], obligations = [], altitudeCatalog = [], conditions = [], blueprintSources = [], platformImplementations = [], provenance = {} }) {
+export function normalizeSnapshot({ capability: c, graph: g, scenarios = [], features = [], fixtures = [], obligations = [], altitudeCatalog = [], conditions = [], blueprintSources = [], platformImplementations = [], inspection = null, provenance = {} }) {
   if (g.declaredExecutionGraphRefused) fail(g.declaredExecutionGraphRefused, 'CAPABILITY_GRAPH_REFUSED');
   if (c.capability_id !== g.capabilityId) fail('The graph and selected capability identity disagree.');
   const declared = c.definition_json ? JSON.parse(c.definition_json)?.semantics?.authority ?? {} : {};
@@ -137,7 +137,8 @@ export function normalizeSnapshot({ capability: c, graph: g, scenarios = [], fea
     obligations: obligations.map(o => ({ id: o.proof_obligation_id, statement: str(o.statement), kind: str(o.obligation_kind), definitionDigest: str(o.definition_digest), sourceRef: `model:proof_obligation/${o.semantic_object_definition_pk}` })),
     altitudeCatalog: altitudeCatalog.map(a => ({ id: a.scenario_id, name: str(a.name), definitionDigest: str(a.definition_digest), sourceRef: `model:scenario_version/${a.scenario_version_pk}` })),
     conditions:conditions.map(v=>({id:str(v.condition_id),statement:str(v.statement),definitionDigest:str(v.definition_digest),sourceRef:`model:observable_condition/${v.semantic_object_definition_pk}`})),
-    contextReaderVersion:'feature-prose-nested-boundary-inspection.v5',
+    contextReaderVersion:'selected-inspection-envelope.v6',
+    inspection,
     blueprintSources:blueprintSources.map(b=>({id:str(b.blueprint_id),versionPk:str(b.blueprint_version_pk),
       capabilityVersionPk:str(b.capability_version_pk),disposition:str(b.source_disposition),
       nodeCount:Number(b.node_count),edgeCount:Number(b.edge_count),definitionDigest:str(b.definition_digest),

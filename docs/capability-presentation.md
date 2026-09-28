@@ -265,3 +265,39 @@ publishes to Google nor exports files on the server.
 The hand-authored provider and contracts remain **PROPOSED / not declared** in
 the estate. Later migration can replace the read binding and inference binding
 without changing the retained circuit model or native diagram renderer.
+
+## Scenario inspection evidence
+
+Live generation also reads the installed `analysis.read_capability_inspection`
+procedure in the **same snapshot transaction** as the diagram. The estate owns
+the reading profile, detector definitions, selected statements, proof receipts,
+and repair map. The generator does not contain a capability-specific reading
+list. No target execution or repair is dispatched by deck generation.
+
+The scenario blueprint remains slide 02. Findings address existing inputs,
+events, outcomes, operations, ports, bindings and edges. Binding-only findings
+roll up through declared port ownership. Findings with no resolved component
+remain visible as unlocated/global findings. Inspection overlays add no circuit
+nodes or edges. The coverage strip links to bounded reading results and evidence
+pages; each preserves the raw property, basis, source references, and repair
+readiness. A mapped repair is not an executed repair.
+
+`PROVED` counts are returned rows, often overlapping; they are not independent
+guarantees or runtime testimony. Empty results, held readings, missing readers,
+old snapshots and subject-version mismatches remain explicit. The collector may
+hold an observed failing statement by its exact digest in its declared profile;
+changing the statement causes re-evaluation. Unexpected SQL failure can refuse
+generation; it must never become an empty findings array.
+
+`inspection-evidence.json` retains the database envelope; `inspection-projection.json`
+retains resolved addresses, coverage and repair states. Both also participate in
+the ordinary snapshot/storyboard receipts. Regenerate with the usual command;
+no source edit is needed:
+
+```powershell
+node capability-deck.mjs --capability-id request-capability-from-objective --view capability --output outputs/capability-estate/anchor-inspection-new --pptx
+```
+
+Snapshot replay is an inspection of that frozen snapshot, not a fresh database
+assessment. Evidence labeled `SNAPSHOT_MATCH` agrees with its captured subject;
+it does not claim the live estate has remained unchanged after export.
