@@ -79,7 +79,7 @@ test('endpoint bindings without identity and old snapshots produce explicit insp
  assert.ok(buildBlueprint(s).review.issues.some(i=>i.code==='TRANSFORMATION_PROVIDER_REFERENCES_NOT_RETAINED'));
 });
 
-test('provider identity and declared platform implementations suppress the platform warning while empty platform bindings name their invoking operation',async()=>{
+test('declared platform implementation leaves a visible operation-specific finding in every inspection surface',async()=>{
  const raw=rawFixture();
  raw.graph.interfaceAuthority.portBindings[0]={portId:'policy',platformCapabilityId:'implemented.v1',configuration:{}};
  raw.graph.interfaceAuthority.portBindings[1]={portId:'deliver',platformCapabilityId:'unimplemented.v1',configuration:{}};
@@ -87,10 +87,26 @@ test('provider identity and declared platform implementations suppress the platf
  raw.graph.executionAuthorities[1].operations.push({kind:'invoke-port',portId:'named'});
  const s=normalizeSnapshot({...raw,platformImplementations:[{platform_capability_id:'implemented.v1',provider_id:'platform-provider',target_language:'node',declaration_status:'ADMITTED'}]});
  const issues=buildBlueprint(s).review.issues.filter(i=>i.code==='PLATFORM_BINDING_WITHOUT_PROVIDER');
- assert.equal(issues.length,1);
- assert.deepEqual(issues[0].nodeIds,['binding:deliver','operation:accept.v1:1']);
- assert.ok(!issues[0].nodeIds.includes('binding:policy')&&!issues[0].nodeIds.includes('binding:named'));
+ assert.equal(issues.length,2);
+ assert.deepEqual(issues[0].nodeIds,['binding:policy','operation:review.v1:1']);
+ assert.deepEqual(issues[1].nodeIds,['binding:deliver','operation:accept.v1:1']);
+ assert.ok(issues.every(i=>!i.nodeIds.includes('binding:named')));
  const r=await handle({contractId:'capability-presentation-request.v1',capabilityId:s.identity.capabilityId},{readEstate:async()=>s});
  assert.equal(r.disposition,'AUTHORED',JSON.stringify(r.findings));
  assert.ok(r.findings.some(f=>f.code==='PLATFORM_BINDING_WITHOUT_PROVIDER'&&f.nodeIds.includes('binding:deliver')));
+ const story=r.candidate.storyboard;
+ assert.ok(story.slides[1].blueprint.bindingIssueIds.includes(issues[0].id));
+ const scenario=story.slides[1];
+ assert.ok(scenario.blueprint.disclosedOperationIds.includes('operation:review.v1:1'));
+ assert.deepEqual(scenario.blueprint.diagnosticOperationReferences.map(d=>[d.operationId,d.issueIds]),[['operation:review.v1:1',[issues[0].id]]]);
+ assert.ok(scenario.commands.some(c=>c.op==='t'&&c.args[0]==='No provider association retained'));
+ const operationLink=scenario.commands.find(c=>c.op==='t'&&c.args[0]==='policy'&&c.args[9]);
+ assert.ok(story.slides[operationLink.args[9].slideIndex].blueprint.operationIds.includes('operation:review.v1:1'));
+ assert.ok(!scenario.blueprint.providerReferences.some(e=>e.to==='provider:platform-provider'));
+ const event=story.slides.find(s=>s.blueprint?.render&&s.blueprint.scenarioId==='review');
+ assert.ok(event.blueprint.render.cells.find(c=>c.nodeId==='operation:review.v1:1').issues.includes(issues[0].id));
+ const cap=story.slides.find(s=>s.blueprint?.portfolio);
+ assert.ok(cap.commands.some(c=>c.op==='t'&&c.args[0].includes(issues[0].id)));
+ const provider=story.slides.find(s=>s.blueprint?.role==='provider-detail'&&s.blueprint.operationIds.includes('operation:review.v1:1'));
+ assert.ok(provider.commands.some(c=>c.op==='t'&&c.args[0].includes(issues[0].id)));
 });

@@ -151,7 +151,7 @@ export function drawCapabilitySheet(p,snapshot,model,{slides=[],selectedScenario
  for(const [i,n]of cardNodes.entries()){
   const sc=model.scenarios.find(s=>s.id===n.scenarioId),b=box(layout.positions[n.id]),isSelected=sc.id===selected.id,paint=isSelected?'#49DDF7':C.blue;
   const issues=overlay.issues.filter(f=>f.visibleNodeIds.includes(n.id));
-  if(issues.length)text(issues.map(f=>f.id).join(' '),{x:b.x,y:b.y-17,w:b.w,h:17},8,issues.some(f=>f.severity==='error')?C.red:C.amber,true,slides.find(s=>s.blueprint?.role==='review'),'right',4);
+  if(issues.length)text(issues.length>3?issues[0].id+' +'+(issues.length-1):issues.map(f=>f.id).join(' '),{x:b.x,y:b.y-17,w:b.w,h:17},8,issues.some(f=>f.severity==='error')?C.red:C.amber,true,slides.find(s=>s.blueprint?.role==='review'),'right',4);
   if(isSelected)p.add('shape','ROUND_RECTANGLE',b.x-2,b.y-2,b.w+4,b.h+4,{fill:'none',stroke:paint,sw:2,sa:.25});
   drawComponentGlyph(p,n,b,paint,{scale,fill:'#08283F'});
   const sb=(x,y,w,h)=>({x:b.x+x*scale,y:b.y+y*scale,w:w*scale,h:h*scale}),cw=layout.positions[n.id].w;

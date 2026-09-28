@@ -115,7 +115,7 @@ export function normalizeSnapshot({ capability: c, graph: g, scenarios = [], fea
       digest: digest(t), sourceRef: `graph:/transitions/${i}` })),
     authorities,
     bindings: list(g.interfaceAuthority?.portBindings).map((b, i) => ({ portId: b.portId, platformCapabilityId: str(b.platformCapabilityId),
-      declaredRead: typeof b.configuration?.statement === 'string',
+      declaredRead: typeof b.configuration?.statement === 'string' && b.configuration.statement.trim().length>0,
       transformationId: str(b.configuration?.transformationId), configurationDigest: digest(b.configuration ?? {}),
       ...physicalFields(b.configuration ?? {}),...bindingContext(b.configuration), sourceRef: `graph:/interfaceAuthority/portBindings/${i}` })),
     transformations: list(g.semanticTransformations).map((t, i) => ({ id: t.id, ...mechanics(t.expression), sourceRef: `graph:/semanticTransformations/${i}` })),

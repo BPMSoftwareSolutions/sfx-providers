@@ -488,3 +488,68 @@ changes were required for this capability.
 Replay artifacts: `outputs/capability-estate/invoke-database-capability`.
 Native readback, PDF renders and verification:
 `outputs/google-slides/invoke-database-capability`.
+
+### Declaration-only bindings remain inspectable
+
+The [corrected objective scenario blueprint, slide 02](https://docs.google.com/presentation/d/1Uyh3xclUaiQzEyxQp-SaIDRNySQh5LcNFRcbl5tnpiw/edit?slide=id.p2#slide=id.p2)
+now exposes operation **06**, `invoke-database-capability-port`, in amber with
+**No provider association retained** and **Installation and compatibility
+unverified**. The component opens its binding detail; the R04 inspection link
+opens the review. The scenario Event also carries an amber outline. These are
+inspection overlays on existing declarations, not additional provider nodes
+or circuit edges. Slide 02 remains the primary inspection surface.
+
+`PLATFORM_BINDING_WITHOUT_PROVIDER` is no longer suppressed by a
+`platformImplementations` catalog entry. It retains the exact operation and
+binding references, available platform declaration evidence, and distinct
+`not-verified` installation/compatibility and `not-observed` execution states.
+Blank or whitespace-only statements cannot establish a declared-read
+association. This is a static missing-association check: a binding-local
+statement, explicit provider identity, or transformation satisfies this rule
+without proving installation or successful execution.
+
+The main scenario sheet discloses flagged operations even when they have no
+provider edge. Dense diagnostic sets expose three operation references plus
+an explicit remainder count and review link. Diagnostics never create a
+provider association. Existing provider references and their binding edges
+remain intact.
+
+The selected six-operation circuit now retains **0 errors / 4 blueprint
+warnings**, including R04 at database ordinal 5 (presentation operation 06).
+The invocation binding's configuration is `{}`. Live rows, installed registry
+inspection, and the before/after CLI result are recorded in
+[`sfx-embody/sql/inspect/binding-serviceability`](../../sfx-embody/sql/inspect/binding-serviceability/README.md).
+The CLI still returns `CELL_EXECUTION_FAILED / DECLARED_READ_STATEMENT_MISSING`.
+This change repairs the false-clean inspection; it does not serve the runtime
+invocation. The existing declared repair mapping remains `NO_INSTALLED_REPAIR`
+and points to the cross-language invocation-provider registration request.
+
+Generate from current estate authority with the unchanged entry point:
+
+```powershell
+node capability-deck.mjs --capability-id request-capability-from-objective --view capability --context-altitude 7 --output outputs/capability-estate/objective-binding-inspection --pptx
+```
+
+The delivered 24-slide deck was rendered from the fresh captured snapshot and
+replayed for the scenario overlay refinement. All source nodes and edges are
+unchanged from the prior model-provider deck. Only the scenario sheet changed
+in the final Google update; the other 23 native slides were verified unchanged.
+There is one retained external provider identity, `google/gemini`; platform
+declarations do not manufacture additional provider glyphs.
+
+Snapshot digest:
+`e2bd9d2d314c3e9ba52bda8f1757f493fca4a1a6f92d1fd724088764542acb2a`.
+Content digest:
+`16fd7671ba3fa975fc26a72abba2f98e90c1e1ac2174e38ac27b74cdb0c21df6`.
+
+Validation: 158 regression tests passed; PowerPoint package, layout, Arial font
+policy and artifact-import checks passed. Google native readback verified all
+36 expected link destinations (43 native text-run link records), the exact
+flagged operation and finding, provider coverage, and complete circuit coverage.
+The Google PDF was reviewed visually, including the final scenario sheet.
+Independent Python/Arial metrics checked 100 blueprint labels without overflow.
+
+Replay artifacts:
+`outputs/capability-estate/request-capability-from-objective-binding-review-final`.
+Native update, readback, PDF render and link verification:
+`outputs/google-slides/binding-serviceability`.

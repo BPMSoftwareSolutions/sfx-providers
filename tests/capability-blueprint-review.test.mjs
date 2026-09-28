@@ -51,7 +51,7 @@ test('mechanic operand trees retain deeper branches without treating literal dat
  assert.ok(t.cells.some(c=>c.operand==='then'));assert.ok(t.cells.some(c=>c.operand==='when'));
  assert.equal(buildBlueprint(s).mechanismCircuits[0].complete,true);
 });
-test('unserved platform bindings warn once while statement, provider, transformation and implemented platforms stay silent',()=>{
+test('platform declarations cannot clear a binding gap; binding-local declarations remain separate evidence',()=>{
  const raw=rawFixture();
  raw.graph.interfaceAuthority.portBindings.push(
   {portId:'oracle',platformCapabilityId:'unimplemented.v1',configuration:{}},
@@ -65,11 +65,25 @@ test('unserved platform bindings warn once while statement, provider, transforma
  assert.equal(s.bindings.find(b=>b.portId==='declared-read').declaredRead,true);
  assert.equal(s.bindings.find(b=>b.portId==='oracle').declaredRead,false);
  const b=buildBlueprint(s),platformIssues=b.review.issues.filter(i=>i.code==='PLATFORM_BINDING_WITHOUT_PROVIDER');
- assert.equal(platformIssues.length,1);
+ assert.equal(platformIssues.length,2);
  assert.equal(platformIssues[0].severity,'warning');
  assert.deepEqual(platformIssues[0].nodeIds,['binding:oracle','operation:review.v1:3']);
  assert.deepEqual(platformIssues[0].sourceRefs,['graph:/interfaceAuthority/portBindings/2']);
  assert.deepEqual(b.review.issues.filter(i=>i.severity==='warning').map(i=>i.code),
-  ['CANONICAL_BLUEPRINT_EDGES_NOT_AVAILABLE','OBSERVABILITY_CONTRACT_NOT_RETAINED','MONOTONIC_PROGRESS_NOT_PROVEN','PLATFORM_BINDING_WITHOUT_PROVIDER']);
- assert.equal(b.review.errors,1);assert.equal(b.review.warnings,4);
+  ['CANONICAL_BLUEPRINT_EDGES_NOT_AVAILABLE','OBSERVABILITY_CONTRACT_NOT_RETAINED','MONOTONIC_PROGRESS_NOT_PROVEN','PLATFORM_BINDING_WITHOUT_PROVIDER','PLATFORM_BINDING_WITHOUT_PROVIDER']);
+ const declared=platformIssues[1];assert.deepEqual(declared.nodeIds,['binding:implemented','operation:review.v1:6']);
+ assert.equal(declared.evidence.platformDeclaration,'declared');assert.equal(declared.evidence.installation,'not-verified');
+ assert.equal(declared.evidence.execution,'not-observed');assert.equal(declared.evidence.configurationCompatibility,'not-verified');
+ assert.equal(declared.evidence.platformDeclarations[0].providerId,'platform-provider');
+ assert.ok(declared.sourceRefs.includes('snapshot:/platformImplementations/0'));
+ assert.match(declared.message,/do not prove installation or binding compatibility/);
+ assert.equal(b.review.errors,1);assert.equal(b.review.warnings,5);
+});
+
+test('blank statements cannot masquerade as declared-read binding evidence',()=>{
+ for(const statement of ['', ' \n\t ']){
+  const raw=rawFixture();raw.graph.interfaceAuthority.portBindings[0].configuration={statement};
+  const s=normalizeSnapshot(raw);assert.equal(s.bindings[0].declaredRead,false);
+  assert.ok(buildBlueprint(s).review.issues.some(i=>i.code==='PLATFORM_BINDING_WITHOUT_PROVIDER'&&i.nodeIds.includes('binding:policy')));
+ }
 });

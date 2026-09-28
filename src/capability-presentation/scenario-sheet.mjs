@@ -17,17 +17,21 @@ function outcomeIcon(p,x,y,color,classification){
  else{p.add('line',x+3,y+8,x+6,y+11,color,1.2);p.add('line',x+6,y+11,x+12,y+4,color,1.2);}
 }
 
-// Scenario semantics stay primary. Only provider-related operation declarations
-// are disclosed inside When; the complete Event remains one linked sheet.
+// Scenario semantics stay primary. Provider-related and flagged operation
+// declarations are disclosed inside When; the complete Event is linked.
 export function appendScenarioSheet({snapshot,model,page,slides,scenarioId=model.rootScenarioId}){
  const sc=model.scenarios.find(s=>s.id===scenarioId),semantic=projectBlueprint(model,{altitude:'scenario',scenarioId});
  const involvement=projectBlueprint(model).edges.filter(e=>e.kind==='scenario-provider'&&e.from==='scenario:'+scenarioId);
+ const bindingIssues=model.review.issues.filter(i=>['ENDPOINT_BINDING_WITHOUT_PROVIDER_ID','PLATFORM_BINDING_WITHOUT_PROVIDER'].includes(i.code)&&i.nodeIds.some(id=>sc.operationIds.includes(id)));
+ const affected=[...new Set(bindingIssues.flatMap(i=>i.nodeIds).filter(id=>sc.operationIds.includes(id)))];
+ const providerOperations=[...new Set(involvement.flatMap(e=>e.via.map(v=>v.operationId)))];
+ const unassigned=affected.filter(id=>!providerOperations.includes(id));
  const eventPage=slides.find(s=>s.blueprint?.altitude==='event'&&s.blueprint.scenarioId===scenarioId&&['projection','overview'].includes(s.blueprint.role));
  const meaningPage=slides.find(s=>s.blueprint?.altitude==='scenario'&&s.blueprint.scenarioId===scenarioId&&['projection','overview'].includes(s.blueprint.role));
- const p=page('Scenario circuit blueprint',model.capabilityId,[sc.ref,...involvement.flatMap(e=>e.sourceRefs)],JSON.stringify({scenario:sc,semantics:semantic,involvement},null,2));
+ const p=page('Scenario circuit blueprint',model.capabilityId,[sc.ref,...involvement.flatMap(e=>e.sourceRefs),...bindingIssues.flatMap(i=>i.sourceRefs)],JSON.stringify({scenario:sc,semantics:semantic,involvement,bindingIssues},null,2));
  p.headerLayout='custom';
- p.blueprint={role:'scenario-blueprint',altitude:'scenario',scenarioId,nodes:semantic.nodes.map(n=>n.id),edges:semantic.edges.map(e=>e.id),providerReferences:involvement,disclosedOperationIds:[...new Set(involvement.flatMap(e=>e.via.map(v=>v.operationId)))]};
- p.interpretation='Input/Event/Outcome are scenario semantics. Provider wires retain exact binding or testimony references. Disclosed operations are a subset; the complete Event is linked. Their component shapes follow the same declared-binding rules as the complete execution circuit, with identifier-prefix action colors. Decorative contacts add no declared ports. No execution or monotonic proof is asserted.';
+ p.blueprint={role:'scenario-blueprint',altitude:'scenario',scenarioId,nodes:semantic.nodes.map(n=>n.id),edges:semantic.edges.map(e=>e.id),providerReferences:involvement,disclosedOperationIds:[...new Set([...providerOperations,...unassigned.slice(0,3)])],diagnosticOperationReferences:[]};
+ p.interpretation='Input/Event/Outcome are scenario semantics. Provider wires retain exact binding or testimony references. Disclosed operations are a subset; the complete Event is linked. Binding findings expose affected declared operations with amber inspection overlays, without adding provider nodes or edges. Their component shapes follow the same declared-binding rules as the complete execution circuit. Decorative contacts add no declared ports. No installation, execution or monotonic proof is asserted.';
  const link=target=>({slideIndex:Number(target.id.slice(6))-1});
  const textFrames=[];
  const label=(value,x,y,w,h,size=12,color=C.white,bold=false,target,minFontSize=8)=>{
@@ -61,7 +65,7 @@ export function appendScenarioSheet({snapshot,model,page,slides,scenarioId=model
   outcomeIcon(p,815,y+(outcomeH-20)/2,color,v.classification);
   label(v.id.replaceAll('_',' ').toLowerCase(),830,y+1,107,outcomeH-7,9.5,color);
  });
- const count=involvement.length,colW=600/Math.max(1,count),providerWidth=colW-14;
+ const count=involvement.length,colW=600/Math.max(1,count+(unassigned.length?1:0)),providerWidth=colW-14;
  const ports=[];
  for(const [i,edge]of involvement.entries()){
   const x=180+i*colW,provider=model.nodes.find(n=>n.id===edge.to),inspection=slides.find(s=>s.blueprint?.role==='provider-inspection'&&s.blueprint.providerId===provider.id);
@@ -84,18 +88,41 @@ export function appendScenarioSheet({snapshot,model,page,slides,scenarioId=model
    const caption=[...new Set([words[0],words.at(-1)])].join(' ');
    p.text(String(op.ordinal).padStart(2,'0'),frames.heading.x-8,y+(portH-21)/2,frames.heading.w+16,21,8,action.color,true,'center');
    label(caption,frames.label.x,frames.label.y,frames.label.w,frames.label.h,9,C.white,false,target);
+   const issues=bindingIssues.filter(i=>i.nodeIds.includes(op.id));
+   if(issues.length){p.add('port',x+w-3,y+3,C.amber,3);p.blueprint.diagnosticOperationReferences.push({operationId:op.id,issueIds:issues.map(i=>i.id),bounds:opBox});}
    ports.push({operationId:op.id,portId:use.portId,bindingId:use.bindingId,providerId:provider.id,basis:use.basis,sourceEdgeIds:use.sourceEdgeIds,bounds:opBox,anchor,component,action});
   });
  }
- if(!count)p.text('No declared external provider references',215,250,530,45,16,C.muted,false,'center');
- drawComponentGlyph(p,semantic.nodes.find(n=>n.kind==='event'),event,C.blue,{fill:'#082C47'});
+ if(unassigned.length){
+  const x=180+count*colW,w=providerWidth;
+  // This is an inspection overlay above real operation references, not a
+  // provider node. No connection is invented for the missing association.
+  label('BINDING INSPECTION',x,115,w,22,11,C.amber,true);
+  label('No provider association retained',x,137,w,25,11,C.amber,true);
+  label('Installation and compatibility unverified',x,164,w,28,9,C.muted);
+  unassigned.slice(0,3).forEach((id,j)=>{
+   const op=model.nodes.find(n=>n.id===id),issues=bindingIssues.filter(i=>i.nodeIds.includes(id));
+   const target=slides.find(s=>s.blueprint?.role==='provider-detail'&&s.blueprint.operationIds.includes(id));
+   const box={x,y:227+j*30,w:w-20,h:27},component=eventComponent(model,op);
+   const frames=drawComponentGlyph(p,op,box,C.amber,{glyphName:component.glyph,scale:.75,fill:'#282315'});
+   p.text(String(op.ordinal).padStart(2,'0'),frames.heading.x-8,box.y+3,frames.heading.w+16,21,8,C.amber,true,'center');
+   label(op.portId||op.label,frames.label.x,frames.label.y,frames.label.w,frames.label.h,9,C.white,false,target,6);
+   p.add('port',box.x+box.w-3,box.y+3,C.amber,3);
+   p.blueprint.diagnosticOperationReferences.push({operationId:id,issueIds:issues.map(i=>i.id),bounds:box});
+  });
+  if(unassigned.length>3)label('+'+(unassigned.length-3)+' more · review',x,314,w,16,7,C.amber,false,slides.find(s=>s.blueprint?.role==='review'),6);
+ }
+ if(!count&&!unassigned.length)p.text('No declared external provider references',215,250,530,45,16,C.muted,false,'center');
+ drawComponentGlyph(p,semantic.nodes.find(n=>n.kind==='event'),event,bindingIssues.length?C.amber:C.blue,{fill:'#082C47'});
  label(sc.eventId?sc.eventId.replaceAll('-',' '):sc.authorityId,event.x,event.y+2,event.w,38,13,C.white,true,eventPage);
  label(sc.operationIds.length+' declared operations · open complete circuit',event.x,event.y+36,event.w,25,10,C.blue,false,eventPage);
- p.text('Provider operation references',180,314,602,16,8,C.muted,false,'center');
- const unassigned=model.review.issues.filter(i=>i.code==='ENDPOINT_BINDING_WITHOUT_PROVIDER_ID').flatMap(i=>i.nodeIds).filter(id=>sc.operationIds.includes(id));
- const ordinals=[...new Set(unassigned)].map(id=>model.nodes.find(n=>n.id===id).ordinal);
- const inspectionText=ordinals.length?'Provider identity missing on exchange operations '+ordinals.map(v=>String(v).padStart(2,'0')).join(', '):'Provider references preserve operation and binding ownership';
- label(inspectionText,177,398,606,30,10,ordinals.length?C.amber:C.muted);
+ if(!unassigned.length)p.text('Provider operation references',180,314,602,16,8,C.muted,false,'center');
+ const ordinals=affected.map(id=>model.nodes.find(n=>n.id===id).ordinal);
+ const issueLabel=bindingIssues.slice(0,3).map(i=>i.id).join(', ')+(bindingIssues.length>3?' +'+(bindingIssues.length-3):'');
+ const operationLabel=ordinals.slice(0,6).map(v=>String(v).padStart(2,'0')).join(', ')+(ordinals.length>6?' +'+(ordinals.length-6):'');
+ const inspectionText=ordinals.length?'Binding inspection '+issueLabel+' · operations '+operationLabel:'Provider references preserve operation and binding ownership';
+ label(inspectionText,177,398,606,30,10,ordinals.length?C.amber:C.muted,false,ordinals.length?slides.find(s=>s.blueprint?.role==='review'):undefined);
+ p.blueprint.bindingIssueIds=bindingIssues.map(i=>i.id);
  p.text('Solid violet: binding identity. Dashed violet: testimony declaration.',180,428,605,18,8,C.muted,false,'center');
  p.add('shape','RECTANGLE',8,464,944,35,{fill:'#05243B',stroke:'#72D7EE',sw:.9});
  p.text('Observation / Telemetry',14,463,208,23,11,'#72D7EE',true);
