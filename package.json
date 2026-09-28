@@ -3,13 +3,14 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "Local HTTPS model-provider services, one per authoring altitude, bridging code now to declared data later",
+  "description": "Local HTTPS providers: the authoring-altitude migration bridge and hand-authored audio transcription",
   "engines": {
     "node": ">=20"
   },
   "scripts": {
     "setup-cert": "powershell -ExecutionPolicy Bypass -NoProfile -File ./setup-cert.ps1",
     "start": "node runner.mjs",
+    "transcribe": "node transcribe.mjs",
     "test": "node --test tests",
     "circuit-deck": "node circuit-deck.mjs",
     "capability-deck": "node capability-deck.mjs"

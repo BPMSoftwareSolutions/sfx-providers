@@ -17,11 +17,15 @@ node circuit-deck.mjs --preset sidefx-announcement --output outputs/circuit-repl
 This user-requested provider is separate from the eleven-altitude migration bridge
 and is not yet declared in the estate.
 
-Eleven local model-provider services, one per authoring altitude, implementing each
-altitude's deterministic work in code and exposed over HTTPS so the estate can declare
-them through the admitted `provider add` (`provider-binding`) path.
+Local HTTPS providers: eleven authoring-altitude model services and a separate
+hand-authored **audio-to-text provider**. The altitude services implement each
+altitude's deterministic work in code; audio transcription runs a local speech model.
 
-This repo is a **declared migration bridge**: code now, declared data later, shrink-only.
+For audio setup, CLI/HTTPS invocation, contracts, and the deferred sfx-embody migration,
+see [Audio-to-text](docs/audio-to-text.md). Quick start after installing its Python
+requirements: `node transcribe.mjs <audio-file> --language en`.
+
+The eleven altitude providers are a **declared migration bridge**: code now, declared data later, shrink-only.
 The admission ceiling, per-provider successors and the shrink-only rule live in
 [`bridge.policy.json`](bridge.policy.json); the compact-request migration that removes the
 24.8 MB envelope (`DELIVERY_TIMEOUT`) is planned in
@@ -30,7 +34,9 @@ Each provider mirrors one STUB altitude already declared in the estate capabilit
 `authoring-altitude-model-stubs` (see `sfx-embody/sql/migrations/declare-authoring-altitude-model-stubs.commit.sql`
 and `scenario-driven-architecture/docs/authoring-altitude-model-stubs-2026-09-21/`). When an
 altitude's declared writer kind and output land in the estate, that provider is deleted
-from `providers/`; the set never grows.
+from `providers/`; that altitude set never grows. The separately requested
+`sfx-audio-to-text` provider is outside that admitted bridge surface and is not yet
+declared in the estate.
 
 ## Architecture documentation
 
@@ -45,16 +51,23 @@ current repository behavior from proposed estate capabilities and operating rule
 README.md
 package.json           scripts only, no dependencies
 setup-cert.ps1         current-user self-signed localhost cert (PFX + CER + PEM + trust)
-server.mjs             one HTTPS process serving all 11 providers
+server.mjs             one HTTPS process serving 11 altitude providers + audio-to-text
 runner.mjs             starts the server, prints PROVIDERS_READY
+transcribe.mjs         local audio CLI; exports TXT, JSON and SRT artifacts
+requirements-audio.txt Python speech-recognition dependency
 providers/
   altitude-01.mjs ... altitude-11.mjs
+  audio-to-text.mjs    hand-authored audio.transcribe provider
 certs/                 created by setup-cert.ps1 (gitignored)
 ```
 
 ## Providers
 
-Each module exports `{ altitude, toolId, inputShape, outputShape, handle(input, options) }`
+The contract and model-call sections below describe the altitude bridge. The
+[audio provider documentation](docs/audio-to-text.md) defines its separate contracts
+and local execution behavior.
+
+Each altitude module exports `{ altitude, toolId, inputShape, outputShape, handle(input, options) }`
 plus metadata (`altitudeId`, `altitudeName`, `providerId`, `foldedTools`, `modelPrompt`).
 Input is the compact request contract `altitude-model-request.v1` (see below; `altitude`,
 `toolId`, `objective` and `inputContractId` are required). The candidate conforms to the
@@ -140,7 +153,7 @@ powershell -ExecutionPolicy Bypass -NoProfile -File .\setup-cert.ps1
 
 # start all providers (default port 8790; override with PROVIDER_PORT)
 $env:PROVIDER_PORT = '8790'
-node .\runner.mjs            # prints: PROVIDERS_READY port=8790 providers=12
+node .\runner.mjs            # prints: PROVIDERS_READY port=8790 providers=13
 
 # health (all 11)
 1..11 | ForEach-Object {

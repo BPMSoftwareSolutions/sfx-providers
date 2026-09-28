@@ -1,6 +1,8 @@
 certs/
 node_modules/
 *.log
+.venv/
 .cache/
 outputs/
+__pycache__/
 config/capability-presentation.local.json

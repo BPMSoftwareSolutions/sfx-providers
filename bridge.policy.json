@@ -10,6 +10,7 @@
   ],
   "admittedOnce": true,
   "surface": "providers/altitude-01.mjs..altitude-11.mjs: eleven local HTTPS model-provider services (providerId sfx-authoring-altitude-NN), one per authoring altitude, each holding the bridge placement of the estate role of the matching authoring-altitude-model-stubs port (estate sidefx, estate model 34)",
+  "scopeClarification": "The user-requested hand-authored sfx-audio-to-text provider (2026-09-26; docs/audio-to-text.md) is outside this eleven-altitude admitted surface and is not declared in the estate. This policy's baseline and shrink-only rule continue to apply to the listed altitude providers.",
   "baseline": {
     "providers": 11,
     "recordedAt": "2026-09-22",

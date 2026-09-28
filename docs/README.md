@@ -12,6 +12,7 @@ The documentation below develops the architecture discussion supplied on
 | --- | --- |
 | [Circuit-presentation provider](circuit-presentation.md) | Reusable native diagrams, retained announcement design, JSON/HTTPS/CLI contracts and editable PowerPoint export. |
 | [Capability presentations](capability-presentation.md) | Selected estate capability → semantic circuit diagrams, eleven authoring context layers, traceable evidence and PowerPoint. |
+| [Audio-to-text provider](audio-to-text.md) | Hand-authored local transcription, CLI/HTTPS contracts, validation and later estate migration. Separate from the eleven-altitude bridge. |
 | [Capability estate modernization](capability-estate-modernization.md) | Architectural thesis, boundaries, terminology, determinism topology, scenario-based migration, and the role of AI. Start here. |
 | [Modernization evidence model](modernization-evidence-model.md) | Proposed classification records, evidence and lineage, metrics, dashboard semantics, and worked measurements. |
 | [Capability absorption playbook](capability-absorption-playbook.md) | Progression from an unknown dependency to governed use, characterization, candidate execution, admission, and retirement; includes cutover and rollback criteria. |
@@ -21,8 +22,8 @@ The documentation below develops the architecture discussion supplied on
 The first three documents describe a design and operating model. Their proposed
 fields, state names, metrics, and views are not installed contracts, commands,
 database objects, or runtime enforcement. The existing
-[bridge policy](../bridge.policy.json) remains the policy record for this
-repository. [Binding evidence](../bindings/README.md) records historical authoring
+[bridge policy](../bridge.policy.json) remains the policy record for the eleven-altitude
+bridge. [Binding evidence](../bindings/README.md) records historical authoring
 and dry-run results; it must not be read as proof of a current live installation.
 
 For local service setup, request/response contracts, and implementation limits,
