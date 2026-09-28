@@ -1,5 +1,6 @@
 import { createHash } from 'node:crypto';
 import {json,gherkinScenario,featureContext,schemaContext,bindingContext,interfaceContext} from './context-evidence.mjs';
+import {invocationCondition,resultShape} from './invocation-evidence.mjs';
 
 export const SNAPSHOT_ID = 'capability-presentation-snapshot.v1';
 export const canonical = value => value === null || typeof value !== 'object' ? JSON.stringify(value)
@@ -117,8 +118,9 @@ export function normalizeSnapshot({ capability: c, graph: g, scenarios = [], fea
     bindings: list(g.interfaceAuthority?.portBindings).map((b, i) => ({ portId: b.portId, platformCapabilityId: str(b.platformCapabilityId),
       declaredRead: typeof b.configuration?.statement === 'string' && b.configuration.statement.trim().length>0,
       transformationId: str(b.configuration?.transformationId), configurationDigest: digest(b.configuration ?? {}),
+      invocationCondition:invocationCondition(b.configuration??{}),
       ...physicalFields(b.configuration ?? {}),...bindingContext(b.configuration), sourceRef: `graph:/interfaceAuthority/portBindings/${i}` })),
-    transformations: list(g.semanticTransformations).map((t, i) => ({ id: t.id, ...mechanics(t.expression), sourceRef: `graph:/semanticTransformations/${i}` })),
+    transformations: list(g.semanticTransformations).map((t, i) => ({ id: t.id, ...mechanics(t.expression), resultShape:resultShape(t.expression), sourceRef: `graph:/semanticTransformations/${i}` })),
     contracts: Object.entries(g.contractAuthorities?.contracts ?? {}).map(([id, c]) => ({ id, schemaId: str(c.schemaId || c.schema?.$id),
       title: str(c.schema?.title || id), type: str(c.schema?.type), required: list(c.schema?.required), properties: Object.keys(c.schema?.properties ?? {}),
       ...schemaContext(c.schema),schemaDigest: digest(c.schema ?? {}), sourceRef: `graph:/contractAuthorities/contracts/${pointer(id)}` })),
@@ -133,7 +135,7 @@ export function normalizeSnapshot({ capability: c, graph: g, scenarios = [], fea
     obligations: obligations.map(o => ({ id: o.proof_obligation_id, statement: str(o.statement), kind: str(o.obligation_kind), definitionDigest: str(o.definition_digest), sourceRef: `model:proof_obligation/${o.semantic_object_definition_pk}` })),
     altitudeCatalog: altitudeCatalog.map(a => ({ id: a.scenario_id, name: str(a.name), definitionDigest: str(a.definition_digest), sourceRef: `model:scenario_version/${a.scenario_version_pk}` })),
     conditions:conditions.map(v=>({id:str(v.condition_id),statement:str(v.statement),definitionDigest:str(v.definition_digest),sourceRef:`model:observable_condition/${v.semantic_object_definition_pk}`})),
-    contextReaderVersion:'feature-prose-altitudes-provider-references.v3',
+    contextReaderVersion:'feature-prose-altitudes-invocation-conditions.v4',
     blueprintSources:blueprintSources.map(b=>({id:str(b.blueprint_id),versionPk:str(b.blueprint_version_pk),
       capabilityVersionPk:str(b.capability_version_pk),disposition:str(b.source_disposition),
       nodeCount:Number(b.node_count),edgeCount:Number(b.edge_count),definitionDigest:str(b.definition_digest),

@@ -491,6 +491,9 @@ Native readback, PDF renders and verification:
 
 ### Declaration-only bindings remain inspectable
 
+Historical result before the operation 06 repair in `sfx-embody b99871f`.
+See the invocation-gate inspection below for the current selected circuit.
+
 The [corrected objective scenario blueprint, slide 02](https://docs.google.com/presentation/d/1Uyh3xclUaiQzEyxQp-SaIDRNySQh5LcNFRcbl5tnpiw/edit?slide=id.p2#slide=id.p2)
 now exposes operation **06**, `invoke-database-capability-port`, in amber with
 **No provider association retained** and **Installation and compatibility
@@ -553,3 +556,76 @@ Replay artifacts:
 `outputs/capability-estate/request-capability-from-objective-binding-review-final`.
 Native update, readback, PDF render and link verification:
 `outputs/google-slides/binding-serviceability`.
+
+### Invocation gates remain inspectable after a provider binding is repaired
+
+The [current scenario circuit, slide 02](https://docs.google.com/presentation/d/1caPFtKAcf7FBLAgEacq4QXIpgTdBKBiclaZ10EF36io/edit?slide=id.p2#slide=id.p2)
+was regenerated from live estate authority on September 28, 2026. It contains
+27 slides and **2 errors / 3 warnings**. Both new errors attach to the existing
+model operation, numbered **03** in the deck (database ordinal **2**):
+
+- `INVOCATION_CONDITION_PATH_ABSENT`: the gate requires
+  `payload.resolutionStatus = EMBODIMENT_AUTHORIZED`, but the immediately
+  preceding transformation emits no `payload` field.
+- `INVOCATION_REQUEST_PATH_ABSENT`: `currentInvocationRequest` is also absent
+  from that output. Correcting the gate alone would leave this request-selector
+  defect. It is identified as conditional on the gate opening.
+
+Slide 02 outlines the affected operation and Event in red, names both missing
+paths, and links the operation to **Invocation gate inspection**, slide 12.
+The detail page retains the equality, false behavior (`preserve-carrier`),
+request/result selectors and source evidence. The complete execution circuit,
+provider ownership and review slides retain the same operation references.
+The repaired operation 06 remains connected to
+`sda-declared-read-graph-provider.v1` with no missing-association finding.
+
+The reader now retains redacted invocation conditions and closed object shapes
+from transformation declarations. The inspection is capability-neutral: no
+capability, scenario, port or provider names are encoded in the rules. Missing
+paths are proven only from an **immediately preceding, unconditional,
+unmapped, whole-value object transformation**. It does not infer absence through
+SQL, provider results, nested calls, conditional predecessors or opaque
+expressions. Unsupported paths and shapes remain unknown. Null equality is
+not mistaken for an unsatisfied non-null gate. Literal values are not retained
+in result shapes; condition values outside safe enum/scalar display are withheld.
+
+Snapshots captured before the added evidence fields now carry
+`INVOCATION_CONDITION_EVIDENCE_NOT_RETAINED` and must be refreshed before this
+inspection can assess them. Neither a provider identity nor a clean binding
+association check establishes that its invocation gate can open. Static
+findings remain separate from execution testimony: this deck is unobserved.
+
+Live base-table evidence and the finding-code mapping migration are documented
+in [`sfx-embody/sql/inspect/binding-serviceability`](../../sfx-embody/sql/inspect/binding-serviceability/README.md).
+The installed CLI still returns `agent-route.v1`, `REFUSED`, with a null
+proposal. This change exposes the configuration defects; it does not repair
+or bypass them. Both codes map to the existing configuration writer with no
+replacement default. The three existing estate-wide evidence warnings remain.
+
+The unchanged generation command remains sufficient:
+
+```powershell
+node capability-deck.mjs --capability-id request-capability-from-objective --view capability --context-altitude 7 --output outputs/capability-estate/request-capability-from-objective-invocation-inspection --pptx
+```
+
+All **171 tests passed**. PowerPoint package/layout/font-policy and artifact
+import checks passed. Python/Arial metrics checked 102 blueprint labels without
+overflow. All 27 Google PDF pages were visually reviewed, with the scenario,
+gate and review pages also inspected at full size. Native readback verified
+all **45 expected link destinations** (52 linked text runs), six operations,
+six bindings, two provider associations, and unchanged source node identities
+and 33 edges relative to the repaired circuit. The native checker reported one
+advisory for a 9-point technical path annotation on the dense inspection sheet;
+it is readable at full size and has no clipping.
+
+Snapshot digest:
+`67236f90773068671d7f0e51d7fef87b85b5dc12486bcb4f3dff8eb4b803d9b5`.
+Content digest:
+`1e7a882d4997005f2f8c19f02e4dd358eb9d196692f6a62cdef424b93d22f780`.
+PowerPoint SHA-256:
+`5e12839acbd350c9c745a96b36bc98752b3d27b55b63266f310a61d881717a2c`.
+
+Replay artifacts:
+`outputs/capability-estate/request-capability-from-objective-invocation-inspection`.
+Native readback, PDF renders and link verification:
+`outputs/google-slides/invocation-inspection`.

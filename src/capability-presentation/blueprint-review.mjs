@@ -1,5 +1,6 @@
 // These are projection diagnostics, not an estate admission verdict. Findings
 // name the source and visible components; missing evidence is not called failure.
+import {inspectInvocationPaths} from './invocation-evidence.mjs';
 export function reviewBlueprint(snapshot,model){
  const issues=[];
  const add=(severity,code,message,nodeIds=[],refs=[])=>issues.push({id:`R${String(issues.length+1).padStart(2,'0')}`,severity,code,message,nodeIds,sourceRefs:refs.filter(Boolean)});
@@ -49,6 +50,12 @@ export function reviewBlueprint(snapshot,model){
   const ops=model.nodes.filter(op=>op.kind==='operation'&&op.portId===n.portId);
   add('warning','PLATFORM_BINDING_WITHOUT_PROVIDER',`Binding ${n.portId} names ${n.platformCapabilityId} but has no binding-level statement, provider identity or transformation. ${declarations.length} platform implementation declaration(s) do not prove installation or binding compatibility; execution is unverified.`,[n.id,...ops.map(op=>op.id)],[n.ref,...declarations.map(p=>p.sourceRef)]);
   issues.at(-1).evidence={bindingAssociation:'not-retained',platformDeclaration:declarations.length?'declared':'not-retained',installation:'not-verified',configurationCompatibility:'not-verified',execution:'not-observed',platformDeclarations:declarations};
+ }
+ if(snapshot.bindings.some(b=>!Object.hasOwn(b,'invocationCondition'))||snapshot.transformations.some(t=>!t.resultShape))
+  add('warning','INVOCATION_CONDITION_EVIDENCE_NOT_RETAINED','This snapshot predates invocation-condition and output-shape inspection. Refresh it before assessing guarded invocation paths.');
+ for(const finding of inspectInvocationPaths(snapshot)){
+  add(finding.severity,finding.code,finding.message,finding.nodeIds,finding.sourceRefs);
+  issues.at(-1).evidence=finding.evidence;
  }
  return {contractId:'capability-blueprint-review.v1',signal:issues.some(i=>i.severity==='error')?'ISSUES_FOUND':issues.length?'EVIDENCE_INCOMPLETE':'NO_DETECTED_ISSUES',
   isAdmissionReceipt:false,errors:issues.filter(i=>i.severity==='error').length,warnings:issues.filter(i=>i.severity==='warning').length,issues};

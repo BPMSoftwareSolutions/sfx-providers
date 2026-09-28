@@ -22,7 +22,9 @@ function outcomeIcon(p,x,y,color,classification){
 export function appendScenarioSheet({snapshot,model,page,slides,scenarioId=model.rootScenarioId}){
  const sc=model.scenarios.find(s=>s.id===scenarioId),semantic=projectBlueprint(model,{altitude:'scenario',scenarioId});
  const involvement=projectBlueprint(model).edges.filter(e=>e.kind==='scenario-provider'&&e.from==='scenario:'+scenarioId);
- const bindingIssues=model.review.issues.filter(i=>['ENDPOINT_BINDING_WITHOUT_PROVIDER_ID','PLATFORM_BINDING_WITHOUT_PROVIDER'].includes(i.code)&&i.nodeIds.some(id=>sc.operationIds.includes(id)));
+ const bindingIssues=model.review.issues.filter(i=>['ENDPOINT_BINDING_WITHOUT_PROVIDER_ID','PLATFORM_BINDING_WITHOUT_PROVIDER','INVOCATION_CONDITION_PATH_ABSENT','INVOCATION_REQUEST_PATH_ABSENT'].includes(i.code)&&i.nodeIds.some(id=>sc.operationIds.includes(id)));
+ const invocationIssues=bindingIssues.filter(i=>i.code.startsWith('INVOCATION_'));
+ const inspectionColor=bindingIssues.some(i=>i.severity==='error')?C.red:C.amber;
  const affected=[...new Set(bindingIssues.flatMap(i=>i.nodeIds).filter(id=>sc.operationIds.includes(id)))];
  const providerOperations=[...new Set(involvement.flatMap(e=>e.via.map(v=>v.operationId)))];
  const unassigned=affected.filter(id=>!providerOperations.includes(id));
@@ -75,7 +77,8 @@ export function appendScenarioSheet({snapshot,model,page,slides,scenarioId=model
   const uses=edge.via,portH=Math.min(27,90/Math.max(1,uses.length));
   uses.forEach((use,j)=>{
    const op=model.nodes.find(n=>n.id===use.operationId),y=227+j*(portH+3),w=providerWidth-20;
-   const target=slides.find(s=>s.blueprint?.role==='provider-detail'&&s.blueprint.operationIds.includes(op.id));
+   const issues=bindingIssues.filter(i=>i.nodeIds.includes(op.id)),ink=issues.some(i=>i.severity==='error')?C.red:undefined;
+   const target=slides.find(s=>s.blueprint?.role==='invocation-inspection'&&s.blueprint.operationIds.includes(op.id))??slides.find(s=>s.blueprint?.role==='provider-detail'&&s.blueprint.operationIds.includes(op.id));
    const opBox={x,y,w,h:portH},isTestimony=use.basis!=='declared provider';
    const component=eventComponent(model,op),action=eventAction(op),anchor=glyphAnchor(op,opBox,'right',COMPONENT_STYLE,component.glyph);
    // Lanes outside the operation boxes prevent a later port's wire crossing an
@@ -83,13 +86,12 @@ export function appendScenarioSheet({snapshot,model,page,slides,scenarioId=model
    const lane=x+w+3+(j+1)*14/(uses.length+1);
    p.add('route',[anchor,[lane,anchor[1]],[lane,181]],C.violet,{arrow:false,dash:isTestimony,glow:false,width:1,routing:'orthogonal'});
    p.add('port',lane,181,C.violet,2);p.add('port',...anchor,C.violet,2);
-   const frames=drawComponentGlyph(p,op,opBox,action.color,{glyphName:component.glyph,scale:.75,fill:action.category==='bind'?'#17132F':action.category==='select'?'#20251B':'#04263A'});
+   const frames=drawComponentGlyph(p,op,opBox,ink??action.color,{glyphName:component.glyph,scale:.75,fill:action.category==='bind'?'#17132F':action.category==='select'?'#20251B':'#04263A'});
    const words=identifierCaption(op.label,model.capabilityId).split(' ');
    const caption=[...new Set([words[0],words.at(-1)])].join(' ');
    p.text(String(op.ordinal).padStart(2,'0'),frames.heading.x-8,y+(portH-21)/2,frames.heading.w+16,21,8,action.color,true,'center');
    label(caption,frames.label.x,frames.label.y,frames.label.w,frames.label.h,9,C.white,false,target);
-   const issues=bindingIssues.filter(i=>i.nodeIds.includes(op.id));
-   if(issues.length){p.add('port',x+w-3,y+3,C.amber,3);p.blueprint.diagnosticOperationReferences.push({operationId:op.id,issueIds:issues.map(i=>i.id),bounds:opBox});}
+   if(issues.length){p.add('port',x+w-3,y+3,ink??C.amber,3);p.blueprint.diagnosticOperationReferences.push({operationId:op.id,issueIds:issues.map(i=>i.id),bounds:opBox});}
    ports.push({operationId:op.id,portId:use.portId,bindingId:use.bindingId,providerId:provider.id,basis:use.basis,sourceEdgeIds:use.sourceEdgeIds,bounds:opBox,anchor,component,action});
   });
  }
@@ -113,17 +115,20 @@ export function appendScenarioSheet({snapshot,model,page,slides,scenarioId=model
   if(unassigned.length>3)label('+'+(unassigned.length-3)+' more · review',x,314,w,16,7,C.amber,false,slides.find(s=>s.blueprint?.role==='review'),6);
  }
  if(!count&&!unassigned.length)p.text('No declared external provider references',215,250,530,45,16,C.muted,false,'center');
- drawComponentGlyph(p,semantic.nodes.find(n=>n.kind==='event'),event,bindingIssues.length?C.amber:C.blue,{fill:'#082C47'});
+ drawComponentGlyph(p,semantic.nodes.find(n=>n.kind==='event'),event,bindingIssues.length?inspectionColor:C.blue,{fill:'#082C47'});
  label(sc.eventId?sc.eventId.replaceAll('-',' '):sc.authorityId,event.x,event.y+2,event.w,38,13,C.white,true,eventPage);
  label(sc.operationIds.length+' declared operations · open complete circuit',event.x,event.y+36,event.w,25,10,C.blue,false,eventPage);
  if(!unassigned.length)p.text('Provider operation references',180,314,602,16,8,C.muted,false,'center');
  const ordinals=affected.map(id=>model.nodes.find(n=>n.id===id).ordinal);
  const issueLabel=bindingIssues.slice(0,3).map(i=>i.id).join(', ')+(bindingIssues.length>3?' +'+(bindingIssues.length-3):'');
  const operationLabel=ordinals.slice(0,6).map(v=>String(v).padStart(2,'0')).join(', ')+(ordinals.length>6?' +'+(ordinals.length-6):'');
- const inspectionText=ordinals.length?'Binding inspection '+issueLabel+' · operations '+operationLabel:'Provider references preserve operation and binding ownership';
- label(inspectionText,177,398,606,30,10,ordinals.length?C.amber:C.muted,false,ordinals.length?slides.find(s=>s.blueprint?.role==='review'):undefined);
+ const inspectionText=ordinals.length?(invocationIssues.length?'Invocation inspection ':'Binding inspection ')+issueLabel+' · operations '+operationLabel:'Provider references preserve operation and binding ownership';
+ label(inspectionText,177,398,606,invocationIssues.length?22:30,10,ordinals.length?inspectionColor:C.muted,false,ordinals.length?slides.find(s=>s.blueprint?.role==='review'):undefined);
  p.blueprint.bindingIssueIds=bindingIssues.map(i=>i.id);
- p.text('Solid violet: binding identity. Dashed violet: testimony declaration.',180,428,605,18,8,C.muted,false,'center');
+ if(invocationIssues.length){
+  const paths=invocationIssues.slice(0,2).map(i=>(i.code==='INVOCATION_CONDITION_PATH_ABSENT'?'Gate: ':'Request: ')+i.evidence.path+' absent').join(' · ')+(invocationIssues.length>2?' · +'+(invocationIssues.length-2)+' findings':'');
+  label(paths,177,420,606,26,9,inspectionColor,false,slides.find(s=>s.blueprint?.role==='review'),7);
+ }else p.text('Solid violet: binding identity. Dashed violet: testimony declaration.',180,428,605,18,8,C.muted,false,'center');
  p.add('shape','RECTANGLE',8,464,944,35,{fill:'#05243B',stroke:'#72D7EE',sw:.9});
  p.text('Observation / Telemetry',14,463,208,23,11,'#72D7EE',true);
  p.text('State overlays preserve the circuit',14,481,208,17,8,C.muted);

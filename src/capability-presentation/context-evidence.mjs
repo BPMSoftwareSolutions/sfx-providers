@@ -57,7 +57,7 @@ export function schemaContext(schema={}) {
   return {description:text(schema.description),fields};
 }
 
-const selectorKeys=['authoritySource','capabilityIdPath','requestPath','namespacePath','scenarioPath','resultPath','lineageMode','inputPath','outputPath','transformationId','overlayId','bindingAuthorityId'];
+const selectorKeys=['authoritySource','capabilityIdPath','requestPath','namespacePath','scenarioPath','resultPath','resultMode','lineageMode','inputPath','outputPath','transformationId','overlayId','bindingAuthorityId'];
 export function bindingContext(config={}) {
   return {selectors:Object.fromEntries(selectorKeys.filter(k=>typeof config[k]==='string').map(k=>[k,config[k]])),
     inputAdmission:config.inputAdmission?schemaContext(config.inputAdmission):null};

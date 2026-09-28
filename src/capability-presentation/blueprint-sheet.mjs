@@ -180,6 +180,18 @@ export function appendBlueprintSlides({snapshot,model,page,view='capability',sce
     drawProjection(p,model,projection,{y:164+i*130,h:group.length===1?252:122});p.detail+='\n'+JSON.stringify(projection);p.evidenceRefs.push(...projection.nodes.map(n=>n.ref));
    });nav(p,'Back to complete Event circuit',eventPages.get(sc.id),35);
   }
+  for(const op of ports){
+   const b=snapshot.bindings.find(b=>b.portId===op.portId),guard=b?.invocationCondition;if(!guard)continue;
+   const issues=model.review.issues.filter(i=>i.code.startsWith('INVOCATION_')&&i.nodeIds.includes(op.id));
+   const p=page('Invocation gate inspection',sc.id+' · OPERATION '+String(op.ordinal).padStart(2,'0'),[op.ref,b.sourceRef,...issues.flatMap(i=>i.sourceRefs)],JSON.stringify({operation:op,binding:b,issues},null,2));
+   p.blueprint={role:'invocation-inspection',altitude:'provider',scenarioId:sc.id,operationIds:[op.id],issueIds:issues.map(i=>i.id)};
+   const rows=[['Port',b.portId],['Invoke only when',guard.path+' = '+guard.equalsLabel],['When false',guard.whenFalse],['Request / result',b.selectors.requestPath+' / '+(b.selectors.resultPath??b.selectors.resultMode??'not retained')]];
+   rows.forEach(([title,value],i)=>{const y=137+i*51;p.text(title,38,y,177,26,13,C.blue,true);p.text(wrap(value,75,2),221,y,690,48,14,C.white);});
+   issues.slice(0,2).forEach((f,i)=>{p.text(f.id+' · '+wrap(f.message,110,3),38,352+i*57,874,56,12,f.severity==='error'?C.red:C.amber);});
+   if(!issues.length)p.text('Declared gate; its runtime result is unobserved.',38,362,874,40,14,C.muted);
+   nav(p,'Port and provider binding',providerPages.get(op.id),35);nav(p,'Complete Event circuit',eventPages.get(sc.id),490);
+   nav(providerPages.get(op.id),'Invocation gate inspection',p,490);
+  }
   for(const variants of chunks(sc.variants,4)){
    const p=page('Declared outcome variants',sc.id+' · MEMBERSHIP, NOT INFERRED ROUTING',[sc.ref],JSON.stringify(variants,null,2));p.blueprint={role:'outcomes',altitude:'scenario',scenarioId:sc.id};
    p.add('shape','RECTANGLE',40,260,254,85,{fill:'#041C32',stroke:C.green,sw:1});p.text(wrap(sc.outcomeId,25,3),52,277,230,64,17,C.green,true);
@@ -205,7 +217,7 @@ export function appendBlueprintSlides({snapshot,model,page,view='capability',sce
  }
  let review;
  for(const group of chunks(model.review.issues,4)){
-  const p=page('Blueprint review',model.review.signal.replaceAll('_',' ')+' · SOURCE-BOUND FINDINGS',group.flatMap(i=>i.sourceRefs),JSON.stringify(group,null,2));review??=p;p.blueprint={role:'review'};
+  const p=page('Blueprint review',model.review.signal.replaceAll('_',' ')+' · SOURCE-BOUND FINDINGS',group.flatMap(i=>i.sourceRefs),JSON.stringify(group,null,2));review??=p;p.blueprint={role:'review',issueIds:group.map(i=>i.id)};
   group.forEach((f,i)=>{const y=135+i*82,color=f.severity==='error'?C.red:C.amber;p.text(f.id+' · '+f.severity.toUpperCase()+' · '+humanize(f.code),36,y,882,27,15,color,true);p.text(wrap(f.message,103,3),37,y+29,878,52,13,C.white);});
   nav(p,'Return to selected blueprint',first,35);
  }
