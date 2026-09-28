@@ -131,3 +131,12 @@ JOIN model.blueprint b ON b.blueprint_pk=bv.blueprint_pk
 JOIN @cap p ON p.capability_version_pk=bv.capability_version_pk
 JOIN analysis.v_selected_semantic_definition sd ON sd.estate_model_pk=@estate AND sd.semantic_object_definition_pk=bv.semantic_object_definition_pk
 ORDER BY b.blueprint_id,bv.blueprint_version_pk;
+
+-- Declaration-only platform implementation evidence for the selected estate:
+-- one row per declared provider/target that implements a platform capability.
+-- Install-side mechanic registries are hypotheses, not read here; an absent row
+-- means "no declared platform implementation", never runtime unavailability.
+SELECT DISTINCT d.platform_capability_id,d.provider_id,d.target_language,d.declaration_status
+FROM analysis.v_declared_platform_implementation d
+WHERE d.estate_model_pk=@estate
+ORDER BY d.platform_capability_id,d.provider_id,d.target_language;

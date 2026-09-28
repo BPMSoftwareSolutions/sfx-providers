@@ -78,3 +78,19 @@ test('endpoint bindings without identity and old snapshots produce explicit insp
  delete s.transformations[0].providerReferences;
  assert.ok(buildBlueprint(s).review.issues.some(i=>i.code==='TRANSFORMATION_PROVIDER_REFERENCES_NOT_RETAINED'));
 });
+
+test('provider identity and declared platform implementations suppress the platform warning while empty platform bindings name their invoking operation',async()=>{
+ const raw=rawFixture();
+ raw.graph.interfaceAuthority.portBindings[0]={portId:'policy',platformCapabilityId:'implemented.v1',configuration:{}};
+ raw.graph.interfaceAuthority.portBindings[1]={portId:'deliver',platformCapabilityId:'unimplemented.v1',configuration:{}};
+ raw.graph.interfaceAuthority.portBindings.push({portId:'named',platformCapabilityId:'unimplemented.v1',configuration:{providerId:'named-provider'}});
+ raw.graph.executionAuthorities[1].operations.push({kind:'invoke-port',portId:'named'});
+ const s=normalizeSnapshot({...raw,platformImplementations:[{platform_capability_id:'implemented.v1',provider_id:'platform-provider',target_language:'node',declaration_status:'ADMITTED'}]});
+ const issues=buildBlueprint(s).review.issues.filter(i=>i.code==='PLATFORM_BINDING_WITHOUT_PROVIDER');
+ assert.equal(issues.length,1);
+ assert.deepEqual(issues[0].nodeIds,['binding:deliver','operation:accept.v1:1']);
+ assert.ok(!issues[0].nodeIds.includes('binding:policy')&&!issues[0].nodeIds.includes('binding:named'));
+ const r=await handle({contractId:'capability-presentation-request.v1',capabilityId:s.identity.capabilityId},{readEstate:async()=>s});
+ assert.equal(r.disposition,'AUTHORED',JSON.stringify(r.findings));
+ assert.ok(r.findings.some(f=>f.code==='PLATFORM_BINDING_WITHOUT_PROVIDER'&&f.nodeIds.includes('binding:deliver')));
+});

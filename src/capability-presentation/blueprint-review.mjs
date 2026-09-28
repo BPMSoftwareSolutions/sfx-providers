@@ -40,6 +40,13 @@ export function reviewBlueprint(snapshot,model){
   MONOTONIC_PROGRESS_NOT_PROVEN:'No complete semantic-progress proof was retained. Forward placement must not imply proven monotonicity.'
   ,TRANSFORMATION_PROVIDER_REFERENCES_NOT_RETAINED:'This snapshot predates transformation provider inspection. Refresh it from the estate to establish provider coverage.'
  }[gap.code]??gap.code,[],gap.ref?[gap.ref]:[]);
+ const implemented=new Set((snapshot.platformImplementations??[]).map(p=>p.platformCapabilityId));
+ for(const n of model.nodes){
+  if(n.kind!=='binding'||!n.used||!n.platformCapabilityId)continue;
+  if(n.declaredRead||n.providerIds?.length||n.transformationId||implemented.has(n.platformCapabilityId))continue;
+  const ops=model.nodes.filter(op=>op.kind==='operation'&&op.portId===n.portId);
+  add('warning','PLATFORM_BINDING_WITHOUT_PROVIDER',`Binding ${n.portId} names platform ${n.platformCapabilityId}, but no declared statement, provider, transformation or platform implementation can serve this exchange.`,[n.id,...ops.map(op=>op.id)],[n.ref]);
+ }
  return {contractId:'capability-blueprint-review.v1',signal:issues.some(i=>i.severity==='error')?'ISSUES_FOUND':issues.length?'EVIDENCE_INCOMPLETE':'NO_DETECTED_ISSUES',
   isAdmissionReceipt:false,errors:issues.filter(i=>i.severity==='error').length,warnings:issues.filter(i=>i.severity==='warning').length,issues};
 }

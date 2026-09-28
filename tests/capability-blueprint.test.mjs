@@ -31,7 +31,7 @@ test('scenario meaning and Event operations occupy distinct projections without 
 test('a complete 35-operation Event survives independently of the primary capability and unused bindings',async()=>{
  const raw=rawFixture();raw.graph.executionAuthorities[0].operations=Array.from({length:35},(_,i)=>({kind:'invoke-port',portId:'port-'+i}));
  raw.graph.interfaceAuthority.portBindings.push(...raw.graph.executionAuthorities[0].operations.map(o=>({portId:o.portId,platformCapabilityId:'transform.v1',configuration:{}})));
- const s=normalizeSnapshot(raw),r=await handle({contractId:'capability-presentation-request.v1',capabilityId:s.identity.capabilityId,contextAltitude:7},{readEstate:async()=>s});
+ const s=normalizeSnapshot({...raw,platformImplementations:[{platform_capability_id:'transform.v1',provider_id:'declared-platform-provider',target_language:'node',declaration_status:'ADMITTED'}]}),r=await handle({contractId:'capability-presentation-request.v1',capabilityId:s.identity.capabilityId,contextAltitude:7},{readEstate:async()=>s});
  assert.equal(r.disposition,'AUTHORED',JSON.stringify(r.findings));
  const story=r.candidate.storyboard,primary=story.slides.find(s=>s.blueprint?.role==='overview');
  assert.equal(primary.blueprint.altitude,'capability');assert.equal(primary.blueprint.nodes.length,4);

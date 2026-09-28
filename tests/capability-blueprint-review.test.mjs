@@ -51,3 +51,25 @@ test('mechanic operand trees retain deeper branches without treating literal dat
  assert.ok(t.cells.some(c=>c.operand==='then'));assert.ok(t.cells.some(c=>c.operand==='when'));
  assert.equal(buildBlueprint(s).mechanismCircuits[0].complete,true);
 });
+test('unserved platform bindings warn once while statement, provider, transformation and implemented platforms stay silent',()=>{
+ const raw=rawFixture();
+ raw.graph.interfaceAuthority.portBindings.push(
+  {portId:'oracle',platformCapabilityId:'unimplemented.v1',configuration:{}},
+  {portId:'declared-read',platformCapabilityId:'unimplemented.v1',configuration:{statement:'select secret from never_retained',resultColumn:'secret'}},
+  {portId:'provided',platformCapabilityId:'unimplemented.v1',configuration:{providerId:'named-provider'}},
+  {portId:'implemented',platformCapabilityId:'implemented.v1',configuration:{}});
+ raw.graph.executionAuthorities[0].operations.push({kind:'invoke-port',portId:'oracle'},{kind:'invoke-port',portId:'declared-read'},{kind:'invoke-port',portId:'provided'},{kind:'invoke-port',portId:'implemented'});
+ const rawWithImplementations={...raw,platformImplementations:[{platform_capability_id:'implemented.v1',provider_id:'platform-provider',target_language:'node',declaration_status:'ADMITTED'}]};
+ const s=normalizeSnapshot(rawWithImplementations);
+ assert.ok(!JSON.stringify(s).includes('never_retained'));
+ assert.equal(s.bindings.find(b=>b.portId==='declared-read').declaredRead,true);
+ assert.equal(s.bindings.find(b=>b.portId==='oracle').declaredRead,false);
+ const b=buildBlueprint(s),platformIssues=b.review.issues.filter(i=>i.code==='PLATFORM_BINDING_WITHOUT_PROVIDER');
+ assert.equal(platformIssues.length,1);
+ assert.equal(platformIssues[0].severity,'warning');
+ assert.deepEqual(platformIssues[0].nodeIds,['binding:oracle','operation:review.v1:3']);
+ assert.deepEqual(platformIssues[0].sourceRefs,['graph:/interfaceAuthority/portBindings/2']);
+ assert.deepEqual(b.review.issues.filter(i=>i.severity==='warning').map(i=>i.code),
+  ['CANONICAL_BLUEPRINT_EDGES_NOT_AVAILABLE','OBSERVABILITY_CONTRACT_NOT_RETAINED','MONOTONIC_PROGRESS_NOT_PROVEN','PLATFORM_BINDING_WITHOUT_PROVIDER']);
+ assert.equal(b.review.errors,1);assert.equal(b.review.warnings,4);
+});

@@ -73,7 +73,7 @@ function physicalFields(config) {
   return { providerIds: [...providers].sort(), endpoints, credentialReferences: [...credentials].sort(), realizations };
 }
 
-export function normalizeSnapshot({ capability: c, graph: g, scenarios = [], features = [], fixtures = [], obligations = [], altitudeCatalog = [], conditions = [], blueprintSources = [], provenance = {} }) {
+export function normalizeSnapshot({ capability: c, graph: g, scenarios = [], features = [], fixtures = [], obligations = [], altitudeCatalog = [], conditions = [], blueprintSources = [], platformImplementations = [], provenance = {} }) {
   if (g.declaredExecutionGraphRefused) fail(g.declaredExecutionGraphRefused, 'CAPABILITY_GRAPH_REFUSED');
   if (c.capability_id !== g.capabilityId) fail('The graph and selected capability identity disagree.');
   const declared = c.definition_json ? JSON.parse(c.definition_json)?.semantics?.authority ?? {} : {};
@@ -115,6 +115,7 @@ export function normalizeSnapshot({ capability: c, graph: g, scenarios = [], fea
       digest: digest(t), sourceRef: `graph:/transitions/${i}` })),
     authorities,
     bindings: list(g.interfaceAuthority?.portBindings).map((b, i) => ({ portId: b.portId, platformCapabilityId: str(b.platformCapabilityId),
+      declaredRead: typeof b.configuration?.statement === 'string',
       transformationId: str(b.configuration?.transformationId), configurationDigest: digest(b.configuration ?? {}),
       ...physicalFields(b.configuration ?? {}),...bindingContext(b.configuration), sourceRef: `graph:/interfaceAuthority/portBindings/${i}` })),
     transformations: list(g.semanticTransformations).map((t, i) => ({ id: t.id, ...mechanics(t.expression), sourceRef: `graph:/semanticTransformations/${i}` })),
@@ -137,6 +138,10 @@ export function normalizeSnapshot({ capability: c, graph: g, scenarios = [], fea
       capabilityVersionPk:str(b.capability_version_pk),disposition:str(b.source_disposition),
       nodeCount:Number(b.node_count),edgeCount:Number(b.edge_count),definitionDigest:str(b.definition_digest),
       sourceRef:`model:blueprint_version/${b.blueprint_version_pk}`})),
+    platformImplementations:list(platformImplementations).filter(p=>p&&p.platform_capability_id).map(p=>({
+      platformCapabilityId:str(p.platform_capability_id),providerId:str(p.provider_id),
+      targetLanguage:str(p.target_language),declarationStatus:str(p.declaration_status)})).sort((a,b)=>
+      a.platformCapabilityId.localeCompare(b.platformCapabilityId)||a.providerId.localeCompare(b.providerId)||a.targetLanguage.localeCompare(b.targetLanguage)),
     graphFeatures: { graphType: str(g.graphType || 'legacy declaration'), requiredExecutionFeatures: list(g.requiredExecutionFeatures),
       edgeGroups: list(g.edgeGroups).map((e, i) => ({ id: str(e.edgeGroupId ?? e.id ?? i), digest: digest(e), sourceRef: `graph:/edgeGroups/${i}` })),
       dispatchAuthorities: list(g.dispatchAuthorities).map((d, i) => ({ id: str(d.id ?? i), digest: digest(d), sourceRef: `graph:/dispatchAuthorities/${i}` })) },
@@ -153,6 +158,8 @@ export function validateSnapshot(snapshot) {
   for (const key of ['scenarios','transitions','authorities','bindings','transformations','contracts','interfaces','features','fixtures','obligations','altitudeCatalog']) {
     if (!Array.isArray(body[key]) || body[key].length > 10000) fail(`Invalid snapshot collection: ${key}`);
   }
+  if (body.platformImplementations !== undefined && (!Array.isArray(body.platformImplementations) || body.platformImplementations.length > 10000))
+    fail('Invalid snapshot collection: platformImplementations');
   for (const [rows, key] of [[body.scenarios,'id'],[body.authorities,'id'],[body.bindings,'portId'],[body.transformations,'id'],[body.contracts,'id']]) {
     if (rows.some(r => !r || typeof r[key] !== 'string' || !r[key]) || new Set(rows.map(r => r[key])).size !== rows.length) fail(`Duplicate or missing ${key} in snapshot.`);
   }

@@ -12,7 +12,7 @@ function denseFixture(platforms=['transform.v1']){
  const raw=rawFixture();
  raw.graph.executionAuthorities[0].operations=Array.from({length:35},(_,i)=>({kind:'invoke-port',portId:['build-binding-request','bind-provider-credential','build-exchange-request','observe-exchange','select-route'][i%5]+'-'+i}));
  raw.graph.interfaceAuthority.portBindings.push(...raw.graph.executionAuthorities[0].operations.map((o,i)=>({portId:o.portId,platformCapabilityId:platforms[i%platforms.length],configuration:{}})));
- return normalizeSnapshot(raw);
+ return normalizeSnapshot({...raw,platformImplementations:platforms.map(p=>({platform_capability_id:p,provider_id:'declared-platform-provider',target_language:'node',declaration_status:'ADMITTED'}))});
 }
 
 test('35 retained operations form five readable rows with all four exact continuation edges',()=>{
