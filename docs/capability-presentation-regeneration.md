@@ -677,3 +677,86 @@ Fresh audit snapshot:
 `7ea547ef4934a5a3366116de7b4a9f0baff439a43dc8fd5d55b6a1b62b9c4691`.
 Local audit outputs: `outputs/null-inspection-snapshot.json` and
 `outputs/null-inspection-review.json`.
+
+### Nested-boundary and display-counterexample detection implemented
+
+The [regenerated scenario circuit, slide 02](https://docs.google.com/presentation/d/12tihSZrRIRYWmVdfWEhoBaL4fr4AqS-TmKxAUNhLltY/edit?slide=id.p2#slide=id.p2)
+now reports **2 errors / 3 warnings** from a fresh live snapshot. It supersedes
+the zero-error audit above. The 28-slide deck exposes both failures on its main
+inspection surface, without changing the declared circuit:
+
+- **R04 / NESTED_INVOCATION_REQUEST_PATH_ABSENT:** operation 03 has a red outline
+  and marker. The main sheet names `payload.attemptPlan` as absent. Clicking the
+  operation opens slide 12, identifying parent request `modelRequest`, pinned
+  application `execute-governed-model-invocation`, nested operation
+  `execute-governed-model-invocation.operation.1`, required selector and supplied
+  fields. The missing entry handoff prevents downstream inference dispatch.
+- **R05 / CLI_DISPLAY_SELECTOR_NOT_TOTAL:** the Outcome boundary has a red
+  outline and an inspection link to slide 13. The main sheet names
+  `outcome.payload` as capable of hiding details. The selected outcome schema
+  is exactly `{"type":"object","additionalProperties":true}`; the permitted
+  counterexample `{}` has no `payload`. The selector is therefore not defined
+  for every permitted outcome.
+
+These are bounded static checks with retained proof records, not a claim of
+complete circuit verification. R04 records the closed object shape, nested
+entry address, expression digest, pinned plan digest and conditional status.
+It checks only the first nested port handoff, before any nested mutation.
+Remaining nested operations are explicitly unverified. Unknown supplied
+shapes, reference-only applications, ambiguous roots, unsupported first
+operations and selectors produce `NESTED_INVOCATION_INPUT_UNVERIFIED`.
+Unguarded outer request selectors are now checked too.
+
+R05 retains the schema/interface digests, witness, witness-admission rule and
+null selected value. Its schema proof accepts only a conservative supported
+keyword subset; references and compositions remain outside that proof.
+Declared display transformations take precedence over a selector and suppress
+this selector-only check. Neither static check fabricates provider testimony.
+The observation boundary remains **Unobserved**. The CLI's previously observed
+zero exit status is not relabeled as successful circuit execution.
+
+Snapshots without the added boundary evidence receive
+`BOUNDARY_INSPECTION_EVIDENCE_NOT_RETAINED`. Finding overlays are selected by
+operation/outcome references, rather than a closed list of operation finding
+codes. The existing operation 06 provider association remains intact.
+
+Regeneration still uses the capability-ID entry point:
+
+```powershell
+node capability-deck.mjs --capability-id request-capability-from-objective --view capability --context-altitude 7 --output outputs/capability-estate/request-capability-from-objective-boundary-inspection --pptx
+```
+
+Validation: **178 tests passed**, including missing-path counterexamples,
+compatible repairs, unchanged topology, stale evidence, unknown nested plans,
+guards, redaction, display precedence, and main-sheet links. PowerPoint package,
+geometry, font-policy and artifact-import checks passed. Python/Arial metrics
+checked 104 blueprint labels without overflow. All 28 native Google PDF pages
+were reviewed, with slides 02, 12 and 13 also inspected at full size. All
+45 expected navigation destinations were verified (52 linked text runs).
+Native checking retained one advisory for the existing 9-point technical
+annotation style; no clipping was found.
+
+Python `jsonschema` 4.23.0 independently checked the selected outcome schema
+and validated the `{}` counterexample with its Draft 2020-12 validator.
+Receipt: `outputs/boundary-schema-verification.json`.
+
+The six operations, six bindings, two provider associations, 33 source node
+identities and 33 edges match the preceding circuit. The reader adds inspection
+evidence and diagnostics; it does not manufacture architectural cells.
+
+Snapshot digest:
+`c288090f19cbde6c876a3bcba91abae616b1b3cbd56016cfba251fa0fd41573e`.
+Content digest:
+`1d27b529890116b167597e64bad2cd5f87b6b3f167464c3b94cba1ea9054e00e`.
+PowerPoint SHA-256:
+`596c7fa752b7df9dd96d18c6e59f37904e6294240886cffec8ba673664d66658`.
+Replay artifacts: `outputs/capability-estate/request-capability-from-objective-boundary-inspection`.
+Native readback, render and link receipts: `outputs/google-slides/boundary-inspection`.
+
+The estate repair-map registration passed its rollback/preflight/install cycle.
+It adds a CLI declaration repair and explicit `NONE` dispositions for missing
+inspection evidence, while preserving the existing nested-contract next unit.
+Installed CLI verification still returned the missing `payload.attemptPlan`
+error in JSON and `null` in human mode. Regeneration after map installation
+produced the identical content digest above. This change makes the defects
+inspectable; it does not repair the capability's runtime configuration.

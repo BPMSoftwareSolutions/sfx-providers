@@ -192,6 +192,21 @@ export function appendBlueprintSlides({snapshot,model,page,view='capability',sce
    nav(p,'Port and provider binding',providerPages.get(op.id),35);nav(p,'Complete Event circuit',eventPages.get(sc.id),490);
    nav(providerPages.get(op.id),'Invocation gate inspection',p,490);
   }
+  for(const f of model.review.issues.filter(i=>['NESTED_INVOCATION_REQUEST_PATH_ABSENT','NESTED_INVOCATION_INPUT_UNVERIFIED','CLI_DISPLAY_SELECTOR_NOT_TOTAL'].includes(i.code)&&i.nodeIds.some(id=>sc.operationIds.includes(id)||id==='outcome:'+sc.id))){
+   const e=f.evidence,proof=e.proof,display=f.code==='CLI_DISPLAY_SELECTOR_NOT_TOTAL';
+   const p=page(display?'CLI display coverage':'Nested invocation inspection',sc.id+' · '+f.id+' · '+(proof?'PROPERTY DISPROVED':'UNVERIFIED'),f.sourceRefs,JSON.stringify(f,null,2));
+   p.blueprint={role:'boundary-inspection',altitude:display?'scenario':'provider',scenarioId:sc.id,operationIds:f.nodeIds.filter(id=>sc.operationIds.includes(id)),issueIds:[f.id]};
+   const rows=display?[
+    ['Declared selector',e.path],['Outcome contract',e.contractId],['Counterexample','{} is admitted by the outcome schema; the selected value is null.'],
+    ['Property disproved','The display selector is defined for every allowed outcome.'],['Effect','Failure details outside the selected path can be hidden.']
+   ]:[['Parent request',e.outerRequestPath??'Not statically established'],['Pinned application',e.nestedCapabilityId??'Entry compatibility unverified'],
+    ['Nested operation',e.nestedOperationId??'See retained source references'],['Required request',e.path??'Unknown'],['Supplied fields',(e.suppliedFields??[]).join(', ')||'Unknown']];
+   rows.forEach(([title,value],i)=>{const y=133+i*48;p.text(title,38,y,175,27,13,C.blue,true);p.text(wrap(value,83,2),215,y,700,44,14,C.white);});
+   p.text(wrap(f.message,108,3),38,380,877,65,13,f.severity==='error'?C.red:C.amber);
+   p.text(display?'Bounded schema counterexample; runtime display and exit status require separate observation.':'Entry handoff proof only. Remaining nested operations are unverified; provider dispatch is not testimony.',38,448,877,42,12,C.muted);
+   nav(p,'Complete Event circuit',eventPages.get(sc.id),35);
+   for(const opId of p.blueprint.operationIds)if(providerPages.get(opId))nav(providerPages.get(opId),'Nested invocation inspection',p,490);
+  }
   for(const variants of chunks(sc.variants,4)){
    const p=page('Declared outcome variants',sc.id+' · MEMBERSHIP, NOT INFERRED ROUTING',[sc.ref],JSON.stringify(variants,null,2));p.blueprint={role:'outcomes',altitude:'scenario',scenarioId:sc.id};
    p.add('shape','RECTANGLE',40,260,254,85,{fill:'#041C32',stroke:C.green,sw:1});p.text(wrap(sc.outcomeId,25,3),52,277,230,64,17,C.green,true);

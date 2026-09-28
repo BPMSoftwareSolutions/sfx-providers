@@ -33,22 +33,34 @@ export function pathInShape(shape,path){
  return 'present';
 }
 
+export function shapeAt(shape,path){
+ if(path==='.')return shape;
+ if(pathInShape(shape,path)!=='present')return null;
+ return path.split('.').reduce((at,k)=>at.fields[k],shape);
+}
+
+export function precedingObject(snapshot,a,index){
+ const previous=a.operations[index-1],binding=snapshot.bindings.find(b=>b.portId===previous?.portId);
+ const transform=snapshot.transformations.find(t=>t.id===binding?.transformationId);
+ if(previous?.kind!=='invoke-port'||binding?.invocationCondition||!transform||
+  ['inputPath','outputPath','resultPath','resultMode'].some(k=>binding.selectors?.[k]))return null;
+ return {previous,binding,transform};
+}
+
 export function inspectInvocationPaths(snapshot){
  const findings=[];
  for(const a of snapshot.authorities)for(const [index,op]of a.operations.entries()){
   const binding=snapshot.bindings.find(b=>b.portId===op.portId),guard=binding?.invocationCondition;
-  if(!guard?.supported)continue;
-  const previous=a.operations[index-1],priorBinding=snapshot.bindings.find(b=>b.portId===previous?.portId);
-  const transform=snapshot.transformations.find(t=>t.id===priorBinding?.transformationId);
+  if(!binding||(guard&&!guard.supported))continue;
   // Only an immediately preceding, unconditional whole-value transformation
   // establishes a known carrier here. Never carry shape through SQL, providers,
   // nested calls, conditional operations or declared result mappings.
-  if(previous?.kind!=='invoke-port'||priorBinding?.invocationCondition||!transform||
-   ['inputPath','outputPath','resultPath','resultMode'].some(k=>priorBinding.selectors?.[k]))continue;
+  const producer=precedingObject(snapshot,a,index);if(!producer)continue;
+  const {previous,transform}=producer;
   const originId=`operation:${a.id}:${previous.ordinal}`,nodeId=`operation:${a.id}:${op.ordinal}`;
   const refs=[op.sourceRef,binding.sourceRef+'/configuration/invocationCondition',previous.sourceRef,transform.sourceRef+(transform.resultShape?.expressionPath??'/expression')];
   const evidence={basis:'immediately preceding declared object transformation',originOperationId:originId,originOrdinal:previous.ordinal,transformationId:transform.id,execution:'not-observed'};
-  if(guard.equalsType!=='null'&&pathInShape(transform.resultShape,guard.path)==='absent')findings.push({
+  if(guard&&guard.equalsType!=='null'&&pathInShape(transform.resultShape,guard.path)==='absent')findings.push({
    severity:'error',code:'INVOCATION_CONDITION_PATH_ABSENT',
    message:`Operation ${op.ordinal}: gate path ${guard.path} is absent from operation ${previous.ordinal}'s declared output. Requires ${guard.equalsLabel}; false preserves the carrier and skips invocation.`,
    nodeIds:[nodeId,'binding:'+op.portId],sourceRefs:refs,evidence:{...evidence,path:guard.path,condition:guard},
@@ -56,8 +68,8 @@ export function inspectInvocationPaths(snapshot){
   const requestPath=binding.selectors?.requestPath;
   if(pathInShape(transform.resultShape,requestPath)==='absent')findings.push({
    severity:'error',code:'INVOCATION_REQUEST_PATH_ABSENT',
-   message:`Operation ${op.ordinal}: request path ${requestPath} is absent from operation ${previous.ordinal}'s declared output. If the gate opens, this request selector still cannot supply the invocation input.`,
-   nodeIds:[nodeId,'binding:'+op.portId],sourceRefs:[...refs,binding.sourceRef+'/configuration/requestPath'],evidence:{...evidence,path:requestPath,conditional:true},
+   message:`Operation ${op.ordinal}: request path ${requestPath} is absent from operation ${previous.ordinal}'s declared output. ${guard?'If the gate opens, this request selector still cannot supply the invocation input.':'The request selector cannot supply the invocation input.'}`,
+   nodeIds:[nodeId,'binding:'+op.portId],sourceRefs:[...refs,binding.sourceRef+'/configuration/requestPath'],evidence:{...evidence,path:requestPath,conditional:!!guard},
   });
  }
  return findings;

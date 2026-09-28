@@ -65,5 +65,5 @@ export function bindingContext(config={}) {
 export function interfaceContext(i) {
   const c=i.configuration??{};
   return {rootScenarioId:text(i.rootScenarioId),platformCapabilityId:text(i.platformCapabilityId),inputType:text(c.input?.type),
-    displaySelect:text(c.display?.select),displayAs:text(c.display?.as)};
+    displaySelect:text(c.display?.select),displayAs:text(c.display?.as),displayTransformationId:text(c.display?.transformationId)};
 }

@@ -1,6 +1,7 @@
 // These are projection diagnostics, not an estate admission verdict. Findings
 // name the source and visible components; missing evidence is not called failure.
 import {inspectInvocationPaths} from './invocation-evidence.mjs';
+import {inspectBoundaries} from './boundary-inspection.mjs';
 export function reviewBlueprint(snapshot,model){
  const issues=[];
  const add=(severity,code,message,nodeIds=[],refs=[])=>issues.push({id:`R${String(issues.length+1).padStart(2,'0')}`,severity,code,message,nodeIds,sourceRefs:refs.filter(Boolean)});
@@ -53,7 +54,9 @@ export function reviewBlueprint(snapshot,model){
  }
  if(snapshot.bindings.some(b=>!Object.hasOwn(b,'invocationCondition'))||snapshot.transformations.some(t=>!t.resultShape))
   add('warning','INVOCATION_CONDITION_EVIDENCE_NOT_RETAINED','This snapshot predates invocation-condition and output-shape inspection. Refresh it before assessing guarded invocation paths.');
- for(const finding of inspectInvocationPaths(snapshot)){
+ if(snapshot.bindings.some(b=>!Object.hasOwn(b,'nestedInvocation'))||snapshot.contracts.some(c=>!Object.hasOwn(c,'emptyObjectEvidence')))
+  add('warning','BOUNDARY_INSPECTION_EVIDENCE_NOT_RETAINED','This snapshot lacks nested handoff or display-totality evidence. Refresh it before assessing these boundaries.');
+ for(const finding of [...inspectInvocationPaths(snapshot),...inspectBoundaries(snapshot)]){
   add(finding.severity,finding.code,finding.message,finding.nodeIds,finding.sourceRefs);
   issues.at(-1).evidence=finding.evidence;
  }
