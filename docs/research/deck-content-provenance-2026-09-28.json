@@ -1,0 +1,1021 @@
+{
+  "scope": "Audit of the published frozen deck; no fresh estate invocation, no per-text-run authority trace available",
+  "presentationId": "1zabhHGky03gEObEBPwXGabhIfvBtq7dlFIAqQz5ZhmM",
+  "sourceCommit": "c5ce8ea819b62dcfd0543da062635ff223b0c22b",
+  "snapshotDigest": "64c08b45799685572a5df9b4455ea88707624275a160ee7f20ee0c652f38a2a3",
+  "contentDigest": "b432a63330f5d2a1f968953ad85412f1476901e9b70de0effc228c6cd318ad36",
+  "inference": {
+    "mode": "deterministic-context",
+    "applied": 0
+  },
+  "counts": {
+    "slides": 72,
+    "preInspectionSection": 49,
+    "inspectionSection": 23,
+    "checkDisplayPages": 20,
+    "sqlPropertyRows": 57,
+    "heldReadingSummaries": 1,
+    "locallySynthesizedNoRows": 2,
+    "unusedVocabularyRows": 18
+  },
+  "sources": [
+    {
+      "file": "src/capability-presentation/read-estate.sql",
+      "sha256": "98be7b9e658e1dbd460fc2da279efb1a3eaa0ac050c8058fc8a56a653077a84b"
+    },
+    {
+      "file": "src/capability-presentation/estate.mjs",
+      "sha256": "08f4acb7ef7333719c05c9256e92b6ff744d3db177a3efa8eecc89b81e4d2db9"
+    },
+    {
+      "file": "src/capability-presentation/snapshot.mjs",
+      "sha256": "1273f372de5b031b5bc00f9c94b7f474d86fcc5b40a06b7def83ba89875280a2"
+    },
+    {
+      "file": "src/capability-presentation/model.mjs",
+      "sha256": "75740651760ec498a77ea8d4454f6c9619bac18dc157c13ac09f4631e1bc40ba"
+    },
+    {
+      "file": "src/capability-presentation/blueprint.mjs",
+      "sha256": "e7fa99abcca74562fccf184ded8447f9d660f9bcd7dd61d74664fb7b12100529"
+    },
+    {
+      "file": "src/capability-presentation/blueprint-review.mjs",
+      "sha256": "63ae95b0d1fefc19a6df05681cdac7fa190030a15bf009d5bf92a4035fa9accb"
+    },
+    {
+      "file": "src/capability-presentation/inspection-evidence.mjs",
+      "sha256": "ad0b642ba0c89763e625ba5c466d71b0ca67b91ba87fac54307222e2f59da28c"
+    },
+    {
+      "file": "src/capability-presentation/inspection-slides.mjs",
+      "sha256": "8e9622e77c254c6d65e6f2bf3df79e6b316541d5c57e499bdff08b668843243b"
+    },
+    {
+      "file": "src/capability-presentation/storyboard.mjs",
+      "sha256": "d0b995fb89166f8a97bf265c7433e01fc524c8c4e9f8441a9bae6a9670e00ad9"
+    },
+    {
+      "file": "src/capability-presentation/event-sheet.mjs",
+      "sha256": "6f1dc9e04adb713b0c4e285ce82b67d8f41f7162bc685cc25a6111283cb5bc03"
+    },
+    {
+      "file": "src/capability-presentation/component-glyphs.mjs",
+      "sha256": "bb037cb2a96576a9755663f495304acf8416ca52ccfd8e290670a5c1131d171e"
+    },
+    {
+      "file": "src/capability-presentation/styles/component-glyphs.v1.json",
+      "sha256": "2e4a7018b34f66ce7812aa68c0c0bf43f550b438b4323647a9d2358cc74f1b3b"
+    },
+    {
+      "file": "src/capability-presentation/provider.mjs",
+      "sha256": "7ddb64a2acf9cbf9b6b6854557d1832753bc5039901b5fedcf32d72665be7a54"
+    }
+  ],
+  "slides": [
+    {
+      "number": 1,
+      "title": "request capability from objective",
+      "role": "context-or-register",
+      "evidenceRefs": [
+        "model:capability_version/1551341"
+      ],
+      "interpretation": "",
+      "contentFamily": "database declarations via local reader + local projection/diagnostics",
+      "renderingAuthority": "local source code and glyph JSON"
+    },
+    {
+      "number": 2,
+      "title": "Scenario circuit blueprint",
+      "role": "scenario-blueprint",
+      "evidenceRefs": [
+        "graph:/scenarios/0",
+        "graph:/executionAuthorities/0/operations/3",
+        "graph:/interfaceAuthority/portBindings/4",
+        "graph:/executionAuthorities/0/operations/6",
+        "graph:/interfaceAuthority/portBindings/5"
+      ],
+      "interpretation": "Input/Event/Outcome are scenario semantics. Provider wires retain exact binding or testimony references. Disclosed operations are a subset; the complete Event is linked. Binding findings expose affected declared operations with amber inspection overlays, without adding provider nodes or edges. Their component shapes follow the same declared-binding rules as the complete execution circuit. Decorative contacts add no declared ports. No installation, execution or monotonic proof is asserted.",
+      "contentFamily": "database declarations via local reader + local projection/diagnostics",
+      "renderingAuthority": "local source code and glyph JSON"
+    },
+    {
+      "number": 3,
+      "title": "Capability circuit blueprint",
+      "role": "overview",
+      "evidenceRefs": [
+        "graph:/scenarios/0",
+        "graph:/interfaceAuthority/portBindings/4",
+        "graph:/interfaceAuthority/portBindings/5"
+      ],
+      "interpretation": "Only root-connected declared scenarios become scenario cards. Provider badges retain exact operation and binding paths, including testimony references. Input and outcome frames summarize the root scenario semantic contract; they do not prove execution routing or observed success. Selection denotes the drill-down target, not runtime state. Unconnected declarations remain in the inventory. No stages are promoted to scenarios.",
+      "contentFamily": "database declarations via local reader + local projection/diagnostics",
+      "renderingAuthority": "local source code and glyph JSON"
+    },
+    {
+      "number": 4,
+      "title": "Scenario meaning",
+      "role": "projection",
+      "evidenceRefs": [
+        "graph:/scenarios/0"
+      ],
+      "interpretation": "Scenario semantic positions; not execution sequencing.",
+      "contentFamily": "database declarations via local reader + local projection/diagnostics",
+      "renderingAuthority": "local source code and glyph JSON"
+    },
+    {
+      "number": 5,
+      "title": "Complete execution circuit",
+      "role": "projection",
+      "evidenceRefs": [
+        "graph:/executionAuthorities/0/operations/0",
+        "graph:/executionAuthorities/0/operations/1",
+        "graph:/executionAuthorities/0/operations/2",
+        "graph:/executionAuthorities/0/operations/3",
+        "graph:/executionAuthorities/0/operations/4",
+        "graph:/executionAuthorities/0/operations/5",
+        "graph:/executionAuthorities/0/operations/6"
+      ],
+      "interpretation": "All selected Event operations; wires retain declared order, not proven runtime routing. Rows are layout groups, not declared stages. Shapes follow exact platform bindings or operation kinds; unknown components remain unclassified. Glyph contacts are decorative, not additional declared ports. Action colors classify identifier prefixes only. All operation IDs and source edges are preserved. Canonical routing and monotonic proof remain unverified.",
+      "contentFamily": "database declarations via local reader + local projection/diagnostics",
+      "renderingAuthority": "local source code and glyph JSON"
+    },
+    {
+      "number": 6,
+      "title": "Execution cell identities",
+      "role": "identity-register",
+      "evidenceRefs": [
+        "graph:/executionAuthorities/0/operations/0",
+        "graph:/executionAuthorities/0/operations/1",
+        "graph:/executionAuthorities/0/operations/2",
+        "graph:/executionAuthorities/0/operations/3",
+        "graph:/executionAuthorities/0/operations/4"
+      ],
+      "interpretation": "",
+      "contentFamily": "database declarations via local reader + local projection/diagnostics",
+      "renderingAuthority": "local source code and glyph JSON"
+    },
+    {
+      "number": 7,
+      "title": "Execution cell identities",
+      "role": "identity-register",
+      "evidenceRefs": [
+        "graph:/executionAuthorities/0/operations/5",
+        "graph:/executionAuthorities/0/operations/6"
+      ],
+      "interpretation": "",
+      "contentFamily": "database declarations via local reader + local projection/diagnostics",
+      "renderingAuthority": "local source code and glyph JSON"
+    },
+    {
+      "number": 8,
+      "title": "Provider port ownership",
+      "role": "provider-detail",
+      "evidenceRefs": [
+        "graph:/executionAuthorities/0/operations/0",
+        "graph:/executionAuthorities/0/operations/1",
+        "graph:/executionAuthorities/0/operations/0",
+        "graph:/executionAuthorities/0/operations/0",
+        "graph:/interfaceAuthority/portBindings/1",
+        "graph:/interfaceAuthority/portBindings/3",
+        "graph:/executionAuthorities/0/operations/1",
+        "graph:/executionAuthorities/0/operations/1",
+        "graph:/interfaceAuthority/portBindings/0",
+        "graph:/interfaceAuthority/portBindings/0"
+      ],
+      "interpretation": "",
+      "contentFamily": "database declarations via local reader + local projection/diagnostics",
+      "renderingAuthority": "local source code and glyph JSON"
+    },
+    {
+      "number": 9,
+      "title": "Provider port ownership",
+      "role": "provider-detail",
+      "evidenceRefs": [
+        "graph:/executionAuthorities/0/operations/2",
+        "graph:/executionAuthorities/0/operations/2",
+        "graph:/executionAuthorities/0/operations/2",
+        "graph:/interfaceAuthority/portBindings/0",
+        "graph:/interfaceAuthority/portBindings/6"
+      ],
+      "interpretation": "",
+      "contentFamily": "database declarations via local reader + local projection/diagnostics",
+      "renderingAuthority": "local source code and glyph JSON"
+    },
+    {
+      "number": 10,
+      "title": "Provider port ownership",
+      "role": "provider-detail",
+      "evidenceRefs": [
+        "graph:/executionAuthorities/0/operations/3",
+        "graph:/executionAuthorities/0/operations/3",
+        "graph:/executionAuthorities/0/operations/3",
+        "graph:/interfaceAuthority/portBindings/4",
+        "graph:/interfaceAuthority/portBindings/4",
+        "graph:/interfaceAuthority/portBindings/4"
+      ],
+      "interpretation": "",
+      "contentFamily": "database declarations via local reader + local projection/diagnostics",
+      "renderingAuthority": "local source code and glyph JSON"
+    },
+    {
+      "number": 11,
+      "title": "Provider port ownership",
+      "role": "provider-detail",
+      "evidenceRefs": [
+        "graph:/executionAuthorities/0/operations/4",
+        "graph:/executionAuthorities/0/operations/5",
+        "graph:/executionAuthorities/0/operations/4",
+        "graph:/executionAuthorities/0/operations/4",
+        "graph:/interfaceAuthority/portBindings/1",
+        "graph:/interfaceAuthority/portBindings/1",
+        "graph:/executionAuthorities/0/operations/5",
+        "graph:/executionAuthorities/0/operations/5",
+        "graph:/interfaceAuthority/portBindings/0",
+        "graph:/interfaceAuthority/portBindings/2"
+      ],
+      "interpretation": "",
+      "contentFamily": "database declarations via local reader + local projection/diagnostics",
+      "renderingAuthority": "local source code and glyph JSON"
+    },
+    {
+      "number": 12,
+      "title": "Provider port ownership",
+      "role": "provider-detail",
+      "evidenceRefs": [
+        "graph:/executionAuthorities/0/operations/6",
+        "graph:/executionAuthorities/0/operations/6",
+        "graph:/executionAuthorities/0/operations/6",
+        "graph:/interfaceAuthority/portBindings/1",
+        "graph:/interfaceAuthority/portBindings/5",
+        "graph:/interfaceAuthority/portBindings/5"
+      ],
+      "interpretation": "",
+      "contentFamily": "database declarations via local reader + local projection/diagnostics",
+      "renderingAuthority": "local source code and glyph JSON"
+    },
+    {
+      "number": 13,
+      "title": "Declared outcome variants",
+      "role": "outcomes",
+      "evidenceRefs": [
+        "graph:/scenarios/0"
+      ],
+      "interpretation": "",
+      "contentFamily": "database declarations via local reader + local projection/diagnostics",
+      "renderingAuthority": "local source code and glyph JSON"
+    },
+    {
+      "number": 14,
+      "title": "Provider involvement",
+      "role": "provider-inspection",
+      "evidenceRefs": [
+        "graph:/executionAuthorities/0/operations/3",
+        "graph:/interfaceAuthority/portBindings/4"
+      ],
+      "interpretation": "",
+      "contentFamily": "database declarations via local reader + local projection/diagnostics",
+      "renderingAuthority": "local source code and glyph JSON"
+    },
+    {
+      "number": 15,
+      "title": "Provider involvement",
+      "role": "provider-inspection",
+      "evidenceRefs": [
+        "graph:/executionAuthorities/0/operations/6",
+        "graph:/interfaceAuthority/portBindings/5"
+      ],
+      "interpretation": "",
+      "contentFamily": "database declarations via local reader + local projection/diagnostics",
+      "renderingAuthority": "local source code and glyph JSON"
+    },
+    {
+      "number": 16,
+      "title": "Blueprint review",
+      "role": "review",
+      "evidenceRefs": [
+        "model:feature_version/171673",
+        "snapshot:/inspection/readings/3/document/findings/0"
+      ],
+      "interpretation": "",
+      "contentFamily": "database declarations via local reader + local projection/diagnostics",
+      "renderingAuthority": "local source code and glyph JSON"
+    },
+    {
+      "number": 17,
+      "title": "The capability’s authoring context",
+      "role": "context-or-register",
+      "evidenceRefs": [
+        "model:scenario_version/91972",
+        "model:feature_version/171673",
+        "model:scenario_version/91973",
+        "model:semantic_object_definition/213631/semantics/authority",
+        "model:scenario_version/91974",
+        "graph:/scenarios/0",
+        "model:scenario_version/91975",
+        "graph:/contractAuthorities/contracts/agent-objective-request.v1",
+        "graph:/contractAuthorities/contracts/invoke-database-capability-result.v1",
+        "model:scenario_version/91976",
+        "model:scenario_version/91977",
+        "graph:/semanticTransformations/0",
+        "graph:/semanticTransformations/1",
+        "graph:/semanticTransformations/2",
+        "graph:/semanticTransformations/3",
+        "graph:/semanticTransformations/4",
+        "graph:/semanticTransformations/5"
+      ],
+      "interpretation": "The numbered rail organizes explanatory context. It is not an execution path or evidence that authoring stages were completed.",
+      "contentFamily": "database declarations via local reader + local projection/diagnostics",
+      "renderingAuthority": "local source code and glyph JSON"
+    },
+    {
+      "number": 18,
+      "title": "The capability’s authoring context",
+      "role": "context-or-register",
+      "evidenceRefs": [
+        "model:scenario_version/91978",
+        "graph:/executionAuthorities/0",
+        "model:scenario_version/91979",
+        "graph:/interfaceAuthority/portBindings/0",
+        "graph:/interfaceAuthority/portBindings/1",
+        "graph:/interfaceAuthority/portBindings/2",
+        "graph:/interfaceAuthority/portBindings/3",
+        "graph:/interfaceAuthority/portBindings/4",
+        "graph:/interfaceAuthority/portBindings/5",
+        "graph:/interfaceAuthority/portBindings/6",
+        "model:scenario_version/91980",
+        "graph:/interfaceAuthority/interfaces/0",
+        "model:scenario_version/91981",
+        "model:scenario_version/91982"
+      ],
+      "interpretation": "The numbered rail organizes explanatory context. It is not an execution path or evidence that authoring stages were completed.",
+      "contentFamily": "database declarations via local reader + local projection/diagnostics",
+      "renderingAuthority": "local source code and glyph JSON"
+    },
+    {
+      "number": 19,
+      "title": "01 · Feature parse",
+      "role": "context-or-register",
+      "evidenceRefs": [
+        "model:scenario_version/91972",
+        "model:feature_version/171673"
+      ],
+      "interpretation": "",
+      "contentFamily": "database declarations via local reader + local projection/diagnostics",
+      "renderingAuthority": "local source code and glyph JSON"
+    },
+    {
+      "number": 20,
+      "title": "Retained feature writeup",
+      "role": "context-or-register",
+      "evidenceRefs": [
+        "model:feature_version/171673",
+        "source:content_object/185511"
+      ],
+      "interpretation": "",
+      "contentFamily": "database declarations via local reader + local projection/diagnostics",
+      "renderingAuthority": "local source code and glyph JSON"
+    },
+    {
+      "number": 21,
+      "title": "Resolve one objective through the governed lane",
+      "role": "context-or-register",
+      "evidenceRefs": [
+        "model:scenario_version/102226"
+      ],
+      "interpretation": "",
+      "contentFamily": "database declarations via local reader + local projection/diagnostics",
+      "renderingAuthority": "local source code and glyph JSON"
+    },
+    {
+      "number": 22,
+      "title": "02 · Capability meaning",
+      "role": "context-or-register",
+      "evidenceRefs": [
+        "model:scenario_version/91973",
+        "model:semantic_object_definition/213631/semantics/authority"
+      ],
+      "interpretation": "The identity “request capability from objective” suggests the subject. This wording is an interpretation when intent prose is absent.",
+      "contentFamily": "database declarations via local reader + local projection/diagnostics",
+      "renderingAuthority": "local source code and glyph JSON"
+    },
+    {
+      "number": 23,
+      "title": "Experience and observable conditions",
+      "role": "context-or-register",
+      "evidenceRefs": [
+        "model:semantic_object_definition/213631/semantics/authority"
+      ],
+      "interpretation": "",
+      "contentFamily": "database declarations via local reader + local projection/diagnostics",
+      "renderingAuthority": "local source code and glyph JSON"
+    },
+    {
+      "number": 24,
+      "title": "03 · Scenario inputs/events/outcomes",
+      "role": "context-or-register",
+      "evidenceRefs": [
+        "model:scenario_version/91974",
+        "graph:/scenarios/0"
+      ],
+      "interpretation": "",
+      "contentFamily": "database declarations via local reader + local projection/diagnostics",
+      "renderingAuthority": "local source code and glyph JSON"
+    },
+    {
+      "number": 25,
+      "title": "Resolve one objective through the governed lane",
+      "role": "context-or-register",
+      "evidenceRefs": [
+        "model:scenario_version/102226"
+      ],
+      "interpretation": "",
+      "contentFamily": "database declarations via local reader + local projection/diagnostics",
+      "renderingAuthority": "local source code and glyph JSON"
+    },
+    {
+      "number": 26,
+      "title": "04 · Contracts and schemas",
+      "role": "context-or-register",
+      "evidenceRefs": [
+        "model:scenario_version/91975",
+        "graph:/contractAuthorities/contracts/agent-objective-request.v1",
+        "graph:/contractAuthorities/contracts/invoke-database-capability-result.v1"
+      ],
+      "interpretation": "",
+      "contentFamily": "database declarations via local reader + local projection/diagnostics",
+      "renderingAuthority": "local source code and glyph JSON"
+    },
+    {
+      "number": 27,
+      "title": "Contract field semantics",
+      "role": "context-or-register",
+      "evidenceRefs": [
+        "graph:/contractAuthorities/contracts/agent-objective-request.v1"
+      ],
+      "interpretation": "",
+      "contentFamily": "database declarations via local reader + local projection/diagnostics",
+      "renderingAuthority": "local source code and glyph JSON"
+    },
+    {
+      "number": 28,
+      "title": "Contract field semantics",
+      "role": "context-or-register",
+      "evidenceRefs": [
+        "graph:/contractAuthorities/contracts/agent-objective-request.v1"
+      ],
+      "interpretation": "",
+      "contentFamily": "database declarations via local reader + local projection/diagnostics",
+      "renderingAuthority": "local source code and glyph JSON"
+    },
+    {
+      "number": 29,
+      "title": "05 · Semantic authority envelope",
+      "role": "context-or-register",
+      "evidenceRefs": [
+        "model:scenario_version/91976",
+        "model:semantic_object_definition/213631/semantics/authority"
+      ],
+      "interpretation": "",
+      "contentFamily": "database declarations via local reader + local projection/diagnostics",
+      "renderingAuthority": "local source code and glyph JSON"
+    },
+    {
+      "number": 30,
+      "title": "Declared roots and selected execution",
+      "role": "context-or-register",
+      "evidenceRefs": [
+        "model:semantic_object_definition/213631/semantics/authority",
+        "model:feature_version/171673"
+      ],
+      "interpretation": "",
+      "contentFamily": "database declarations via local reader + local projection/diagnostics",
+      "renderingAuthority": "local source code and glyph JSON"
+    },
+    {
+      "number": 31,
+      "title": "06 · Transformation AST",
+      "role": "context-or-register",
+      "evidenceRefs": [
+        "model:scenario_version/91977",
+        "graph:/semanticTransformations/0",
+        "graph:/semanticTransformations/1",
+        "graph:/semanticTransformations/2",
+        "graph:/semanticTransformations/3",
+        "graph:/semanticTransformations/4",
+        "graph:/semanticTransformations/5"
+      ],
+      "interpretation": "This expression contains 73 mechanic nodes and 4 conditional operator nodes. An invoked port binding references this expression. This is declaration evidence, not an observed execution trace. Larger subexpressions are collapsed; operator counts and the digest remain in the snapshot.",
+      "contentFamily": "database declarations via local reader + local projection/diagnostics",
+      "renderingAuthority": "local source code and glyph JSON"
+    },
+    {
+      "number": 32,
+      "title": "07 · Execution authorities and ports",
+      "role": "context-or-register",
+      "evidenceRefs": [
+        "model:scenario_version/91978",
+        "graph:/executionAuthorities/0"
+      ],
+      "interpretation": "",
+      "contentFamily": "database declarations via local reader + local projection/diagnostics",
+      "renderingAuthority": "local source code and glyph JSON"
+    },
+    {
+      "number": 33,
+      "title": "Execution authority responsibilities",
+      "role": "context-or-register",
+      "evidenceRefs": [
+        "graph:/executionAuthorities/0",
+        "graph:/executionAuthorities/0/operations/0",
+        "graph:/executionAuthorities/0/operations/1",
+        "graph:/executionAuthorities/0/operations/2",
+        "graph:/executionAuthorities/0/operations/3",
+        "graph:/executionAuthorities/0/operations/4",
+        "graph:/executionAuthorities/0/operations/5",
+        "graph:/executionAuthorities/0/operations/6"
+      ],
+      "interpretation": "",
+      "contentFamily": "database declarations via local reader + local projection/diagnostics",
+      "renderingAuthority": "local source code and glyph JSON"
+    },
+    {
+      "number": 34,
+      "title": "Execution authority responsibilities",
+      "role": "context-or-register",
+      "evidenceRefs": [
+        "graph:/executionAuthorities/0",
+        "graph:/executionAuthorities/0/operations/0",
+        "graph:/executionAuthorities/0/operations/1",
+        "graph:/executionAuthorities/0/operations/2",
+        "graph:/executionAuthorities/0/operations/3",
+        "graph:/executionAuthorities/0/operations/4",
+        "graph:/executionAuthorities/0/operations/5",
+        "graph:/executionAuthorities/0/operations/6"
+      ],
+      "interpretation": "",
+      "contentFamily": "database declarations via local reader + local projection/diagnostics",
+      "renderingAuthority": "local source code and glyph JSON"
+    },
+    {
+      "number": 35,
+      "title": "Execution authority responsibilities",
+      "role": "context-or-register",
+      "evidenceRefs": [
+        "graph:/executionAuthorities/0",
+        "graph:/executionAuthorities/0/operations/0",
+        "graph:/executionAuthorities/0/operations/1",
+        "graph:/executionAuthorities/0/operations/2",
+        "graph:/executionAuthorities/0/operations/3",
+        "graph:/executionAuthorities/0/operations/4",
+        "graph:/executionAuthorities/0/operations/5",
+        "graph:/executionAuthorities/0/operations/6"
+      ],
+      "interpretation": "",
+      "contentFamily": "database declarations via local reader + local projection/diagnostics",
+      "renderingAuthority": "local source code and glyph JSON"
+    },
+    {
+      "number": 36,
+      "title": "08 · Providers, bindings, overlays",
+      "role": "context-or-register",
+      "evidenceRefs": [
+        "model:scenario_version/91979",
+        "graph:/interfaceAuthority/portBindings/0",
+        "graph:/interfaceAuthority/portBindings/1",
+        "graph:/interfaceAuthority/portBindings/2",
+        "graph:/interfaceAuthority/portBindings/3",
+        "graph:/interfaceAuthority/portBindings/4",
+        "graph:/interfaceAuthority/portBindings/5",
+        "graph:/interfaceAuthority/portBindings/6"
+      ],
+      "interpretation": "",
+      "contentFamily": "database declarations via local reader + local projection/diagnostics",
+      "renderingAuthority": "local source code and glyph JSON"
+    },
+    {
+      "number": 37,
+      "title": "Provider authority and lineage",
+      "role": "context-or-register",
+      "evidenceRefs": [
+        "graph:/interfaceAuthority/portBindings/0"
+      ],
+      "interpretation": "",
+      "contentFamily": "database declarations via local reader + local projection/diagnostics",
+      "renderingAuthority": "local source code and glyph JSON"
+    },
+    {
+      "number": 38,
+      "title": "Provider authority and lineage",
+      "role": "context-or-register",
+      "evidenceRefs": [
+        "graph:/interfaceAuthority/portBindings/2"
+      ],
+      "interpretation": "",
+      "contentFamily": "database declarations via local reader + local projection/diagnostics",
+      "renderingAuthority": "local source code and glyph JSON"
+    },
+    {
+      "number": 39,
+      "title": "Provider input and result bindings",
+      "role": "context-or-register",
+      "evidenceRefs": [
+        "graph:/interfaceAuthority/portBindings/4"
+      ],
+      "interpretation": "",
+      "contentFamily": "database declarations via local reader + local projection/diagnostics",
+      "renderingAuthority": "local source code and glyph JSON"
+    },
+    {
+      "number": 40,
+      "title": "Provider authority and lineage",
+      "role": "context-or-register",
+      "evidenceRefs": [
+        "graph:/interfaceAuthority/portBindings/4"
+      ],
+      "interpretation": "",
+      "contentFamily": "database declarations via local reader + local projection/diagnostics",
+      "renderingAuthority": "local source code and glyph JSON"
+    },
+    {
+      "number": 41,
+      "title": "Provider authority and lineage",
+      "role": "context-or-register",
+      "evidenceRefs": [
+        "graph:/interfaceAuthority/portBindings/6"
+      ],
+      "interpretation": "",
+      "contentFamily": "database declarations via local reader + local projection/diagnostics",
+      "renderingAuthority": "local source code and glyph JSON"
+    },
+    {
+      "number": 42,
+      "title": "09 · Interface and CLI display",
+      "role": "context-or-register",
+      "evidenceRefs": [
+        "model:scenario_version/91980",
+        "graph:/interfaceAuthority/interfaces/0"
+      ],
+      "interpretation": "",
+      "contentFamily": "database declarations via local reader + local projection/diagnostics",
+      "renderingAuthority": "local source code and glyph JSON"
+    },
+    {
+      "number": 43,
+      "title": "CLI input and display contract",
+      "role": "context-or-register",
+      "evidenceRefs": [
+        "graph:/interfaceAuthority/interfaces/0"
+      ],
+      "interpretation": "",
+      "contentFamily": "database declarations via local reader + local projection/diagnostics",
+      "renderingAuthority": "local source code and glyph JSON"
+    },
+    {
+      "number": 44,
+      "title": "10 · Fixtures and proof",
+      "role": "context-or-register",
+      "evidenceRefs": [
+        "model:scenario_version/91981"
+      ],
+      "interpretation": "",
+      "contentFamily": "database declarations via local reader + local projection/diagnostics",
+      "renderingAuthority": "local source code and glyph JSON"
+    },
+    {
+      "number": 45,
+      "title": "11 · Alignment evaluation",
+      "role": "context-or-register",
+      "evidenceRefs": [
+        "model:scenario_version/91982"
+      ],
+      "interpretation": "",
+      "contentFamily": "database declarations via local reader + local projection/diagnostics",
+      "renderingAuthority": "local source code and glyph JSON"
+    },
+    {
+      "number": 46,
+      "title": "11 · Alignment evaluation",
+      "role": "context-or-register",
+      "evidenceRefs": [],
+      "interpretation": "",
+      "contentFamily": "database declarations via local reader + local projection/diagnostics",
+      "renderingAuthority": "local source code and glyph JSON"
+    },
+    {
+      "number": 47,
+      "title": "Retained source register",
+      "role": "context-or-register",
+      "evidenceRefs": [
+        "graph:/scenarios/0"
+      ],
+      "interpretation": "",
+      "contentFamily": "database declarations via local reader + local projection/diagnostics",
+      "renderingAuthority": "local source code and glyph JSON"
+    },
+    {
+      "number": 48,
+      "title": "Evidence gaps and circuit boundaries",
+      "role": "context-or-register",
+      "evidenceRefs": [],
+      "interpretation": "",
+      "contentFamily": "database declarations via local reader + local projection/diagnostics",
+      "renderingAuthority": "local source code and glyph JSON"
+    },
+    {
+      "number": 49,
+      "title": "Evidence and replay",
+      "role": "context-or-register",
+      "evidenceRefs": [
+        "model:capability_version/1551341"
+      ],
+      "interpretation": "Hashes identify retained evidence; they do not certify the capability’s behavior or the truth of an inferred explanation.",
+      "contentFamily": "database declarations via local reader + local projection/diagnostics",
+      "renderingAuthority": "local source code and glyph JSON"
+    },
+    {
+      "number": 50,
+      "title": "Inspection coverage",
+      "role": "inspection-coverage",
+      "evidenceRefs": [
+        "snapshot:/inspection"
+      ],
+      "interpretation": "",
+      "contentFamily": "local summary of SQL evidence",
+      "renderingAuthority": "local source code and glyph JSON"
+    },
+    {
+      "number": 51,
+      "title": "Inspection evidence",
+      "role": "inspection-evidence",
+      "evidenceRefs": [
+        "snapshot:/inspection/readings/5/document/rows/0",
+        "snapshot:/inspection/readings/5/document/rows/1",
+        "snapshot:/inspection/readings/6/document/rows/0"
+      ],
+      "interpretation": "",
+      "contentFamily": "SQL property rows / declared hold / local empty-result summaries",
+      "renderingAuthority": "local source code and glyph JSON"
+    },
+    {
+      "number": 52,
+      "title": "Inspection evidence",
+      "role": "inspection-evidence",
+      "evidenceRefs": [
+        "snapshot:/inspection/readings/7/document/rows/0",
+        "snapshot:/inspection/readings/7/document/rows/1",
+        "snapshot:/inspection/readings/7/document/rows/2"
+      ],
+      "interpretation": "",
+      "contentFamily": "SQL property rows / declared hold / local empty-result summaries",
+      "renderingAuthority": "local source code and glyph JSON"
+    },
+    {
+      "number": 53,
+      "title": "Inspection evidence",
+      "role": "inspection-evidence",
+      "evidenceRefs": [
+        "snapshot:/inspection/readings/7/document/rows/3",
+        "snapshot:/inspection/readings/7/document/rows/4",
+        "snapshot:/inspection/readings/7/document/rows/5"
+      ],
+      "interpretation": "",
+      "contentFamily": "SQL property rows / declared hold / local empty-result summaries",
+      "renderingAuthority": "local source code and glyph JSON"
+    },
+    {
+      "number": 54,
+      "title": "Inspection evidence",
+      "role": "inspection-evidence",
+      "evidenceRefs": [
+        "snapshot:/inspection/readings/7/document/rows/6",
+        "snapshot:/inspection/readings/7/document/rows/7",
+        "snapshot:/inspection/readings/7/document/rows/8"
+      ],
+      "interpretation": "",
+      "contentFamily": "SQL property rows / declared hold / local empty-result summaries",
+      "renderingAuthority": "local source code and glyph JSON"
+    },
+    {
+      "number": 55,
+      "title": "Inspection evidence",
+      "role": "inspection-evidence",
+      "evidenceRefs": [
+        "snapshot:/inspection/readings/7/document/rows/9",
+        "snapshot:/inspection/readings/7/document/rows/10",
+        "snapshot:/inspection/readings/7/document/rows/11"
+      ],
+      "interpretation": "",
+      "contentFamily": "SQL property rows / declared hold / local empty-result summaries",
+      "renderingAuthority": "local source code and glyph JSON"
+    },
+    {
+      "number": 56,
+      "title": "Inspection evidence",
+      "role": "inspection-evidence",
+      "evidenceRefs": [
+        "snapshot:/inspection/readings/7/document/rows/12",
+        "snapshot:/inspection/readings/7/document/rows/13",
+        "snapshot:/inspection/readings/7/document/rows/14"
+      ],
+      "interpretation": "",
+      "contentFamily": "SQL property rows / declared hold / local empty-result summaries",
+      "renderingAuthority": "local source code and glyph JSON"
+    },
+    {
+      "number": 57,
+      "title": "Inspection evidence",
+      "role": "inspection-evidence",
+      "evidenceRefs": [
+        "snapshot:/inspection/readings/7/document/rows/15",
+        "snapshot:/inspection/readings/7/document/rows/16",
+        "snapshot:/inspection/readings/7/document/rows/17"
+      ],
+      "interpretation": "",
+      "contentFamily": "SQL property rows / declared hold / local empty-result summaries",
+      "renderingAuthority": "local source code and glyph JSON"
+    },
+    {
+      "number": 58,
+      "title": "Inspection evidence",
+      "role": "inspection-evidence",
+      "evidenceRefs": [
+        "snapshot:/inspection/readings/7/document/rows/18",
+        "snapshot:/inspection/readings/7/document/rows/19",
+        "snapshot:/inspection/readings/7/document/rows/20"
+      ],
+      "interpretation": "",
+      "contentFamily": "SQL property rows / declared hold / local empty-result summaries",
+      "renderingAuthority": "local source code and glyph JSON"
+    },
+    {
+      "number": 59,
+      "title": "Inspection evidence",
+      "role": "inspection-evidence",
+      "evidenceRefs": [
+        "snapshot:/inspection/readings/7/document/rows/21",
+        "snapshot:/inspection/readings/7/document/rows/22",
+        "snapshot:/inspection/readings/7/document/rows/23"
+      ],
+      "interpretation": "",
+      "contentFamily": "SQL property rows / declared hold / local empty-result summaries",
+      "renderingAuthority": "local source code and glyph JSON"
+    },
+    {
+      "number": 60,
+      "title": "Inspection evidence",
+      "role": "inspection-evidence",
+      "evidenceRefs": [
+        "snapshot:/inspection/readings/7/document/rows/24",
+        "snapshot:/inspection/readings/7/document/rows/25",
+        "snapshot:/inspection/readings/7/document/rows/26"
+      ],
+      "interpretation": "",
+      "contentFamily": "SQL property rows / declared hold / local empty-result summaries",
+      "renderingAuthority": "local source code and glyph JSON"
+    },
+    {
+      "number": 61,
+      "title": "Inspection evidence",
+      "role": "inspection-evidence",
+      "evidenceRefs": [
+        "snapshot:/inspection/readings/7/document/rows/27",
+        "snapshot:/inspection/readings/7/document/rows/28",
+        "snapshot:/inspection/readings/7/document/rows/29"
+      ],
+      "interpretation": "",
+      "contentFamily": "SQL property rows / declared hold / local empty-result summaries",
+      "renderingAuthority": "local source code and glyph JSON"
+    },
+    {
+      "number": 62,
+      "title": "Inspection evidence",
+      "role": "inspection-evidence",
+      "evidenceRefs": [
+        "snapshot:/inspection/readings/7/document/rows/30",
+        "snapshot:/inspection/readings/7/document/rows/31",
+        "snapshot:/inspection/readings/7/document/rows/32"
+      ],
+      "interpretation": "",
+      "contentFamily": "SQL property rows / declared hold / local empty-result summaries",
+      "renderingAuthority": "local source code and glyph JSON"
+    },
+    {
+      "number": 63,
+      "title": "Inspection evidence",
+      "role": "inspection-evidence",
+      "evidenceRefs": [
+        "snapshot:/inspection/readings/7/document/rows/33",
+        "snapshot:/inspection/readings/8/document/rows/0",
+        "snapshot:/inspection/readings/8/document/rows/1"
+      ],
+      "interpretation": "",
+      "contentFamily": "SQL property rows / declared hold / local empty-result summaries",
+      "renderingAuthority": "local source code and glyph JSON"
+    },
+    {
+      "number": 64,
+      "title": "Inspection evidence",
+      "role": "inspection-evidence",
+      "evidenceRefs": [
+        "snapshot:/inspection/readings/8/document/rows/2",
+        "snapshot:/inspection/readings/8/document/rows/3",
+        "snapshot:/inspection/readings/8/document/rows/4"
+      ],
+      "interpretation": "",
+      "contentFamily": "SQL property rows / declared hold / local empty-result summaries",
+      "renderingAuthority": "local source code and glyph JSON"
+    },
+    {
+      "number": 65,
+      "title": "Inspection evidence",
+      "role": "inspection-evidence",
+      "evidenceRefs": [
+        "snapshot:/inspection/readings/8/document/rows/5",
+        "snapshot:/inspection/readings/9",
+        "snapshot:/inspection/readings/10/document/rows/0"
+      ],
+      "interpretation": "",
+      "contentFamily": "SQL property rows / declared hold / local empty-result summaries",
+      "renderingAuthority": "local source code and glyph JSON"
+    },
+    {
+      "number": 66,
+      "title": "Inspection evidence",
+      "role": "inspection-evidence",
+      "evidenceRefs": [
+        "snapshot:/inspection/readings/11",
+        "snapshot:/inspection/readings/12",
+        "snapshot:/inspection/readings/13/document/capabilities"
+      ],
+      "interpretation": "",
+      "contentFamily": "SQL property rows / declared hold / local empty-result summaries",
+      "renderingAuthority": "local source code and glyph JSON"
+    },
+    {
+      "number": 67,
+      "title": "Inspection evidence",
+      "role": "inspection-evidence",
+      "evidenceRefs": [
+        "snapshot:/inspection/readings/13/document/capabilities"
+      ],
+      "interpretation": "",
+      "contentFamily": "SQL property rows / declared hold / local empty-result summaries",
+      "renderingAuthority": "local source code and glyph JSON"
+    },
+    {
+      "number": 68,
+      "title": "Inspection evidence",
+      "role": "inspection-evidence",
+      "evidenceRefs": [
+        "snapshot:/inspection/readings/13/document/capabilities"
+      ],
+      "interpretation": "",
+      "contentFamily": "SQL property rows / declared hold / local empty-result summaries",
+      "renderingAuthority": "local source code and glyph JSON"
+    },
+    {
+      "number": 69,
+      "title": "Inspection evidence",
+      "role": "inspection-evidence",
+      "evidenceRefs": [
+        "snapshot:/inspection/readings/13/document/capabilities"
+      ],
+      "interpretation": "",
+      "contentFamily": "SQL property rows / declared hold / local empty-result summaries",
+      "renderingAuthority": "local source code and glyph JSON"
+    },
+    {
+      "number": 70,
+      "title": "Inspection evidence",
+      "role": "inspection-evidence",
+      "evidenceRefs": [
+        "snapshot:/inspection/readings/13/document/capabilities"
+      ],
+      "interpretation": "",
+      "contentFamily": "SQL property rows / declared hold / local empty-result summaries",
+      "renderingAuthority": "local source code and glyph JSON"
+    },
+    {
+      "number": 71,
+      "title": "Inspection evidence",
+      "role": "inspection-evidence",
+      "evidenceRefs": [],
+      "interpretation": "",
+      "contentFamily": "local findings + SQL repair map",
+      "renderingAuthority": "local source code and glyph JSON"
+    },
+    {
+      "number": 72,
+      "title": "Inspection evidence",
+      "role": "inspection-evidence",
+      "evidenceRefs": [
+        "model:feature_version/171673",
+        "snapshot:/inspection/readings/3/document/findings/0"
+      ],
+      "interpretation": "",
+      "contentFamily": "SQL detection finding + SQL repair map",
+      "renderingAuthority": "local source code and glyph JSON"
+    }
+  ]
+}
