@@ -629,3 +629,51 @@ Replay artifacts:
 `outputs/capability-estate/request-capability-from-objective-invocation-inspection`.
 Native readback, PDF renders and link verification:
 `outputs/google-slides/invocation-inspection`.
+
+### Inspection audit after the outer model selectors were aligned
+
+A later live read on September 28, 2026 found a new selected model binding:
+port version **4502**, definition **212726**, with `requestPath=modelRequest`
+and no invocation condition. The earlier 27-slide deck remains a snapshot of
+the previous configuration. A fresh review of current authority reports
+**0 errors / 3 warnings**, despite an installed runtime failure before Gemini
+inference dispatch:
+
+```text
+CELL_EXECUTION_FAILED
+PROJECTED_CAPABILITY_INVOCATION_FAILED:
+PROJECTED_CAPABILITY_REQUEST_PATH_MISSING: 'payload.attemptPlan'
+```
+
+The pinned `execute-governed-model-invocation` application starts with
+`port:model-invocation-execution-port`, which selects `payload.attemptPlan`.
+The supplied `modelRequest` is a closed object with no `payload` field. This
+failure is inside parent operation **03**, before reaching its declared
+inference provider. The inspection must keep provider association and observed
+dispatch separate.
+
+Three current limits are now demonstrated:
+
+- **Nested request compatibility is not inspected.** The normalizer retains a
+  digest for the outer configuration but not the embedded execution plan's
+  request boundaries. The path inspector also currently starts only at guarded
+  outer bindings. It misses the unguarded nested first operation.
+- **Display failure coverage is not inspected.** The retained CLI selector
+  `outcome.payload` renders `null` for this failure, hiding the code/message that
+  `--json` exposes. Retaining the selector is not validating its coverage.
+- **Process success is not execution success.** Both CLI modes exit zero in
+  this case. The failure body must remain the decisive evidence; a successful
+  process exit cannot clear an inspection finding.
+
+The exact base-table reads and installed-mode comparison are recorded in
+[`02-nested-invocation-evidence.sql`](../../sfx-embody/sql/inspect/binding-serviceability/02-nested-invocation-evidence.sql)
+and its [inspection notes](../../sfx-embody/sql/inspect/binding-serviceability/README.md).
+The next detection work must expose the nested request boundary on the parent
+scenario operation, with a drilldown to the pinned operation, without adding
+invented circuit nodes or claiming a Gemini exchange occurred. This audit
+records the gap; it does not yet implement that rule or change the deck.
+
+Fresh audit snapshot:
+`7ea547ef4934a5a3366116de7b4a9f0baff439a43dc8fd5d55b6a1b62b9c4691`.
+Local audit outputs: `outputs/null-inspection-snapshot.json` and
+`outputs/null-inspection-review.json`.
