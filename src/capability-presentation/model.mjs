@@ -112,7 +112,7 @@ export function buildCircuitModel(s, view) {
           edge(platform, realization, 'physical', b.sourceRef, 'declared metadata');
         }
       } else for (const providerId of b.providerIds) {
-        edge(platform, node('provider:' + providerId, providerId, 'provider', b.sourceRef), 'provider-selection', b.sourceRef, 'declared provider');
+        edge(platform, node('provider:' + providerId, s.providerLabels?.[providerId] ?? providerId, 'provider', b.sourceRef), 'provider-selection', b.sourceRef, 'declared provider');
       }
     }
     for (const portId of used) if (!s.bindings.some(b => b.portId === portId)) node('port:' + portId, portId, 'port', '', { missing: true, used: true });

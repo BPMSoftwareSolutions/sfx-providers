@@ -75,7 +75,7 @@ function physicalFields(config) {
   return { providerIds: [...providers].sort(), endpoints, credentialReferences: [...credentials].sort(), realizations };
 }
 
-export function normalizeSnapshot({ capability: c, graph: g, scenarios = [], features = [], fixtures = [], obligations = [], altitudeCatalog = [], conditions = [], blueprintSources = [], platformImplementations = [], inspection = null, provenance = {} }) {
+export function normalizeSnapshot({ capability: c, graph: g, scenarios = [], features = [], fixtures = [], obligations = [], altitudeCatalog = [], conditions = [], blueprintSources = [], platformImplementations = [], providerLabels = [], inspection = null, provenance = {} }) {
   if (g.declaredExecutionGraphRefused) fail(g.declaredExecutionGraphRefused, 'CAPABILITY_GRAPH_REFUSED');
   if (c.capability_id !== g.capabilityId) fail('The graph and selected capability identity disagree.');
   const declared = c.definition_json ? JSON.parse(c.definition_json)?.semantics?.authority ?? {} : {};
@@ -147,6 +147,7 @@ export function normalizeSnapshot({ capability: c, graph: g, scenarios = [], fea
       platformCapabilityId:str(p.platform_capability_id),providerId:str(p.provider_id),
       targetLanguage:str(p.target_language),declarationStatus:str(p.declaration_status)})).sort((a,b)=>
       a.platformCapabilityId.localeCompare(b.platformCapabilityId)||a.providerId.localeCompare(b.providerId)||a.targetLanguage.localeCompare(b.targetLanguage)),
+    providerLabels:Object.fromEntries(list(providerLabels).filter(r=>r&&r.provider_id&&r.version_label).map(r=>[str(r.provider_id),str(r.version_label)])),
     graphFeatures: { graphType: str(g.graphType || 'legacy declaration'), requiredExecutionFeatures: list(g.requiredExecutionFeatures),
       edgeGroups: list(g.edgeGroups).map((e, i) => ({ id: str(e.edgeGroupId ?? e.id ?? i), digest: digest(e), sourceRef: `graph:/edgeGroups/${i}` })),
       dispatchAuthorities: list(g.dispatchAuthorities).map((d, i) => ({ id: str(d.id ?? i), digest: digest(d), sourceRef: `graph:/dispatchAuthorities/${i}` })) },

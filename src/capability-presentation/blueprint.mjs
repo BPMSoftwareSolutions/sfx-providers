@@ -45,11 +45,11 @@ export function buildBlueprint(s){
   add('binding:'+b.portId,'binding',b.platformCapabilityId,b.sourceRef,{...b,used,ref:b.sourceRef});
   wire('port:'+b.portId,'binding:'+b.portId,'binding',b.sourceRef,'bound to');
   if(b.platformCapabilityId){add('platform:'+b.platformCapabilityId,'platform',b.platformCapabilityId,b.sourceRef);wire('binding:'+b.portId,'platform:'+b.platformCapabilityId,'realization',b.sourceRef,'platform capability');}
-  for(const providerId of b.providerIds??[]){add('provider:'+providerId,'provider',providerId,b.sourceRef);wire('platform:'+b.platformCapabilityId,'provider:'+providerId,'provider-selection',b.sourceRef,'declared provider',{bindingId:'binding:'+b.portId});}
+  for(const providerId of b.providerIds??[]){add('provider:'+providerId,'provider',s.providerLabels?.[providerId]??providerId,b.sourceRef);wire('platform:'+b.platformCapabilityId,'provider:'+providerId,'provider-selection',b.sourceRef,'declared provider',{bindingId:'binding:'+b.portId});}
   const transformation=s.transformations.find(t=>t.id===b.transformationId);
   for(const reference of transformation?.providerReferences??[]){
    const ref=transformation.sourceRef+reference.expressionPath;
-   add('provider:'+reference.providerId,'provider',reference.providerId,ref);
+   add('provider:'+reference.providerId,'provider',s.providerLabels?.[reference.providerId]??reference.providerId,ref);
    wire('binding:'+b.portId,'provider:'+reference.providerId,'provider-reference',ref,reference.basis,{bindingId:'binding:'+b.portId,transformationId:transformation.id,providerBindingId:reference.bindingId,conditional:reference.conditional});
   }
   for(const [i,e]of (b.endpoints??[]).entries()){const id=add(`endpoint:${b.portId}:${i}`,'endpoint',e.origin+e.path,b.sourceRef+'/configuration'+e.sourcePointer);wire('binding:'+b.portId,id,'physical',b.sourceRef,'declared destination');}

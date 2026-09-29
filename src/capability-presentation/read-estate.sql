@@ -146,3 +146,13 @@ ORDER BY d.platform_capability_id,d.provider_id,d.target_language;
 IF OBJECT_ID(N'analysis.read_capability_inspection',N'P') IS NOT NULL
  EXEC analysis.read_capability_inspection @capability_id=@capability_id,@estate_model_pk=@estate;
 ELSE SELECT CAST(NULL AS nvarchar(max)) AS inspection_json;
+
+-- Provider display labels from the estate label table (base tables only):
+-- provider_id -> version_label. Captions prefer the label; provider_id remains
+-- the identity in every node, edge and testimony join.
+SELECT so.declared_id AS provider_id,l.version_label
+FROM model.semantic_object so
+JOIN model.identity_namespace n ON n.namespace_pk=so.namespace_pk
+JOIN model.definition_version_label l ON l.semantic_object_pk=so.semantic_object_pk
+WHERE n.namespace_id=N'sidefx:providers'
+ORDER BY so.declared_id,l.version_label;
