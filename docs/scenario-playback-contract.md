@@ -83,8 +83,18 @@ The overlay uses captured evidence over that geometry.
 
 A bright component is the current recorded operation interval, or the latest
 receipt in live mode. Completed history is static and dim. Sequential operations
-must not keep pulsing together. A new current receipt or interval cancels the
-previous moving signal; only the current evidenced connection can move.
+must not keep pulsing together. Integrated database scenes keep one persistent
+cursor through input, operation paths, admitted handoffs and the exact return.
+Recorded concurrent spans receive separate cursors. The caller remains active
+for its complete own interval, including the port/provider round trip. Path
+distance within that interval is disclosed schematic progress; it is not a
+separate measurement of transport, provider dwell or response latency. Historical
+export overlays retain their receipt-scoped wire pulses.
+
+The port's selected platform/executor rule must match the own-operation receipt
+before its binding route animates. The provider card distinguishes its declared
+identity from that executor profile. Binding activity does not assert a separate
+provider-instance span. See [integrated-scenario-flow-parity.md](integrated-scenario-flow-parity.md).
 
 Replay can display an operation's recorded start/end interval using its retained
 own receipt. This is historical reconstruction, clearly labeled as recorded
