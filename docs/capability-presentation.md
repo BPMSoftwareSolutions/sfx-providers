@@ -1,5 +1,10 @@
 # Capability presentations
 
+For timed execution overlays, see the [scenario playback contract](scenario-playback-contract.md).
+Playback excludes host startup, database connection, session setup, authority
+reads, and graph preparation. This scope applies to both Normal 1× and Slow 0.1×.
+Snapshot regeneration and timed execution replay are separate operations.
+
 The circuit provider now also serves `presentation.from-capability`: select a
 `capabilityId`, read its current estate declarations, and generate editable
 PowerPoint/Google Slides diagrams and evidence sidecars.

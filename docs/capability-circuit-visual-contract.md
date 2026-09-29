@@ -1,5 +1,12 @@
 # Capability circuit projection contract
 
+Timed live-circuit playback follows the [scenario playback contract](scenario-playback-contract.md).
+It starts at the first captured scenario operation and ends at its own return.
+Host startup, database connection, session setup, authority reads, and graph
+preparation are excluded. Normal preserves the captured scenario duration;
+Slow 0.1× takes ten times that duration. Host-only evidence cannot invent scenario
+nodes or connectors.
+
 Status: implemented as a hand-authored presentation provider. This contract
 governs rendering; it is not estate admission or proof of monotonic execution.
 
