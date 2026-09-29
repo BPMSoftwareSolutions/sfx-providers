@@ -85,31 +85,54 @@ export function appendScenarioSheet({snapshot,model,page,slides,scenarioId=model
   label(v.id.replaceAll('_',' ').toLowerCase(),830,y+1,107,outcomeH-7,9.5,color);
  });
  const count=involvement.length,colW=600/Math.max(1,count+(unassigned.length?1:0)),providerWidth=colW-14;
- const ports=[];
+ const ports=[],eventNode=semantic.nodes.find(n=>n.kind==='event');
+ const callStyle=COMPONENT_STYLE.scenario.providerCalls;
+ // Provider identities stay grouped above. Call sites follow scenario order,
+ // independently of which provider owns them. This is a summary of real calls,
+ // never an invented sequence edge between non-adjacent operations.
+ const allCalls=involvement.flatMap(edge=>edge.via.map(use=>({edge,use})))
+  .sort((a,b)=>sc.operationIds.indexOf(a.use.operationId)-sc.operationIds.indexOf(b.use.operationId)||a.edge.to.localeCompare(b.edge.to));
+ const shownCalls=allCalls.slice(0,callStyle.maxVisible);
+ const availableWidth=600-(unassigned.length?colW:0);
+ const callWidth=Math.min(callStyle.width,(availableWidth-callStyle.gap*(shownCalls.length-1))/Math.max(1,shownCalls.length));
+ const callSpan=shownCalls.length*callWidth+Math.max(0,shownCalls.length-1)*callStyle.gap;
+ const callLeft=180+(availableWidth-callSpan)/2;
+ p.blueprint.disclosedOperationIds=[...new Set([...shownCalls.map(c=>c.use.operationId),...unassigned.slice(0,3)])];
+ p.blueprint.providerCallLayout={order:'scenario-operation-order',total:allCalls.length,shown:shownCalls.length};
  for(const [i,edge]of involvement.entries()){
   const x=180+i*colW,provider=model.nodes.find(n=>n.id===edge.to),inspection=slides.find(s=>s.blueprint?.role==='provider-inspection'&&s.blueprint.providerId===provider.id);
   const box={x,y:115,w:providerWidth,h:66};
   drawComponentGlyph(p,provider,box,C.violet,{fill:'#101A35'});
   p.text('PROVIDER',x,117,providerWidth,21,10,C.violet,true,'center');label(provider.label,x,138,providerWidth,40,10,C.white,true,inspection);
-  const uses=edge.via,portH=Math.min(27,90/Math.max(1,uses.length));
+  const uses=edge.via.filter(use=>shownCalls.some(call=>call.edge===edge&&call.use===use)),portH=callStyle.height;
   uses.forEach((use,j)=>{
-   const op=model.nodes.find(n=>n.id===use.operationId),y=227+j*(portH+3),w=providerWidth-20;
+   const callIndex=shownCalls.findIndex(call=>call.edge===edge&&call.use===use);
+   const op=model.nodes.find(n=>n.id===use.operationId),y=callStyle.top,w=callWidth;
+   const callX=callLeft+callIndex*(callWidth+callStyle.gap);
    const issues=bindingIssues.filter(i=>i.nodeIds.includes(op.id)),ink=issues.some(i=>i.severity==='error')?C.red:undefined;
    const target=slides.find(s=>s.blueprint?.role==='boundary-inspection'&&s.blueprint.operationIds.includes(op.id))??slides.find(s=>s.blueprint?.role==='invocation-inspection'&&s.blueprint.operationIds.includes(op.id))??slides.find(s=>s.blueprint?.role==='inspection-evidence'&&s.blueprint.issueIds.some(id=>issues.some(i=>i.id===id)))??slides.find(s=>s.blueprint?.role==='provider-detail'&&s.blueprint.operationIds.includes(op.id));
-   const opBox={x,y,w,h:portH},isTestimony=use.basis!=='declared provider';
+   const opBox={x:callX,y,w,h:portH},isTestimony=use.basis!=='declared provider';
    const component=eventComponent(model,op),action=eventAction(op),anchor=glyphAnchor(op,opBox,'right',COMPONENT_STYLE,component.glyph);
-   // Lanes outside the operation boxes prevent a later port's wire crossing an
-   // earlier operation. Each edge retains its exact source operation and binding.
-   const lane=x+w+3+(j+1)*14/(uses.length+1);
-   p.add('route',[anchor,[lane,anchor[1]],[lane,181]],C.violet,{arrow:false,dash:isTestimony,glow:false,width:1,routing:'orthogonal'});
-   p.add('port',lane,181,C.violet,2);p.add('port',...anchor,C.violet,2);
+   const lane=callX+w+8,providerX=Math.max(x+providerWidth*.08,Math.min(x+providerWidth*.92,lane));
+   const providerRoute=lane===providerX?[anchor,[lane,anchor[1]],[lane,181]]:
+    [anchor,[lane,anchor[1]],[lane,190],[providerX,190],[providerX,181]];
+   p.add('route',providerRoute,C.violet,{arrow:false,dash:isTestimony,glow:false,width:1,routing:'orthogonal'});
+   p.add('port',providerX,181,C.violet,2);p.add('port',...anchor,C.violet,2);
+   const callAnchor=glyphAnchor(op,opBox,'bottom',COMPONENT_STYLE,component.glyph);
+   const centersFit=callLeft+callWidth/2>=event.x+12&&callLeft+callSpan-callWidth/2<=event.x+event.w-12;
+   const eventAnchor=[centersFit?callAnchor[0]:event.x+(callIndex+1)*event.w/(shownCalls.length+1),event.y];
+   const eventRoute=eventAnchor[0]===callAnchor[0]?[eventAnchor,callAnchor]:
+    [eventAnchor,[eventAnchor[0],290+callIndex*4],[callAnchor[0],290+callIndex*4],callAnchor];
+   p.add('route',eventRoute,C.violet,{arrow:false,glow:false,width:1,routing:'orthogonal'});
+   p.add('port',...eventAnchor,C.violet,2);p.add('port',...callAnchor,C.violet,2);
    const frames=drawComponentGlyph(p,op,opBox,ink??action.color,{glyphName:component.glyph,scale:.75,fill:action.category==='bind'?'#17132F':action.category==='select'?'#20251B':'#04263A'});
    const words=identifierCaption(op.label,model.capabilityId).split(' ');
    const caption=[...new Set([words[0],words.at(-1)])].join(' ');
    p.text(String(op.ordinal).padStart(2,'0'),frames.heading.x-8,y+(portH-21)/2,frames.heading.w+16,21,8,action.color,true,'center');
    label(caption,frames.label.x,frames.label.y,frames.label.w,frames.label.h,9,C.white,false,target);
-   if(issues.length){p.add('port',x+w-3,y+3,ink??C.amber,3);p.blueprint.diagnosticOperationReferences.push({operationId:op.id,issueIds:issues.map(i=>i.id),bounds:opBox});}
-   ports.push({operationId:op.id,portId:use.portId,bindingId:use.bindingId,providerId:provider.id,basis:use.basis,sourceEdgeIds:use.sourceEdgeIds,bounds:opBox,anchor,component,action});
+   if(issues.length){p.add('port',callX+w-3,y+3,ink??C.amber,3);p.blueprint.diagnosticOperationReferences.push({operationId:op.id,issueIds:issues.map(i=>i.id),bounds:opBox});}
+   ports.push({operationId:op.id,portId:use.portId,bindingId:use.bindingId,providerId:provider.id,basis:use.basis,sourceEdgeIds:use.sourceEdgeIds,bounds:opBox,anchor,component,action,
+    eventId:eventNode.id,eventAnchor,callAnchor,eventRoute,providerRoute});
   });
  }
  if(unassigned.length){
@@ -133,10 +156,10 @@ export function appendScenarioSheet({snapshot,model,page,slides,scenarioId=model
   if(unassigned.length>3)label('+'+(unassigned.length-3)+' more · review',x,314,w,16,7,C.amber,false,slides.find(s=>s.blueprint?.role==='review'),6);
  }
  if(!count&&!unassigned.length)p.text('No declared external provider references',215,250,530,45,16,C.muted,false,'center');
- drawComponentGlyph(p,semantic.nodes.find(n=>n.kind==='event'),event,scopeIssues.length?inspectionColor:C.blue,{fill:'#082C47'});
+ drawComponentGlyph(p,eventNode,event,scopeIssues.length?inspectionColor:C.blue,{fill:'#082C47'});
  label(sc.eventId?sc.eventId.replaceAll('-',' '):sc.authorityId,event.x,event.y+2,event.w,38,13,C.white,true,eventPage);
  label(sc.operationIds.length+' declared operations · open complete circuit',event.x,event.y+36,event.w,25,10,C.blue,false,eventPage);
- if(!unassigned.length)p.text('Provider operation references',180,314,602,16,8,C.muted,false,'center');
+ if(!unassigned.length)label(allCalls.length>shownCalls.length?`${shownCalls.length} of ${allCalls.length} provider calls · open complete circuit`:'Provider calls in declared operation order',180,310,602,20,8,C.muted,false,allCalls.length>shownCalls.length?eventPage:undefined,7);
  const ordinals=affected.map(id=>model.nodes.find(n=>n.id===id).ordinal);
  const issueLabel=scopeIssues.slice(0,3).map(i=>i.id).join(', ')+(scopeIssues.length>3?' +'+(scopeIssues.length-3):'');
  const operationLabel=ordinals.slice(0,6).map(v=>String(v).padStart(2,'0')).join(', ')+(ordinals.length>6?' +'+(ordinals.length-6):'');

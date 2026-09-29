@@ -127,3 +127,38 @@ test('scenario operation references reuse the complete Event component symbols a
  }
  assert.equal(summary.blueprint.nodes.length,3);assert.equal(summary.blueprint.disclosedOperationIds.length,2);
 });
+
+test('scenario calls run left-to-right across provider groups and connect directly to their owning event',async()=>{
+ const raw=rawFixture();
+ raw.graph.executionAuthorities[0].operations=Array.from({length:3},(_,i)=>({kind:'invoke-port',portId:'call-'+i}));
+ raw.graph.interfaceAuthority.portBindings.push(...raw.graph.executionAuthorities[0].operations.map((op,i)=>({portId:op.portId,platformCapabilityId:'query.v1',configuration:{providerId:i===1?'provider-b':'provider-a'}})));
+ const s=normalizeSnapshot(raw),r=await handle({contractId:'capability-presentation-request.v1',capabilityId:s.identity.capabilityId,contextAltitude:7},{readEstate:async()=>s});
+ assert.equal(r.disposition,'AUTHORED',JSON.stringify(r.findings));
+ const slide=r.candidate.storyboard.slides[1],ports=[...slide.blueprint.providerPorts].sort((a,b)=>a.bounds.x-b.bounds.x);
+ assert.deepEqual(ports.map(p=>p.portId),['call-0','call-1','call-2']);
+ assert.deepEqual(ports.map(p=>p.providerId),['provider:provider-a','provider:provider-b','provider:provider-a']);
+ assert.equal(new Set(ports.map(p=>p.bounds.y)).size,1);
+ const event=slide.blueprint.glyphs.find(g=>g.kind==='event');
+ for(const port of ports){
+  assert.equal(port.eventId,event.nodeId);
+  assert.equal(port.eventAnchor[1],event.bounds.y);
+  assert.deepEqual(port.eventRoute[0],port.eventAnchor);
+  assert.deepEqual(port.eventRoute.at(-1),slide.blueprint.glyphs.find(g=>g.nodeId===port.operationId).anchors.bottom);
+  assert(slide.commands.some(c=>c.op==='route'&&JSON.stringify(c.args[0])===JSON.stringify(port.eventRoute)));
+ }
+ assert.equal(slide.blueprint.providerCallLayout.total,3);
+});
+
+test('dense scenario summaries disclose their limit and retain all calls in the complete circuit',async()=>{
+ const s=denseFixture(),r=await handle({contractId:'capability-presentation-request.v1',capabilityId:s.identity.capabilityId,contextAltitude:7},{readEstate:async()=>s});
+ const slide=r.candidate.storyboard.slides[1];
+ // Platform implementation inventory alone must not invent explicit references.
+ assert.equal(slide.blueprint.providerCallLayout.total,0);
+ const raw=rawFixture();raw.graph.executionAuthorities[0].operations=Array.from({length:8},(_,i)=>({kind:'invoke-port',portId:'call-'+i}));
+ raw.graph.interfaceAuthority.portBindings.push(...raw.graph.executionAuthorities[0].operations.map(op=>({portId:op.portId,platformCapabilityId:'query.v1',configuration:{providerId:'same-provider'}})));
+ const x=normalizeSnapshot(raw),result=await handle({contractId:'capability-presentation-request.v1',capabilityId:x.identity.capabilityId,contextAltitude:7},{readEstate:async()=>x});
+ assert.equal(result.disposition,'AUTHORED',JSON.stringify(result.findings));
+ const summary=result.candidate.storyboard.slides[1];assert.equal(summary.blueprint.providerCallLayout.total,8);assert.equal(summary.blueprint.providerPorts.length,5);
+ assert(summary.commands.some(c=>c.op==='t'&&c.args[0].includes('5 of 8 provider calls')));
+ assert.equal(result.candidate.storyboard.slides.find(s=>s.blueprint?.render?.cells?.length===8).blueprint.render.cells.length,8);
+});

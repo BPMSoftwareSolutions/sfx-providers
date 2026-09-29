@@ -4,6 +4,7 @@
   "roles": {"operation":"execution","event":"execution","scenario":"execution","port":"socket","binding":"adapter","provider":"device","platform":"platform","input":"terminal","outcome":"terminal","terminal":"terminal","variant":"terminal","endpoint":"document","physical":"document","mechanic":"execution"},
   "rules": [{"kind":"mechanic","label":"if","glyph":"gate"}],
   "fallback": "execution",
+  "scenario": {"providerCalls":{"maxVisible":5,"width":126,"gap":26,"height":27,"top":227}},
   "glyphs": {
     "execution": {
       "heading":[0.02,0.05,0.96,0.27], "label":[0.04,0.37,0.92,0.57],
