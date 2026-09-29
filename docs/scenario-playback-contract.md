@@ -194,3 +194,10 @@ slide remain snapshot evidence and do not become live execution proof.
 
 See [the visual contract](capability-circuit-visual-contract.md) and
 [capability presentation](capability-presentation.md) for the export surface.
+
+## Live database navigation
+
+[Live circuit data and navigation](live-circuit-data-contract.md) defines catalog
+discovery, on-demand component reads and snapshot-coherent links. These reads
+are presentation preparation and never become scenario playback frames. Opening
+a component or changing pages preserves the existing replay clock.

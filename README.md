@@ -10,6 +10,9 @@ The provider also generates [capability presentations](docs/capability-presentat
 from a selected estate `capabilityId`, combining a semantic circuit view with all
 eleven authoring context layers. Use `node capability-deck.mjs --help`.
 
+The [live circuit data and navigation contract](docs/live-circuit-data-contract.md)
+describes database-driven selection and drill-down without requiring a deck export.
+
 ```powershell
 node circuit-deck.mjs --preset sidefx-announcement --output outputs/circuit-replay
 ```
