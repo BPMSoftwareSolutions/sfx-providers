@@ -1,17 +1,19 @@
-﻿using System.Text.Json;
+using System.Text.Json;
 
 namespace SfxProviders.ProcedureExtract;
 
 /// <summary>
 /// procedure-extract: pure database-to-workbook pass-through.
 /// Executes any stored procedure through sfx-dal and writes one Excel sheet per
-/// result set (plus a _meta sheet). Stand-alone CLI provider.
+/// result set (plus a _meta sheet). Stand-alone CLI provider; --serve exposes the
+/// same pass-through over HTTP (see ProcedureExtractApi).
 /// </summary>
 internal static class Program
 {
     private static async Task<int> Main(string[] args)
     {
-        string? procedure = null, parametersJson = null, output = null, connection = null;
+        string? procedure = null, parametersJson = null, output = null, connection = null, url = null;
+        var serve = false;
         for (var i = 0; i < args.Length; i++)
         {
             switch (args[i])
@@ -31,11 +33,23 @@ internal static class Program
                 case "--connection" or "-c":
                     connection = Next(args, ref i, "--connection");
                     break;
+                case "--serve":
+                    serve = true;
+                    break;
+                case "--url":
+                    url = Next(args, ref i, "--url");
+                    break;
                 default:
                     Console.Error.WriteLine($"Unknown option: {args[i]}");
                     PrintHelp();
                     return 2;
             }
+        }
+
+        if (serve)
+        {
+            await ProcedureExtractApi.RunAsync(url ?? "http://localhost:8791", ResolveConnection(connection));
+            return 0;
         }
 
         if (string.IsNullOrWhiteSpace(procedure))
@@ -74,7 +88,7 @@ internal static class Program
         return args[++i];
     }
 
-    private static IReadOnlyDictionary<string, object?>? ParseParameters(string? json)
+    internal static IReadOnlyDictionary<string, object?>? ParseParameters(string? json)
     {
         if (string.IsNullOrWhiteSpace(json)) return null;
         var parameters = new Dictionary<string, object?>();
@@ -109,16 +123,22 @@ internal static class Program
 
         Usage:
           procedure-extract --procedure <schema.name> [--params <json-object>] [--output <file.xlsx>] [--connection <string>]
+          procedure-extract --serve [--url <url>] [--connection <string>]
 
         Options:
           -p, --procedure   Stored procedure name, e.g. analysis.read_provider_canonical_body
           -j, --params      JSON object of procedure parameters, e.g. {"provider_id":"google/gemini-select"}
           -o, --output      Workbook path (default outputs/<procedure>-<timestamp>.xlsx)
           -c, --connection  SQL Server connection string (default: sidefx-connection-string)
+              --serve       Serve the pass-through over HTTP instead of writing a file
+              --url         Listen URL for --serve (default http://localhost:8791)
           -h, --help        This help
 
         The workbook gets one sheet per result set (named from its result_set column)
         plus a _meta sheet with the procedure, parameters, timestamp and row counts.
+
+        --serve endpoints, body {"procedure": "<schema.name>", "parameters": {...}}:
+          POST /excel   the workbook
+          POST /json    the result sets as JSON
         """);
 }
-

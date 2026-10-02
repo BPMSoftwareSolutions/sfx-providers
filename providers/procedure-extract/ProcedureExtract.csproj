@@ -10,6 +10,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
     <ProjectReference Include="..\..\..\sfx-dal\SFX.DAL.csproj" />
     <PackageReference Include="ClosedXML" Version="0.104.2" />
   </ItemGroup>

@@ -149,7 +149,24 @@ public static class ProcedureExtractor
         var directory = Path.GetDirectoryName(Path.GetFullPath(outputPath));
         if (!string.IsNullOrEmpty(directory)) Directory.CreateDirectory(directory);
 
-        using var workbook = new XLWorkbook();
+        using var workbook = BuildWorkbook(sets, procedure, parametersJson);
+        workbook.SaveAs(outputPath);
+        return outputPath;
+    }
+
+    public static void WriteWorkbook(
+        IReadOnlyList<ProcedureResultSet> sets,
+        Stream output,
+        string? procedure = null,
+        string? parametersJson = null)
+    {
+        using var workbook = BuildWorkbook(sets, procedure, parametersJson);
+        workbook.SaveAs(output);
+    }
+
+    private static XLWorkbook BuildWorkbook(IReadOnlyList<ProcedureResultSet> sets, string? procedure, string? parametersJson)
+    {
+        var workbook = new XLWorkbook();
         var meta = workbook.Worksheets.Add("_meta");
         meta.Cell(1, 1).Value = "procedure";
         meta.Cell(1, 2).Value = procedure ?? "";
@@ -179,8 +196,7 @@ public static class ProcedureExtractor
             metaRow++;
         }
         meta.Columns(1, 3).AdjustToContents();
-        workbook.SaveAs(outputPath);
-        return outputPath;
+        return workbook;
     }
 
     private static void SetCell(IXLCell cell, object? value) => cell.Value = value switch
