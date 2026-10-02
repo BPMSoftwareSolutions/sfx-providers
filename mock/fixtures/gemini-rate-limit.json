@@ -1,0 +1,15 @@
+{
+  "id": "gemini-rate-limit",
+  "description": "Gemini answers 429 RESOURCE_EXHAUSTED. Exercises the provider failure/fallback path deterministically.",
+  "fetch": [
+    {
+      "match": "generativelanguage.googleapis.com",
+      "status": 429,
+      "headers": { "content-type": "application/json" },
+      "body": {
+        "error": { "code": 429, "message": "Quota exceeded for model generateContent.", "status": "RESOURCE_EXHAUSTED" }
+      }
+    }
+  ],
+  "expect": { "disposition": "completed", "outcomeContains": ["PROVIDER_UNAVAILABLE", "REFUSED"], "mockHits": { "fetch": 1 } }
+}

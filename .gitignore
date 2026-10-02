@@ -1,4 +1,4 @@
-certs/
+﻿certs/
 node_modules/
 *.log
 .venv/
@@ -7,5 +7,6 @@ outputs/
 __pycache__/
 config/capability-presentation.local.json
 
-dotnet/**/bin/
-dotnet/**/obj/
+providers/procedure-extract/bin/
+providers/procedure-extract/obj/
+

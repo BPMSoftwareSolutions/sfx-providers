@@ -1,0 +1,15 @@
+{
+  "id": "gemini-unavailable",
+  "description": "Gemini answers 503 UNAVAILABLE. Exercises the provider-unavailable variant path deterministically.",
+  "fetch": [
+    {
+      "match": "generativelanguage.googleapis.com",
+      "status": 503,
+      "headers": { "content-type": "application/json" },
+      "body": {
+        "error": { "code": 503, "message": "The model is overloaded. Please try again later.", "status": "UNAVAILABLE" }
+      }
+    }
+  ],
+  "expect": { "disposition": "completed", "outcomeContains": ["PROVIDER_UNAVAILABLE", "REFUSED"], "mockHits": { "fetch": 1 } }
+}

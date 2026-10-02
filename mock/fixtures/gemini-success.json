@@ -1,0 +1,44 @@
+{
+  "id": "gemini-success",
+  "description": "Gemini answers the proposal prompt with the declared JSON shape; the declared-read provider is canned. This should drive the circuit to ADMITTED and the mocked database capability result.",
+  "fetch": [
+    {
+      "match": "generativelanguage.googleapis.com",
+      "status": 200,
+      "headers": { "content-type": "application/json" },
+      "body": {
+        "candidates": [
+          {
+            "content": {
+              "role": "model",
+              "parts": [
+                { "text": "{\"capability\":\"resolve-equity-market-price-evidence\",\"input\":\"AVGO\"}" }
+              ]
+            },
+            "finishReason": "STOP",
+            "index": 0
+          }
+        ],
+        "usageMetadata": { "promptTokenCount": 120, "candidatesTokenCount": 18, "totalTokenCount": 138 },
+        "modelVersion": "gemini-2.5-pro"
+      }
+    }
+  ],
+  "read": [
+    {
+      "match": "AS graph_source",
+      "resultColumn": "graph_source",
+      "value": {
+        "contractId": "mock-database-capability-result.v1",
+        "capabilityId": "resolve-equity-market-price-evidence",
+        "mockPrice": 123.45,
+        "note": "canned declared-read result from the mock provider"
+      }
+    }
+  ],
+  "expect": {
+    "disposition": "completed",
+    "outcomeContains": ["mockPrice"],
+    "mockHits": { "fetch": 1, "read": 1 }
+  }
+}

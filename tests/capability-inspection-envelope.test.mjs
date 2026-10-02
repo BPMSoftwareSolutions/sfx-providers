@@ -58,3 +58,43 @@ test('SQL JSON object-form node and source IDs resolve and preserve their proven
  const m=buildBlueprint(normalizeSnapshot(r)),f=m.review.issues.find(i=>i.code==='PORT_RULE');
  assert.ok(f.scenarioIds.includes('review'));assert.ok(f.resolvedNodeIds.includes('operation:review.v1:1'));assert.ok(f.sourceRefs.includes('model:port_version/1'));
 });
+
+test('declared bugs appear on their scenario with linked evidence and preserve circuit geometry',async()=>{
+ const raw=fixture();raw.inspection.readings[0].document.findings.push({code:'MEASURED_READ_COST',severity:'error',
+  message:'Measured read exceeded its budget',nodeIds:['binding:policy'],sourceRefs:['model:report/9'],
+  evidence:{classification:'bug',presentation:{headline:'BUG: policy read took 12 seconds',detail:'Historical measurement; repair remains open'}}});
+ const render=async r=>{const s=normalizeSnapshot(r);return (await handle({contractId:'capability-presentation-request.v1',capabilityId:s.identity.capabilityId},{readEstate:async()=>s})).candidate.storyboard;};
+ const before=await render(fixture()),after=await render(raw);
+ const find=s=>s.slides.find(p=>p.blueprint?.role==='scenario-blueprint');
+ const main=find(after),bug=after.blueprint.review.issues.find(i=>i.code==='MEASURED_READ_COST');
+ assert.deepEqual(main.blueprint.bugIssueIds,[bug.id]);
+ const marked=main.blueprint.diagnosticOperationReferences.filter(r=>r.issueIds.includes(bug.id)).map(r=>r.operationId);
+ assert.deepEqual(marked,['operation:review.v1:1']);
+ const text=main.commands.find(c=>c.op==='t'&&c.args[0].includes('BUG: policy read'));
+ assert.ok(text);assert.equal(after.slides[text.args[9].slideIndex].blueprint.role,'inspection-evidence');
+ assert.deepEqual(main.commands.filter(c=>c.op==='route'),find(before).commands.filter(c=>c.op==='route'));
+ assert.ok(main.commands.some(c=>c.op==='t'&&c.args[0].includes('Historical measurement')));
+ raw.inspection.capabilityVersionPk=8;
+ const stale=find(await render(raw));assert.deepEqual(stale.blueprint.bugIssueIds,[]);
+ assert.ok(!stale.commands.some(c=>c.op==='t'&&c.args[0].includes('BUG: policy read')));
+});
+
+test('multiple scenario bugs retain individual visible labels and exact evidence links',async()=>{
+ const raw=fixture();
+ for(let i=0;i<6;i++)raw.inspection.readings[0].document.findings.push({code:'INVOCATION_DECLARED_BUG_'+i,severity:i===5?'warning':'error',
+  message:'Declared concern '+i,nodeIds:['binding:policy'],sourceRefs:['model:report/'+i],
+  evidence:{classification:'bug',presentation:{short:'Concern '+i,headline:'Full concern '+i,detail:'Evidence '+i}}});
+ const s=normalizeSnapshot(raw),result=await handle({contractId:'capability-presentation-request.v1',capabilityId:s.identity.capabilityId},{readEstate:async()=>s});
+ const deck=result.candidate.storyboard,main=deck.slides.find(p=>p.blueprint?.role==='scenario-blueprint');
+ assert.equal(main.blueprint.bugIssueIds.length,6);
+ for(let i=0;i<6;i++){
+  const issue=deck.blueprint.review.issues.find(f=>f.code==='INVOCATION_DECLARED_BUG_'+i);
+  const label=main.commands.find(c=>c.op==='t'&&c.args[0]===issue.id+' · Concern '+i);
+  assert.ok(label,'visible short label for '+issue.code);
+  const destination=deck.slides[label.args[9].slideIndex];
+  assert.equal(destination.blueprint.role,'inspection-evidence');assert.ok(destination.blueprint.issueIds.includes(issue.id));
+  assert.ok(label.args[1]>=225&&label.args[1]+label.args[3]<=947);
+ }
+ assert.ok(main.commands.some(c=>c.op==='t'&&c.args[0].startsWith('6 open reports')));
+ assert.ok(!main.commands.some(c=>c.op==='t'&&c.args[0].includes('Request: unverified absent')));
+});

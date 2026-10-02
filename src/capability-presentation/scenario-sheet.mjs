@@ -25,10 +25,18 @@ export function appendScenarioSheet({snapshot,model,page,slides,scenarioId=model
  const involvement=projectBlueprint(model).edges.filter(e=>e.kind==='scenario-provider'&&e.from==='scenario:'+scenarioId);
  const inspectionScope=scenarioInspection(model,sc.id);
  const scopeIssues=inspectionScope.issues;
- const bindingIssues=scopeIssues.filter(i=>i.resolvedNodeIds.some(id=>sc.operationIds.includes(id)||id.startsWith('binding:'))).map(i=>({...i,nodeIds:[...new Set([...i.nodeIds,...i.resolvedNodeIds.flatMap(id=>model.edges.filter(e=>e.to===id&&sc.operationIds.includes(e.from)).map(e=>e.from))])]}));
+ // Bug classification and wording are declared inspection evidence. This is a
+ // historical report overlay, never a synthetic execution state or detector.
+ const bugIssues=scopeIssues.filter(i=>i.evidence?.classification==='bug');
+ // Address resolution already carries each binding's exact owning operations.
+ // Walking incoming edges of a resolved operation would incorrectly flag its
+ // predecessor in the sequence instead of the operation named by the report.
+ const bindingIssues=scopeIssues.filter(i=>i.resolvedNodeIds.some(id=>sc.operationIds.includes(id)||id.startsWith('binding:'))).map(i=>({...i,nodeIds:[...new Set([...i.nodeIds,...i.resolvedNodeIds])]}));
  const outcomeIssues=scopeIssues.filter(i=>i.resolvedNodeIds.includes('outcome:'+sc.id));
  const inputIssues=scopeIssues.filter(i=>i.resolvedNodeIds.includes('input:'+sc.id));
- const invocationIssues=bindingIssues.filter(i=>i.code.includes('INVOCATION_'));
+ // Only selector findings support gate/request-path captions. A declared bug
+ // may mention invocation while proving a different property entirely.
+ const invocationIssues=bindingIssues.filter(i=>['INVOCATION_CONDITION_PATH_ABSENT','INVOCATION_REQUEST_PATH_ABSENT','NESTED_INVOCATION_REQUEST_PATH_ABSENT','NESTED_INVOCATION_INPUT_UNVERIFIED'].includes(i.code));
  const inspectionColor=scopeIssues.some(i=>i.severity==='error')?C.red:C.amber;
  const affected=[...new Set(bindingIssues.flatMap(i=>i.nodeIds).filter(id=>sc.operationIds.includes(id)))];
  const providerOperations=[...new Set(involvement.flatMap(e=>e.via.map(v=>v.operationId)))];
@@ -40,6 +48,7 @@ export function appendScenarioSheet({snapshot,model,page,slides,scenarioId=model
  p.blueprint={role:'scenario-blueprint',altitude:'scenario',scenarioId,nodes:semantic.nodes.map(n=>n.id),edges:semantic.edges.map(e=>e.id),providerReferences:involvement,disclosedOperationIds:[...new Set([...providerOperations,...unassigned.slice(0,3)])],diagnosticOperationReferences:[]};
  p.blueprint.scenarioIssueIds=scopeIssues.map(i=>i.id);p.blueprint.outcomeIssueIds=outcomeIssues.map(i=>i.id);
  p.blueprint.inputIssueIds=inputIssues.map(i=>i.id);p.blueprint.globalIssueIds=inspectionScope.globalIssues.map(i=>i.id);
+ p.blueprint.bugIssueIds=bugIssues.map(i=>i.id);
  p.blueprint.inspection={status:model.review.inspection.status,checkIds:inspectionScope.checks.map(c=>c.id),unlocatedIssueIds:model.review.inspection.unlocatedIssueIds};
  p.interpretation='Input/Event/Outcome are scenario semantics. Provider wires retain exact binding or testimony references. Disclosed operations are a subset; the complete Event is linked. Binding findings expose affected declared operations with amber inspection overlays, without adding provider nodes or edges. Their component shapes follow the same declared-binding rules as the complete execution circuit. Decorative contacts add no declared ports. No installation, execution or monotonic proof is asserted.';
  const link=target=>({slideIndex:Number(target.id.slice(6))-1});
@@ -176,12 +185,33 @@ export function appendScenarioSheet({snapshot,model,page,slides,scenarioId=model
  }else p.text('Solid violet: binding identity. Dashed violet: testimony declaration.',180,428,605,18,8,C.muted,false,'center');
  p.add('shape','RECTANGLE',8,464,944,35,{fill:'#05243B',stroke:'#72D7EE',sw:.9});
  p.text('Observation / Telemetry',14,463,208,23,11,'#72D7EE',true);
+ if(bugIssues.length){
+  const bug=bugIssues[0],presentation=bug.evidence.presentation??{};
+  const target=slides.find(s=>s.blueprint?.role==='inspection-evidence'&&s.blueprint.issueIds.includes(bug.id));
+  const ink=bugIssues.some(i=>i.severity==='error')?C.red:C.amber;
+  p.text(bugIssues.length+' open report'+(bugIssues.length===1?'':'s')+' · execution unselected',14,481,208,17,8,C.muted);
+  p.add('shape','RECTANGLE',225,465,722,33,{fill:'#031B2F',stroke:ink,sw:1});
+  if(bugIssues.length===1){
+   label(bug.id+' · '+(presentation.headline||bug.message),230,464,712,18,10,ink,true,target,8);
+   label(presentation.detail||'Open inspection evidence; see report for scope and repair',230,481,712,17,9,C.white,false,target,7);
+  }else{
+   // Independent report links keep every short label visible at scenario
+   // altitude. The full finding and repair remain on the evidence slide.
+   const shown=bugIssues.slice(0,bugIssues.length>6?5:6);
+   shown.forEach((issue,i)=>{
+    const report=issue.evidence.presentation??{},destination=slides.find(s=>s.blueprint?.role==='inspection-evidence'&&s.blueprint.issueIds.includes(issue.id));
+    label(issue.id+' · '+(report.short||report.headline||issue.code),230+(i%3)*238,464+Math.floor(i/3)*17,235,18,9,issue.severity==='error'?C.red:C.amber,true,destination,7);
+   });
+   if(bugIssues.length>6)label('+'+(bugIssues.length-5)+' reports · review',706,481,235,18,9,ink,true,slides.find(s=>s.blueprint?.role==='review'),7);
+  }
+ }else{
  p.text('State overlays preserve the circuit',14,481,208,17,8,C.muted);
  for(const [title,value,x]of [['Invocation','None selected',235],['Circuit state','Unobserved',480]]){
   p.add('shape','ROUND_RECTANGLE',x,469,230,25,{fill:'#031B2F',stroke:'#72D7EE',sw:.8});
   documentIcon(p,x+9,475,'#72D7EE');p.text(title,x+23,469,97,23,9,'#72D7EE',true);p.text(value,x+116,469,111,23,9,C.muted);
  }
  p.text('No live execution testimony attached',723,465,225,32,9,C.muted);
+ }
  if(eventPage)p.add('t','Complete execution circuit',14,501,310,22,12,C.blue,true,'left',link(eventPage));
  const coveragePage=slides.find(s=>s.blueprint?.role==='inspection-coverage');
  const summary=model.review.inspection.summary;
