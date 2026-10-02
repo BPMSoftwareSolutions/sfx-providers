@@ -1,12 +1,12 @@
-import { compilePresentation } from '../src/circuit-presentation/compile.mjs';
-import { REQUEST_ID, OUTPUT_ID, MAX_OUTPUT_BYTES, outputSchema, requestSchema, validate } from '../src/circuit-presentation/contracts.mjs';
-export { MAX_REQUEST_BYTES } from '../src/circuit-presentation/contracts.mjs';
-import { MAX_REQUEST_BYTES } from '../src/circuit-presentation/contracts.mjs';
+﻿import { compilePresentation } from '../../src/circuit-presentation/compile.mjs';
+import { REQUEST_ID, OUTPUT_ID, MAX_OUTPUT_BYTES, outputSchema, requestSchema, validate } from '../../src/circuit-presentation/contracts.mjs';
+export { MAX_REQUEST_BYTES } from '../../src/circuit-presentation/contracts.mjs';
+import { MAX_REQUEST_BYTES } from '../../src/circuit-presentation/contracts.mjs';
 export const providerId='sfx-circuit-presentation';
 export const toolId='presentation.compile';
 export const additionalTools=['presentation.from-capability','presentation.to-google-slides'];
-export { handle as presentCapability } from '../src/capability-presentation/provider.mjs';
-export { handle as migrateToGoogleSlides } from '../src/google-slides-migration/workflow.mjs';
+export { handle as presentCapability } from '../../src/capability-presentation/provider.mjs';
+export { handle as migrateToGoogleSlides } from '../../src/google-slides-migration/workflow.mjs';
 export const inputShape={contractId:REQUEST_ID,status:'PROPOSED',schema:requestSchema};
 export const outputShape={contractId:OUTPUT_ID,status:'PROPOSED',schema:outputSchema};
 
@@ -23,3 +23,4 @@ export async function handle(input,options={}){
     return envelope({disposition:'AUTHORED',candidate,shapeConforms:true,findings:[]});
   }catch(error){return envelope({disposition:'HELD',candidate:null,findings:[{code:error.code?.startsWith('CIRCUIT_')?error.code:'CIRCUIT_COMPILE_FAILED',path:'$',message:String(error.message).slice(0,1000)}]});}
 }
+

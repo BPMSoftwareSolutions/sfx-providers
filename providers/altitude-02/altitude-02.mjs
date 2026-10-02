@@ -1,5 +1,5 @@
-import { createHash } from 'node:crypto';
-import { payloadFromSlices, requestContract, validateAltitudeRequest } from '../src/request-contract.mjs';
+﻿import { createHash } from 'node:crypto';
+import { payloadFromSlices, requestContract, validateAltitudeRequest } from '../../src/request-contract.mjs';
 
 export const altitude = 2;
 export const altitudeId = 'altitude-2-capability-meaning';
@@ -115,3 +115,4 @@ export function handle(input, options = {}) {
     findings: [],
   };
 }
+

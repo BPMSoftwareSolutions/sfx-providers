@@ -1,9 +1,9 @@
-import fs from 'node:fs/promises';
+﻿import fs from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { runAudioWorker } from '../src/audio-process.mjs';
+import { runAudioWorker } from '../../src/audio-process.mjs';
 
-const root = fileURLToPath(new URL('../', import.meta.url));
+const root = fileURLToPath(new URL('../../', import.meta.url));
 export const providerId = 'sfx-audio-to-text';
 export const toolId = 'audio.transcribe';
 export const MAX_REQUEST_BYTES = 16 * 1024;
@@ -135,3 +135,4 @@ export async function handle(input, options = {}) {
     return held(typeof error.code === 'string' && error.code.startsWith('AUDIO_') ? error.code : 'AUDIO_WORKER_FAILED', String(error.message).slice(0, 4096));
   } finally { busy = false; }
 }
+
