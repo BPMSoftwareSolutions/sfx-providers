@@ -1,7 +1,7 @@
-import assert from 'node:assert/strict';
+﻿import assert from 'node:assert/strict';
 import {test} from 'node:test';
 import {validateConnectorRoute,validateConnectorAttachment} from '../src/circuit-presentation/contracts.mjs';
-import {handle} from '../providers/circuit-presentation.mjs';
+import {handle} from '../providers/circuit-presentation/circuit-presentation.mjs';
 import {layoutBlueprint} from '../src/capability-presentation/blueprint-sheet.mjs';
 
 test('rendering contract rejects the slide-14 spike before authoring native output',async()=>{
@@ -65,3 +65,4 @@ test('attachment rule rejects tangent arrows, reversed approaches and insufficie
  }
  assert.doesNotThrow(()=>validateConnectorAttachment([[20,50],[20,10],[60,10],[60,50]],{sourceNormal:[0,-1],targetNormal:[0,-1],minimumLead:8}),'Top-attached self-calls remain valid');
 });
+

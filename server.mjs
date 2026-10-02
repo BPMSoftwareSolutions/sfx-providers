@@ -1,13 +1,13 @@
-#!/usr/bin/env node
+﻿#!/usr/bin/env node
 import fs from 'node:fs';
 import https from 'node:https';
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { boundedSlices, MAX_REQUEST_BYTES, REQUEST_CONTRACT_ID, requestBytesOf } from './src/request-contract.mjs';
-import * as audioProvider from './providers/audio-to-text.mjs';
+import * as audioProvider from './providers/audio-to-text/audio-to-text.mjs';
 import { createAudioRequestHandler } from './src/audio-http.mjs';
 
-import * as circuitProvider from './providers/circuit-presentation.mjs';
+import * as circuitProvider from './providers/circuit-presentation/circuit-presentation.mjs';
 import { createCircuitRequestHandler } from './src/circuit-presentation/http.mjs';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
@@ -372,7 +372,8 @@ async function loadProviders() {
   const providers = [];
   for (let index = 1; index <= ALTITUDE_COUNT; index += 1) {
     const file = `altitude-${String(index).padStart(2, '0')}.mjs`;
-    const module = await import(new URL(`./providers/${file}`, import.meta.url));
+    const folder = file.replace(/\.mjs$/, '');
+    const module = await import(new URL(`./providers/${folder}/${file}`, import.meta.url));
     for (const member of ['altitude', 'toolId', 'inputShape', 'outputShape', 'handle']) {
       if (module[member] === undefined) throw new Error(`provider ${file} is missing export ${member}`);
     }
@@ -427,3 +428,4 @@ if (invokedDirectly) {
       process.exit(1);
     });
 }
+

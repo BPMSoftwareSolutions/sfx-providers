@@ -1,4 +1,4 @@
-import assert from 'node:assert/strict';
+﻿import assert from 'node:assert/strict';
 import test from 'node:test';
 import {
   EMBEDDED_CONTEXT_MEMBERS,
@@ -10,7 +10,8 @@ import {
 const providers = [];
 for (let index = 1; index <= 11; index += 1) {
   const file = `altitude-${String(index).padStart(2, '0')}.mjs`;
-  providers.push(await import(new URL(`../providers/${file}`, import.meta.url)));
+  const folder = file.replace(/\.mjs$/, '');
+  providers.push(await import(new URL(`../providers/${folder}/${file}`, import.meta.url)));
 }
 
 function compactRequest(provider) {
@@ -76,3 +77,4 @@ for (const provider of providers) {
     assert.ok(outcome.findings.some((finding) => finding.code === 'ALTITUDE_REQUEST_UNKNOWN_MEMBER'));
   });
 }
+

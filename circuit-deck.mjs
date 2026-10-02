@@ -1,8 +1,8 @@
-#!/usr/bin/env node
+﻿#!/usr/bin/env node
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
-import { handle, inputShape, MAX_REQUEST_BYTES } from './providers/circuit-presentation.mjs';
+import { handle, inputShape, MAX_REQUEST_BYTES } from './providers/circuit-presentation/circuit-presentation.mjs';
 export async function run(args=process.argv.slice(2)){
   const options={};
   for(let i=0;i<args.length;i++){
@@ -33,3 +33,4 @@ export async function run(args=process.argv.slice(2)){
   return result;
 }
 if(process.argv[1]&&pathToFileURL(path.resolve(process.argv[1])).href===import.meta.url)run().catch(error=>{console.error(error.message);process.exitCode=1;});
+

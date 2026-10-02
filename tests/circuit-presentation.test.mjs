@@ -1,4 +1,4 @@
-import assert from 'node:assert/strict';
+﻿import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
 import http from 'node:http';
 import os from 'node:os';
@@ -7,7 +7,7 @@ import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
 import { fileURLToPath } from 'node:url';
 import { after, test } from 'node:test';
-import * as provider from '../providers/circuit-presentation.mjs';
+import * as provider from '../providers/circuit-presentation/circuit-presentation.mjs';
 import { createCircuitRequestHandler,INVOKE,HEALTH } from '../src/circuit-presentation/http.mjs';
 import { objectsFromRequests } from '../src/circuit-presentation/render.mjs';
 import {MAX_SLIDE_COMMANDS,requestSchema,validate} from '../src/circuit-presentation/contracts.mjs';
@@ -108,3 +108,4 @@ test('CLI works outside the repository and refuses to overwrite an existing outp
  await assert.rejects(exec(process.execPath,[cli,'--preset','sidefx-announcement','--output',out],{cwd:temp}));
  assert.equal(JSON.parse(await fs.readFile(path.join(out,'presentation.json'),'utf8')).contentDigest,saved.contentDigest);
 });
+

@@ -1,16 +1,16 @@
-import assert from 'node:assert/strict';
+﻿import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
 import http from 'node:http';
 import os from 'node:os';
 import path from 'node:path';
 import { after, test } from 'node:test';
-import * as audio from '../providers/audio-to-text.mjs';
+import * as audio from '../providers/audio-to-text/audio-to-text.mjs';
 import { runAudioWorker } from '../src/audio-process.mjs';
 import { createAudioRequestHandler } from '../src/audio-http.mjs';
 import { toSrt } from '../transcribe.mjs';
 
 const directory = await fs.mkdtemp(path.join(os.tmpdir(), 'sfx-audio-test-'));
-const audioPath = path.join(directory, "Anderson's interview 日本語.mp3");
+const audioPath = path.join(directory, "Anderson's interview æ—¥æœ¬èªž.mp3");
 await fs.writeFile(audioPath, 'test audio');
 after(() => {
   assert.equal(path.dirname(path.resolve(directory)), path.resolve(os.tmpdir()));
@@ -153,8 +153,8 @@ test('HTTP route enforces body limits, serves metadata and returns transcription
 });
 
 test('SRT preserves Unicode and carries timestamp rounding across hours', () => {
-  assert.equal(toSrt([{ startSeconds: 3599.9996, endSeconds: 3601.234, text: 'Hello 日本語' }]),
-    '1\n01:00:00,000 --> 01:00:01,234\nHello 日本語\n');
+  assert.equal(toSrt([{ startSeconds: 3599.9996, endSeconds: 3601.234, text: 'Hello æ—¥æœ¬èªž' }]),
+    '1\n01:00:00,000 --> 01:00:01,234\nHello æ—¥æœ¬èªž\n');
   assert.equal(toSrt([]), '');
 });
 
@@ -163,3 +163,4 @@ test('configuration bounds worker runtime and CPU settings', () => {
   assert.throws(() => audio.configuration({ AUDIO_CPU_THREADS: 'lots' }), /AUDIO_CPU_THREADS/);
   assert.equal(audio.configuration({ AUDIO_OFFLINE: '1' }).offline, true);
 });
+
