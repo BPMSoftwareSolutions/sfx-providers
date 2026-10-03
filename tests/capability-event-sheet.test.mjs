@@ -128,7 +128,7 @@ test('scenario operation references reuse the complete Event component symbols a
  assert.equal(summary.blueprint.nodes.length,3);assert.equal(summary.blueprint.disclosedOperationIds.length,2);
 });
 
-test('scenario calls run left-to-right across provider groups and connect directly to their owning event',async()=>{
+test('scenario calls run left-to-right across provider groups and connect to their owning inline operation',async()=>{
  const raw=rawFixture();
  raw.graph.executionAuthorities[0].operations=Array.from({length:3},(_,i)=>({kind:'invoke-port',portId:'call-'+i}));
  raw.graph.interfaceAuthority.portBindings.push(...raw.graph.executionAuthorities[0].operations.map((op,i)=>({portId:op.portId,platformCapabilityId:'query.v1',configuration:{providerId:i===1?'provider-b':'provider-a'}})));
@@ -141,7 +141,9 @@ test('scenario calls run left-to-right across provider groups and connect direct
  const event=slide.blueprint.glyphs.find(g=>g.kind==='event');
  for(const port of ports){
   assert.equal(port.eventId,event.nodeId);
-  assert.equal(port.eventAnchor[1],event.bounds.y);
+  const owningCell=slide.blueprint.glyphs.filter(g=>g.nodeId===port.operationId).at(-1);
+  assert.equal(port.eventAnchor[1],owningCell.bounds.y);
+  assert(Math.abs(port.eventAnchor[0]-owningCell.anchors.top[0])<.001);
   assert.deepEqual(port.eventRoute[0],port.eventAnchor);
   assert.deepEqual(port.eventRoute.at(-1),slide.blueprint.glyphs.find(g=>g.nodeId===port.operationId).anchors.bottom);
   assert(slide.commands.some(c=>c.op==='route'&&JSON.stringify(c.args[0])===JSON.stringify(port.eventRoute)));

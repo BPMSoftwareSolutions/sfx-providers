@@ -78,7 +78,8 @@ function physicalFields(config) {
 export function normalizeSnapshot({ capability: c, graph: g, scenarios = [], features = [], fixtures = [], obligations = [], altitudeCatalog = [], conditions = [], blueprintSources = [], platformImplementations = [], providerLabels = [], inspection = null, provenance = {} }) {
   if (g.declaredExecutionGraphRefused) fail(g.declaredExecutionGraphRefused, 'CAPABILITY_GRAPH_REFUSED');
   if (c.capability_id !== g.capabilityId) fail('The graph and selected capability identity disagree.');
-  const declared = c.definition_json ? JSON.parse(c.definition_json)?.semantics?.authority ?? {} : {};
+  const semantics = c.definition_json ? JSON.parse(c.definition_json)?.semantics ?? {} : {};
+  const declared = semantics.authority ?? {};
   const scenarioRows = new Map();
   for (const row of scenarios) {
     if (scenarioRows.has(row.scenario_id)) fail('Multiple selected versions share a scenario ID; a qualified graph is required.');
@@ -99,7 +100,8 @@ export function normalizeSnapshot({ capability: c, graph: g, scenarios = [], fea
       name: str(c.name || declared.name || c.capability_id), actor: str(c.actor || declared.userStory?.actor), intent: str(c.intent || declared.userStory?.intent), outcome: str(c.outcome || declared.userStory?.outcome), experiencePromise: str(c.experience_promise || declared.experience?.promise), rootScenarioId: g.rootScenarioId,
       declaredRootScenarioId:str(declared.rootScenarioId),mode:str(declared.mode),experienceId:str(declared.experience?.experienceId),
       observableConditions:list(declared.experience?.observableConditions).map(v=>({id:str(v.conditionId),statement:str(v.statement)})),
-      meaningSourceRef: `model:semantic_object_definition/${c.definition_pk}/semantics/authority` },
+      meaningSourceRef: `model:semantic_object_definition/${c.definition_pk}/semantics/authority`,
+      ...(semantics.readiness?{readiness:{declaration:str(semantics.readiness.declaration),execution:str(semantics.readiness.execution),reason:str(semantics.readiness.reason)}}:{}) },
     provenance: { ...provenance, graphDigest: digest(g), selection: 'current estate capability version and its declared scenario closure' },
     scenarios: list(g.scenarios).map((s, i) => {
       const row = scenarioRows.get(s.scenarioId) ?? {};
@@ -125,6 +127,7 @@ export function normalizeSnapshot({ capability: c, graph: g, scenarios = [], fea
     transformations: list(g.semanticTransformations).map((t, i) => ({ id: t.id, ...mechanics(t.expression), resultShape:resultShape(t.expression), sourceRef: `graph:/semanticTransformations/${i}` })),
     contracts: Object.entries(g.contractAuthorities?.contracts ?? {}).map(([id, c]) => ({ id, schemaId: str(c.schemaId || c.schema?.$id),
       title: str(c.schema?.title || id), type: str(c.schema?.type), required: list(c.schema?.required), properties: Object.keys(c.schema?.properties ?? {}),
+      ...(c.schema?.['x-input-provider']?.providerId?{inputProvider:{providerId:str(c.schema['x-input-provider'].providerId),location:str(c.schema['x-input-provider'].location)}}:{}),
       ...schemaContext(c.schema),emptyObjectEvidence:emptyObjectEvidence(c.schema),schemaDigest: digest(c.schema ?? {}), sourceRef: `graph:/contractAuthorities/contracts/${pointer(id)}` })),
     interfaces: list(g.interfaceAuthority?.interfaces).map((i, n) => ({ id: str(i.interfaceId ?? i.id ?? `interface:${n}`),
       profile: str(i.profile ?? i.kind ?? i.interfaceType), configurationDigest: digest(i.configuration ?? {}),

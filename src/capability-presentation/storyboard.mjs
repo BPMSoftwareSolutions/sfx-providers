@@ -48,6 +48,7 @@ export function buildStoryboard(snapshot, model, { contextAltitude='all',view=mo
   p.wire([[80,262],[275,262]],C.amber);p.add('terminal',62,262,'IN',C.amber,{r:24,size:12});
   p.wire([[677,262],[880,262]],C.green);p.add('terminal',903,262,'OUT',C.green,{r:24,size:12});
   p.text(`Estate ${s.identity.estateModelId}  /  version ${s.identity.capabilityVersionPk}`,280,349,425,32,17,C.muted,false,'center');
+  if(s.provenance.admission==='NOT_INSTALLED')p.text('Review candidate · NOT INSTALLED · execution held',150,440,665,30,14,C.amber,true,'center');
   p.text(s.features[0]?.sourceTitle?short('Feature: '+s.features[0].sourceTitle,130):s.identity.intent?short('Declared intent: '+s.identity.intent,130):'Declared structure, selected versions, and traceable context',150,406,665,50,18,C.white,false,'center');
 
   const blueprint=buildBlueprint(s);

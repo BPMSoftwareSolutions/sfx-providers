@@ -76,15 +76,32 @@ export function appendScenarioSheet({snapshot,model,page,slides,scenarioId=model
   const target=slides.find(s=>['boundary-inspection','inspection-evidence'].includes(s.blueprint?.role)&&s.blueprint.issueIds.some(id=>outcomeIssues.some(i=>i.id===id)));
   label(outcomeIssues.map(i=>i.id).join(', ')+' · display inspection',800,177,146,19,9,C.red,true,target);
  }
- const event={x:347,y:330,w:266,h:62};
- p.add('route',[[160,361],[event.x,361]],C.amber,{arrow:true,glow:false,width:1.5,routing:'forward'});
- p.add('route',[[event.x+event.w,361],[800,361]],C.green,{arrow:true,glow:false,width:1.5,routing:'forward'});
+ // Small complete circuits fit inline. Larger circuits retain the existing
+ // complete-event drill-down instead of silently dropping operations.
+ const inline=sc.operationIds.length>0&&sc.operationIds.length<=7;
+ const inlineCells=new Map();
+ if(inline){const gap=10,w=(580-gap*(sc.operationIds.length-1))/sc.operationIds.length;
+  sc.operationIds.forEach((id,i)=>inlineCells.set(id,{x:190+i*(w+gap),y:352,w,h:34}));}
+ const event=inline?{x:180,y:330,w:600,h:63}:{x:347,y:330,w:266,h:62};
+ const firstCell=inlineCells.get(sc.operationIds[0]),lastCell=inlineCells.get(sc.operationIds.at(-1));
+ const flowY=inline?firstCell.y+firstCell.h/2:361;
+ p.add('route',[[160,flowY],[inline?firstCell.x:event.x,flowY]],C.amber,{arrow:true,glow:false,width:1.5,routing:'forward'});
+ p.add('route',[[inline?lastCell.x+lastCell.w:event.x+event.w,flowY],[800,flowY]],C.green,{arrow:true,glow:false,width:1.5,routing:'forward'});
  label(sc.inputId.replaceAll('-',' '),18,228,138,50,13,C.amber,true);
  const input=snapshot.contracts.find(c=>c.id===sc.inputContractId);
+ const inputProvider=input?.inputProvider;
+ if(inputProvider){
+  label('INPUT PROVIDER · '+(snapshot.providerLabels?.[inputProvider.providerId]??inputProvider.providerId),23,273,128,34,9,C.violet,true);
+  label(inputProvider.location,23,305,128,20,7,C.muted,false,undefined,6);
+  p.blueprint.inputProvider={...inputProvider,sourceRef:input.sourceRef};
+ }
  const fields=(input?.fields??[]).filter(f=>/^\$\/payload\/[^/]+$/.test(f.path));
  const inputLabels=fields.length?fields.map(f=>f.path.replace('$/','').replaceAll('/','.')):[sc.inputContractId||'No input contract retained'];
- const itemH=Math.min(49,148/Math.max(1,inputLabels.length));
- inputLabels.forEach((value,i)=>{const y=284+i*itemH;p.add('shape','ROUND_RECTANGLE',23,y,128,itemH-6,{fill:'#18291E',stroke:C.amber,sw:1.1});documentIcon(p,31,y+(itemH-20)/2,C.amber);label(value,44,y+2,106,itemH-9,10.5,C.amber,false,undefined,4);});
+ const inputTop=inputProvider?326:284,availableInputHeight=432-inputTop;
+ const itemH=Math.min(49,(availableInputHeight-20)/Math.max(1,inputLabels.length));
+ p.add('shape','ROUND_RECTANGLE',23,inputTop,128,availableInputHeight,{fill:'#18291E',stroke:C.amber,sw:1.1});
+ label('One payload',27,inputTop+2,120,20,8,C.amber,true,undefined,6);
+ inputLabels.forEach((value,i)=>{const y=inputTop+20+i*itemH;documentIcon(p,31,y+(itemH-20)/2,C.amber);label(value,44,y+2,102,itemH-9,10.5,C.amber,false,undefined,4);});
  label(sc.outcomeId.replaceAll('-',' '),804,228,138,49,12,C.green,true);
  const outcomes=sc.variants.length?sc.variants:[{id:sc.outcomeContractId||sc.outcomeId,classification:''}];
  const outcomeH=Math.min(51,160/outcomes.length);
@@ -129,7 +146,8 @@ export function appendScenarioSheet({snapshot,model,page,slides,scenarioId=model
    p.add('port',providerX,181,C.violet,2);p.add('port',...anchor,C.violet,2);
    const callAnchor=glyphAnchor(op,opBox,'bottom',COMPONENT_STYLE,component.glyph);
    const centersFit=callLeft+callWidth/2>=event.x+12&&callLeft+callSpan-callWidth/2<=event.x+event.w-12;
-   const eventAnchor=[centersFit?callAnchor[0]:event.x+(callIndex+1)*event.w/(shownCalls.length+1),event.y];
+   const ownedCell=inlineCells.get(op.id);
+   const eventAnchor=ownedCell?[Math.round((ownedCell.x+ownedCell.w/2)*1000)/1000,ownedCell.y]:[centersFit?callAnchor[0]:event.x+(callIndex+1)*event.w/(shownCalls.length+1),event.y];
    const eventRoute=eventAnchor[0]===callAnchor[0]?[eventAnchor,callAnchor]:
     [eventAnchor,[eventAnchor[0],290+callIndex*4],[callAnchor[0],290+callIndex*4],callAnchor];
    p.add('route',eventRoute,C.violet,{arrow:false,glow:false,width:1,routing:'orthogonal'});
@@ -165,14 +183,31 @@ export function appendScenarioSheet({snapshot,model,page,slides,scenarioId=model
   if(unassigned.length>3)label('+'+(unassigned.length-3)+' more · review',x,314,w,16,7,C.amber,false,slides.find(s=>s.blueprint?.role==='review'),6);
  }
  if(!count&&!unassigned.length)p.text('No declared external provider references',215,250,530,45,16,C.muted,false,'center');
- drawComponentGlyph(p,eventNode,event,scopeIssues.length?inspectionColor:C.blue,{fill:'#082C47'});
- label(sc.eventId?sc.eventId.replaceAll('-',' '):sc.authorityId,event.x,event.y+2,event.w,38,13,C.white,true,eventPage);
- label(sc.operationIds.length+' declared operations · open complete circuit',event.x,event.y+36,event.w,25,10,C.blue,false,eventPage);
- if(!unassigned.length)label(allCalls.length>shownCalls.length?`${shownCalls.length} of ${allCalls.length} provider calls · open complete circuit`:'Provider calls in declared operation order',180,310,602,20,8,C.muted,false,allCalls.length>shownCalls.length?eventPage:undefined,7);
+ if(inline){
+  label(sc.eventId?sc.eventId.replaceAll('-',' '):sc.authorityId,180,304,600,25,13,C.blue,true,eventPage);
+  p.add('shape','ROUND_RECTANGLE',event.x,event.y,event.w,event.h,{fill:'none',stroke:C.blue,sw:1});
+  (p.blueprint.glyphs??=[]).push({nodeId:eventNode.id,kind:'event',glyph:'device',bounds:{...event},anchors:Object.fromEntries(['left','right','top','bottom'].map(side=>[side,glyphAnchor(eventNode,event,side)]))});
+  label('Execution · '+sc.operationIds.length+' declared operations',184,331,590,20,8,C.blue,false,undefined,6);
+  for(const id of sc.operationIds){const op=model.nodes.find(n=>n.id===id),box=inlineCells.get(id),component=eventComponent(model,op),action=eventAction(op);
+   const frames=drawComponentGlyph(p,op,box,action.color,{glyphName:component.glyph,fill:'#04263A'});
+   label(String(op.ordinal).padStart(2,'0'),frames.heading.x-4,frames.heading.y,frames.heading.w+8,frames.heading.h,8,C.blue,true);
+   label(identifierCaption(op.label,model.capabilityId),frames.label.x,frames.label.y,frames.label.w,frames.label.h,9,C.white,false,eventPage,6);
+  }
+  for(const edge of model.edges.filter(e=>e.kind==='sequence'&&inlineCells.has(e.from)&&inlineCells.has(e.to))){
+   const a=inlineCells.get(edge.from),b=inlineCells.get(edge.to);
+   p.add('route',[[a.x+a.w,a.y+a.h/2],[b.x,b.y+b.h/2]],C.blue,{arrow:true,glow:false,width:1,routing:'forward'});
+  }
+  p.blueprint.inlineOperationIds=[...inlineCells.keys()];
+ }else{
+  drawComponentGlyph(p,eventNode,event,scopeIssues.length?inspectionColor:C.blue,{fill:'#082C47'});
+  label(sc.eventId?sc.eventId.replaceAll('-',' '):sc.authorityId,event.x,event.y+2,event.w,38,13,C.white,true,eventPage);
+  label(sc.operationIds.length+' declared operations · open complete circuit',event.x,event.y+36,event.w,25,10,C.blue,false,eventPage);
+ }
+ if(!unassigned.length)label(allCalls.length>shownCalls.length?`${shownCalls.length} of ${allCalls.length} provider calls · open complete circuit`:'Provider calls in declared operation order',180,inline?284:310,602,20,8,C.muted,false,allCalls.length>shownCalls.length?eventPage:undefined,7);
  const ordinals=affected.map(id=>model.nodes.find(n=>n.id===id).ordinal);
  const issueLabel=scopeIssues.slice(0,3).map(i=>i.id).join(', ')+(scopeIssues.length>3?' +'+(scopeIssues.length-3):'');
  const operationLabel=ordinals.slice(0,6).map(v=>String(v).padStart(2,'0')).join(', ')+(ordinals.length>6?' +'+(ordinals.length-6):'');
- const inspectionText=scopeIssues.length?(invocationIssues.length?'Invocation inspection ':'Circuit inspection ')+issueLabel+(ordinals.length?' · operations '+operationLabel:''):'Provider references preserve operation and binding ownership';
+ const inspectionText=snapshot.identity.readiness?.execution==='HELD'?'Execution HELD · '+snapshot.identity.readiness.reason:scopeIssues.length?(invocationIssues.length?'Invocation inspection ':'Circuit inspection ')+issueLabel+(ordinals.length?' · operations '+operationLabel:''):'Provider references preserve operation and binding ownership';
  label(inspectionText,177,398,606,invocationIssues.length||outcomeIssues.length?22:30,10,scopeIssues.length?inspectionColor:C.muted,false,scopeIssues.length?slides.find(s=>s.blueprint?.role==='review'):undefined);
  p.blueprint.bindingIssueIds=bindingIssues.map(i=>i.id);
  if(invocationIssues.length||outcomeIssues.length){

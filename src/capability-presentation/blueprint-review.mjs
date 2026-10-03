@@ -6,6 +6,8 @@ import {inspectEvidence} from './inspection-evidence.mjs';
 export function reviewBlueprint(snapshot,model){
  let issues=[];
  const add=(severity,code,message,nodeIds=[],refs=[])=>issues.push({id:`R${String(issues.length+1).padStart(2,'0')}`,severity,code,message,nodeIds,sourceRefs:refs.filter(Boolean)});
+ if(snapshot.identity.readiness?.execution==='HELD')add('error','DECLARED_EXECUTION_HELD',snapshot.identity.readiness.reason||'Execution is explicitly held in the capability declaration.',[],[snapshot.identity.meaningSourceRef]);
+ if(snapshot.provenance.admission==='NOT_INSTALLED')add('warning','CANDIDATE_NOT_INSTALLED','This snapshot contains uncommitted authoring rows, rolled back after capture. It is a review candidate, not the live installed capability.',[],['snapshot:/provenance']);
  const scenarios=new Map(snapshot.scenarios.map(s=>[s.id,s]));
  const reachable=new Set([snapshot.identity.rootScenarioId]);let changed=true;
  while(changed){changed=false;for(const sc of [...reachable]){
@@ -22,6 +24,10 @@ export function reviewBlueprint(snapshot,model){
  for(const n of model.nodes){
   if(n.missing)add('error',n.kind==='binding'?'PORT_BINDING_MISSING':'TARGET_OR_AUTHORITY_MISSING','A referenced binding, target or owning authority is absent.',[n.id],[n.ref]);
   if(n.kind==='binding'&&n.used===false)add('warning','BINDING_NOT_INVOKED',`Binding ${n.portId} has no invoking operation in the selected graph.`,[n.id],[n.ref]);
+  if(n.kind==='binding'&&n.used&&!n.platformCapabilityId){
+   const ops=model.nodes.filter(op=>op.kind==='operation'&&op.portId===n.portId);
+   add('error','PORT_PLATFORM_UNBOUND',`Binding ${n.portId} has no platform capability. Its provider association does not make it executable.`,[n.id,...ops.map(op=>op.id)],[n.ref]);
+  }
   if(n.kind==='binding'&&n.used&&n.endpoints?.length&&!n.providerIds?.length){
    const ops=model.nodes.filter(op=>op.kind==='operation'&&op.portId===n.portId);
    add('warning','ENDPOINT_BINDING_WITHOUT_PROVIDER_ID',`Binding ${n.portId} declares an endpoint but no provider identity. A provider named by a route transformation does not establish this exchange binding's ownership.`,[n.id,...ops.map(op=>op.id)],[n.ref]);

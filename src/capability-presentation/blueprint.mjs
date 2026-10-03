@@ -42,10 +42,15 @@ export function buildBlueprint(s){
  for(const b of s.bindings){
   const used=nodes.some(n=>n.kind==='operation'&&n.portId===b.portId);
   add('port:'+b.portId,'port',b.portId,b.sourceRef,{portId:b.portId});
-  add('binding:'+b.portId,'binding',b.platformCapabilityId,b.sourceRef,{...b,used,ref:b.sourceRef});
+  add('binding:'+b.portId,'binding',b.platformCapabilityId||'Unbound platform',b.sourceRef,{...b,used,ref:b.sourceRef});
   wire('port:'+b.portId,'binding:'+b.portId,'binding',b.sourceRef,'bound to');
   if(b.platformCapabilityId){add('platform:'+b.platformCapabilityId,'platform',b.platformCapabilityId,b.sourceRef);wire('binding:'+b.portId,'platform:'+b.platformCapabilityId,'realization',b.sourceRef,'platform capability');}
-  for(const providerId of b.providerIds??[]){add('provider:'+providerId,'provider',s.providerLabels?.[providerId]??providerId,b.sourceRef);wire('platform:'+b.platformCapabilityId,'provider:'+providerId,'provider-selection',b.sourceRef,'declared provider',{bindingId:'binding:'+b.portId});}
+  for(const providerId of b.providerIds??[]){
+   add('provider:'+providerId,'provider',s.providerLabels?.[providerId]??providerId,b.sourceRef);
+   // A declared association survives a missing executor. Do not fabricate a
+   // platform node, and do not hide the provider because admission is incomplete.
+   wire(b.platformCapabilityId?'platform:'+b.platformCapabilityId:'binding:'+b.portId,'provider:'+providerId,'provider-selection',b.sourceRef,'declared provider',{bindingId:'binding:'+b.portId,platformBound:!!b.platformCapabilityId});
+  }
   const transformation=s.transformations.find(t=>t.id===b.transformationId);
   for(const reference of transformation?.providerReferences??[]){
    const ref=transformation.sourceRef+reference.expressionPath;
