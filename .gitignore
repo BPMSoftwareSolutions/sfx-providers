@@ -15,4 +15,8 @@ providers/cli-login/tests/bin/
 providers/cli-login/tests/obj/
 providers/cli-login/live-tests/bin/
 providers/cli-login/live-tests/obj/
+providers/cli-login/host/bin/
+providers/cli-login/host/obj/
+providers/cli-login/host-tests/bin/
+providers/cli-login/host-tests/obj/
 

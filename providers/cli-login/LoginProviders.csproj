@@ -10,6 +10,8 @@
   <ItemGroup>
     <Compile Remove="tests/**/*.cs" />
     <Compile Remove="live-tests/**/*.cs" />
+    <Compile Remove="host/**/*.cs" />
+    <Compile Remove="host-tests/**/*.cs" />
     <Compile Include="../cli-login-input-provider/*.cs" />
     <Compile Include="../identity-principal-provider/*.cs" />
     <Compile Include="../password-credential-provider/*.cs" />

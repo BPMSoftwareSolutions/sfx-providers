@@ -1,6 +1,6 @@
 {
   "schema": "sfx-external-provider-package.v1",
-  "status": "implementation-not-estate-admitted",
+  "status": "implementation-with-installed-estate-bindings",
   "package": "SfxProviders.CliLogin",
   "runtime": "net8.0",
   "kernelChanges": false,

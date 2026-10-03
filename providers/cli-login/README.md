@@ -12,16 +12,23 @@ SFX_IDENTITY_CONNECTION_STRING. No SDA Kernel source or registration changes occ
 | password-credential-provider | [Source](../password-credential-provider/PasswordCredentialProvider.cs) | Real Argon2id check and one-time recorded credential result |
 | ide-session-provider | [Source](../ide-session-provider/IdeSessionProvider.cs) | Random bearer issuance after persisted session creation, plus validation/revocation |
 
-This is a provider library with a tested persistence adapter. The CLI command,
-HTTP composition, host deployment and estate admission remain to be implemented.
-providers.json documents identities; it does not admit them to estate rows. The
-package is separate from the eleven-altitude bridge and sda-cli-invoke.
+The provider library, generated persistence adapter and [private HTTP host](host/README.md)
+are implemented. `authenticate-ide-user` is installed in estate 34 with three
+server provider calls, client input provenance and four outcomes. Topology
+conformance passes with zero violations. The actual installed kernel drives the
+host callbacks over governed HTTPS; the host owns private credentials and session
+response delivery. `providers.json` documents this package; estate rows remain
+the authority. The package is separate from the eleven-altitude bridge.
+
+CLI command integration, OS credential storage, authorization of subsequent
+capability calls and Azure authentication-host deployment remain pending.
 
 ## Composition
 
 The client runs CliLoginInputProvider.AcquireAsync and sends its private request
 over the host's protected login transport. The identity service constructs
-LoginInput, then calls the three server providers in order:
+LoginInput. The installed scenario drives three callbacks in order; each callback
+executes one provider. The following library example shows the private type flow:
 
 ~~~csharp
 var dal = new GeneratedIdentityDal();
@@ -108,8 +115,12 @@ expiry and actual runtime-role denials.
 states its exact scope. Anonymous throttle audit events/counters remain; test
 principals, password verifiers and sessions are removed.
 
-Pending integration includes the private HTTP boundary, CLI login/OS credential
-storage, application identity grants/deployment, and estate/circuit admission.
+The [host integration suite](host-tests/Program.cs) additionally executes the real
+installed kernel over trusted HTTPS against the identity database. Its real
+observations can be forwarded live to the local circuit observer. The estate
+receipt is `sfx-embody/docs/research/authenticate-ide-user-circuit-review.json`.
+Remaining integration includes CLI login/OS credential storage, application
+identity grants, session-based capability authorization and deployment.
 Operator-only enrollment is available for a future protected administration
 workflow; no default user or password is seeded. No staging application binary
 was deployed in this provider/DAL work.
