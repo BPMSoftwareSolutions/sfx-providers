@@ -1,5 +1,11 @@
 # sfx-providers
 
+The four [CLI login providers](providers/cli-login/README.md) implement private
+input acquisition, principal resolution, Argon2id verification and session
+creation. They use the generated SFX.Identity.DAL against `sfx-identity`; their
+provider and live database checks are recorded separately from pending API/CLI
+deployment and estate admission.
+
 The hand-authored **circuit-presentation provider** packages the reusable diagram
 design used for the SideFX announcement: native circuits, branches, junctions,
 provider bindings, signal colors, source links and speaker notes. See

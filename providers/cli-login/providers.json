@@ -1,0 +1,36 @@
+{
+  "schema": "sfx-external-provider-package.v1",
+  "status": "implementation-not-estate-admitted",
+  "package": "SfxProviders.CliLogin",
+  "runtime": "net8.0",
+  "kernelChanges": false,
+  "altitudeBridge": false,
+  "providers": [
+    {
+      "id": "cli-login-input-provider",
+      "type": "SfxProviders.CliLogin.CliLoginInputProvider",
+      "method": "AcquireAsync",
+      "location": "client-terminal"
+    },
+    {
+      "id": "identity-principal-provider",
+      "type": "SfxProviders.CliLogin.IdentityPrincipalProvider",
+      "method": "ResolveAsync",
+      "location": "private-identity-service"
+    },
+    {
+      "id": "password-credential-provider",
+      "type": "SfxProviders.CliLogin.PasswordCredentialProvider",
+      "method": "VerifyAsync",
+      "location": "private-identity-service"
+    },
+    {
+      "id": "ide-session-provider",
+      "type": "SfxProviders.CliLogin.IdeSessionProvider",
+      "method": "EstablishAsync",
+      "location": "private-identity-service"
+    }
+  ],
+  "persistence": "GeneratedIdentityDal implements IIdentityDal through SFX.Identity.DAL; database sfx-identity; process setting SFX_IDENTITY_CONNECTION_STRING; no in-memory fallback",
+  "admission": "Requires estate declarations and API composition separately; this catalog is documentation, not database authority"
+}

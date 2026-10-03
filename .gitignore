@@ -9,4 +9,10 @@ config/capability-presentation.local.json
 
 providers/procedure-extract/bin/
 providers/procedure-extract/obj/
+providers/cli-login/bin/
+providers/cli-login/obj/
+providers/cli-login/tests/bin/
+providers/cli-login/tests/obj/
+providers/cli-login/live-tests/bin/
+providers/cli-login/live-tests/obj/
 
