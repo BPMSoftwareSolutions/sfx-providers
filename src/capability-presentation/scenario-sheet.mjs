@@ -20,9 +20,21 @@ function outcomeIcon(p,x,y,color,classification){
 
 // Scenario semantics stay primary. Provider-related and flagged operation
 // declarations are disclosed inside When; the complete Event is linked.
-export function appendScenarioSheet({snapshot,model,page,slides,scenarioId=model.rootScenarioId}){
- const sc=model.scenarios.find(s=>s.id===scenarioId),semantic=projectBlueprint(model,{altitude:'scenario',scenarioId});
- const involvement=projectBlueprint(model).edges.filter(e=>e.kind==='scenario-provider'&&e.from==='scenario:'+scenarioId);
+export function appendScenarioSheet(options){
+ const scenarioId=options.scenarioId??options.model.rootScenarioId;
+ const operations=options.model.scenarios.find(s=>s.id===scenarioId).operationIds;
+ const pages=Math.max(1,Math.ceil(operations.length/7));
+ let first;
+ for(let index=0;index<pages;index++){
+  const result=appendScenarioPage({...options,scenarioId,operationIds:operations.slice(index*7,index*7+7),pageIndex:index,pageCount:pages,totalOperations:operations.length});
+  first??=result;
+ }
+ return first;
+}
+function appendScenarioPage({snapshot,model,page,slides,scenarioId,operationIds,pageIndex,pageCount,totalOperations}){
+ const sc={...model.scenarios.find(s=>s.id===scenarioId),operationIds},semantic=projectBlueprint(model,{altitude:'scenario',scenarioId});
+ const involvement=projectBlueprint(model).edges.filter(e=>e.kind==='scenario-provider'&&e.from==='scenario:'+scenarioId)
+  .map(e=>({...e,via:e.via.filter(use=>operationIds.includes(use.operationId))})).filter(e=>e.via.length);
  const inspectionScope=scenarioInspection(model,sc.id);
  const scopeIssues=inspectionScope.issues;
  // Bug classification and wording are declared inspection evidence. This is a
@@ -43,10 +55,11 @@ export function appendScenarioSheet({snapshot,model,page,slides,scenarioId=model
  const unassigned=affected.filter(id=>!providerOperations.includes(id));
  const eventPage=slides.find(s=>s.blueprint?.altitude==='event'&&s.blueprint.scenarioId===scenarioId&&['projection','overview'].includes(s.blueprint.role));
  const meaningPage=slides.find(s=>s.blueprint?.altitude==='scenario'&&s.blueprint.scenarioId===scenarioId&&['projection','overview'].includes(s.blueprint.role));
- const p=page('Scenario circuit blueprint',model.capabilityId,[sc.ref,...involvement.flatMap(e=>e.sourceRefs),...scopeIssues.flatMap(i=>i.sourceRefs)],JSON.stringify({scenario:sc,semantics:semantic,involvement,issues:scopeIssues},null,2));
+ const p=page('Scenario circuit blueprint',model.capabilityId+(pageCount>1?' · page '+(pageIndex+1)+'/'+pageCount:''),[sc.ref,...involvement.flatMap(e=>e.sourceRefs),...scopeIssues.flatMap(i=>i.sourceRefs)],JSON.stringify({scenario:sc,semantics:semantic,involvement,issues:scopeIssues},null,2));
  p.headerLayout='custom';
  p.blueprint={role:'scenario-blueprint',altitude:'scenario',scenarioId,nodes:semantic.nodes.map(n=>n.id),edges:semantic.edges.map(e=>e.id),providerReferences:involvement,disclosedOperationIds:[...new Set([...providerOperations,...unassigned.slice(0,3)])],diagnosticOperationReferences:[]};
  p.blueprint.scenarioIssueIds=scopeIssues.map(i=>i.id);p.blueprint.outcomeIssueIds=outcomeIssues.map(i=>i.id);
+ p.blueprint.pageIndex=pageIndex;p.blueprint.pageCount=pageCount;p.blueprint.totalOperations=totalOperations;
  p.blueprint.inputIssueIds=inputIssues.map(i=>i.id);p.blueprint.globalIssueIds=inspectionScope.globalIssues.map(i=>i.id);
  p.blueprint.bugIssueIds=bugIssues.map(i=>i.id);
  p.blueprint.inspection={status:model.review.inspection.status,checkIds:inspectionScope.checks.map(c=>c.id),unlocatedIssueIds:model.review.inspection.unlocatedIssueIds};
@@ -59,7 +72,7 @@ export function appendScenarioSheet({snapshot,model,page,slides,scenarioId=model
   textFrames.push({x,y,w,h});
  };
  blueprintGrid(p);
- p.text(p.title,12,3,936,39,29,C.white,true);p.text(model.capabilityId,14,40,930,27,17,C.blue,true);
+ p.text(p.title,12,3,936,39,29,C.white,true);p.text(p.subtitle,14,40,930,27,17,C.blue,true);
  p.add('shape','RECTANGLE',8,77,944,387,{fill:'none',stroke:C.blue,sw:1.2});
  p.add('shape','RECTANGLE',9,78,942,25,{fill:'#05243B'});p.text('Capability boundary',16,77,550,26,13,C.blue,true);
  [['Input',C.amber],['Execution',C.blue],['Provider',C.violet],['Outcome',C.green],['Observation','#72D7EE']].forEach(([name,color],i)=>{
@@ -76,8 +89,8 @@ export function appendScenarioSheet({snapshot,model,page,slides,scenarioId=model
   const target=slides.find(s=>['boundary-inspection','inspection-evidence'].includes(s.blueprint?.role)&&s.blueprint.issueIds.some(id=>outcomeIssues.some(i=>i.id===id)));
   label(outcomeIssues.map(i=>i.id).join(', ')+' · display inspection',800,177,146,19,9,C.red,true,target);
  }
- // Small complete circuits fit inline. Larger circuits retain the existing
- // complete-event drill-down instead of silently dropping operations.
+ // Every page retains up to seven actual operations. The complete-event
+ // drill-down remains available across all pages of the same scenario.
  const inline=sc.operationIds.length>0&&sc.operationIds.length<=7;
  const inlineCells=new Map();
  if(inline){const gap=10,w=(580-gap*(sc.operationIds.length-1))/sc.operationIds.length;
@@ -120,8 +133,9 @@ export function appendScenarioSheet({snapshot,model,page,slides,scenarioId=model
   .sort((a,b)=>sc.operationIds.indexOf(a.use.operationId)-sc.operationIds.indexOf(b.use.operationId)||a.edge.to.localeCompare(b.edge.to));
  const shownCalls=allCalls.slice(0,callStyle.maxVisible);
  const availableWidth=600-(unassigned.length?colW:0);
- const callWidth=Math.min(callStyle.width,(availableWidth-callStyle.gap*(shownCalls.length-1))/Math.max(1,shownCalls.length));
- const callSpan=shownCalls.length*callWidth+Math.max(0,shownCalls.length-1)*callStyle.gap;
+ const callGap=Math.min(callStyle.gap,availableWidth/(Math.max(1,shownCalls.length)*6));
+ const callWidth=Math.min(callStyle.width,(availableWidth-callGap*(shownCalls.length-1))/Math.max(1,shownCalls.length));
+ const callSpan=shownCalls.length*callWidth+Math.max(0,shownCalls.length-1)*callGap;
  const callLeft=180+(availableWidth-callSpan)/2;
  p.blueprint.disclosedOperationIds=[...new Set([...shownCalls.map(c=>c.use.operationId),...unassigned.slice(0,3)])];
  p.blueprint.providerCallLayout={order:'scenario-operation-order',total:allCalls.length,shown:shownCalls.length};
@@ -134,7 +148,7 @@ export function appendScenarioSheet({snapshot,model,page,slides,scenarioId=model
   uses.forEach((use,j)=>{
    const callIndex=shownCalls.findIndex(call=>call.edge===edge&&call.use===use);
    const op=model.nodes.find(n=>n.id===use.operationId),y=callStyle.top,w=callWidth;
-   const callX=callLeft+callIndex*(callWidth+callStyle.gap);
+   const callX=callLeft+callIndex*(callWidth+callGap);
    const issues=bindingIssues.filter(i=>i.nodeIds.includes(op.id)),ink=issues.some(i=>i.severity==='error')?C.red:undefined;
    const target=slides.find(s=>s.blueprint?.role==='boundary-inspection'&&s.blueprint.operationIds.includes(op.id))??slides.find(s=>s.blueprint?.role==='invocation-inspection'&&s.blueprint.operationIds.includes(op.id))??slides.find(s=>s.blueprint?.role==='inspection-evidence'&&s.blueprint.issueIds.some(id=>issues.some(i=>i.id===id)))??slides.find(s=>s.blueprint?.role==='provider-detail'&&s.blueprint.operationIds.includes(op.id));
    const opBox={x:callX,y,w,h:portH},isTestimony=use.basis!=='declared provider';
@@ -156,7 +170,7 @@ export function appendScenarioSheet({snapshot,model,page,slides,scenarioId=model
    const words=identifierCaption(op.label,model.capabilityId).split(' ');
    const caption=[...new Set([words[0],words.at(-1)])].join(' ');
    p.text(String(op.ordinal).padStart(2,'0'),frames.heading.x-8,y+(portH-21)/2,frames.heading.w+16,21,8,action.color,true,'center');
-   label(caption,frames.label.x,frames.label.y,frames.label.w,frames.label.h,9,C.white,false,target);
+   label(caption,frames.label.x,frames.label.y,frames.label.w,frames.label.h,9,C.white,false,target,6);
    if(issues.length){p.add('port',callX+w-3,y+3,ink??C.amber,3);p.blueprint.diagnosticOperationReferences.push({operationId:op.id,issueIds:issues.map(i=>i.id),bounds:opBox});}
    ports.push({operationId:op.id,portId:use.portId,bindingId:use.bindingId,providerId:provider.id,basis:use.basis,sourceEdgeIds:use.sourceEdgeIds,bounds:opBox,anchor,component,action,
     eventId:eventNode.id,eventAnchor,callAnchor,eventRoute,providerRoute});
@@ -187,10 +201,10 @@ export function appendScenarioSheet({snapshot,model,page,slides,scenarioId=model
   label(sc.eventId?sc.eventId.replaceAll('-',' '):sc.authorityId,180,304,600,25,13,C.blue,true,eventPage);
   p.add('shape','ROUND_RECTANGLE',event.x,event.y,event.w,event.h,{fill:'none',stroke:C.blue,sw:1});
   (p.blueprint.glyphs??=[]).push({nodeId:eventNode.id,kind:'event',glyph:'device',bounds:{...event},anchors:Object.fromEntries(['left','right','top','bottom'].map(side=>[side,glyphAnchor(eventNode,event,side)]))});
-  label('Execution · '+sc.operationIds.length+' declared operations',184,331,590,20,8,C.blue,false,undefined,6);
+  label('Execution · operations '+(pageIndex*7+1)+'–'+(pageIndex*7+sc.operationIds.length)+' / '+totalOperations,184,331,590,20,8,C.blue,false,undefined,6);
   for(const id of sc.operationIds){const op=model.nodes.find(n=>n.id===id),box=inlineCells.get(id),component=eventComponent(model,op),action=eventAction(op);
    const frames=drawComponentGlyph(p,op,box,action.color,{glyphName:component.glyph,fill:'#04263A'});
-   label(String(op.ordinal).padStart(2,'0'),frames.heading.x-4,frames.heading.y,frames.heading.w+8,frames.heading.h,8,C.blue,true);
+   label(String(op.ordinal).padStart(2,'0'),frames.heading.x-8,frames.heading.y,frames.heading.w+16,frames.heading.h,8,C.blue,true,undefined,6);
    label(identifierCaption(op.label,model.capabilityId),frames.label.x,frames.label.y,frames.label.w,frames.label.h,9,C.white,false,eventPage,6);
   }
   for(const edge of model.edges.filter(e=>e.kind==='sequence'&&inlineCells.has(e.from)&&inlineCells.has(e.to))){
@@ -262,6 +276,6 @@ export function appendScenarioSheet({snapshot,model,page,slides,scenarioId=model
  else if(meaningPage)p.add('t','Scenario meaning',370,501,210,22,12,C.blue,true,'left',link(meaningPage));
  const review=slides.find(s=>s.blueprint?.role==='review');if(review)p.add('t','Review · '+model.review.errors+' errors / '+model.review.warnings+' warnings',630,501,310,22,12,C.amber,true,'left',link(review));
  p.blueprint.providerPorts=ports;p.blueprint.inputFieldPaths=fields.map(f=>f.path);p.blueprint.textFrames=textFrames;
- if(eventPage){const nav=eventPage.commands.find(c=>c.op==='t'&&c.args[0]==='Scenario');if(nav){nav.args[0]='Scenario blueprint';nav.args[4]=24;nav.args[3]=200;nav.args[9]=link(p);}}
+ if(eventPage&&pageIndex===0){const nav=eventPage.commands.find(c=>c.op==='t'&&c.args[0]==='Scenario');if(nav){nav.args[0]='Scenario blueprint';nav.args[4]=24;nav.args[3]=200;nav.args[9]=link(p);}}
  return p;
 }

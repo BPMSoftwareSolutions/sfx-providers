@@ -70,7 +70,7 @@ test('all three bound component families fit a dense Event and preserve operatio
  const s=denseFixture(['sda-authority-transformation-port.v1','sda-external-credential-reference-binding-port.v1','sda-governed-http-exchange-port.v1']);
  const r=await handle({contractId:'capability-presentation-request.v1',capabilityId:s.identity.capabilityId,view:'event',contextAltitude:7},{readEstate:async()=>s});
  assert.equal(r.disposition,'AUTHORED',JSON.stringify(r.findings));
- const slide=r.candidate.storyboard.slides[2],render=slide.blueprint.render,p=projectBlueprint(r.candidate.storyboard.blueprint,{altitude:'event'});
+ const slide=r.candidate.storyboard.slides.find(s=>s.blueprint?.render),render=slide.blueprint.render,p=projectBlueprint(r.candidate.storyboard.blueprint,{altitude:'event'});
  assert.equal(render.cells.length,35);assert.equal(render.routes.length,34);
  assert.equal(new Set(render.cells.map(c=>c.component.glyph)).size,3);
  assert.ok(render.cells.every(c=>c.fontSize>=8&&c.component.bindingId&&c.component.sourceRef));
@@ -83,12 +83,12 @@ test('all three bound component families fit a dense Event and preserve operatio
 test('dense Event labels retain readable fonts and native operation links with a separate scenario blueprint',async()=>{
  const s=denseFixture(),r=await handle({contractId:'capability-presentation-request.v1',capabilityId:s.identity.capabilityId,view:'event',contextAltitude:7},{readEstate:async()=>s});
  assert.equal(r.disposition,'AUTHORED',JSON.stringify(r.findings));
- const slides=r.candidate.storyboard.slides,event=slides[2],summary=slides[1];
+ const slides=r.candidate.storyboard.slides,event=slides.find(s=>s.blueprint?.render),summary=slides[1];
  assert.equal(event.headerLayout,'custom');assert.equal(event.blueprint.render.cells.length,35);
  assert.ok(event.blueprint.render.cells.every(c=>c.fontSize>=8));
  assert.equal(summary.blueprint.role,'scenario-blueprint');assert.deepEqual(summary.blueprint.nodes,projectBlueprint(r.candidate.storyboard.blueprint,{altitude:'scenario'}).nodes.map(n=>n.id));
  const nav=event.commands.find(c=>c.op==='t'&&c.args[0]==='Scenario blueprint');assert.equal(nav.args[9].slideIndex,1);
- const back=summary.commands.find(c=>c.op==='t'&&c.args[0]==='Complete execution circuit');assert.equal(back.args[9].slideIndex,2);
+ const back=summary.commands.find(c=>c.op==='t'&&c.args[0]==='Complete execution circuit');assert.equal(back.args[9].slideIndex,slides.indexOf(event));
  assert.deepEqual(slides.map(s=>s.id),slides.map((_,i)=>'slide-'+(i+1)));
  assert.equal(event.commands.filter(c=>c.op==='t'&&slides[c.args[9]?.slideIndex]?.blueprint?.role==='provider-detail').length,35);
 });
@@ -151,7 +151,7 @@ test('scenario calls run left-to-right across provider groups and connect to the
  assert.equal(slide.blueprint.providerCallLayout.total,3);
 });
 
-test('dense scenario summaries disclose their limit and retain all calls in the complete circuit',async()=>{
+test('dense scenario circuits paginate their calls and retain the complete circuit',async()=>{
  const s=denseFixture(),r=await handle({contractId:'capability-presentation-request.v1',capabilityId:s.identity.capabilityId,contextAltitude:7},{readEstate:async()=>s});
  const slide=r.candidate.storyboard.slides[1];
  // Platform implementation inventory alone must not invent explicit references.
@@ -160,7 +160,9 @@ test('dense scenario summaries disclose their limit and retain all calls in the 
  raw.graph.interfaceAuthority.portBindings.push(...raw.graph.executionAuthorities[0].operations.map(op=>({portId:op.portId,platformCapabilityId:'query.v1',configuration:{providerId:'same-provider'}})));
  const x=normalizeSnapshot(raw),result=await handle({contractId:'capability-presentation-request.v1',capabilityId:x.identity.capabilityId,contextAltitude:7},{readEstate:async()=>x});
  assert.equal(result.disposition,'AUTHORED',JSON.stringify(result.findings));
- const summary=result.candidate.storyboard.slides[1];assert.equal(summary.blueprint.providerCallLayout.total,8);assert.equal(summary.blueprint.providerPorts.length,5);
- assert(summary.commands.some(c=>c.op==='t'&&c.args[0].includes('5 of 8 provider calls')));
+ const summaries=result.candidate.storyboard.slides.filter(s=>s.blueprint?.role==='scenario-blueprint'&&s.blueprint.scenarioId==='review');
+ assert.deepEqual(summaries.map(s=>s.blueprint.providerCallLayout.total),[7,1]);
+ assert.deepEqual(summaries.map(s=>s.blueprint.providerPorts.length),[7,1]);
+ assert.equal(new Set(summaries.flatMap(s=>s.blueprint.providerPorts.map(p=>p.operationId))).size,8);
  assert.equal(result.candidate.storyboard.slides.find(s=>s.blueprint?.render?.cells?.length===8).blueprint.render.cells.length,8);
 });

@@ -16,6 +16,26 @@ test('an unbound executor retains the declared provider without inventing a plat
  assert.equal(model.observations.state,'unobserved');
 });
 
+test('long scenario circuits retain every ordered operation and provider owner across pages',async()=>{
+ const raw=rawFixture();
+ const operations=Array.from({length:17},(_,i)=>({operationId:'step-'+(i+1),kind:'invoke-port',portId:i%5===4?'deliver':'policy'}));
+ raw.graph.executionAuthorities[0].operations=operations;
+ const snapshot=normalizeSnapshot(raw);
+ const result=await handle({contractId:'capability-presentation-request.v1',capabilityId:'review-request',view:'scenario',scenarioId:'review',contextAltitude:1},{readEstate:async()=>snapshot});
+ assert.equal(result.disposition,'AUTHORED',JSON.stringify(result.findings));
+ const pages=result.candidate.storyboard.slides.filter(s=>s.blueprint?.role==='scenario-blueprint'&&s.blueprint.scenarioId==='review');
+ assert.equal(pages.length,3);
+ assert.deepEqual(result.candidate.storyboard.slides.slice(1,4),pages);
+ assert.deepEqual(pages.map(p=>p.subtitle.split(' · ').at(-1)),['page 1/3','page 2/3','page 3/3']);
+ assert.deepEqual(pages.map(p=>p.blueprint.inlineOperationIds.length),[7,7,3]);
+ assert.deepEqual(pages.flatMap(p=>p.blueprint.inlineOperationIds),operations.map((_,i)=>'operation:review.v1:'+(i+1)));
+ for(const page of pages){
+  assert.equal(page.blueprint.pageCount,3);
+  for(const port of page.blueprint.providerPorts) assert.ok(page.blueprint.inlineOperationIds.includes(port.operationId));
+ }
+ assert.deepEqual(pages.flatMap(p=>p.blueprint.providerPorts.map(p=>p.operationId)),[5,10,15].map(i=>'operation:review.v1:'+i));
+});
+
 test('review scene retains client input provenance, exact inline operations, and held admission',async()=>{
  const raw=rawFixture();
  raw.capability.definition_json=JSON.stringify({semantics:{readiness:{declaration:'REVIEWABLE',execution:'HELD',reason:'Private host bindings are not installed'}}});

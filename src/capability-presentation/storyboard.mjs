@@ -159,11 +159,13 @@ export function buildStoryboard(snapshot, model, { contextAltitude='all',view=mo
   p.interpretation='Hashes identify retained evidence; they do not certify the capability’s behavior or the truth of an inferred explanation.';
 
   appendInspectionSlides({model:blueprint,page});
-  const scenarioSheet=appendScenarioSheet({snapshot:s,model:blueprint,page,slides,scenarioId:scenarioId??blueprint.rootScenarioId});
+  const scenarioStart=slides.length;
+  appendScenarioSheet({snapshot:s,model:blueprint,page,slides,scenarioId:scenarioId??blueprint.rootScenarioId});
   for(const slide of slides.filter(p=>p.blueprint?.altitude==='capability'&&['overview','projection'].includes(p.blueprint.role)))drawCapabilitySheet(slide,s,blueprint,{slides,selectedScenarioId:scenarioId??blueprint.rootScenarioId});
   // Author with stable temporary indices, then place scenario meaning directly
   // after the cover and remap every native destination before compilation.
-  slides.splice(slides.indexOf(scenarioSheet),1);slides.splice(1,0,scenarioSheet);
+  const scenarioPages=slides.splice(scenarioStart);
+  slides.splice(1,0,...scenarioPages);
   const destinations=new Map(slides.map((slide,index)=>[Number(slide.id.slice(6))-1,index]));
   for(const [index,slide]of slides.entries()){
     slide.id='slide-'+(index+1);

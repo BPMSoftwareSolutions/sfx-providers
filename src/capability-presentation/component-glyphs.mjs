@@ -20,7 +20,7 @@ export function validateComponentStyle(style){
  }
  const event=style.event;
  const calls=style.scenario?.providerCalls;
- if(calls&&(!Number.isInteger(calls.maxVisible)||calls.maxVisible<1||calls.maxVisible>5||
+ if(calls&&(!Number.isInteger(calls.maxVisible)||calls.maxVisible<1||calls.maxVisible>7||
   !['width','gap','height','top'].every(key=>Number.isFinite(calls[key])&&calls[key]>0)))bad('Invalid scenario provider call layout.');
  if(event){
   if(!event.platforms||!event.operations||!event.fallback)bad('Invalid Event component selection.');
