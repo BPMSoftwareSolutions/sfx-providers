@@ -24,7 +24,9 @@ public sealed class CliLoginInputProvider(ILoginTerminal? terminal = null)
     private readonly ILoginTerminal terminal = terminal ?? new ConsoleLoginTerminal();
     private static readonly SemaphoreSlim ConsoleOwner = new(1, 1);
 
-    public async Task<LoginInput> AcquireAsync(CancellationToken cancellationToken = default)
+    public Task<LoginInput> AcquireAsync(CancellationToken cancellationToken = default)
+        => AcquireAsync(null, cancellationToken);
+    public async Task<LoginInput> AcquireAsync(string? username, CancellationToken cancellationToken = default)
     {
         if (!terminal.IsInteractive) throw new LoginProviderException("INTERACTIVE_LOGIN_REQUIRED");
         await ConsoleOwner.WaitAsync(cancellationToken);
@@ -34,8 +36,10 @@ public sealed class CliLoginInputProvider(ILoginTerminal? terminal = null)
             prior = terminal.TreatControlCAsInput;
             terminal.TreatControlCAsInput = true;
             restore = true;
-            terminal.Write("Username: ");
-            char[] identifier = await ReadLineAsync(254, echo: true, cancellationToken);
+            if (username is not null && (string.IsNullOrWhiteSpace(username) || username.Length > 254 || username.Any(char.IsControl)))
+                throw new LoginProviderException("LOGIN_INPUT_INVALID");
+            if (username is null) terminal.Write("Username: ");
+            char[] identifier = username?.ToCharArray() ?? await ReadLineAsync(254, echo: true, cancellationToken);
             try
             {
                 terminal.Write("Password: ");

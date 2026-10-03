@@ -19,4 +19,6 @@ providers/cli-login/host/bin/
 providers/cli-login/host/obj/
 providers/cli-login/host-tests/bin/
 providers/cli-login/host-tests/obj/
+providers/cli-login-input-provider/bin/
+providers/cli-login-input-provider/obj/
 

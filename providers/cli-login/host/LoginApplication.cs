@@ -38,6 +38,7 @@ public static class LoginApplication
         {
             context.Response.Headers.CacheControl = "no-store";
             context.Response.Headers.XContentTypeOptions = "nosniff";
+            context.Response.Headers["x-sfx-identity-realm"] = settings.Realm;
             // Every private route requires TLS; only an explicitly configured local
             // gateway may terminate TLS before forwarding on the loopback interface.
             if (context.Request.Path.StartsWithSegments("/auth/v1") && !context.Request.IsHttps &&

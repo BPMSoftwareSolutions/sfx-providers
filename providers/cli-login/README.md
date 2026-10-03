@@ -1,7 +1,16 @@
 # CLI login providers
 
-Four separately named providers implement the login boundaries in one .NET 8
-library. The server providers use the generated
+The terminal input provider is now consumed by the installed platform CLI client
+(`sfx-platform/tools/sfx-api/login-input/`). Its standalone project contains only
+private contracts/interfaces and terminal input, without the identity DAL or SQL
+driver. Server providers reference that same assembly. The private host returns
+its configured realm in `x-sfx-identity-realm` so clients scope stored sessions.
+Windows installed-command acceptance covers actual hidden input, cancellation,
+HTTPS login, DPAPI persistence, status, logout and database revocation. See
+`sfx-platform/docs/cli-login-client.md` for installation and remaining release work.
+
+Four separately named providers implement the login boundaries with shared .NET 8
+contracts and an independent input assembly. The server providers use the generated
 [SFX.Identity.DAL](../../../sfx-dal/identity/README.md) and sfx-identity through
 SFX_IDENTITY_CONNECTION_STRING. No SDA Kernel source or registration changes occur.
 

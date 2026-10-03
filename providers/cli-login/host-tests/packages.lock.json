@@ -292,8 +292,12 @@
         "type": "Project",
         "dependencies": {
           "Konscious.Security.Cryptography.Argon2": "[1.3.1, )",
-          "SFX.Identity.DAL": "[1.0.0, )"
+          "SFX.Identity.DAL": "[1.0.0, )",
+          "SfxProviders.CliLogin.Input": "[1.0.0, )"
         }
+      },
+      "SfxProviders.CliLogin.Input": {
+        "type": "Project"
       }
     }
   }

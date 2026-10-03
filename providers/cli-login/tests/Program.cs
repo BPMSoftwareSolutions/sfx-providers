@@ -174,6 +174,13 @@ await Check("redirected input, cancellation and overflow restore terminal state"
     try { await new CliLoginInputProvider(waiting).AcquireAsync(cancellation.Token); Need(false); } catch (OperationCanceledException) { }
     Need(!waiting.TreatControlCAsInput);
 });
+await Check("username option still acquires password only through the hidden terminal", async () =>
+{
+    var terminal = new TestTerminal(password + "\n");
+    using var input = await new CliLoginInputProvider(terminal).AcquireAsync("pilot");
+    Need(input.Identifier == "pilot" && !terminal.Output.Contains(password) && !terminal.Output.Contains("Username:"));
+    Need(!terminal.TreatControlCAsInput);
+});
 Console.WriteLine($"PASS {passed} provider checks; identity database and estate admission not exercised.");
 
 static void Need(bool condition) { if (!condition) throw new Exception("Assertion failed."); }

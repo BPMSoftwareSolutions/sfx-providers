@@ -91,6 +91,37 @@ try
     client.DefaultRequestHeaders.Authorization=new("Bearer",repeatedToken);
     using (var logout=await client.PostAsync("/auth/v1/logout",null)) Need(logout.IsSuccessStatusCode,"Subsequent session revoked");
     client.DefaultRequestHeaders.Authorization=null;
+    if (Environment.GetEnvironmentVariable("SFX_LOGIN_CLI_TEST_MODULE") is { Length: > 0 } cliModule)
+    {
+        string pem = Path.Combine(evidence, "localhost-public.pem");
+        await File.WriteAllTextAsync(pem, certificate.ExportCertificatePem());
+        var cliStart = new ProcessStartInfo("node") { UseShellExecute=false, CreateNoWindow=true,
+            RedirectStandardInput=true, RedirectStandardOutput=true, RedirectStandardError=true };
+        cliStart.ArgumentList.Add(Path.GetFullPath(cliModule));
+        cliStart.Environment["NODE_EXTRA_CA_CERTS"] = pem;
+        foreach (string name in new[] { "SFX_IDENTITY_SERVICE_KEY", "SFX_IDENTITY_CONNECTION_STRING", "SDA_API_TOKEN", "SFX_API_TOKEN" }) cliStart.Environment.Remove(name);
+        using var cli = Process.Start(cliStart)!;
+        var cliOut = cli.StandardOutput.ReadToEndAsync();
+        async Task<string> ReadPrivateDiagnostics()
+        {
+            var lines = new StringBuilder();
+            while (await cli.StandardError.ReadLineAsync() is { } line)
+            {
+                lines.AppendLine(line);
+                if (!line.Contains(password) && (line.StartsWith("PASS ") || line.StartsWith("PROGRESS TTY "))) Console.WriteLine(line);
+            }
+            return lines.ToString();
+        }
+        var cliError = ReadPrivateDiagnostics();
+        await cli.StandardInput.WriteAsync(JsonSerializer.Serialize(new { identifier, password, endpoint=settings.ProviderOrigin,
+            bin=Environment.GetEnvironmentVariable("SFX_LOGIN_CLI_TEST_BIN") ?? throw new Exception("CLI test bin required") }));
+        cli.StandardInput.Close();
+        await cli.WaitForExitAsync();
+        string stdout=await cliOut, stderr=await cliError;
+        if (cli.ExitCode != 0 && !stderr.Contains(password)) Console.Error.WriteLine(stderr);
+        Need(cli.ExitCode==0 && !stdout.Contains(password) && !stderr.Contains(password), "Installed CLI status/logout, secure persistence and private transport verified");
+        await File.WriteAllTextAsync(Path.Combine(evidence,"cli-receipt.json"),stdout);
+    }
     string material=string.Join('\n',observations);
     Need(material.Length>0 && !material.Contains(password,StringComparison.Ordinal) && !material.Contains(token,StringComparison.Ordinal) && !material.Contains(repeatedToken,StringComparison.Ordinal) && !material.Contains(identifier,StringComparison.Ordinal) && !material.Contains(Environment.GetEnvironmentVariable("SFX_IDENTITY_SERVICE_KEY")!,StringComparison.Ordinal),"Private credentials and session absent from captured kernel evidence");
     if (!preflight) Need(observations.Count>10,"Installed kernel publishes real execution observations");

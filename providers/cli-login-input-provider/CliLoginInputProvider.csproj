@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <AssemblyName>SfxProviders.CliLogin.Input</AssemblyName>
+  </PropertyGroup>
+  <ItemGroup>
+    <!-- Shared private contracts and DAL interfaces contain no database client. -->
+    <Compile Include="../cli-login/Contracts.cs" Link="Contracts.cs" />
+    <Compile Include="../cli-login/IIdentityDal.cs" Link="IIdentityDal.cs" />
+    <InternalsVisibleTo Include="SfxProviders.CliLogin" />
+  </ItemGroup>
+</Project>
