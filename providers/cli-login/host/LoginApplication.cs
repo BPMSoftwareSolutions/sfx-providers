@@ -12,7 +12,8 @@ public static class LoginApplication
 {
     public static WebApplication Create(string[] args, HostSettings? settings = null,
         Func<HostSettings, LoginExecution, HttpClient, CancellationToken, Task<string>>? run = null,
-        Action<WebApplicationBuilder>? configure = null)
+        Action<WebApplicationBuilder>? configure = null,
+        Func<HostSettings, string, HttpClient, CancellationToken, Task<string>>? enrollmentRun = null)
     {
         var builder = WebApplication.CreateBuilder(args);
         // Request bodies and private failures must never enter framework logs.
@@ -52,6 +53,7 @@ public static class LoginApplication
             catch { if (!context.Response.HasStarted) { context.Response.StatusCode = 503; await context.Response.WriteAsJsonAsync(new { disposition = "IDENTITY_UNAVAILABLE" }); } }
         });
         app.MapGet("/health", () => Results.Json(new { ready = true }));
+        EnrollmentApplication.Map(app, settings, credential, principal, serviceKeyHash, telemetry, enrollmentRun);
 
         app.MapPost("/auth/v1/login", async (HttpContext http) =>
         {

@@ -27,6 +27,10 @@ public sealed class CliLoginInputProvider(ILoginTerminal? terminal = null)
     public Task<LoginInput> AcquireAsync(CancellationToken cancellationToken = default)
         => AcquireAsync(null, cancellationToken);
     public async Task<LoginInput> AcquireAsync(string? username, CancellationToken cancellationToken = default)
+        => await AcquireCoreAsync(username, false, cancellationToken);
+    public async Task<LoginInput> AcquireEnrollmentAsync(string? username, CancellationToken cancellationToken = default)
+        => await AcquireCoreAsync(username, true, cancellationToken);
+    private async Task<LoginInput> AcquireCoreAsync(string? username, bool confirm, CancellationToken cancellationToken)
     {
         if (!terminal.IsInteractive) throw new LoginProviderException("INTERACTIVE_LOGIN_REQUIRED");
         await ConsoleOwner.WaitAsync(cancellationToken);
@@ -44,7 +48,21 @@ public sealed class CliLoginInputProvider(ILoginTerminal? terminal = null)
             {
                 terminal.Write("Password: ");
                 char[] password = await ReadLineAsync(1024, echo: false, cancellationToken);
-                try { return LoginInput.FromPrivateRequest(new string(identifier), password); }
+                try
+                {
+                    if (confirm)
+                    {
+                        terminal.Write("Confirm password: ");
+                        char[] confirmation = await ReadLineAsync(1024, echo: false, cancellationToken);
+                        try
+                        {
+                            if (!password.AsSpan().SequenceEqual(confirmation))
+                                throw new LoginProviderException("ENROLLMENT_PASSWORD_MISMATCH");
+                        }
+                        finally { Array.Clear(confirmation); }
+                    }
+                    return LoginInput.FromPrivateRequest(new string(identifier), password);
+                }
                 finally { Array.Clear(password); }
             }
             finally { Array.Clear(identifier); }

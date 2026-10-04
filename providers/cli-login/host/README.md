@@ -1,5 +1,20 @@
 # Private identity host
 
+The host also supports the database-declared `enroll-ide-user` circuit through
+`EnrollmentApplication.cs`. `POST /auth/v1/enroll` requires a separate operator
+bearer (`SFX_IDENTITY_ENROLLMENT_TOKEN`); callback service keys cannot enroll users.
+Configure `SFX_ENROLLMENT_CAPABILITY`, `SFX_ENROLLMENT_INPUT_CONTRACT` and
+`SFX_ENROLLMENT_OUTCOME_CONTRACT` as host data. Omitting the capability disables
+these routes. The graph calls the existing password and identity providers to
+create a verifier and atomically provision a principal through the generated DAL.
+Private request state never enters kernel testimony. Duplicate enrollment returns
+`ALREADY_ENROLLED` without changing credentials; no session is created.
+
+Use the installed `sfx-api enroll` command, documented in
+`sfx-platform/deploy/sda-kernel/identity-enrollment.md`. Local preflight/installed
+tests are in `providers/enrollment-tests/`; remote CLI and SSE acceptance are in
+`providers/enrollment-remote-tests/`. They use disposable identities only.
+
 This .NET 8 host connects the installed `authenticate-ide-user` circuit to the
 principal, password and session providers. The installed kernel chooses the
 operation order and routes results. The host owns private request state and
@@ -69,8 +84,12 @@ dotnet run --project providers/cli-login/host/LoginHost.csproj
 
 The host requires every setting above other than the gateway flag. It does not
 seed a default account, generate a service credential or grant database access.
-Use the existing identity runtime role for deployment; the integration suite
-needs operator privileges to provision and remove its isolated test realm.
+Login-only deployment uses the existing identity runtime role. When enrollment
+is enabled, the configured database credential also needs EXECUTE on the existing
+`identity.provision_principal_credential` writer; the login runtime role alone
+is deliberately insufficient. The private enrollment ingress separately requires
+the operator bearer. Integration cleanup needs operator privileges over its
+isolated test identities.
 
 With the private connection and matching service key supplied to the test process:
 
@@ -95,7 +114,8 @@ acceptance step; passing a preflight is not proof of an installed runtime.
 ## Limits retained explicitly
 
 This host is verified on Windows and deployed on Azure Linux in
-`sidefx/staging`, release `sda-f50865d3feb4-r9`. The staging realm is
+`sidefx/staging` (login baseline `sda-f50865d3feb4-r9`; enrollment release
+`sda-f50865d3feb4-r12`). The staging realm is
 `sfx-ide-local`, backed by the same staging identity database as the local pilot.
 The Windows installed CLI passed remote login, session validation and logout.
 Deployment source and operating instructions are versioned in

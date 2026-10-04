@@ -6,6 +6,12 @@ public sealed class IdentityPrincipalProvider
     private readonly IIdentityDal dal;
     private readonly LoginPolicy policy;
     private readonly TimeProvider clock;
+    public Task<Guid?> ProvisionAsync(string realm, string identifier, PasswordVerifier verifier,
+        CancellationToken cancellationToken = default)
+    {
+        if (dal is not IEnrollmentDal enrollment) throw new LoginProviderException("IDENTITY_UNAVAILABLE");
+        return enrollment.EnrollAsync(realm, identifier, verifier, cancellationToken);
+    }
     public IdentityPrincipalProvider(IIdentityDal dal, LoginPolicy policy, TimeProvider? clock = null)
     {
         this.dal = dal ?? throw new ArgumentNullException(nameof(dal));

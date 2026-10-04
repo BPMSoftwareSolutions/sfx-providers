@@ -7,6 +7,20 @@ public sealed class PasswordCredentialProvider(IIdentityDal dal, Argon2PasswordV
     private readonly IIdentityDal dal = dal ?? throw new ArgumentNullException(nameof(dal));
     private readonly Argon2PasswordVerifier verifier = verifier ?? throw new ArgumentNullException(nameof(verifier));
 
+    public async Task<PasswordVerifier> CreateForEnrollmentAsync(LoginInput input, int minimumLength,
+        CancellationToken cancellationToken = default)
+    {
+        byte[] password = input.CopyPassword();
+        try
+        {
+            if (minimumLength is < 12 or > 1024 || System.Text.Encoding.UTF8.GetCharCount(password) < minimumLength)
+                throw new LoginProviderException("ENROLLMENT_REJECTED");
+            cancellationToken.ThrowIfCancellationRequested();
+            return await verifier.CreateForEnrollmentAsync(password, cancellationToken);
+        }
+        finally { CryptographicOperations.ZeroMemory(password); input.Dispose(); }
+    }
+
     public async Task<VerifiedLoginAttempt> VerifyAsync(ResolvedLoginAttempt attempt,
         CancellationToken cancellationToken = default)
     {

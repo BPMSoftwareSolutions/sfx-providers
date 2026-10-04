@@ -22,6 +22,9 @@ public sealed record HostSettings(string Estate, string Capability, string Input
 public static class KernelRun
 {
     public static async Task<string> ExecuteAsync(HostSettings settings, LoginExecution execution, HttpClient telemetry, CancellationToken cancellation)
+        => await ExecuteAsync(settings, execution.Correlation, telemetry, cancellation);
+
+    public static async Task<string> ExecuteAsync(HostSettings settings, string correlation, HttpClient telemetry, CancellationToken cancellation)
     {
         using var timeout = CancellationTokenSource.CreateLinkedTokenSource(cancellation);
         timeout.CancelAfter(TimeSpan.FromSeconds(100));
@@ -38,11 +41,12 @@ public static class KernelRun
         foreach (var argument in delivery.GetProperty("args").EnumerateArray())
             if (argument.GetString() != "--stdin-envelope") start.ArgumentList.Add(argument.GetString()!);
         foreach (var argument in new[] { "capability", "observe", settings.Capability, "--input", JsonSerializer.Serialize(new {
-            contractId = settings.InputContract, payload = new { correlationId = execution.Correlation, providerOrigin = settings.ProviderOrigin }
+            contractId = settings.InputContract, payload = new { correlationId = correlation, providerOrigin = settings.ProviderOrigin }
         }), "--input-type", "json", "--json", "--trace" }) start.ArgumentList.Add(argument);
         foreach (var key in start.Environment.Keys.ToArray())
             if (key is "SDA_API_TOKEN" or "SFX_IDENTITY_CONNECTION_STRING" or "SFX_VAULT_UNLOCK" or "IDENTITY_HEADER" or "MSI_SECRET") start.Environment.Remove(key);
         start.Environment.Remove("SFX_IDENTITY_SERVICE_KEY");
+        start.Environment.Remove("SFX_IDENTITY_ENROLLMENT_TOKEN");
         start.Environment["SIDEFX_OBSERVE"] = "1";
         using var process = Process.Start(start) ?? throw new InvalidOperationException("KERNEL_START_FAILED");
         using var stop = timeout.Token.Register(() => { try { process.Kill(true); } catch (InvalidOperationException) { } });

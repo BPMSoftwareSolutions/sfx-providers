@@ -6,7 +6,12 @@ namespace SfxProviders.CliLogin;
 
 // Internal identity-service composition. Never registered with procedure-extract.
 // Every persistence operation calls its generated, specifically named repository.
-public sealed class GeneratedIdentityDal : IIdentityDal
+public interface IEnrollmentDal
+{
+    Task<Guid?> EnrollAsync(string realm, string identifier, PasswordVerifier verifier, CancellationToken cancellationToken);
+}
+
+public sealed class GeneratedIdentityDal : IIdentityDal, IEnrollmentDal
 {
     public GeneratedIdentityDal()
     {
@@ -71,11 +76,28 @@ public sealed class GeneratedIdentityDal : IIdentityDal
     }
 
     // Operator-only enrollment. The runtime role is denied this procedure.
-    // No HTTP route exposes this; verifier bytes never enter generic observations.
+    // Verifier bytes never enter generic observations.
     public Task<Guid> ProvisionPrincipalCredentialAsync(string realm, string identifier, PasswordVerifier verifier,
         CancellationToken cancellationToken = default) => Guard(async () =>
         Required(One((await new IdentityProvisionPrincipalCredentialRepository().ExecuteAsync(realm, identifier, verifier.Encoded)).Rows).PrincipalId),
         cancellationToken);
+
+    // The unique realm/normalized-identifier key is the concurrency boundary.
+    // A duplicate never rotates a credential. Do not abandon an admitted write
+    // on caller cancellation and then incorrectly report that it did not commit.
+    public async Task<Guid?> EnrollAsync(string realm, string identifier, PasswordVerifier verifier,
+        CancellationToken cancellationToken)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+        try
+        {
+            return Required(One((await new IdentityProvisionPrincipalCredentialRepository()
+                .ExecuteAsync(realm, identifier, verifier.Encoded)).Rows).PrincipalId);
+        }
+        catch (Exception error) when (error is SqlException { Number: 2601 or 2627 } ||
+            error is ApplicationException { InnerException: SqlException { Number: 2601 or 2627 } }) { return null; }
+        catch { throw new LoginProviderException("IDENTITY_UNAVAILABLE"); }
+    }
 
     private static T One<T>(IReadOnlyList<T> rows) => rows.Count == 1 ? rows[0] : throw InvalidResult();
     private static T? Optional<T>(IReadOnlyList<T> rows) where T : class

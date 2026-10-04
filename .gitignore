@@ -22,6 +22,11 @@ providers/cli-login/host-tests/obj/
 providers/cli-login/remote-tests/bin/
 providers/cli-login/remote-tests/obj/
 /artifacts/cli-login/
+/artifacts/enrollment/
+providers/enrollment-tests/bin/
+providers/enrollment-tests/obj/
+providers/enrollment-remote-tests/bin/
+providers/enrollment-remote-tests/obj/
 providers/cli-login-input-provider/bin/
 providers/cli-login-input-provider/obj/
 
