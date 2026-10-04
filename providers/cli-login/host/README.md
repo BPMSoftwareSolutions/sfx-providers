@@ -94,9 +94,22 @@ acceptance step; passing a preflight is not proof of an installed runtime.
 
 ## Limits retained explicitly
 
-This host has been verified locally on Windows. Azure hosting, CLI login commands,
-client secure storage and authorization of subsequent capability invocations are
-not implemented by this package. Framework/managed strings cannot be guaranteed
+This host is verified on Windows and deployed on Azure Linux in
+`sidefx/staging`, release `sda-f50865d3feb4-r9`. The staging realm is
+`sfx-ide-local`, backed by the same staging identity database as the local pilot.
+The Windows installed CLI passed remote login, session validation and logout.
+Deployment source and operating instructions are versioned in
+`sfx-platform/deploy/sda-kernel/identity-login.md`; CLI source is in
+`sfx-platform/tools/sfx-api/`. The remote acceptance harness is
+`providers/cli-login/remote-tests/`: it enrolls a randomly named principal,
+tests the actual deployed host and installed CLI, captures live SSE, and removes
+only that test principal and its sessions/attempts in cleanup. Its arguments are
+the HTTPS origin, realm, CLI test module, installed command directory and evidence
+directory. It reads the private operator database connection from
+`SFX_IDENTITY_CONNECTION_STRING`; it never sends that connection to the CLI.
+
+Authorization of subsequent capability invocations remains separate work.
+Framework/managed strings cannot be guaranteed
 erased; owned secret byte buffers are cleared and private types refuse generic
 serialization. Framework request logging is disabled. The host forwards actual
 kernel events; it does not synthesize timestamps, provider profiles, graph digests
