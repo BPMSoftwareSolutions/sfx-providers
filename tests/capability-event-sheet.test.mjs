@@ -119,7 +119,7 @@ test('scenario operation references reuse the complete Event component symbols a
   const cell=event.blueprint.render.cells.find(c=>c.nodeId===port.operationId);
   assert.deepEqual(port.component,cell.component);assert.deepEqual(port.action,cell.action);
   const glyph=summary.blueprint.glyphs.find(g=>g.nodeId===port.operationId);
-  assert.equal(glyph.glyph,cell.component.glyph);assert.deepEqual(glyph.anchors.right,port.anchor);
+  assert.equal(glyph.glyph,cell.component.glyph);assert.deepEqual(glyph.anchors.top,port.anchor);
   const wire=summary.commands.find(c=>c.op==='route'&&JSON.stringify(c.args[0][0])===JSON.stringify(port.anchor));
   assert.ok(wire);assert.equal(wire.args[2].dash,port.basis!=='declared provider');
   const nativeLink=summary.commands.find(c=>c.op==='t'&&c.args[0]===(port.component.glyph==='event-device'?'observe exchange':'select route'));
@@ -128,18 +128,21 @@ test('scenario operation references reuse the complete Event component symbols a
  assert.equal(summary.blueprint.nodes.length,3);assert.equal(summary.blueprint.disclosedOperationIds.length,2);
 });
 
-test('scenario calls run left-to-right across provider groups and connect to their owning inline operation',async()=>{
+test('scenario calls align below their providers and connect to their owning inline operation',async()=>{
  const raw=rawFixture();
  raw.graph.executionAuthorities[0].operations=Array.from({length:3},(_,i)=>({kind:'invoke-port',portId:'call-'+i}));
  raw.graph.interfaceAuthority.portBindings.push(...raw.graph.executionAuthorities[0].operations.map((op,i)=>({portId:op.portId,platformCapabilityId:'query.v1',configuration:{providerId:i===1?'provider-b':'provider-a'}})));
  const s=normalizeSnapshot(raw),r=await handle({contractId:'capability-presentation-request.v1',capabilityId:s.identity.capabilityId,contextAltitude:7},{readEstate:async()=>s});
  assert.equal(r.disposition,'AUTHORED',JSON.stringify(r.findings));
  const slide=r.candidate.storyboard.slides[1],ports=[...slide.blueprint.providerPorts].sort((a,b)=>a.bounds.x-b.bounds.x);
- assert.deepEqual(ports.map(p=>p.portId),['call-0','call-1','call-2']);
- assert.deepEqual(ports.map(p=>p.providerId),['provider:provider-a','provider:provider-b','provider:provider-a']);
+ assert.deepEqual(ports.map(p=>p.portId),['call-0','call-2','call-1']);
+ assert.deepEqual(ports.map(p=>p.providerId),['provider:provider-a','provider:provider-a','provider:provider-b']);
  assert.equal(new Set(ports.map(p=>p.bounds.y)).size,1);
  const event=slide.blueprint.glyphs.find(g=>g.kind==='event');
  for(const port of ports){
+  const provider=slide.blueprint.glyphs.find(g=>g.nodeId===port.providerId);
+  assert.deepEqual(port.providerRoute,[port.anchor,[port.anchor[0],provider.bounds.y+provider.bounds.h]]);
+  assert(port.bounds.x>=provider.bounds.x&&port.bounds.x+port.bounds.w<=provider.bounds.x+provider.bounds.w);
   assert.equal(port.eventId,event.nodeId);
   const owningCell=slide.blueprint.glyphs.filter(g=>g.nodeId===port.operationId).at(-1);
   assert.equal(port.eventAnchor[1],owningCell.bounds.y);
@@ -147,6 +150,10 @@ test('scenario calls run left-to-right across provider groups and connect to the
   assert.deepEqual(port.eventRoute[0],port.eventAnchor);
   assert.deepEqual(port.eventRoute.at(-1),slide.blueprint.glyphs.find(g=>g.nodeId===port.operationId).anchors.bottom);
   assert(slide.commands.some(c=>c.op==='route'&&JSON.stringify(c.args[0])===JSON.stringify(port.eventRoute)));
+ }
+ for(const id of new Set(ports.map(p=>p.providerId))){
+  const group=ports.filter(p=>p.providerId===id),provider=slide.blueprint.glyphs.find(g=>g.nodeId===id);
+  assert(Math.abs((group[0].bounds.x+group.at(-1).bounds.x+group.at(-1).bounds.w)/2-provider.anchors.bottom[0])<.001);
  }
  assert.equal(slide.blueprint.providerCallLayout.total,3);
 });

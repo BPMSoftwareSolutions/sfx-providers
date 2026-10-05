@@ -126,9 +126,8 @@ function appendScenarioPage({snapshot,model,page,slides,scenarioId,operationIds,
  const count=involvement.length,colW=600/Math.max(1,count+(unassigned.length?1:0)),providerWidth=colW-14;
  const ports=[],eventNode=semantic.nodes.find(n=>n.kind==='event');
  const callStyle=COMPONENT_STYLE.scenario.providerCalls;
- // Provider identities stay grouped above. Call sites follow scenario order,
- // independently of which provider owns them. This is a summary of real calls,
- // never an invented sequence edge between non-adjacent operations.
+ // Each provider is centered above its calls, ordered within that group by
+ // scenario operation. The execution row retains the scenario's full order.
  const allCalls=involvement.flatMap(edge=>edge.via.map(use=>({edge,use})))
   .sort((a,b)=>sc.operationIds.indexOf(a.use.operationId)-sc.operationIds.indexOf(b.use.operationId)||a.edge.to.localeCompare(b.edge.to));
  const shownCalls=allCalls.slice(0,callStyle.maxVisible);
@@ -138,7 +137,7 @@ function appendScenarioPage({snapshot,model,page,slides,scenarioId,operationIds,
  const callSpan=shownCalls.length*callWidth+Math.max(0,shownCalls.length-1)*callGap;
  const callLeft=180+(availableWidth-callSpan)/2;
  p.blueprint.disclosedOperationIds=[...new Set([...shownCalls.map(c=>c.use.operationId),...unassigned.slice(0,3)])];
- p.blueprint.providerCallLayout={order:'scenario-operation-order',total:allCalls.length,shown:shownCalls.length};
+ p.blueprint.providerCallLayout={order:'provider-group-then-scenario-operation-order',total:allCalls.length,shown:shownCalls.length};
  for(const [i,edge]of involvement.entries()){
   const x=180+i*colW,provider=model.nodes.find(n=>n.id===edge.to),inspection=slides.find(s=>s.blueprint?.role==='provider-inspection'&&s.blueprint.providerId===provider.id);
   const box={x,y:115,w:providerWidth,h:66};
@@ -147,15 +146,15 @@ function appendScenarioPage({snapshot,model,page,slides,scenarioId,operationIds,
   const uses=edge.via.filter(use=>shownCalls.some(call=>call.edge===edge&&call.use===use)),portH=callStyle.height;
   uses.forEach((use,j)=>{
    const callIndex=shownCalls.findIndex(call=>call.edge===edge&&call.use===use);
-   const op=model.nodes.find(n=>n.id===use.operationId),y=callStyle.top,w=callWidth;
-   const callX=callLeft+callIndex*(callWidth+callGap);
+   const op=model.nodes.find(n=>n.id===use.operationId),y=callStyle.top;
+   const w=Math.min(callStyle.width,(providerWidth-callGap*(uses.length-1))/uses.length);
+   const callX=x+(j+.5)*providerWidth/uses.length-w/2;
    const issues=bindingIssues.filter(i=>i.nodeIds.includes(op.id)),ink=issues.some(i=>i.severity==='error')?C.red:undefined;
    const target=slides.find(s=>s.blueprint?.role==='boundary-inspection'&&s.blueprint.operationIds.includes(op.id))??slides.find(s=>s.blueprint?.role==='invocation-inspection'&&s.blueprint.operationIds.includes(op.id))??slides.find(s=>s.blueprint?.role==='inspection-evidence'&&s.blueprint.issueIds.some(id=>issues.some(i=>i.id===id)))??slides.find(s=>s.blueprint?.role==='provider-detail'&&s.blueprint.operationIds.includes(op.id));
    const opBox={x:callX,y,w,h:portH},isTestimony=use.basis!=='declared provider';
-   const component=eventComponent(model,op),action=eventAction(op),anchor=glyphAnchor(op,opBox,'right',COMPONENT_STYLE,component.glyph);
-   const lane=callX+w+8,providerX=Math.max(x+providerWidth*.08,Math.min(x+providerWidth*.92,lane));
-   const providerRoute=lane===providerX?[anchor,[lane,anchor[1]],[lane,181]]:
-    [anchor,[lane,anchor[1]],[lane,190],[providerX,190],[providerX,181]];
+   const component=eventComponent(model,op),action=eventAction(op),anchor=glyphAnchor(op,opBox,'top',COMPONENT_STYLE,component.glyph);
+   const providerX=anchor[0];
+   const providerRoute=[anchor,[providerX,box.y+box.h]];
    p.add('route',providerRoute,C.violet,{arrow:false,dash:isTestimony,glow:false,width:1,routing:'orthogonal'});
    p.add('port',providerX,181,C.violet,2);p.add('port',...anchor,C.violet,2);
    const callAnchor=glyphAnchor(op,opBox,'bottom',COMPONENT_STYLE,component.glyph);
@@ -205,7 +204,7 @@ function appendScenarioPage({snapshot,model,page,slides,scenarioId,operationIds,
   for(const id of sc.operationIds){const op=model.nodes.find(n=>n.id===id),box=inlineCells.get(id),component=eventComponent(model,op),action=eventAction(op);
    const frames=drawComponentGlyph(p,op,box,action.color,{glyphName:component.glyph,fill:'#04263A'});
    label(String(op.ordinal).padStart(2,'0'),frames.heading.x-8,frames.heading.y,frames.heading.w+16,frames.heading.h,8,C.blue,true,undefined,6);
-   label(identifierCaption(op.label,model.capabilityId),frames.label.x,frames.label.y,frames.label.w,frames.label.h,9,C.white,false,eventPage,6);
+   label(identifierCaption(op.label,model.capabilityId),frames.label.x,frames.label.y,frames.label.w,frames.label.h,9,C.white,false,eventPage,4);
   }
   for(const edge of model.edges.filter(e=>e.kind==='sequence'&&inlineCells.has(e.from)&&inlineCells.has(e.to))){
    const a=inlineCells.get(edge.from),b=inlineCells.get(edge.to);
@@ -217,7 +216,7 @@ function appendScenarioPage({snapshot,model,page,slides,scenarioId,operationIds,
   label(sc.eventId?sc.eventId.replaceAll('-',' '):sc.authorityId,event.x,event.y+2,event.w,38,13,C.white,true,eventPage);
   label(sc.operationIds.length+' declared operations · open complete circuit',event.x,event.y+36,event.w,25,10,C.blue,false,eventPage);
  }
- if(!unassigned.length)label(allCalls.length>shownCalls.length?`${shownCalls.length} of ${allCalls.length} provider calls · open complete circuit`:'Provider calls in declared operation order',180,inline?284:310,602,20,8,C.muted,false,allCalls.length>shownCalls.length?eventPage:undefined,7);
+ if(!unassigned.length)label(allCalls.length>shownCalls.length?`${shownCalls.length} of ${allCalls.length} provider calls · open complete circuit`:'Provider calls retain operation ownership',180,inline?284:310,602,20,8,C.muted,false,allCalls.length>shownCalls.length?eventPage:undefined,7);
  const ordinals=affected.map(id=>model.nodes.find(n=>n.id===id).ordinal);
  const issueLabel=scopeIssues.slice(0,3).map(i=>i.id).join(', ')+(scopeIssues.length>3?' +'+(scopeIssues.length-3):'');
  const operationLabel=ordinals.slice(0,6).map(v=>String(v).padStart(2,'0')).join(', ')+(ordinals.length>6?' +'+(ordinals.length-6):'');
