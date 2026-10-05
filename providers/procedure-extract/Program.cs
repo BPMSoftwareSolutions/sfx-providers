@@ -14,6 +14,7 @@ internal static class Program
     {
         string? procedure = null, parametersJson = null, output = null, connection = null, url = null;
         var serve = false;
+        var inlineParameters = new Dictionary<string, object?>(StringComparer.OrdinalIgnoreCase);
         for (var i = 0; i < args.Length; i++)
         {
             switch (args[i])
@@ -26,6 +27,9 @@ internal static class Program
                     break;
                 case "--params" or "-j":
                     parametersJson = Next(args, ref i, "--params");
+                    break;
+                case "--param" or "-P":
+                    AddInlineParameter(inlineParameters, Next(args, ref i, "--param"));
                     break;
                 case "--output" or "-o":
                     output = Next(args, ref i, "--output");
@@ -59,7 +63,12 @@ internal static class Program
             return 2;
         }
 
-        var parameters = ParseParameters(parametersJson);
+        var parameters = ParseParameters(parametersJson) as Dictionary<string, object?>;
+        if (inlineParameters.Count > 0)
+        {
+            parameters ??= new Dictionary<string, object?>(StringComparer.OrdinalIgnoreCase);
+            foreach (var pair in inlineParameters) parameters[pair.Key] = pair.Value;
+        }
         connection = ResolveConnection(connection);
         output ??= Path.Combine("outputs", $"{procedure.Replace('.', '-')}-{DateTime.Now:yyyyMMdd-HHmmss}.xlsx");
 
@@ -79,6 +88,13 @@ internal static class Program
             Console.Error.WriteLine($"procedure-extract failed: {error.Message}");
             return 1;
         }
+    }
+
+    private static void AddInlineParameter(Dictionary<string, object?> parameters, string pair)
+    {
+        var split = pair.IndexOf('=');
+        if (split <= 0) throw new ArgumentException($"--param needs name=value, got '{pair}'.");
+        parameters[pair[..split]] = pair[(split + 1)..];
     }
 
     private static string Next(string[] args, ref int i, string option)
