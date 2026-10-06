@@ -45,7 +45,7 @@ void Need(bool yes, string name) { if (!yes) throw new Exception(name); checks.A
 using var client = new HttpClient(); string origin = "";
 async Task<HttpResponseMessage> Send(string path, object? body = null, string? token = null, string? key = null)
 {
-    using var request = new HttpRequestMessage(body is null ? HttpMethod.Get : HttpMethod.Post, origin + "/evidence/v1" + path);
+    using var request = new HttpRequestMessage(body is null ? HttpMethod.Get : HttpMethod.Post, origin + (path.StartsWith("/ledger/", StringComparison.Ordinal) ? path : "/evidence/v1" + path));
     request.Headers.Authorization = new("Bearer", key ?? serviceKey);
     if (token is not null) request.Headers.Add("x-sfx-session", token);
     if (body is not null) request.Content = JsonContent.Create(body);
@@ -55,6 +55,24 @@ try
 {
     string user = await User(), other = await User(); origin = await Start();
     Need((int)(await Send("/runs")).StatusCode == 401, "service identity alone cannot list runs");
+    const string policyPin = "98b97712ba40153553186212b6094970433b9b4fee810fb67e2c9921368f4454";
+    const string evaluatorPin = "0d8869aafd2ae49894f26b76b1d8bf2ea347289b355fd8d0009f13cb106e25a1";
+    string authorityPath = $"/ledger/v1/authority/{policyPin}/{evaluatorPin}";
+    Need((int)(await Send(authorityPath)).StatusCode == 401, "ledger authority also requires validated session");
+    Need((int)(await Send(authorityPath, token: user, key: new string('0', 64))).StatusCode == 401, "ledger authority rejects unknown service");
+    Need((int)(await Send($"/ledger/v1/authority/invalid/{evaluatorPin}", token: user)).StatusCode == 400, "malformed authority pin refused");
+    Need((int)(await Send($"/ledger/v1/authority/{new string('0', 64)}/{evaluatorPin}", token: user)).StatusCode == 404, "unknown authority pin never substitutes latest");
+    using var authority = JsonDocument.Parse(await (await Send(authorityPath, token: user, key: readKey)).Content.ReadAsStringAsync());
+    foreach (var (member, pin) in new[] { ("policy", policyPin), ("evaluator", evaluatorPin) })
+    {
+        var bytes = Encoding.UTF8.GetBytes(authority.RootElement.GetProperty(member).GetProperty("retainedDefinition").GetString()!);
+        Need(Convert.ToHexString(SHA256.HashData(bytes)).Equals(pin, StringComparison.OrdinalIgnoreCase), "retained " + member + " bytes match installed estate pin");
+    }
+    using var vocabulary = JsonDocument.Parse(authority.RootElement.GetProperty("policy").GetProperty("retainedDefinition").GetString()!);
+    var semantics = vocabulary.RootElement.GetProperty("semantics");
+    Need(semantics.GetProperty("states").GetArrayLength() == 9 && semantics.GetProperty("evidenceClasses").GetArrayLength() == 8 && semantics.GetProperty("claimKinds").GetArrayLength() == 2, "estate vocabulary survives generated DAL and private API");
+    var rules = authority.RootElement.GetProperty("rules");
+    Need(rules.GetArrayLength() == 2 && rules.EnumerateArray().Single(r => r.GetProperty("claimKind").GetString() == "C2").GetProperty("available").GetBoolean() == false, "C2 remains unavailable in retained rule copy");
     var registration = new { runId, capabilityId = "explicit-transport-fixture", namespaceId = "fixture" };
     Need((int)(await Send("/runs", registration, user, readKey)).StatusCode == 403, "read-only service cannot capture");
     foreach (var malformed in new object[] { new { }, new[] { "array" }, new { runId = 7 } })

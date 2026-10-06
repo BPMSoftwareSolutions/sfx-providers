@@ -13,6 +13,15 @@ named generated repositories. Capture after registration authenticates the
 original service writer, so closing the browser does not interrupt persistence.
 Stored material reports `NOT_EVALUATED`; no endpoint grants a trust disposition.
 
+The same private middleware protects
+`GET /ledger/v1/authority/{policy-sha256}/{evaluator-sha256}`. It requires both a
+read-authorized service and a validated session, reads exact installed pins via
+generated DAL, and verifies returned content/rule hashes. An unknown pin returns
+404; it never substitutes the current version. This route serves the retained
+reference copy only. It accepts no submitted evaluation and creates no claim.
+The live harness checks these boundaries and byte equality with the estate pins
+installed by identity migration `003-trust-authority`.
+
 Run the tests with `SFX_IDENTITY_CONNECTION_STRING` in the process and a fresh
 output directory if a running identity service locks its usual build output:
 

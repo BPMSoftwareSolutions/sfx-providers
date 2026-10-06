@@ -27,7 +27,7 @@ public static class RunEvidenceApplication
         var concurrency = new SemaphoreSlim(4);
         app.Use(async (http, next) =>
         {
-            if (!http.Request.Path.StartsWithSegments("/evidence/v1")) { await next(http); return; }
+            if (!http.Request.Path.StartsWithSegments("/evidence/v1") && !http.Request.Path.StartsWithSegments("/ledger/v1")) { await next(http); return; }
             if (!http.Request.IsHttps && !(settings.LocalGateway && http.Connection.RemoteIpAddress is { } remote && IPAddress.IsLoopback(remote)))
             { http.Response.StatusCode = 400; return; }
             // Service identity and user identity are independent. No public
@@ -66,6 +66,7 @@ public static class RunEvidenceApplication
             finally { concurrency.Release(); }
         });
 
+        TrustAuthorityApplication.Map(app);
         app.MapPost("/evidence/v1/runs", async (HttpContext http) =>
         {
             using var body = await Read(http); var root = body.RootElement;
