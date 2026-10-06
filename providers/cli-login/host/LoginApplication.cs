@@ -52,6 +52,7 @@ public static class LoginApplication
             catch (OperationCanceledException) when (context.RequestAborted.IsCancellationRequested) { }
             catch { if (!context.Response.HasStarted) { context.Response.StatusCode = 503; await context.Response.WriteAsJsonAsync(new { disposition = "IDENTITY_UNAVAILABLE" }); } }
         });
+        RunEvidenceApplication.Map(app, settings, sessions);
         app.MapGet("/health", () => Results.Json(new { ready = true }));
         EnrollmentApplication.Map(app, settings, credential, principal, serviceKeyHash, telemetry, enrollmentRun);
 

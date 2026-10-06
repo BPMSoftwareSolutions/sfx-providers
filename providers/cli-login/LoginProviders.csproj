@@ -13,6 +13,7 @@
     <Compile Remove="host/**/*.cs" />
     <Compile Remove="host-tests/**/*.cs" />
     <Compile Remove="remote-tests/**/*.cs" />
+    <Compile Remove="evidence-tests/**/*.cs" />
     <Compile Remove="Contracts.cs;IIdentityDal.cs" />
     <ProjectReference Include="../cli-login-input-provider/CliLoginInputProvider.csproj" />
     <Compile Include="../identity-principal-provider/*.cs" />

@@ -47,6 +47,8 @@ public static class KernelRun
             if (key is "SDA_API_TOKEN" or "SFX_IDENTITY_CONNECTION_STRING" or "SFX_VAULT_UNLOCK" or "IDENTITY_HEADER" or "MSI_SECRET") start.Environment.Remove(key);
         start.Environment.Remove("SFX_IDENTITY_SERVICE_KEY");
         start.Environment.Remove("SFX_IDENTITY_ENROLLMENT_TOKEN");
+        start.Environment.Remove("SFX_EVIDENCE_CALLERS");
+        start.Environment.Remove("SFX_EVIDENCE_SERVICE_KEY");
         start.Environment["SIDEFX_OBSERVE"] = "1";
         using var process = Process.Start(start) ?? throw new InvalidOperationException("KERNEL_START_FAILED");
         using var stop = timeout.Token.Register(() => { try { process.Kill(true); } catch (InvalidOperationException) { } });
