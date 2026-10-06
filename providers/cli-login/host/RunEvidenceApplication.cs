@@ -126,7 +126,7 @@ public static class RunEvidenceApplication
             return Results.Json(new { runId = row.RunId, capabilityId = row.CapabilityId, namespaceId = row.NamespaceId,
                 captureStatus = row.CaptureStatus, traceComplete = row.TraceComplete, latestCursor = row.LatestCursor,
                 run = Parse(row.RunJson), graph = Parse(row.GraphJson), output = Parse(row.OutputJson), trust = "NOT_EVALUATED",
-                limitations = new[] { "Exact executor identity and estate evaluator are required before claim evaluation." } });
+                limitations = new[] { "Attributable executor identity and a persisted ledger evaluation are not yet recorded for this run." } });
         });
         app.MapGet("/evidence/v1/runs/{runId}/chunks", async (string runId, HttpContext http) =>
         {
