@@ -66,8 +66,16 @@ function appendScenarioPage({snapshot,model,page,slides,scenarioId,operationIds,
  p.interpretation='Input/Event/Outcome are scenario semantics. Provider wires retain exact binding or testimony references. Disclosed operations are a subset; the complete Event is linked. Binding findings expose affected declared operations with amber inspection overlays, without adding provider nodes or edges. Their component shapes follow the same declared-binding rules as the complete execution circuit. Decorative contacts add no declared ports. No installation, execution or monotonic proof is asserted.';
  const link=target=>({slideIndex:Number(target.id.slice(6))-1});
  const textFrames=[];
- const label=(value,x,y,w,h,size=12,color=C.white,bold=false,target,minFontSize=8)=>{
-  const fitted=fitBlueprintText(value,{width:w,height:h,fontSize:size,minFontSize});
+ const label=(value,x,y,w,h,size=12,color=C.white,bold=false,target,minFontSize=8,shorten=false)=>{
+  let fitted;
+  try{fitted=fitBlueprintText(value,{width:w,height:h,fontSize:size,minFontSize});}
+  catch(error){if(error.code!=='CAPABILITY_BLUEPRINT_TEXT_OVERFLOW'||!shorten)throw error;
+   // A bounded semantic list may shorten an oversized identity with a visible
+   // ellipsis; the exact identity remains in the sidecars and outcome slides.
+   const full=String(value);let done=false;
+   for(let i=1;i<full.length&&!done;i++){try{fitted=fitBlueprintText('…'+full.slice(i),{width:w,height:h,fontSize:size,minFontSize});done=true;}catch(next){if(next.code!=='CAPABILITY_BLUEPRINT_TEXT_OVERFLOW')throw next;}}
+   if(!done)throw error;
+  }
   p.add('t',fitted.text,x,y,w,h,fitted.fontSize,color,bold,'center',...(target?[link(target)]:[]));
   textFrames.push({x,y,w,h});
  };
@@ -114,15 +122,22 @@ function appendScenarioPage({snapshot,model,page,slides,scenarioId,operationIds,
  const itemH=Math.min(49,(availableInputHeight-20)/Math.max(1,inputLabels.length));
  p.add('shape','ROUND_RECTANGLE',23,inputTop,128,availableInputHeight,{fill:'#18291E',stroke:C.amber,sw:1.1});
  label('One payload',27,inputTop+2,120,20,8,C.amber,true,undefined,6);
- inputLabels.forEach((value,i)=>{const y=inputTop+20+i*itemH;documentIcon(p,31,y+(itemH-20)/2,C.amber);label(value,44,y+2,102,itemH-9,10.5,C.amber,false,undefined,4);});
+ inputLabels.forEach((value,i)=>{const y=inputTop+20+i*itemH;documentIcon(p,31,y+(itemH-20)/2,C.amber);label(value,44,y+2,102,itemH-9,10.5,C.amber,false,undefined,4,true);});
  label(sc.outcomeId.replaceAll('-',' '),804,228,138,49,12,C.green,true);
  const outcomes=sc.variants.length?sc.variants:[{id:sc.outcomeContractId||sc.outcomeId,classification:''}];
- const outcomeH=Math.min(51,160/outcomes.length);
- outcomes.forEach((v,i)=>{const y=280+i*outcomeH,color=v.classification==='failure'?C.red:C.green;
+ // The outcome panel is bounded. It keeps as many exact declared variants as
+ // fit (shortened only when a single line is impossible) and names the retained
+ // remainder; every ID stays in the detail, notes and outcome slides.
+ const outcomeRows=Math.min(outcomes.length,Math.max(1,Math.floor(160/24.2))),outcomeSummary=outcomes.length-outcomeRows,outcomeSlots=outcomeSummary>0?outcomeRows-1:outcomeRows,outcomeH=Math.min(51,160/outcomeRows);
+ outcomes.slice(0,outcomeSlots).forEach((v,i)=>{const y=280+i*outcomeH,color=v.classification==='failure'?C.red:C.green;
   p.add('shape','ROUND_RECTANGLE',808,y,130,outcomeH-5,{fill:'#04252B',stroke:color,sw:.9});
   outcomeIcon(p,815,y+(outcomeH-20)/2,color,v.classification);
-  label(v.id.replaceAll('_',' ').toLowerCase(),830,y+1,107,outcomeH-7,9.5,color);
+  label(v.id.replaceAll('_',' ').toLowerCase(),830,y+1,107,outcomeH-7,9.5,color,false,undefined,8,true);
  });
+ if(outcomeSummary){const y=280+outcomeSlots*outcomeH;
+  p.add('shape','ROUND_RECTANGLE',808,y,130,outcomeH-5,{fill:'#04252B',stroke:C.muted,sw:.9});
+  label('+ '+outcomeSummary+' more variants',830,y+1,107,outcomeH-7,9,C.muted,false,undefined,8,true);
+ }
  const count=involvement.length,colW=600/Math.max(1,count+(unassigned.length?1:0)),providerWidth=colW-14;
  const ports=[],eventNode=semantic.nodes.find(n=>n.kind==='event');
  const callStyle=COMPONENT_STYLE.scenario.providerCalls;

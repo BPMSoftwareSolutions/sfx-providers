@@ -97,6 +97,22 @@ uses the existing optional `@oai/artifact-tool` adapter and
 [circuit-presentation.md](circuit-presentation.md). It remains a private optional
 runtime, not a public npm dependency. `npm run capability-deck -- ...` is equivalent.
 
+### Declaration documents
+
+A circuit that is authored but not yet published in the estate can be presented from
+a declaration document instead of a database read:
+
+```powershell
+node capability-deck.mjs --declaration examples/capability-presentation/landing-circuit/declaration.json --view capability --context-altitude all --output outputs/landing-circuit --pptx
+```
+
+The document uses `capability-declaration-presentation.v1`: capability identity, scenarios,
+execution authorities, port bindings, contracts, transitions and optional `imports` of retained
+normalized closures selected from other snapshots. `snapshotFromDeclaration` maps it to the same
+snapshot contract the reader fills; the deck generation, replay, digests and verification are
+unchanged. See
+[examples/capability-presentation/landing-circuit](../examples/capability-presentation/landing-circuit/README.md).
+
 Regeneration requires no source edits and no AI agent. After the one-time host
 configuration, rerun the command with any selected capability ID and a new output
 directory. It rereads the estate and writes `presentation.pptx` containing the

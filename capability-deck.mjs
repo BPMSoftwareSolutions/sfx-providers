@@ -3,20 +3,22 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { handle,inputShape } from './src/capability-presentation/provider.mjs';
+import { snapshotFromDeclaration } from './src/capability-presentation/declaration-snapshot.mjs';
 import {renderBlueprintSvg} from './src/capability-presentation/blueprint-sheet.mjs';
 
 export async function run(args=process.argv.slice(2)) {
   const options={};
   for(let i=0;i<args.length;i++){
     const arg=args[i];
-    if(arg==='--help'){console.log('node capability-deck.mjs (--capability-id ID | --snapshot FILE) --output NEW_DIRECTORY [--view capability|scenario|event|mechanic|provider|physical] [--scenario-id ID] [--operation-id ID] [--transformation-id ID] [--context-altitude all|1..11] [--namespace-id ID] [--pptx]');return;}
+    if(arg==='--help'){console.log('node capability-deck.mjs (--capability-id ID | --snapshot FILE | --declaration FILE) --output NEW_DIRECTORY [--view capability|scenario|event|mechanic|provider|physical] [--scenario-id ID] [--operation-id ID] [--transformation-id ID] [--context-altitude all|1..11] [--namespace-id ID] [--pptx]');return;}
     if(arg==='--pptx'){options.pptx=true;continue;}
-    if(!['--capability-id','--namespace-id','--snapshot','--output','--view','--scenario-id','--operation-id','--transformation-id','--context-altitude','--narrator'].includes(arg)||!args[i+1]||args[i+1].startsWith('--'))throw new Error(`Unknown or incomplete option: ${arg}`);
+    if(!['--capability-id','--namespace-id','--snapshot','--declaration','--output','--view','--scenario-id','--operation-id','--transformation-id','--context-altitude','--narrator'].includes(arg)||!args[i+1]||args[i+1].startsWith('--'))throw new Error(`Unknown or incomplete option: ${arg}`);
     if(arg in options)throw new Error('Repeated option: '+arg);options[arg]=args[++i];
   }
-  if(!options['--output']||(!options['--capability-id']&&!options['--snapshot']))throw new Error('Provide --capability-id or --snapshot, and --output.');
+  if(!options['--output']||(!options['--capability-id']&&!options['--snapshot']&&!options['--declaration'])||(options['--snapshot']&&options['--declaration']))throw new Error('Provide --capability-id, --snapshot or --declaration, and --output.');
   let readEstate,snapshot;
   if(options['--snapshot']){const stat=await fs.stat(options['--snapshot']);if(!stat.isFile()||stat.size>8*1024*1024)throw new Error('Snapshot must be a regular file of at most 8 MiB.');snapshot=JSON.parse(await fs.readFile(options['--snapshot'],'utf8'));readEstate=async()=>snapshot;}
+  if(options['--declaration']){const stat=await fs.stat(options['--declaration']);if(!stat.isFile()||stat.size>32*1024*1024)throw new Error('Declaration must be a regular file of at most 32 MiB.');snapshot=snapshotFromDeclaration(JSON.parse(await fs.readFile(options['--declaration'],'utf8')));readEstate=async()=>snapshot;}
   const input={contractId:inputShape.contractId,capabilityId:options['--capability-id']??snapshot.identity.capabilityId,view:options['--view']??'capability',contextAltitude:options['--context-altitude']&&options['--context-altitude']!=='all'?Number(options['--context-altitude']):'all'};
   for(const [flag,key]of [['--scenario-id','scenarioId'],['--operation-id','operationId'],['--transformation-id','transformationId']])if(options[flag])input[key]=options[flag];
   if(options['--namespace-id'])input.namespaceId=options['--namespace-id'];

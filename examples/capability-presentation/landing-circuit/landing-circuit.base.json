@@ -1,0 +1,891 @@
+{
+  "contractId": "capability-declaration-presentation.v1",
+  "document": "landing-circuit-declaration",
+  "revision": 2,
+  "sources": [
+    "sfx-platform/docs/sfx-website-product-evolution/landing-blueprint.md (revision 2, 2026-10-08, [proposal])",
+    "sfx-platform/docs/sfx-website-product-evolution/ui-explorer-region-blueprint.md (revision 2, 2026-10-08, [proposal])",
+    "sfx-platform/docs/sfx-website-product-evolution/ui-circuit-blueprint-strategy.md",
+    "sfx-providers/providers/ui-explorer-region/ui-explorer-region.mjs (implementation-only, UNBOUND)",
+    "sfx-platform/live-circuit/circuit/circuit-host.json",
+    "sfx-embody/sql/migrations/declare-authenticate-ide-user.sql and bind-authenticate-ide-user-private-host.sql (selected closure imported)",
+    "sfx-providers outputs capability-estate/request-capability-from-objective-v3 snapshot (selected closure imported)"
+  ],
+  "graphType": "declared proposal circuit document",
+  "capability": {
+    "id": "ui-page-landing",
+    "namespaceId": "sidefx:ui",
+    "estateModelId": "proposal",
+    "pk": "proposal-ui-page-landing",
+    "versionPk": "landing-revision-2",
+    "definitionPk": "landing-revision-2",
+    "definitionDigest": "proposal-ui-page-landing-revision-2",
+    "rootScenarioId": "ui-page-landing",
+    "name": "Landing circuit - Circuit Explorer",
+    "actor": "person or agent entering the Circuit Explorer",
+    "intent": "read the landing from declaration data and drive its circuits by declared actions",
+    "outcome": "the declared regions render and their own circuits light through one deterministic flow",
+    "experiencePromise": "login entry, four provider-backed regions, the user-action lighting map and the provider drill-down flywheel reuse one circuit template",
+    "readiness": {
+      "declaration": "REVIEWABLE",
+      "execution": "HELD",
+      "reason": "proposal blueprint; no declaration, provider identity or binding has been published"
+    },
+    "authority": {
+      "mode": "capability",
+      "name": "Landing circuit - Circuit Explorer",
+      "rootScenarioId": "ui-page-landing",
+      "userStory": {
+        "actor": "person or agent entering the Circuit Explorer",
+        "intent": "read the landing from declaration data and drive its circuits by declared actions",
+        "outcome": "the declared regions render and their own circuits light through one deterministic flow"
+      },
+      "experience": {
+        "experienceId": "ui-page-landing.v1",
+        "actor": "person or agent entering the Circuit Explorer",
+        "promise": "login entry, four provider-backed regions and every drill-down are instantiations of one circuit template"
+      }
+    }
+  },
+  "scenarios": [
+    {
+      "id": "ui-page-landing",
+      "name": "Read and drive the landing circuit",
+      "versionPk": "landing-revision-2",
+      "definitionDigest": "proposal-ui-page-landing-revision-2",
+      "owned": true,
+      "authorityId": "ui-page-landing.v1",
+      "input": {
+        "id": "ui-page-request",
+        "contractId": "ui-page-request.v1",
+        "description": "route /circuit/explorer with query capability, namespace, scenario, node, row, page, detail; session states signed-in / signed-out; declared sources catalog, details, scenario, session, release, provider-inspection"
+      },
+      "event": {
+        "id": "ui-page-requested",
+        "description": "events load / click / submit / change / select / seek / toggle dispatch actions navigate, select, session, observe, objective, playback, view, toggle, pane, copy/download, stage-change, refresh"
+      },
+      "outcome": {
+        "id": "ui-page-read",
+        "contractId": "ui-page.v1",
+        "terminal": false,
+        "description": "the read returns ui-page.v1 status READ or DEGRADED or a named refusal; each region subcircuit resolves AUTHORED or HELD and testimony lights traversal states"
+      },
+      "variants": [
+        { "id": "AUTHORED", "classification": "success" },
+        { "id": "DEGRADED", "classification": "unspecified" },
+        { "id": "PAGE_NOT_FOUND", "classification": "failure" },
+        { "id": "PAGE_NOT_DECLARED", "classification": "failure" },
+        { "id": "PAGE_SNAPSHOT_CHANGED", "classification": "failure" },
+        { "id": "UI_DECLARATION_INVALID", "classification": "failure" },
+        { "id": "UI_COMPONENT_NOT_SUPPORTED", "classification": "failure" },
+        { "id": "UI_COMPONENT_ROLE_UNSUPPORTED", "classification": "failure" },
+        { "id": "UI_ACTION_BINDING_UNRESOLVED", "classification": "failure" },
+        { "id": "UI_SOURCE_NOT_SUPPORTED", "classification": "failure" }
+      ],
+      "authored": {
+        "keyword": "Scenario",
+        "name": "Read and drive the landing circuit",
+        "description": "The landing circuit hosts login, four provider-backed regions and the drill-down flywheel; every behaviour is a declared step, binding or call.",
+        "tags": ["@capability:ui-page-landing", "@scenario:ui-page-landing", "@root-scenario:ui-page-landing"],
+        "steps": [
+          { "keyword": "Given", "keywordType": "Context", "text": "route /circuit/explorer with query capability, namespace, scenario, node, row, page, detail; session states signed-in and signed-out; declared sources catalog, details, scenario, session, release, provider-inspection" },
+          { "keyword": "When", "keywordType": "Action", "text": "events load, click, submit, change, select, seek and toggle dispatch navigate, select, session, observe, objective, playback, view, toggle, pane, copy/download, stage-change and refresh" },
+          { "keyword": "Then", "keywordType": "Outcome", "text": "the read returns ui-page.v1 READ or DEGRADED or a named refusal; every region subcircuit resolves AUTHORED or HELD and lights only from declared testimony" }
+        ]
+      }
+    },
+    {
+      "id": "authenticate-ide-user",
+      "name": "Authenticate an IDE user through private provider boundaries",
+      "versionPk": "imported",
+      "definitionDigest": "imported",
+      "owned": false,
+      "authorityId": "authenticate-ide-user.v1",
+      "input": {
+        "id": "private-cli-login-input",
+        "contractId": "ide-login-observation-request.v1",
+        "description": "route /circuit/login with return target /circuit/explorer (only same-origin /circuit targets admitted); signed-out session; the declared observation input contract; credentials stay in the private host"
+      },
+      "event": {
+        "id": "ide-authentication-requested",
+        "description": "submit from the form scope dispatch the session action intents sign-in, sign-out and continue; the transport forwards {identifier, password} to the identity host and the bearer lives only in the HttpOnly __Host-sfx-session cookie"
+      },
+      "outcome": {
+        "id": "ide-authentication-result",
+        "contractId": "ide-authentication-result.v1",
+        "terminal": true,
+        "description": "session state signed-in or signed-out; submit status is a closed disposition map - AUTHENTICATION_REJECTED, THROTTLED, LOGIN_INPUT_INVALID, IDENTITY_NOT_CONFIGURED, IDENTITY_UNAVAILABLE, IDENTITY_RESPONSE_INVALID, SAME_ORIGIN_JSON_REQUIRED, SESSION_ENDED"
+      },
+      "variants": [
+        { "id": "AUTHENTICATED", "classification": "success" },
+        { "id": "AUTHENTICATION_REJECTED", "classification": "failure" },
+        { "id": "THROTTLED", "classification": "failure" },
+        { "id": "IDENTITY_UNAVAILABLE", "classification": "failure" }
+      ],
+      "authored": {
+        "keyword": "Scenario",
+        "name": "Authenticate an IDE user through private provider boundaries",
+        "description": "The login entry is its own circuit; the 17-operation private host composition extends the three declared server providers retained here.",
+        "tags": ["@capability:authenticate-ide-user", "@scenario:authenticate-ide-user"],
+        "steps": [
+          { "keyword": "Given", "keywordType": "Context", "text": "one private login input from cli-login-input-provider; only the safe correlation enters the observed circuit" },
+          { "keyword": "When", "keywordType": "Action", "text": "the private identity host resolves the principal, verifies the credential and establishes a session only after successful verification" },
+          { "keyword": "Then", "keywordType": "Outcome", "text": "the scenario returns authenticated, authentication rejected, throttled or identity unavailable without exposing private credentials" }
+        ]
+      }
+    },
+    {
+      "id": "ui-region-header",
+      "name": "Header region circuit - identity, environment and navigation chrome",
+      "versionPk": "region-revision-2",
+      "definitionDigest": "proposal-ui-region-header",
+      "owned": false,
+      "authorityId": "ui-region-header.v1",
+      "input": {
+        "id": "ui-region-request",
+        "contractId": "ui-region-request.v1",
+        "description": "request { contractId: ui-region-request.v1, regionId: header }; region in the declared set; maximum 16384 bytes"
+      },
+      "event": {
+        "id": "ui-region-requested",
+        "description": "one declared operation ui.region.load; validation runs before load; events load / click / submit dispatch navigate and session intents"
+      },
+      "outcome": {
+        "id": "ui-region-content",
+        "contractId": "ui-region-content.v1",
+        "terminal": false,
+        "description": "AUTHORED with the region candidate and per-asset sha256 digests, or HELD with named findings; session outcome face signed-in / signed-out; never a fallback region"
+      },
+      "variants": [
+        { "id": "AUTHORED", "classification": "success" },
+        { "id": "HELD", "classification": "failure" },
+        { "id": "UI_REGION_REQUEST_INVALID", "classification": "failure" },
+        { "id": "UI_REGION_REQUEST_OVERSIZED", "classification": "failure" },
+        { "id": "UI_REGION_UNKNOWN", "classification": "failure" }
+      ],
+      "authored": {
+        "keyword": "Scenario",
+        "name": "Header region circuit - identity, environment and navigation chrome",
+        "description": "Route /circuit/explorer; environment label from GET /api/circuit/v1/home; release from /healthz. Chrome only, never meaning.",
+        "tags": ["@capability:ui-page-landing", "@scenario:ui-region-header"],
+        "steps": [
+          { "keyword": "Given", "keywordType": "Context", "text": "route /circuit/explorer; session states signed-in and signed-out; environment label from GET /api/circuit/v1/home and release from /healthz" },
+          { "keyword": "When", "keywordType": "Action", "text": "events load, click and submit dispatch navigate (Home, Explorer) and session intents sign-in, sign-out and continue" },
+          { "keyword": "Then", "keywordType": "Outcome", "text": "the region load is READ or a named refusal; identity dispositions are named and the login submit runs authenticate-ide-user through the identity host" }
+        ]
+      }
+    },
+    {
+      "id": "ui-region-left-sidebar",
+      "name": "Left sidebar region circuit - navigate and select a capability",
+      "versionPk": "region-revision-2",
+      "definitionDigest": "proposal-ui-region-left-sidebar",
+      "owned": false,
+      "authorityId": "ui-region-left-sidebar.v1",
+      "input": {
+        "id": "ui-region-request",
+        "contractId": "ui-region-request.v1",
+        "description": "request { contractId: ui-region-request.v1, regionId: left-sidebar }; one selection model (capability, namespace, scenario); declared sources details and catalog"
+      },
+      "event": {
+        "id": "ui-region-requested",
+        "description": "events click, submit, change, select and toggle; select on tree items, tabs and rows, navigate on picker submit, pane for splitter resize and collapse, toggle for narrow-window drawers"
+      },
+      "outcome": {
+        "id": "ui-region-content",
+        "contractId": "ui-region-content.v1",
+        "terminal": false,
+        "description": "capability-details.v1 rows in emission order ending capability_navigation; counts, states and badges render as returned, never recomputed; CAPABILITY_NOT_FOUND and CAPABILITY_NOT_SELECTED are named"
+      },
+      "variants": [
+        { "id": "AUTHORED", "classification": "success" },
+        { "id": "HELD", "classification": "failure" },
+        { "id": "UI_REGION_REQUEST_INVALID", "classification": "failure" },
+        { "id": "UI_REGION_REQUEST_OVERSIZED", "classification": "failure" },
+        { "id": "UI_REGION_UNKNOWN", "classification": "failure" }
+      ],
+      "authored": {
+        "keyword": "Scenario",
+        "name": "Left sidebar region circuit - navigate and select a capability",
+        "description": "One selection model serves the tree, the canvas and the row; a selection is state, not evidence.",
+        "tags": ["@capability:ui-page-landing", "@scenario:ui-region-left-sidebar"],
+        "steps": [
+          { "keyword": "Given", "keywordType": "Context", "text": "one selection model over capability, namespace and scenario; sources details (navigation rows from read-capability-details) and catalog (picker datalist)" },
+          { "keyword": "When", "keywordType": "Action", "text": "select on tree items, tabs and rows; navigate on picker submit; pane for splitter resize and collapse; toggle for narrow-window drawers" },
+          { "keyword": "Then", "keywordType": "Outcome", "text": "capability-details.v1 rows render in emission order ending capability_navigation; a tree click sets the one selection model and the circuit target selects its row" }
+        ]
+      }
+    },
+    {
+      "id": "ui-region-middle",
+      "name": "Middle region circuit - scenario canvas and execution",
+      "versionPk": "region-revision-2",
+      "definitionDigest": "proposal-ui-region-middle",
+      "owned": false,
+      "authorityId": "ui-region-middle.v1",
+      "input": {
+        "id": "ui-region-request",
+        "contractId": "ui-region-request.v1",
+        "description": "request { contractId: ui-region-request.v1, regionId: middle }; the selected scenario's read-live-scenario-circuit, its declared input contract and the objective text"
+      },
+      "event": {
+        "id": "ui-region-requested",
+        "description": "events click, submit, change, seek and toggle; actions observe, objective, playback, view, toggle and select"
+      },
+      "outcome": {
+        "id": "ui-region-content",
+        "contractId": "ui-region-content.v1",
+        "terminal": false,
+        "description": "testimony lights admission to completion to return; unobserved branches stay unlit and no endpoint lights before the scenario's own return; execution outcomes are exact declared variants or the defect endpoint"
+      },
+      "variants": [
+        { "id": "AUTHORED", "classification": "success" },
+        { "id": "HELD", "classification": "failure" },
+        { "id": "UI_REGION_REQUEST_INVALID", "classification": "failure" },
+        { "id": "UI_REGION_REQUEST_OVERSIZED", "classification": "failure" },
+        { "id": "UI_REGION_UNKNOWN", "classification": "failure" }
+      ],
+      "authored": {
+        "keyword": "Scenario",
+        "name": "Middle region circuit - scenario canvas and execution",
+        "description": "The viewer draws traversal state and decides nothing; the status bar is chrome carried inside this boundary, not a fifth region.",
+        "tags": ["@capability:ui-page-landing", "@scenario:ui-region-middle"],
+        "steps": [
+          { "keyword": "Given", "keywordType": "Context", "text": "the selected capability's scenario circuit read-live-scenario-circuit; live and replay testimony over the observer stream; the declared input contract and the objective text" },
+          { "keyword": "When", "keywordType": "Action", "text": "observe, objective, playback, view, toggle and select dispatch one admitted run, and replay or view controls re-draw only" },
+          { "keyword": "Then", "keywordType": "Outcome", "text": "received testimony lights admission to completion to return; unobserved branches stay unlit and a replay is a re-draw, never an execution" }
+        ]
+      }
+    },
+    {
+      "id": "ui-region-right-sidebar",
+      "name": "Right sidebar region circuit - context, inspection and evidence",
+      "versionPk": "region-revision-2",
+      "definitionDigest": "proposal-ui-region-right-sidebar",
+      "owned": false,
+      "authorityId": "ui-region-right-sidebar.v1",
+      "input": {
+        "id": "ui-region-request",
+        "contractId": "ui-region-request.v1",
+        "description": "request { contractId: ui-region-request.v1, regionId: right-sidebar }; the Explorer selection and expected snapshot digest; attributed session runs; provider inspection; the declared ui-view.v1 drill-down"
+      },
+      "event": {
+        "id": "ui-region-requested",
+        "description": "context tabs are local; observe from the bound fields; copy/download for evidence export; stage-change stages a provider change document only; select and seek move timeline steps"
+      },
+      "outcome": {
+        "id": "ui-region-content",
+        "contractId": "ui-region-content.v1",
+        "terminal": false,
+        "description": "run and evidence reads render as returned; a missing session names sign-in and does not submit; an interrupted stream exposes Resume without resubmitting; nothing here applies a change or mints trust"
+      },
+      "variants": [
+        { "id": "AUTHORED", "classification": "success" },
+        { "id": "HELD", "classification": "failure" },
+        { "id": "UI_REGION_REQUEST_INVALID", "classification": "failure" },
+        { "id": "UI_REGION_REQUEST_OVERSIZED", "classification": "failure" },
+        { "id": "UI_REGION_UNKNOWN", "classification": "failure" }
+      ],
+      "authored": {
+        "keyword": "Scenario",
+        "name": "Right sidebar region circuit - context, inspection and evidence",
+        "description": "A reading, never a receipt; component evidence attaches to declared node and edge addresses only.",
+        "tags": ["@capability:ui-page-landing", "@scenario:ui-region-right-sidebar"],
+        "steps": [
+          { "keyword": "Given", "keywordType": "Context", "text": "the Explorer selection; attributed session runs; run reads and stream; the declared input contract; provider inspection; the declared ui-view.v1 drill-down" },
+          { "keyword": "When", "keywordType": "Action", "text": "context tabs are local; observe posts from the bound fields; copy/download stages evidence; stage-change stages a change document; select and seek move timeline steps" },
+          { "keyword": "Then", "keywordType": "Outcome", "text": "run and evidence reads render as returned; a provider glyph opens the declared provider view; nothing in this region applies a change or mints trust" }
+        ]
+      }
+    },
+    {
+      "id": "provider-profile",
+      "name": "Provider drill-down circuit - provider profile view",
+      "versionPk": "view-revision-2",
+      "definitionDigest": "proposal-provider-profile-view",
+      "owned": false,
+      "authorityId": "provider-profile.v1",
+      "input": {
+        "id": "ui-view-selection",
+        "contractId": "ui-view-request.v1",
+        "description": "the Explorer selection (capability, namespace, scenario, detail id, expected snapshot digest) bound into the view's declared source inputs by bindViewSelection"
+      },
+      "event": {
+        "id": "ui-view-requested",
+        "description": "declared events on the profile sections; copy/download and stage-change are the deployed writers-that-write-nothing"
+      },
+      "outcome": {
+        "id": "ui-view",
+        "contractId": "ui-view.v1",
+        "terminal": false,
+        "description": "ui-view.v1 status READ renders the declared sections; an absent or unreadable view renders its named refusal, never a fallback"
+      },
+      "variants": [
+        { "id": "READ", "classification": "success" },
+        { "id": "PROVIDER_VIEW_RENDER_FAILED", "classification": "failure" },
+        { "id": "PROVIDER_VIEW_UNREADABLE", "classification": "failure" }
+      ],
+      "authored": {
+        "keyword": "Scenario",
+        "name": "Provider drill-down circuit - provider profile view",
+        "description": "The flywheel: the same circuit template instantiated at provider scope, carried by ui-view.v1 and read through the deployed page reader at /circuit/views/<viewId>.",
+        "tags": ["@capability:ui-page-landing", "@scenario:provider-profile"],
+        "steps": [
+          { "keyword": "Given", "keywordType": "Context", "text": "the Explorer selection bound into the view's declared source inputs; the subject is chosen by the Explorer and a declaration names no concrete provider" },
+          { "keyword": "When", "keywordType": "Action", "text": "a provider glyph opens the view directly; component selections open declared authority; copy/download stage the exact change document" },
+          { "keyword": "Then", "keywordType": "Outcome", "text": "ui-view.v1 READ renders the declared sections; an absent or unreadable view renders PROVIDER_VIEW_RENDER_FAILED or PROVIDER_VIEW_UNREADABLE, never a fallback" }
+        ]
+      }
+    },
+    {
+      "id": "request-capability-from-objective-v3",
+      "name": "Resolve one objective through the governed lane, summarized",
+      "versionPk": "imported",
+      "definitionDigest": "imported",
+      "owned": false,
+      "authorityId": "request-capability-from-objective-v3.v1",
+      "input": {
+        "id": "agent-objective-request",
+        "contractId": "agent-objective-request.v1",
+        "description": "one caller objective and the capabilities the invocation can see; imported retained closure"
+      },
+      "event": {
+        "id": "agent-objective-requested",
+        "description": "the governed model proposes one capability request and the declared estate validates it; imported retained closure"
+      },
+      "outcome": {
+        "id": "invoke-database-capability-summary-result",
+        "contractId": "invoke-database-capability-summary-result.v1",
+        "terminal": true,
+        "description": "the admitted proposed capability is invoked and the governed summary result returns to the caller; imported retained closure"
+      },
+      "variants": [
+        { "id": "ADMITTED", "classification": "success" },
+        { "id": "PROVIDER_UNAVAILABLE", "classification": "failure" },
+        { "id": "REFUSED", "classification": "failure" }
+      ],
+      "authored": {
+        "keyword": "Scenario",
+        "name": "Resolve one objective through the governed lane, summarized",
+        "description": "Imported retained closure of the objective capability selected by the landing's objective action.",
+        "tags": ["@capability:request-capability-from-objective-v3", "@scenario:request-capability-from-objective-v3"],
+        "steps": [
+          { "keyword": "Given", "keywordType": "Context", "text": "one objective and the capabilities the invocation can see" },
+          { "keyword": "When", "keywordType": "Action", "text": "the governed model proposes one capability request and the declared estate validates it" },
+          { "keyword": "Then", "keywordType": "Outcome", "text": "the admitted proposed capability is invoked and its governed summary result returns to the caller" }
+        ]
+      }
+    }
+  ],
+  "authorities": [
+    {
+      "id": "ui-page-landing.v1",
+      "scenarioId": "ui-page-landing",
+      "operations": [
+        { "id": "ui-page-landing.session-read", "kind": "invoke-scenario", "scenarioId": "authenticate-ide-user" },
+        { "id": "ui-page-landing.environment-read", "kind": "invoke-port", "portId": "read-environment-port" },
+        { "id": "ui-page-landing.navigation-read", "kind": "invoke-port", "portId": "read-capability-details-port" },
+        { "id": "ui-page-landing.scenario-read", "kind": "invoke-port", "portId": "read-live-scenario-circuit-port" },
+        { "id": "ui-page-landing.header-region", "kind": "invoke-scenario", "scenarioId": "ui-region-header" },
+        { "id": "ui-page-landing.left-sidebar-region", "kind": "invoke-scenario", "scenarioId": "ui-region-left-sidebar" },
+        { "id": "ui-page-landing.middle-region", "kind": "invoke-scenario", "scenarioId": "ui-region-middle" },
+        { "id": "ui-page-landing.right-sidebar-region", "kind": "invoke-scenario", "scenarioId": "ui-region-right-sidebar" },
+        { "id": "ui-page-landing.objective-run", "kind": "invoke-scenario", "scenarioId": "request-capability-from-objective-v3" }
+      ]
+    },
+    {
+      "id": "authenticate-ide-user.v1",
+      "scenarioId": "authenticate-ide-user",
+      "operations": [
+        { "id": "resolve-identity-principal", "kind": "invoke-port", "portId": "resolve-identity-principal-port" },
+        { "id": "verify-password-credential", "kind": "invoke-port", "portId": "verify-password-credential-port" },
+        { "id": "establish-ide-session", "kind": "invoke-port", "portId": "establish-ide-session-port" }
+      ]
+    },
+    {
+      "id": "ui-region-header.v1",
+      "scenarioId": "ui-region-header",
+      "operations": [
+        { "id": "ui-region-header.load", "kind": "invoke-port", "portId": "load-explorer-region-header" },
+        { "id": "ui-region-header.session", "kind": "invoke-scenario", "scenarioId": "authenticate-ide-user" }
+      ]
+    },
+    {
+      "id": "ui-region-left-sidebar.v1",
+      "scenarioId": "ui-region-left-sidebar",
+      "operations": [
+        { "id": "ui-region-left-sidebar.load", "kind": "invoke-port", "portId": "load-explorer-region-left-sidebar" },
+        { "id": "ui-region-left-sidebar.navigation-read", "kind": "invoke-port", "portId": "read-capability-details-port" }
+      ]
+    },
+    {
+      "id": "ui-region-middle.v1",
+      "scenarioId": "ui-region-middle",
+      "operations": [
+        { "id": "ui-region-middle.load", "kind": "invoke-port", "portId": "load-explorer-region-middle" },
+        { "id": "ui-region-middle.scenario-read", "kind": "invoke-port", "portId": "read-live-scenario-circuit-port" },
+        { "id": "ui-region-middle.objective-run", "kind": "invoke-scenario", "scenarioId": "request-capability-from-objective-v3" }
+      ]
+    },
+    {
+      "id": "ui-region-right-sidebar.v1",
+      "scenarioId": "ui-region-right-sidebar",
+      "operations": [
+        { "id": "ui-region-right-sidebar.load", "kind": "invoke-port", "portId": "load-explorer-region-right-sidebar" },
+        { "id": "ui-region-right-sidebar.evidence-read", "kind": "invoke-port", "portId": "read-run-evidence-port" },
+        { "id": "ui-region-right-sidebar.drill-down", "kind": "invoke-scenario", "scenarioId": "provider-profile" }
+      ]
+    },
+    {
+      "id": "provider-profile.v1",
+      "scenarioId": "provider-profile",
+      "operations": [
+        { "id": "provider-profile.inspection-read", "kind": "invoke-port", "portId": "read-provider-inspection-port" },
+        { "id": "provider-profile.details-read", "kind": "invoke-port", "portId": "read-capability-details-port" }
+      ]
+    }
+  ],
+  "transitions": [
+    {
+      "id": "lighting-session",
+      "from": "ui-page-landing",
+      "to": "authenticate-ide-user",
+      "topologyKind": "session action - session-post",
+      "semanticProgress": "login submit and sign-out run the identity circuit through POST /api/circuit/v1/session; the bearer lives only in the HttpOnly __Host-sfx-session cookie"
+    },
+    {
+      "id": "lighting-observe",
+      "from": "ui-page-landing",
+      "to": "ui-region-middle",
+      "topologyKind": "observe action - session-post",
+      "semanticProgress": "observe submits one capability run and follows that run's own cursor and SSE testimony in the middle region"
+    },
+    {
+      "id": "lighting-objective",
+      "from": "ui-page-landing",
+      "to": "request-capability-from-objective-v3",
+      "topologyKind": "objective action - session-post",
+      "semanticProgress": "the objective row admits request-capability-from-objective-v3, switches capability and follows the run"
+    },
+    {
+      "id": "lighting-navigate",
+      "from": "ui-page-landing",
+      "to": "ui-region-left-sidebar",
+      "topologyKind": "navigate and focus - local",
+      "semanticProgress": "navigate reads the destination for the named path; select sets the one shared selection model and lights the declared target row, never a hidden request"
+    },
+    {
+      "id": "lighting-drill-down",
+      "from": "ui-page-landing",
+      "to": "provider-profile",
+      "topologyKind": "drill-down - local",
+      "semanticProgress": "a provider glyph opens its declared view; the drill-down follows returned typed targets, never names, and re-draws the already-loaded traversal model"
+    }
+  ],
+  "bindings": [
+    {
+      "portId": "read-environment-port",
+      "platformCapabilityId": "sda-embodiment-plan-port.v1",
+      "configuration": {
+        "bindingState": "UNBOUND",
+        "executionLocation": "trusted-browser-shell",
+        "method": "GET /api/circuit/v1/home",
+        "subject": "circuit-host environment read",
+        "note": "host config reader; the release label comes from /healthz; no provider identity is declared for the host reader"
+      }
+    },
+    {
+      "portId": "read-capability-details-port",
+      "platformCapabilityId": "sda-embodiment-plan-port.v1",
+      "configuration": {
+        "bindingState": "UNBOUND",
+        "executionLocation": "kernel-reading-host",
+        "method": "invoke",
+        "subject": "read-capability-details",
+        "outputContractId": "capability-details.v1",
+        "note": "the deployed details reader invokes the declared reading capability; no provider identity is declared for the host reader"
+      }
+    },
+    {
+      "portId": "read-live-scenario-circuit-port",
+      "platformCapabilityId": "sda-embodiment-plan-port.v1",
+      "configuration": {
+        "bindingState": "UNBOUND",
+        "executionLocation": "kernel-reading-host",
+        "method": "invoke",
+        "subject": "read-live-scenario-circuit",
+        "outputContractId": "live-scenario-circuit.v1",
+        "note": "database scene plus SVG, digest checked; no provider identity is declared for the host reader"
+      }
+    },
+    {
+      "portId": "read-run-evidence-port",
+      "platformCapabilityId": "sda-embodiment-plan-port.v1",
+      "configuration": {
+        "bindingState": "UNBOUND",
+        "executionLocation": "kernel-reading-host",
+        "method": "invoke",
+        "subject": "run and evidence reads",
+        "note": "session runs, run read/events/output and input contract; no provider identity is declared for the host reader"
+      }
+    },
+    {
+      "portId": "read-provider-inspection-port",
+      "platformCapabilityId": "sda-embodiment-plan-port.v1",
+      "configuration": {
+        "bindingState": "UNBOUND",
+        "executionLocation": "kernel-reading-host",
+        "method": "invoke",
+        "subject": "analysis.read_provider_details",
+        "outputContractId": "provider-inspection.v1",
+        "note": "read through GET /api/circuit/v1/provider-inspection; the browser never holds the SDA token"
+      }
+    },
+    {
+      "portId": "resolve-identity-principal-port",
+      "platformCapabilityId": "sda-governed-http-exchange-port.v1",
+      "configuration": {
+        "providerId": "identity-principal-provider",
+        "bindingState": "BOUND",
+        "executionLocation": "private-identity-service",
+        "credentialInjectionRules": [
+          { "id": "identity-private-execution-bearer.v1", "headerName": "Authorization", "valuePrefix": "Bearer " }
+        ],
+        "endpointAuthorities": [
+          {
+            "endpointAuthorityDigest": "sha256:716d1c0de2171d3f5fb5c411885b356a7dbaf32f64c638537b03957787c701a0c",
+            "urlPrefixes": ["https://localhost:8793/auth/v1/provider/resolve", "https://sidefx-staging-fyfhb9gubneqbpaz.eastus2-01.azurewebsites.net/auth/v1/provider/resolve"],
+            "methods": ["POST"],
+            "allowedRequestHeaders": ["content-type"],
+            "allowedResponseHeaders": ["content-type"]
+          }
+        ],
+        "providerAuthorities": [
+          { "providerId": "identity-principal-provider", "bindingId": "resolve-identity-principal.v1", "endpointAuthorityDigest": "sha256:716d1c0de2171d3f5fb5c411885b356a7dbaf32f64c638537b03957787c701a0c" }
+        ]
+      }
+    },
+    {
+      "portId": "verify-password-credential-port",
+      "platformCapabilityId": "sda-governed-http-exchange-port.v1",
+      "configuration": {
+        "providerId": "password-credential-provider",
+        "bindingState": "BOUND",
+        "executionLocation": "private-identity-service",
+        "credentialInjectionRules": [
+          { "id": "identity-private-execution-bearer.v1", "headerName": "Authorization", "valuePrefix": "Bearer " }
+        ],
+        "endpointAuthorities": [
+          {
+            "endpointAuthorityDigest": "sha256:979c1cf37d6b212106b8ae138570a5c5850c6a8b83537f2cd93c7d57b699f2bd59",
+            "urlPrefixes": ["https://localhost:8793/auth/v1/provider/verify", "https://sidefx-staging-fyfhb9gubneqbpaz.eastus2-01.azurewebsites.net/auth/v1/provider/verify"],
+            "methods": ["POST"],
+            "allowedRequestHeaders": ["content-type"],
+            "allowedResponseHeaders": ["content-type"]
+          }
+        ],
+        "providerAuthorities": [
+          { "providerId": "password-credential-provider", "bindingId": "verify-password-credential.v1", "endpointAuthorityDigest": "sha256:979c1cf37d6b212106b8ae138570a5c5850c6a8b83537f2cd93c7d57b699f2bd59" }
+        ]
+      }
+    },
+    {
+      "portId": "establish-ide-session-port",
+      "platformCapabilityId": "sda-governed-http-exchange-port.v1",
+      "configuration": {
+        "providerId": "ide-session-provider",
+        "bindingState": "BOUND",
+        "executionLocation": "private-identity-service",
+        "credentialInjectionRules": [
+          { "id": "identity-private-execution-bearer.v1", "headerName": "Authorization", "valuePrefix": "Bearer " }
+        ],
+        "endpointAuthorities": [
+          {
+            "endpointAuthorityDigest": "sha256:b2d9d38500e4f8c429954dd72d0e611810f488152f9badf50bd8a53283940a111",
+            "urlPrefixes": ["https://localhost:8793/auth/v1/provider/establish", "https://sidefx-staging-fyfhb9gubneqbpaz.eastus2-01.azurewebsites.net/auth/v1/provider/establish"],
+            "methods": ["POST"],
+            "allowedRequestHeaders": ["content-type"],
+            "allowedResponseHeaders": ["content-type"]
+          }
+        ],
+        "providerAuthorities": [
+          { "providerId": "ide-session-provider", "bindingId": "establish-ide-session.v1", "endpointAuthorityDigest": "sha256:b2d9d38500e4f8c429954dd72d0e611810f488152f9badf50bd8a53283940a111" }
+        ]
+      }
+    },
+    {
+      "portId": "load-explorer-region-header",
+      "platformCapabilityId": "sda-ui-explorer-region-header-port.v1",
+      "configuration": {
+        "providerId": "sfx-ui-explorer-region-header",
+        "bindingState": "UNBOUND",
+        "executionLocation": "browser-runtime",
+        "method": "invoke",
+        "module": "providers/ui-explorer-region/ui-explorer-region.mjs",
+        "export": "invoke",
+        "declarationProfile": "sfx-provider-catalog.v1",
+        "role": "shell-chrome",
+        "place": 1,
+        "readiness": "REVIEWABLE / HELD until G2"
+      }
+    },
+    {
+      "portId": "load-explorer-region-left-sidebar",
+      "platformCapabilityId": "sda-ui-explorer-region-left-sidebar-port.v1",
+      "configuration": {
+        "providerId": "sfx-ui-explorer-region-left-sidebar",
+        "bindingState": "UNBOUND",
+        "executionLocation": "browser-runtime",
+        "method": "invoke",
+        "module": "providers/ui-explorer-region/ui-explorer-region.mjs",
+        "export": "invoke",
+        "declarationProfile": "sfx-provider-catalog.v1",
+        "role": "navigate-and-select",
+        "place": 2,
+        "readiness": "REVIEWABLE / HELD until G2"
+      }
+    },
+    {
+      "portId": "load-explorer-region-middle",
+      "platformCapabilityId": "sda-ui-explorer-region-middle-port.v1",
+      "configuration": {
+        "providerId": "sfx-ui-explorer-region-middle",
+        "bindingState": "UNBOUND",
+        "executionLocation": "browser-runtime",
+        "method": "invoke",
+        "module": "providers/ui-explorer-region/ui-explorer-region.mjs",
+        "export": "invoke",
+        "declarationProfile": "sfx-provider-catalog.v1",
+        "role": "scenario-circuit-canvas-and-execution",
+        "place": 3,
+        "readiness": "REVIEWABLE / HELD until G2"
+      }
+    },
+    {
+      "portId": "load-explorer-region-right-sidebar",
+      "platformCapabilityId": "sda-ui-explorer-region-right-sidebar-port.v1",
+      "configuration": {
+        "providerId": "sfx-ui-explorer-region-right-sidebar",
+        "bindingState": "UNBOUND",
+        "executionLocation": "browser-runtime",
+        "method": "invoke",
+        "module": "providers/ui-explorer-region/ui-explorer-region.mjs",
+        "export": "invoke",
+        "declarationProfile": "sfx-provider-catalog.v1",
+        "role": "context-inspection-and-evidence",
+        "place": 4,
+        "readiness": "REVIEWABLE / HELD until G2"
+      }
+    }
+  ],
+  "contracts": {
+    "ide-login-observation-request.v1": {
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "$id": "ide-login-observation-request.v1",
+        "title": "Private CLI login input - observation envelope",
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["contractId", "payload"],
+        "properties": {
+          "contractId": { "const": "ide-login-observation-request.v1" },
+          "payload": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["correlationId"],
+            "properties": {
+              "correlationId": { "type": "string", "minLength": 1, "maxLength": 128,
+                "description": "Non-authorizing observation correlation; the private host owns credentials and attempt state." }
+            }
+          }
+        },
+        "x-input-provider": {
+          "providerId": "cli-login-input-provider",
+          "location": "client-terminal",
+          "method": "AcquireAsync",
+          "privateMembers": ["identifier", "password"],
+          "observationMembers": ["correlationId"],
+          "executionOrder": "Before server scenario entry; collection time has a separate client clock"
+        }
+      }
+    },
+    "ide-authentication-result.v1": {
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "$id": "ide-authentication-result.v1",
+        "title": "IDE authentication result - public receipt",
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["contractId", "disposition"],
+        "properties": {
+          "contractId": { "const": "ide-authentication-result.v1" },
+          "disposition": { "enum": ["AUTHENTICATED", "AUTHENTICATION_REJECTED", "THROTTLED", "IDENTITY_UNAVAILABLE"] }
+        },
+        "description": "A declared outcome is unobserved until the scenario returns. Session credentials are delivered only by private transport."
+      }
+    },
+    "ui-page-request.v1": {
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "$id": "ui-page-request.v1",
+        "title": "Landing page read request",
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["contractId", "path"],
+        "properties": {
+          "contractId": { "const": "ui-page-request.v1" },
+          "path": { "type": "string", "description": "declared page path; the landing route is /circuit/explorer" },
+          "capabilityId": { "type": "string" },
+          "namespaceId": { "type": "string" },
+          "scenario": { "type": "string" },
+          "node": { "type": "string" },
+          "row": { "type": "string" },
+          "page": { "type": "string" },
+          "detail": { "type": "string" },
+          "refresh": { "type": "boolean", "description": "re-lights declared reads with refresh=1" }
+        }
+      }
+    },
+    "ui-page.v1": {
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "$id": "ui-page.v1",
+        "title": "Composed landing page declaration",
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["contractId", "status", "path", "sections"],
+        "properties": {
+          "contractId": { "const": "ui-page.v1" },
+          "status": { "enum": ["READ", "DEGRADED"] },
+          "path": { "type": "string" },
+          "pageId": { "type": "string" },
+          "revision": { "type": "integer" },
+          "pageDigest": { "type": "string" },
+          "layout": { "type": "object" },
+          "sections": { "type": "array" },
+          "readingDefinitionSha256": { "type": "string" },
+          "readAt": { "type": "string" }
+        }
+      }
+    },
+    "ui-region-request.v1": {
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "$id": "ui-region-request.v1",
+        "title": "Explorer region load request",
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["contractId", "regionId"],
+        "properties": {
+          "contractId": { "const": "ui-region-request.v1" },
+          "regionId": { "enum": ["header", "left-sidebar", "middle", "right-sidebar"] }
+        }
+      }
+    },
+    "ui-region-content.v1": {
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "$id": "ui-region-content.v1",
+        "title": "Explorer region content candidate",
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["contractId", "regionId", "role", "assets"],
+        "properties": {
+          "contractId": { "const": "ui-region-content.v1" },
+          "regionId": { "enum": ["header", "left-sidebar", "middle", "right-sidebar"] },
+          "role": { "type": "string" },
+          "place": { "type": "integer" },
+          "basis": { "type": "string" },
+          "assets": { "type": "array", "items": { "type": "object", "required": ["assetId", "kind", "path", "digest"], "properties": {
+            "assetId": { "type": "string" }, "kind": { "enum": ["style", "structure", "figure"] },
+            "mediaType": { "type": "string" }, "role": { "type": "string" }, "path": { "type": "string" },
+            "bytes": { "type": "integer" }, "digest": { "type": "string" } } } },
+          "digest": { "type": "string" }
+        }
+      }
+    },
+    "ui-view-request.v1": {
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "$id": "ui-view-request.v1",
+        "title": "Declared view request",
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["contractId"],
+        "properties": {
+          "contractId": { "const": "ui-view-request.v1" },
+          "capabilityId": { "type": "string" },
+          "namespaceId": { "type": "string" },
+          "scenario": { "type": "string" },
+          "detailId": { "type": "string" },
+          "expectedSnapshotDigest": { "type": "string" }
+        }
+      }
+    },
+    "ui-view.v1": {
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "$id": "ui-view.v1",
+        "title": "Declared view",
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["contractId", "viewId", "status", "sections"],
+        "properties": {
+          "contractId": { "const": "ui-view.v1" },
+          "viewId": { "const": "provider-profile" },
+          "viewDigest": { "type": "string" },
+          "status": { "enum": ["READ"] },
+          "sections": { "type": "array" }
+        }
+      }
+    }
+  },
+  "interfaces": [
+    {
+      "id": "ui-explorer-page",
+      "profile": "ui-page.v1",
+      "rootScenarioId": "ui-page-landing",
+      "configuration": {
+        "input": { "type": "json", "contract": "ui-page-request.v1" },
+        "display": { "select": "outcome", "as": "json" },
+        "platformCapabilityId": "sda-ui-page-landing-port.v1"
+      }
+    },
+    {
+      "id": "ui-view-provider-profile",
+      "profile": "ui-view.v1",
+      "rootScenarioId": "provider-profile",
+      "configuration": {
+        "input": { "type": "json", "contract": "ui-view-request.v1" },
+        "display": { "select": "sections", "as": "json" },
+        "platformCapabilityId": "sda-ui-view-provider-profile-port.v1"
+      }
+    }
+  ],
+  "features": [
+    {
+      "feature_id": "ui-page-landing-feature",
+      "name": "Circuit Explorer landing",
+      "binding_role": "primary",
+      "feature_version_pk": "landing-revision-2",
+      "definition_digest": "proposal-ui-page-landing-revision-2",
+      "definition_json": "{\"semantics\":{\"name\":\"Circuit Explorer landing\",\"description\":\"The landing is declared as a scenario circuit: login entry, four provider-backed regions, the user-action lighting map and the provider drill-down flywheel.\"}}",
+      "source_text": "@capability:ui-page-landing\n@root-scenario:ui-page-landing\nFeature: Circuit Explorer landing\n  The landing is declared as a scenario circuit: login entry, four provider-backed regions,\n  the user-action lighting map and the provider drill-down flywheel.\n  @scenario:ui-page-landing\n  Scenario: Read and drive the landing circuit\n    Given route /circuit/explorer with the declared query, session states and sources\n    When the declared events dispatch navigate, select, session, observe, objective and local actions\n    Then the read returns ui-page.v1 and each region subcircuit resolves AUTHORED or HELD\n"
+    }
+  ],
+  "providerLabels": [
+    { "provider_id": "sfx-ui-explorer-region-header", "version_label": "Explorer header region" },
+    { "provider_id": "sfx-ui-explorer-region-left-sidebar", "version_label": "Explorer left sidebar region" },
+    { "provider_id": "sfx-ui-explorer-region-middle", "version_label": "Explorer middle region" },
+    { "provider_id": "sfx-ui-explorer-region-right-sidebar", "version_label": "Explorer right sidebar region" },
+    { "provider_id": "identity-principal-provider", "version_label": "Identity principal" },
+    { "provider_id": "password-credential-provider", "version_label": "Password credential" },
+    { "provider_id": "ide-session-provider", "version_label": "IDE session" },
+    { "provider_id": "cli-login-input-provider", "version_label": "CLI login input" }
+  ],
+  "provenance": {
+    "adapter": "declaration-capability-presentation.v1",
+    "isolation": "declaration",
+    "selection": "landing blueprint revision 2 plus retained closures selected from estate snapshots"
+  }
+}

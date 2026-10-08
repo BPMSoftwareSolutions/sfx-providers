@@ -115,9 +115,22 @@ export function drawCapabilitySheet(p,snapshot,model,{slides=[],selectedScenario
  p.blueprint={...p.blueprint,altitude:'capability',scenarioId:root.id,topologyDigest:projection.topologyDigest,nodes:projection.nodes.map(n=>n.id),edges:projection.edges.map(e=>e.id),portfolio:{scenarioIds:Object.keys(layout.positions),routes:layout.routes,badges:layout.badges},glyphs:[],textFrames:[]};
  p.detail=JSON.stringify({projection,scenarioContext:model.scenarios.filter(s=>Object.hasOwn(layout.positions,'scenario:'+s.id)),inputContract:snapshot.contracts.find(c=>c.id===root.inputContractId)},null,2);
  p.interpretation='Only root-connected declared scenarios become scenario cards. Provider badges retain exact operation and binding paths, including testimony references. Input and outcome frames summarize the root scenario semantic contract; they do not prove execution routing or observed success. Selection denotes the drill-down target, not runtime state. Unconnected declarations remain in the inventory. No stages are promoted to scenarios.';
- const text=(value,b,size=12,color=C.white,bold=false,target,align='left',floor=8)=>{
-  b={...b,h:Math.max(b.h,12.2)};
-  const f=fitBlueprintText(String(value),{width:b.w,height:b.h,fontSize:size,minFontSize:Math.min(floor,size)});
+  const text=(value,b,size=12,color=C.white,bold=false,target,align='left',floor=8,shorten=false)=>{
+   b={...b,h:Math.max(b.h,12.2)};size=Math.max(4,size);
+   const fit=value=>fitBlueprintText(String(value),{width:b.w,height:b.h,fontSize:size,minFontSize:Math.max(4,Math.min(floor,size))});
+   let source=value;
+   if(shorten){
+    // A badge is a summary surface: an oversized identity is shortened with a
+    // visible ellipsis, while the full identity stays in notes and sidecars.
+    try{fit(value);}catch(error){if(error.code!=='CAPABILITY_BLUEPRINT_TEXT_OVERFLOW')throw error;
+     const parts=String(value).split('.');let done=false;
+     for(let i=1;i<parts.length&&!done;i++){const candidate='…'+parts.slice(i).join('.');
+      try{fit(candidate);source=candidate;done=true;}catch(next){if(next.code!=='CAPABILITY_BLUEPRINT_TEXT_OVERFLOW')throw next;}}
+     for(let i=1;i<String(value).length&&!done;i++){const candidate='…'+String(value).slice(i);
+      try{fit(candidate);source=candidate;done=true;}catch(next){if(next.code!=='CAPABILITY_BLUEPRINT_TEXT_OVERFLOW')throw next;}}
+    }
+   }
+   const f=fit(source);
   p.add('t',f.text,b.x,b.y,b.w,b.h,f.fontSize,color,bold,align,...(target?[link(target)]:[]));p.blueprint.textFrames.push(b);
  };
  blueprintGrid(p);
@@ -135,18 +148,43 @@ export function drawCapabilitySheet(p,snapshot,model,{slides=[],selectedScenario
  const fields=(snapshot.contracts.find(c=>c.id===root.inputContractId)?.fields??[]).filter(f=>/^\$\/payload\/[^/]+$/.test(f.path));
  const inputs=fields.length?fields.map(f=>f.path.replace('$/','').replaceAll('/','.')):[root.inputContractId||'No input contract retained'];
  const ih=Math.min(53,176/inputs.length);
- inputs.forEach((label,i)=>{const y=246+i*ih;p.add('shape','ROUND_RECTANGLE',23,y,128,ih-7,{fill:'#18291E',stroke:C.amber,sw:1.1});p.add('shape','RECTANGLE',31,y+13,10,14,{fill:'none',stroke:C.amber,sw:.8});p.add('line',33,y+18,39,y+18,C.amber,.8);text(label,{x:44,y:y+3,w:103,h:ih-12},10.5,C.amber,false,undefined,'left',4);});
- p.text('Root scenario variants',805,156,135,30,9,C.green);
- const outcomes=root.variants.length?root.variants:[{id:root.outcomeId||'No outcome retained',classification:''}],oh=Math.min(77,246/outcomes.length);
- outcomes.forEach((v,i)=>{const y=190+i*oh,color=v.classification==='failure'?C.red:C.green;
-  p.add('shape','ROUND_RECTANGLE',808,y,130,oh-8,{fill:'#04252B',stroke:color,sw:1});p.add('shape','ELLIPSE',816,y+17,15,15,{fill:'none',stroke:color,sw:1});
-  if(v.classification==='failure'){p.add('line',820,y+21,827,y+28,color,1);p.add('line',820,y+28,827,y+21,color,1);}else if(v.classification==='success'){p.add('line',819,y+25,822,y+28,color,1);p.add('line',822,y+28,828,y+21,color,1);}
-  text(v.id.replaceAll('_',' ').replaceAll('-',' ').toLowerCase(),{x:834,y:y+7,w:100,h:oh-19},10,color);
- });
+  inputs.forEach((label,i)=>{const y=246+i*ih;p.add('shape','ROUND_RECTANGLE',23,y,128,ih-7,{fill:'#18291E',stroke:C.amber,sw:1.1});p.add('shape','RECTANGLE',31,y+13,10,14,{fill:'none',stroke:C.amber,sw:.8});p.add('line',33,y+18,39,y+18,C.amber,.8);text(label,{x:44,y:y+3,w:103,h:ih-12},10.5,C.amber,false,undefined,'left',4,true);});
+  p.text('Root scenario variants',805,156,135,30,9,C.green);
+  const outcomes=root.variants.length?root.variants:[{id:root.outcomeId||'No outcome retained',classification:''}];
+  const variantLabel=v=>v.id.replaceAll('_',' ').replaceAll('-',' ').toLowerCase();
+  const fitsVariant=(label,oh)=>{try{fitBlueprintText(label,{width:100,height:Math.max(oh-19,12.2),fontSize:10,minFontSize:8});return true;}catch{return false;}};
+  // The summary panel is bounded: it shows as many exact variant identities as
+  // fit and names the retained remainder. Every ID stays in blueprint.outcomeVariantIds,
+  // the outcome slides and the notes; nothing is dropped from the deck.
+  let outcomeRows=outcomes.length,outcomeSlots=outcomes.length,outcomeSummary=0;
+  while(outcomeRows>1){
+   outcomeSummary=outcomes.length-outcomeRows;outcomeSlots=outcomeSummary>0?outcomeRows-1:outcomeRows;
+   const oh=Math.min(77,246/outcomeRows),labels=[...outcomes.slice(0,outcomeSlots).map(variantLabel),...(outcomeSummary>0?['+ '+outcomeSummary+' more variants']:[])];
+   if(labels.every(l=>fitsVariant(l,oh)))break;
+   outcomeRows--;
+  }
+  outcomeSummary=outcomes.length-outcomeRows;outcomeSlots=outcomeSummary>0?outcomeRows-1:outcomeRows;
+  const oh=Math.min(77,246/outcomeRows);
+  outcomes.slice(0,outcomeSlots).forEach((v,i)=>{const y=190+i*oh,color=v.classification==='failure'?C.red:C.green;
+   p.add('shape','ROUND_RECTANGLE',808,y,130,oh-8,{fill:'#04252B',stroke:color,sw:1});p.add('shape','ELLIPSE',816,y+17,15,15,{fill:'none',stroke:color,sw:1});
+   if(v.classification==='failure'){p.add('line',820,y+21,827,y+28,color,1);p.add('line',820,y+28,827,y+21,color,1);}else if(v.classification==='success'){p.add('line',819,y+25,822,y+28,color,1);p.add('line',822,y+28,828,y+21,color,1);}
+   text(variantLabel(v),{x:834,y:y+7,w:100,h:oh-19},10,color);
+  });
+  if(outcomeSummary){const y=190+outcomeSlots*oh;p.add('shape','ROUND_RECTANGLE',808,y,130,oh-8,{fill:'#04252B',stroke:C.muted,sw:1});text('+ '+outcomeSummary+' more variants',{x:834,y:y+7,w:100,h:oh-19},10,C.muted);}
  const scale=Math.min(584/layout.width,210/layout.height,1),ox=188+(584-layout.width*scale)/2,oy=176+(210-layout.height*scale)/2;
  const box=b=>({x:ox+b.x*scale,y:oy+b.y*scale,w:b.w*scale,h:b.h*scale}),point=pt=>[ox+pt[0]*scale,oy+pt[1]*scale];
  const rendered=[];
- for(const e of layout.routes){p.add('route',e.points.map(point),C.blue,{arrow:true,dash:e.kind==='call',glow:false,width:Math.max(.7,1.4*scale),routing:e.routing,attachment:{...attachmentFor(e),minimumLead:8}});}
+ for(const e of layout.routes){p.add('route',e.points.map(point),C.blue,{arrow:true,dash:e.kind==='call',glow:false,width:Math.max(.7,1.4*scale),routing:e.routing,attachment:{...attachmentFor(e),minimumLead:Math.max(1,8*scale)}});}
+ // Declared lighting transitions keep their action identity visible in the
+ // portfolio; a label that cannot fit is shortened with the same visible
+ // ellipsis rule, and the exact declaration stays in the notes and sidebars.
+ for(const e of layout.routes){
+  if(e.kind!=='transition'||!e.label)continue;
+  const pts=e.points.map(point);let bi=1,bl=-1;
+  for(let i=1;i<pts.length;i++){const len=Math.abs(pts[i][0]-pts[i-1][0])+Math.abs(pts[i][1]-pts[i-1][1]);if(len>bl){bl=len;bi=i;}}
+  const a=pts[bi-1],b=pts[bi],w=170,h=14,x=Math.max(2,Math.min(958-w,((a[0]+b[0])/2)-w/2)),y=Math.max(2,Math.min(524,(a[1]===b[1]?(a[1]+b[1])/2-16:(a[1]+b[1])/2-7)));
+  text(e.label,{x,y,w,h},Math.max(4,8*scale),C.muted,false,undefined,'center',4,true);
+ }
  const cardNodes=projection.nodes.filter(n=>n.kind==='scenario').sort((a,b)=>Number(b.scenarioId===root.id)-Number(a.scenarioId===root.id));
  for(const [i,n]of cardNodes.entries()){
   const sc=model.scenarios.find(s=>s.id===n.scenarioId),b=box(layout.positions[n.id]),isSelected=sc.id===selected.id,paint=isSelected?'#49DDF7':C.blue;
@@ -163,7 +201,7 @@ export function drawCapabilitySheet(p,snapshot,model,{slides=[],selectedScenario
    const provider=model.nodes.find(v=>v.id===e.to),pb=sb(12+(j%cols)*bw,119+Math.floor(j/cols)*layout.badgePitch,bw-6,layout.badgePitch-8);
    const target=slides.find(s=>s.blueprint?.role==='provider-inspection'&&s.blueprint.providerId===provider.id);
    p.add('shape','ROUND_RECTANGLE',pb.x,pb.y,pb.w,pb.h,{fill:'#141E37',stroke:C.violet,sw:Math.max(.6,scale)});
-   text(provider.label,pb,12*scale,C.violet,true,target,'center',4);
+    text(provider.label,pb,12*scale,C.violet,true,target,'center',4,true);
   });
   rendered.push({scenarioId:sc.id,nodeId:n.id,sourceRef:n.ref,bounds:b,providerEdgeIds:badges.map(e=>e.id)});
  }

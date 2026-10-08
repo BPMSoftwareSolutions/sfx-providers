@@ -36,7 +36,7 @@ test('one scenario with many operations remains one scenario and retains every p
  assert.ok(!portfolio.scenarioIds.includes('scenario:accept'));assert.ok(story.slides.some(s=>s.blueprint?.role==='inventory'));
  const target=p.commands.find(c=>c.op==='t'&&c.args[0]==='Open scenario circuit blueprint').args[9].slideIndex;
  assert.equal(target,1);assert.equal(story.slides[target].blueprint.role,'scenario-blueprint');
- assert.equal(story.slides[2].blueprint.render.cells.length,35);
+ assert.equal(story.slides.find(s=>s.blueprint?.render&&s.blueprint.scenarioId==='review').blueprint.render.cells.length,35);
  assert.deepEqual(p.blueprint.outcomeVariantIds,s.scenarios[0].variants.map(v=>v.id));
  const svg=renderBlueprintSvg(story.blueprint,{altitude:'capability'},s);assert.ok(svg.includes('Capability circuit blueprint'));assert.ok(svg.includes('provider-0')&&svg.includes('provider-1'));
 });

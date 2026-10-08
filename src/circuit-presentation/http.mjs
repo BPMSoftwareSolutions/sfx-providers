@@ -1,4 +1,4 @@
-import * as provider from '../../providers/circuit-presentation.mjs';
+import * as provider from '../../providers/circuit-presentation/circuit-presentation.mjs';
 import * as capabilityProvider from '../capability-presentation/provider.mjs';
 import * as migrationProvider from '../google-slides-migration/workflow.mjs';
 export const INVOKE='/circuit-presentation/presentation.compile';
