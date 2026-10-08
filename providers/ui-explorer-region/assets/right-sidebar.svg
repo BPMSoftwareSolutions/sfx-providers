@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 340 560" width="340" height="560" role="presentation" aria-hidden="true">
+  <rect class="region-frame" x="0.5" y="0.5" width="339" height="559" rx="4" ry="4"></rect>
+  <line class="region-axis" x1="316" y1="40" x2="316" y2="520"></line>
+  <circle class="region-node" cx="316" cy="80" r="3"></circle>
+  <circle class="region-node" cx="316" cy="160" r="3"></circle>
+  <circle class="region-node" cx="316" cy="240" r="3"></circle>
+  <circle class="region-node" cx="316" cy="320" r="3"></circle>
+  <circle class="region-node" cx="316" cy="400" r="3"></circle>
+  <circle class="region-node" cx="316" cy="480" r="3"></circle>
+</svg>

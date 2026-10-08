@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" width="640" height="360" role="presentation" aria-hidden="true">
+  <rect class="region-frame" x="0.5" y="0.5" width="639" height="359" rx="4" ry="4"></rect>
+  <path class="region-grid" d="M160 0V360 M320 0V360 M480 0V360 M0 90H640 M0 180H640 M0 270H640"></path>
+  <line class="region-axis" x1="32" y1="180" x2="608" y2="180"></line>
+  <circle class="region-node" cx="32" cy="180" r="3"></circle>
+  <circle class="region-node" cx="320" cy="180" r="3"></circle>
+  <circle class="region-node" cx="608" cy="180" r="3"></circle>
+</svg>

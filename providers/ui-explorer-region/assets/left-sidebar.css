@@ -1,0 +1,42 @@
+.region-left-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  box-sizing: border-box;
+  width: 280px;
+  padding: var(--gutter);
+  border-right: 1px solid var(--line);
+  background: var(--panel);
+  color: var(--muted);
+  overflow-y: auto;
+}
+
+.region-left-sidebar .region-slot {
+  min-height: 24px;
+}
+
+.region-left-sidebar [data-slot="capability-search"],
+.region-left-sidebar [data-slot="capability-picker"] {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--panel-solid);
+}
+
+.region-left-sidebar [data-slot="counts"],
+.region-left-sidebar [data-slot="states"],
+.region-left-sidebar [data-slot="badges"] {
+  color: var(--dim);
+}
+
+.region-left-sidebar .region-frame {
+  fill: none;
+  stroke: var(--line);
+}
+
+.region-left-sidebar .region-axis {
+  stroke: var(--blue);
+}
+
+.region-left-sidebar .region-node {
+  fill: var(--cyan);
+}
