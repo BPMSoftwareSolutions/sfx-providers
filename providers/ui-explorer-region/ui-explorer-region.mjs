@@ -43,7 +43,7 @@ const REGION_DEFINITIONS = [
     platformCapabilityId: 'sda-ui-explorer-region-header-port.v1',
     role: 'shell-chrome',
     place: 1,
-    basis: 'ui-circuit-blueprint-strategy.md:67; live-circuit/circuit/explorer.html:180-186',
+    basis: 'ui-explorer-region-blueprint.md:81-125; ui-circuit-blueprint-strategy.md:67; live-circuit/circuit/explorer.html:180-186',
   },
   {
     regionId: 'left-sidebar',
@@ -52,7 +52,7 @@ const REGION_DEFINITIONS = [
     platformCapabilityId: 'sda-ui-explorer-region-left-sidebar-port.v1',
     role: 'navigate-and-select',
     place: 2,
-    basis: 'ui-circuit-blueprint-strategy.md:68; live-circuit/circuit/explorer.html:188-191',
+    basis: 'ui-explorer-region-blueprint.md:126-171; ui-circuit-blueprint-strategy.md:68; live-circuit/circuit/explorer.html:188-191',
   },
   {
     regionId: 'middle',
@@ -61,7 +61,7 @@ const REGION_DEFINITIONS = [
     platformCapabilityId: 'sda-ui-explorer-region-middle-port.v1',
     role: 'scenario-circuit-canvas-and-execution',
     place: 3,
-    basis: 'ui-circuit-blueprint-strategy.md:69; live-circuit/circuit/explorer.html:193-257,302',
+    basis: 'ui-explorer-region-blueprint.md:172-224; ui-circuit-blueprint-strategy.md:69; live-circuit/circuit/explorer.html:193-257,302',
   },
   {
     regionId: 'right-sidebar',
@@ -70,7 +70,7 @@ const REGION_DEFINITIONS = [
     platformCapabilityId: 'sda-ui-explorer-region-right-sidebar-port.v1',
     role: 'context-inspection-and-evidence',
     place: 4,
-    basis: 'ui-circuit-blueprint-strategy.md:70; live-circuit/circuit/explorer.html:259-300',
+    basis: 'ui-explorer-region-blueprint.md:225-273; ui-circuit-blueprint-strategy.md:70; live-circuit/circuit/explorer.html:259-300',
   },
 ];
 
