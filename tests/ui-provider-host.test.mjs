@@ -97,6 +97,19 @@ test('every declared asset is served only as its declared, verified bytes', asyn
   }
 });
 
+test('browser assets survive proxy decoding of slash-containing asset identities', async () => {
+  const [providerId, entry] = [...providers].find(([, entry]) => [...entry.assets.keys()].some(id => id.includes('/')));
+  const asset = [...entry.assets.values()].find(asset => asset.assetId.includes('/'));
+  for (const assetId of [encodeURIComponent(asset.assetId), asset.assetId]) {
+    const response = await fetch(`${server.base}/ui-providers/${providerId}/assets/${assetId}`);
+    assert.equal(response.status, 200);
+    assert.equal(bytesDigest(Buffer.from(await response.arrayBuffer())), asset.digest);
+  }
+  const undeclared = await fetch(`${server.base}/ui-providers/${providerId}/assets/browser/undeclared.mjs`);
+  assert.equal(undeclared.status, 404);
+  assert.equal((await undeclared.json()).error, 'UI_PROVIDER_ASSET_UNKNOWN');
+});
+
 test('invoke over HTTP returns exactly the in-process result, with the serving identity', async () => {
   for (const [providerId, entry] of providers) for (const request of requestsOf(entry)) {
     const response = await post(`${server.base}/ui-providers/${encodeURIComponent(providerId)}/invoke`, request);

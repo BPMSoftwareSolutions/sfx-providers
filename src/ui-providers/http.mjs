@@ -13,7 +13,9 @@ import { indexOf, readVerifiedAsset } from './registry.mjs';
 import {createHash, timingSafeEqual} from 'node:crypto';
 
 export const UI_PROVIDER_PREFIX = '/ui-providers';
-const ROUTE = /^\/ui-providers\/([^/]+)\/(manifest|invoke|assets\/([^/]+))$/;
+// Azure can decode %2F before forwarding. Asset identities may contain slashes;
+// resolution still uses the manifest's exact asset map, never a request file path.
+const ROUTE = /^\/ui-providers\/([^/]+)\/(manifest|invoke|assets\/(.+))$/;
 
 function sendJson(res, status, body, headers = {}) {
   const text = JSON.stringify(body);

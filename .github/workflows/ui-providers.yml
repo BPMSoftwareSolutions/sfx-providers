@@ -98,6 +98,18 @@ jobs:
             for (const p of expected.providers)
               if (served[p.providerId] !== p.manifestDigest) throw new Error(`MANIFEST_MISMATCH: ${p.providerId}`);
             if (Object.keys(served).length !== expected.providers.length) throw new Error('UNEXPECTED_PROVIDER_SET');
+            for (const p of index.providers) {
+              const manifest = await (await fetch(base + p.manifest + '?version=' + p.version)).json();
+              if (manifest.digest !== p.manifestDigest) throw new Error('SERVED_MANIFEST_MISMATCH: ' + p.providerId);
+              for (let offset = 0; offset < manifest.integrity.assets.length; offset += 4)
+                await Promise.all(manifest.integrity.assets.slice(offset, offset + 4).map(async asset => {
+                  const response = await fetch(base + asset.url, { signal: AbortSignal.timeout(15000) });
+                  if (!response.ok) throw new Error('ASSET_NOT_SERVED: ' + asset.url);
+                  const bytes = Buffer.from(await response.arrayBuffer());
+                  const digest = 'sha256:' + require('crypto').createHash('sha256').update(bytes).digest('hex');
+                  if (bytes.length !== asset.bytes || digest !== asset.digest) throw new Error('ASSET_BYTES_MISMATCH: ' + asset.url);
+                }));
+            }
             for (const route of ['/altitude-01/health', '/audio-to-text/health', '/circuit-presentation/health'])
               if ((await fetch(base + route)).status !== 404) throw new Error('NON_UI_ROUTE_EXPOSED: ' + route);
             console.log(`Hosted ${expected.providers.map(p => p.providerId + '@' + p.version).join(', ')} from ${expected.sourceCommit}`);
