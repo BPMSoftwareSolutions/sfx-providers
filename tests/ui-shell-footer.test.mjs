@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
-import { invoke, regions, capabilities, contentManifest, descriptor } from '../providers/ui-shell-footer/ui-shell-footer.mjs';
+import { invoke, regions, capabilities, contentManifest, descriptor } from '../providers/sfx-ui-shell-footer/sfx-ui-shell-footer.mjs';
 
 const request = { contractId: 'ui-region-request.v1', regionId: 'footer' };
 
@@ -11,7 +11,7 @@ assert.equal(regions.length, 1);
 assert.equal(regions[0].regionId, 'footer');
 assert.equal(regions[0].place, 5);
 assert.equal(regions[0].role, 'shell-chrome');
-assert.equal(capabilities[0].capabilityId, 'load-shell-footer');
+assert.equal(capabilities[0].capabilityId, 'ui-region-footer');
 
 const digest = (text) => `sha256:${createHash('sha256').update(text, 'utf8').digest('hex')}`;
 for (const asset of regions[0].assets) {

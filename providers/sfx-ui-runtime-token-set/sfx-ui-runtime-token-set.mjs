@@ -11,8 +11,8 @@ export const TOKEN_SET_ID = 'site.v1';
 export const descriptor = {
   moduleContractId: 'ui-runtime-provider.v1',
   providerId,
-  package: 'providers/ui-runtime-token-set',
-  version: '0.1.0',
+  package: 'providers/sfx-ui-runtime-token-set',
+  version: '0.1.1',
   runtime: 'node',
   type: 'ui-runtime',
   method: 'in-process',

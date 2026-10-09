@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.agentic-harness.local/contracts/ui-region-request.v1.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contractId",
+    "regionId"
+  ],
+  "properties": {
+    "contractId": {
+      "const": "ui-region-request.v1"
+    },
+    "regionId": {
+      "enum": [
+        "header",
+        "left-sidebar",
+        "middle",
+        "right-sidebar",
+        "footer"
+      ]
+    }
+  }
+}

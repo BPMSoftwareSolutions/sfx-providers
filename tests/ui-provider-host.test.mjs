@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
-import { cpSync, mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
+import { cpSync, mkdirSync, mkdtempSync, rmSync, writeFileSync, readFileSync } from 'node:fs';
 import http from 'node:http';
 import { once } from 'node:events';
 import { tmpdir } from 'node:os';
@@ -15,8 +15,8 @@ const PROVIDERS = fileURLToPath(new URL('../providers/', import.meta.url));
 const digestOf = (value) => `sha256:${createHash('sha256').update(JSON.stringify(value)).digest('hex')}`;
 const bytesDigest = (bytes) => `sha256:${createHash('sha256').update(bytes).digest('hex')}`;
 
-async function host(providers) {
-  const handle = createUiProviderRequestHandler(providers);
+async function host(providers, options) {
+  const handle = createUiProviderRequestHandler(providers, options);
   const server = http.createServer(async (req, res) => {
     const url = new URL(req.url, 'http://localhost');
     if (!(await handle(req, res, url.pathname, url.searchParams))) { res.writeHead(404); res.end(); }
@@ -25,10 +25,25 @@ async function host(providers) {
   return { base: `http://127.0.0.1:${server.address().port}`, close: () => new Promise((resolve) => server.close(resolve)) };
 }
 const post = (url, body, headers = { 'content-type': 'application/json' }) => fetch(url, { method: 'POST', headers, body: typeof body === 'string' ? body : JSON.stringify(body) });
+
+test('a configured provider credential protects invocation and accepts the governed carrier body shape', async()=>{
+  const entries=await loadUiProviders(PROVIDERS), protectedHost=await host(entries,{invocationKey:'test-only-ui-provider-key'});
+  try {
+    const [id,entry]=[...entries][0],url=`${protectedHost.base}/ui-providers/${id}/invoke`,input=requestsOf(entry)[0];
+    for(const key of [null,'wrong']) {
+      const response=await post(url,input,{'content-type':'application/json',...(key?{'x-sfx-provider-key':key}:{})});
+      assert.equal(response.status,401);assert.equal((await response.json()).error,'UI_PROVIDER_CREDENTIAL_REQUIRED');
+    }
+    const response=await fetch(url,{method:'POST',headers:{'x-sfx-provider-key':'test-only-ui-provider-key'},body:Buffer.from(JSON.stringify(input))});
+    assert.equal(response.status,200);assert.equal((await response.json()).disposition,'AUTHORED');
+    const manifest=await fetch(`${protectedHost.base}/ui-providers/${id}/manifest`);assert.equal(manifest.status,200);await manifest.body.cancel();
+  } finally {await protectedHost.close();}
+});
 // A minimal valid request for each operation, from the package's own contracts:
 // the input contract, plus each declared region for region providers.
 function requestsOf(entry) {
   const contractId = entry.module.inputShape?.contractId;
+  if (contractId === 'ui-page.v1') return [JSON.parse(readFileSync(new URL('./fixtures/ui-view-read.json',import.meta.url),'utf8'))];
   const regions = (entry.module.contentManifest?.regions ?? []).map((region) => region.regionId);
   return regions.length ? regions.map((regionId) => ({ contractId, regionId })) : [{ contractId }];
 }
@@ -129,7 +144,8 @@ test('asset bytes changed after loading are refused, never served', async () => 
   const directory = mkdtempSync(path.join(tmpdir(), 'ui-provider-host-'));
   try {
     cpSync(entry.packageRoot, path.join(directory, entry.name), { recursive: true });
-    const copied = await loadUiProviders(directory), asset = [...copied.get(providerId).assets.values()][0];
+    const copied = new Map([[providerId, { ...entry, packageRoot: path.join(directory, entry.name) }]]);
+    const asset = [...entry.assets.values()].find(asset => asset.path.startsWith('assets/'));
     writeFileSync(path.join(directory, entry.name, asset.path), 'tampered');
     const tampered = await host(copied);
     try {
@@ -146,10 +162,19 @@ test('a package claiming the module contract without its members, or a duplicate
     write('incomplete', "export const descriptor = { moduleContractId: 'ui-runtime-provider.v1', providerId: 'x', version: '1.0.0', operations: [] };\n");
     await assert.rejects(loadUiProviders(directory), /UI_PROVIDER_PACKAGE_INVALID: incomplete/);
     rmSync(path.join(directory, 'incomplete'), { recursive: true, force: true });
-    const valid = (id) => `export const descriptor = { moduleContractId: 'ui-runtime-provider.v1', providerId: '${id}', version: '1.0.0', operations: [{ operationId: 'op' }] };\nexport function invoke() {}\n`;
-    write('first', valid('same')); write('second', valid('same'));
-    await assert.rejects(loadUiProviders(directory), /UI_PROVIDER_DUPLICATE: same/);
+    const valid = (id) => `export const descriptor = { moduleContractId: 'ui-runtime-provider.v1', providerId: '${id}', package: 'providers/${id}', version: '1.0.0', operations: [{ operationId: 'op' }] };\nexport function invoke() {}\n`;
+    write('first', valid('first')); write('second', valid('first'));
+    await assert.rejects(loadUiProviders(directory), /UI_PROVIDER_DUPLICATE: first/);
   } finally { rmSync(directory, { recursive: true, force: true }); }
+});
+
+test('a provider whose folder does not match its declared identity refuses hosting', async () => {
+  const directory = mkdtempSync(path.join(tmpdir(), 'ui-provider-identity-'));
+  try {
+    mkdirSync(path.join(directory, 'aggregate'));
+    writeFileSync(path.join(directory, 'aggregate', 'aggregate.mjs'), "export const descriptor={moduleContractId:'ui-runtime-provider.v1',providerId:'declared-provider',package:'providers/declared-provider',version:'1.0.0',operations:[{operationId:'read'}]};export function invoke(){};");
+    await assert.rejects(loadUiProviders(directory), /UI_PROVIDER_IDENTITY_MISMATCH/);
+  } finally { rmSync(directory, {recursive:true,force:true}); }
 });
 
 test('the deployable host serves only the UI provider API and its health', async () => {

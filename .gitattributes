@@ -1,2 +1,7 @@
 # Preserve the original authoring bytes used by the provenance SHA-256 manifest.
 examples/circuit-presentation/sidefx-announcement/provenance/** -text whitespace=-blank-at-eof
+
+# UI manifests address text assets by their bytes on Windows and Linux.
+providers/sfx-ui-*/** text=auto eol=lf
+src/ui-providers/** text=auto eol=lf
+src/ui-providers/browser/*.png -text

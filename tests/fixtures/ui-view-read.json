@@ -1,0 +1,15 @@
+{
+  "contractId": "ui-page.v1",
+  "status": "READ",
+  "path": "/circuit/views/provider-test",
+  "pageId": "provider-test",
+  "revision": 1,
+  "pageDigest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "readingDefinitionSha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+  "readAt": "2026-10-09T00:00:00.000Z",
+  "viewContractId": "ui-view.v1",
+  "viewId": "provider-test",
+  "layout": {},
+  "sources": [],
+  "sections": [{"sectionId":"title","regionId":"main","component":{"kind":"heading","version":1},"props":{"text":"Provider inspection test","level":2},"bindings":{}}]
+}

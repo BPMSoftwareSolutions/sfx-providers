@@ -1,110 +1,90 @@
 # Hosted UI providers
 
-Every UI runtime provider package in `providers/` is hosted, so consumers use it
-over HTTP instead of copying or importing its code. A package is hosted when
-`providers/<name>/<name>.mjs` exports a `descriptor` with
-`moduleContractId: ui-runtime-provider.v1` and an `invoke` function; nothing in
-the host names a specific provider. Today that is `sfx-ui-explorer-region`
-(the four Explorer regions), `sfx-ui-shell-footer` and `sfx-ui-runtime-token-set`,
-each at the version its descriptor declares.
+The UI-only host is https://sfx-ui-providers.azurewebsites.net. Each declared
+provider has one folder, named exactly like its providerId. The host discovers
+packages by the ui-runtime-provider.v1 module contract; it does not contain a
+provider-specific route map.
 
-These providers remain undeclared in the estate: contracts `PROPOSED`, bindings
-`UNBOUND`. Hosting makes them consumable; it does not admit them. Selecting a
-provider version for a slot is declared authority (`sfx-embody`).
+## Provider packages
 
-## Hosts
-
-| Entry point | Serves | Transport |
+| Declared provider and folder | Version | Operation |
 | --- | --- | --- |
-| `node ui-providers-host.mjs` (`npm run ui-providers`) | the UI provider API and `/health` only | plain HTTP on `PORT` (default 8080), `HOST` default `0.0.0.0`, for a TLS-terminating platform |
-| `node runner.mjs` (`npm start`) | the UI provider API alongside the altitude, audio and presentation providers | local HTTPS on `PROVIDER_PORT` (default 8790) with the `setup-cert.ps1` certificate |
+| sfx-ui-explorer-region-header | 0.1.0 | ui.region.load: header |
+| sfx-ui-explorer-region-left-sidebar | 0.1.0 | ui.region.load: left-sidebar |
+| sfx-ui-explorer-region-middle | 0.1.0 | ui.region.load: middle |
+| sfx-ui-explorer-region-right-sidebar | 0.1.0 | ui.region.load: right-sidebar |
+| sfx-ui-shell-footer | 0.2.0 | ui.region.load: footer |
+| sfx-ui-provider-drilldown | 0.1.0 | ui.view.prepare |
+| sfx-ui-runtime-token-set | 0.1.1 | ui.tokens.resolve |
 
-Deploy only `ui-providers-host.mjs`. It holds no credentials and makes no model
-calls; the altitude providers' model access is never reachable through it.
+The aggregate ui-explorer-region package has been replaced by four independent
+providers. Every package's main module is providers/<providerId>/<providerId>.mjs.
+A mismatched folder, package identity, or duplicate provider identity refuses
+host startup.
 
-## API
+The five region providers return their own CSS/HTML/SVG content and publish
+browser implementations. Middle also exports mountExplorer and declares its
+versioned provider dependencies. Drill-down prepares a declared ui-page.v1
+reader result carrying ui-view.v1 identity; its browser module uses the shared
+page projector and component adapters. It does not synthesize a profile.
+Shared browser modules live under src/ui-providers/browser. Their extraction
+source and changes are recorded in extraction.json. No sfx-platform source
+checkout is required to package or serve these implementations.
 
-| Route | Result |
+## API and contracts
+
+| Method and route | Result |
 | --- | --- |
-| `GET /ui-providers` | `ui-provider-index.v1`: each hosted provider's id, version, operations, manifest URL and manifest digest |
-| `GET /ui-providers/{providerId}/manifest` | `ui-provider-manifest.v1`: `identity`, `version`, `contracts` (operation, effect, contract ids and status, schema digests), declared `capabilities`, `entrypoint` (package-relative module path, operations, invoke URL, byte limit) and `integrity` (content manifest digest; every asset's id, region, kind, media type, path, bytes, `sha256` digest and content-addressed URL), plus the manifest's own `digest` |
-| `GET /ui-providers/{providerId}/assets/{assetId}` | the asset's declared bytes, served only while they still match their digest; `x-content-digest` and `etag` carry the digest. With `?digest=sha256:…` the URL is content-addressed and cached `immutable`; without it, `no-cache` |
-| `POST /ui-providers/{providerId}/invoke` | the provider's operation on the JSON body, returning its envelope unchanged plus `servedBy` (`providerId`, `version`, `operationId`, `manifestDigest`). Name `?operation=` when a provider declares more than one |
+| GET /ui-providers | ui-provider-index.v1: identities, versions, manifest URLs and digests |
+| GET /ui-providers/{providerId}/manifest | Identity, contracts and schema digests, operations, browser entrypoint, dependencies, asset digests and URLs |
+| GET /ui-providers/{providerId}/assets/{assetId} | Exact declared bytes, checked before serving |
+| POST /ui-providers/{providerId}/invoke | AUTHORED candidate or HELD findings, plus servedBy identity, version, operation and manifest digest |
 
-Every route accepts `?version=<semver>`. A consumer pinned to a version other
-than the hosted one is refused (`409 UI_PROVIDER_VERSION_UNAVAILABLE`), never
-served a different version. Responses carry `x-ui-provider: <id>@<version>` and
-`x-ui-provider-manifest-digest`.
+Every route accepts ?version=<semver>. An unavailable version returns
+409 UI_PROVIDER_VERSION_UNAVAILABLE. Content-addressed asset URLs additionally
+pin ?digest=sha256:...; mismatched or changed bytes are refused.
 
-The manifest is a projection of the package's own exports; no field is invented
-by the host. Repeat reads are byte-stable while the package is unchanged.
+Region inputs are {"contractId":"ui-region-request.v1","regionId":"header"},
+substituting the matching region name. A region provider refuses requests for
+another region. Their output candidate is ui-region-content.v1 with its exact
+provider identity and three assets. The shared region schemas match the
+sfx-embody align-ui-provider-region-contracts migration (60fff1f), including
+footer. Drill-down takes the actual read-ui-page result for
+/circuit/views/provider-profile and returns the validated, selection-bound page.
 
-## Refusals
+A configured SFX_UI_PROVIDER_API_KEY requires the X-SFX-Provider-Key header on
+invoke. Index, manifests and assets remain public. Without a configured key,
+the existing public READ_ONLY invocation behavior remains. The key value is
+never included in a response. JSON body bytes without Content-Type are accepted
+for the existing governed HTTP carrier; explicitly different formats refuse.
+The host makes no model or external data calls.
 
-Host refusals are named: `UI_PROVIDER_UNKNOWN` (404), `UI_PROVIDER_ROUTE_UNKNOWN`
-(404), `UI_PROVIDER_ASSET_UNKNOWN` (404), `UI_PROVIDER_VERSION_UNAVAILABLE` (409),
-`UI_PROVIDER_ASSET_DIGEST_STALE` (409), `UI_PROVIDER_ASSET_DIGEST_MISMATCH` (500;
-the bytes changed after loading and are not served), `UI_PROVIDER_METHOD_NOT_ALLOWED`
-(405), `UI_PROVIDER_CONTENT_TYPE_INVALID` (415), `UI_PROVIDER_REQUEST_OVERSIZED`
-(413), `UI_PROVIDER_REQUEST_INVALID` (400) and `UI_PROVIDER_OPERATION_UNKNOWN`
-(400). A provider's own refusal keeps its name and maps by its suffix:
-`*_REQUEST_INVALID` 400, `*_OVERSIZED` 413, `*_UNKNOWN` 404, otherwise 422.
+Browser manifests publish the complete static module dependency closure,
+styles and images. browser-client.mjs is a reference consumer: it takes explicit
+provider/version/manifest-digest selections, verifies all bytes before creating
+executable URLs, and shares identical modules across providers. Discovery does
+not select or admit a provider. This loader is not a production isolation boundary.
 
-Loading refuses the whole host rather than hosting a partial set: a package that
-claims the module contract without `providerId`, `version`, `operations` and
-`invoke` (`UI_PROVIDER_PACKAGE_INVALID`), two packages with one `providerId`
-(`UI_PROVIDER_DUPLICATE`), or an asset id declared twice.
+## Deployment and verification
 
-## Check
+ui-providers-host.mjs serves only the UI API and health endpoints. It speaks
+HTTP behind Azure TLS termination. The general server.mjs also hosts other
+provider families and is not the Azure UI deployment entrypoint.
 
-```powershell
-node --test tests/ui-provider-host.test.mjs
-```
+.github/workflows/ui-providers.yml tests UI packages, packages only the discovered
+UI provider set, deploys on main, and verifies the deployed source commit,
+clean-build marker, exact provider set and manifest digests. The deployment
+uses the existing sfx-providers-github-ui identity and sfx-ui-providers app.
+No altitude, audio, presentation or login routes are included.
 
-The tests run over HTTP for every discovered package: index and manifest
-digests recompute; every asset is served as its declared bytes with the right
-type and cache policy; invoke equals the in-process result for every declared
-request; refusals keep their names; tampered bytes are refused; and the
-deployable host exposes no altitude, audio or presentation route.
+Local verification: node --test tests (241 tests passed on 2026-10-09). The UI
+browser check loaded the six browser entrypoints from verified HTTP assets and
+mounted all five regions plus the declared drill-down. These are implementation
+checks, not landing circuit acceptance.
 
-## Deployment
-
-The UI-only host runs at **https://sfx-ui-providers.azurewebsites.net** (App
-Service `sfx-ui-providers`, Linux Node 24 LTS, on plan `ASP-sidefxgroup-ad2e` in
-`sidefx_group`; HTTPS only, TLS 1.2+, FTPS disabled, health check `/health`,
-`robots.txt` disallows indexing). It is public and read-only: index, manifests,
-assets and `READ_ONLY` invoke, with no credentials or model access.
-
-`.github/workflows/ui-providers.yml` tests every UI package and the hosted API on
-pull requests and pushes, and on `main` deploys the bundle built by
-`scripts/package-ui-providers.mjs` (host plus only the `ui-runtime-provider.v1`
-packages). It then requires `/health` to report that bundle from a clean
-checkout of the pushed commit, every hosted manifest digest to equal the
-bundle's, and the altitude, audio and presentation routes to be absent. It signs
-in with the managed identity `sfx-providers-github-ui` (federated to
-`repo:BPMSoftwareSolutions/sfx-providers:ref:refs/heads/main`; Website
-Contributor on `sfx-ui-providers` only) through the repository variables
-`AZURE_CLIENT_ID`, `AZURE_TENANT_ID` and `AZURE_SUBSCRIPTION_ID`.
-
-## Parity with the platform before consumption (2026-10-09)
-
-The hosted content was checked against `sfx-platform` so that consuming it loses
-nothing the platform had. Every source each package cites changed after its
-capture only in `sfx-platform` `5eee1df` (the commit that mounted these
-providers) and its test harness `85f3ea4`; `site.css` `:root` is unchanged and
-the token set matches all sixteen custom properties.
-
-A browser comparison of the hand-authored chrome before `5eee1df` with the
-provider-composed chrome after it (Explorer, home, sign-in and a declared page,
-signed in and out) found these losses:
-
-| Lost since the region migration | Owner | State |
-| --- | --- | --- |
-| Accessible names of the Explorer sidebars ("Capability explorer", "Observe and selection details") | `ui-explorer-region` (`left-sidebar.html`, `right-sidebar.html`) | Restored in 0.1.1 and hosted |
-| `role="tabpanel"` and `aria-labelledby` on the Run, Runs and Evidence panels; the tabs' `aria-controls` now name plain containers | `sfx-platform` `explorer-shell.js` (builds the panels) | Open, for the platform phase |
-| The footer's "Sign in" link (replaced by "Home"); declared pages now have no sign-in link | `sfx-platform` `footer.js` (fills the navigation slot) | Open, for the platform phase |
-| Each left-sidebar list is announced as two nested navigation landmarks with the same name: the provider's labelled `nav` slot holds the shell's labelled `nav` | provider slot element or shell slot content | Open, decide in the platform phase |
-
-The platform still consumes the 0.1.0 packages copied into its image from the
-pinned `sfx-providers` commit; the restored names reach staging only when the
-platform consumes 0.1.1.
+Acceptance order: deploy this API; check its actual response shapes; declare
+the Azure HTTPS bindings in sfx-embody; execute ui-page-landing through the
+local installed kernel and observe real receipts in Explorer. Deploy
+sfx-platform to staging only after that acceptance succeeds. The binding draft
+is not installed until its successful invocation preflight. Provider hosting
+alone does not establish estate admission or successful circuit execution.

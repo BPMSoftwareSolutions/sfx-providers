@@ -1,0 +1,34 @@
+{
+  "sourceRepository": "sfx-platform",
+  "sourceCommit": "8a878f51682db3539178d68f20df9f989839db59",
+  "sourceModules": [
+    "site.js",
+    "circuit-viewer.js",
+    "deck-trace.js",
+    "playback-clock.js",
+    "navigation.js",
+    "traversal.js",
+    "execution-cursor.js",
+    "observe-panel.js",
+    "run-context.js",
+    "run-evidence.mjs",
+    "objective-run.js",
+    "page-runtime.js",
+    "ui-components.js",
+    "explorer-model.mjs",
+    "pane-layout.js",
+    "region-runtime.js",
+    "explorer.js",
+    "explorer-shell.js",
+    "circuit-runtime.js",
+    "view-runtime.js",
+    "footer.js"
+  ],
+  "changes": [
+    "Provider-owned entrypoints and module imports",
+    "Explicit injected host request/stream/region/asset ports",
+    "Footer sign-in link restored",
+    "Sidebar navigation nesting removed",
+    "Context panel roles restored"
+  ]
+}

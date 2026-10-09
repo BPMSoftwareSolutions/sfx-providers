@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import * as provider from '../providers/ui-runtime-token-set/ui-runtime-token-set.mjs';
+import * as provider from '../providers/sfx-ui-runtime-token-set/sfx-ui-runtime-token-set.mjs';
 
 const request = { contractId: provider.REQUEST_CONTRACT_ID };
 

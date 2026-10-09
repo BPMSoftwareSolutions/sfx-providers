@@ -8,6 +8,7 @@ import { createHash } from 'node:crypto';
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
+import { SHARED_BROWSER_ROOT } from './browser-assets.mjs';
 
 export const MODULE_CONTRACT_ID = 'ui-runtime-provider.v1';
 export const MANIFEST_CONTRACT_ID = 'ui-provider-manifest.v1';
@@ -20,7 +21,7 @@ const digestOf = (value) => sha256(JSON.stringify(value));
 
 function declaredAssets(module) {
   const regions = Array.isArray(module.contentManifest?.regions) ? module.contentManifest.regions : [];
-  return regions.flatMap((region) => (Array.isArray(region.assets) ? region.assets : []).map((asset) => ({
+  const content = regions.flatMap((region) => (Array.isArray(region.assets) ? region.assets : []).map((asset) => ({
     assetId: asset.assetId,
     regionId: region.regionId ?? null,
     kind: asset.kind,
@@ -30,6 +31,7 @@ function declaredAssets(module) {
     bytes: asset.bytes,
     digest: asset.digest,
   })));
+  return [...content, ...(module.browser?.assets ?? [])];
 }
 
 function projectManifest(module, entry) {
@@ -67,13 +69,14 @@ function projectManifest(module, entry) {
       operations: (descriptor.operations ?? []).map((operation) => operation.operationId),
       invoke: `${base}/invoke`,
       maxRequestBytes: Number.isInteger(module.MAX_REQUEST_BYTES) ? module.MAX_REQUEST_BYTES : DEFAULT_MAX_REQUEST_BYTES,
+      ...(module.browser ? { browser: { assetId: module.browser.entrypoint, exports: module.browser.exports, styles: module.browser.styles, dependencies: module.browser.dependencies } } : {}),
     },
     integrity: {
       algorithm: 'sha256',
       contentManifest: module.contentManifest
         ? { contractId: module.contentManifest.contractId ?? null, manifestId: module.contentManifest.manifestId ?? null, digest: module.contentManifest.digest ?? null }
         : null,
-      assets: assets.map((asset) => ({ ...asset, url: `${base}/assets/${encodeURIComponent(asset.assetId)}?digest=${encodeURIComponent(asset.digest)}` })),
+      assets: assets.map((asset) => ({ ...asset, url: `${base}/assets/${encodeURIComponent(asset.assetId)}?version=${encodeURIComponent(descriptor.version)}&digest=${encodeURIComponent(asset.digest)}` })),
     },
   };
   return { ...body, digest: digestOf(body) };
@@ -95,6 +98,8 @@ export async function loadUiProviders(directory = DEFAULT_PROVIDERS) {
       || !Array.isArray(module.descriptor.operations) || module.descriptor.operations.length === 0)
       throw new Error(`UI_PROVIDER_PACKAGE_INVALID: ${name} must export a descriptor with providerId, version and operations, and invoke`);
     if (providers.has(providerId)) throw new Error(`UI_PROVIDER_DUPLICATE: ${providerId} is declared by more than one package`);
+    if (name !== providerId || module.descriptor.package !== `providers/${providerId}`)
+      throw new Error(`UI_PROVIDER_IDENTITY_MISMATCH: folder ${name}, package and declared providerId ${providerId} must be identical`);
     const packageRoot = path.join(root, name);
     const entry = { name, module, packageRoot, relativeModule: `providers/${name}/${name}.mjs` };
     entry.manifest = projectManifest(module, entry);
@@ -109,8 +114,10 @@ export async function loadUiProviders(directory = DEFAULT_PROVIDERS) {
 // Asset bytes are read from the package and served only when they still match
 // their declared digest; unverified bytes are never served.
 export function readVerifiedAsset(entry, asset) {
-  const file = path.resolve(entry.packageRoot, asset.path);
-  if (!file.startsWith(entry.packageRoot + path.sep)) return null;
+  const shared = asset.path.startsWith('shared/');
+  const root = shared ? SHARED_BROWSER_ROOT : entry.packageRoot;
+  const file = path.resolve(root, shared ? asset.path.slice(7) : asset.path);
+  if (!file.startsWith(root + path.sep)) return null;
   const bytes = readFileSync(file);
   return sha256(bytes) === asset.digest && bytes.length === asset.bytes ? bytes : null;
 }

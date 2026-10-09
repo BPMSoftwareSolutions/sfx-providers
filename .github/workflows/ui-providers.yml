@@ -8,19 +8,23 @@ on:
   push:
     branches: [main]
     paths:
-      - 'providers/ui-*/**'
+      - 'providers/sfx-ui-*/**'
       - 'src/ui-providers/**'
       - 'ui-providers-host.mjs'
       - 'scripts/package-ui-providers.mjs'
       - 'tests/ui-*.test.mjs'
+      - 'tests/helpers/**'
+      - 'tests/fixtures/ui-view-read.json'
       - '.github/workflows/ui-providers.yml'
   pull_request:
     paths:
-      - 'providers/ui-*/**'
+      - 'providers/sfx-ui-*/**'
       - 'src/ui-providers/**'
       - 'ui-providers-host.mjs'
       - 'scripts/package-ui-providers.mjs'
       - 'tests/ui-*.test.mjs'
+      - 'tests/helpers/**'
+      - 'tests/fixtures/ui-view-read.json'
       - '.github/workflows/ui-providers.yml'
   workflow_dispatch:
 

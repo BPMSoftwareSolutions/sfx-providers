@@ -1,0 +1,62 @@
+{
+  "type": "object",
+  "required": [
+    "contractId",
+    "status",
+    "path",
+    "readingDefinitionSha256",
+    "readAt"
+  ],
+  "properties": {
+    "contractId": {
+      "const": "ui-page.v1"
+    },
+    "status": {
+      "enum": [
+        "READ",
+        "NOT_FOUND",
+        "NOT_DECLARED",
+        "SNAPSHOT_CHANGED"
+      ]
+    },
+    "path": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 400
+    },
+    "pageId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 400
+    },
+    "revision": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "pageDigest": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "requestedPageDigest": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "servedPageDigest": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "layout": {
+      "type": "object"
+    },
+    "sections": {
+      "type": "array"
+    },
+    "readingDefinitionSha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "readAt": {
+      "type": "string"
+    }
+  }
+}

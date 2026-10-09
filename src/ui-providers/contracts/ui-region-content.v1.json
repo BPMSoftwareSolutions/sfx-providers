@@ -1,0 +1,261 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.agentic-harness.local/contracts/ui-region-content.v1.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contractId",
+    "providerId",
+    "regionProviderId",
+    "regionId",
+    "role",
+    "place",
+    "basis",
+    "assets",
+    "digest"
+  ],
+  "properties": {
+    "contractId": {
+      "const": "ui-region-content.v1"
+    },
+    "providerId": {
+      "enum": [
+        "sfx-ui-explorer-region",
+        "sfx-ui-explorer-region-header",
+        "sfx-ui-explorer-region-left-sidebar",
+        "sfx-ui-explorer-region-middle",
+        "sfx-ui-explorer-region-right-sidebar",
+        "sfx-ui-shell-footer"
+      ]
+    },
+    "regionProviderId": {
+      "type": "string"
+    },
+    "regionId": {
+      "enum": [
+        "header",
+        "left-sidebar",
+        "middle",
+        "right-sidebar",
+        "footer"
+      ]
+    },
+    "role": {
+      "type": "string"
+    },
+    "place": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 5
+    },
+    "basis": {
+      "type": "string"
+    },
+    "assets": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 3,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "assetId",
+          "kind",
+          "mediaType",
+          "role",
+          "path",
+          "bytes",
+          "digest",
+          "content"
+        ],
+        "properties": {
+          "assetId": {
+            "type": "string"
+          },
+          "kind": {
+            "enum": [
+              "css",
+              "html",
+              "svg"
+            ]
+          },
+          "mediaType": {
+            "enum": [
+              "text/css",
+              "text/html",
+              "image/svg+xml"
+            ]
+          },
+          "role": {
+            "enum": [
+              "style",
+              "structure",
+              "figure"
+            ]
+          },
+          "path": {
+            "type": "string",
+            "pattern": "^assets/[a-z-]+\\.(css|html|svg)$"
+          },
+          "bytes": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "digest": {
+            "type": "string",
+            "pattern": "^sha256:[0-9a-f]{64}$"
+          },
+          "content": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "digest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "regionId": {
+            "const": "header"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "providerId": {
+            "enum": [
+              "sfx-ui-explorer-region",
+              "sfx-ui-explorer-region-header"
+            ]
+          },
+          "regionProviderId": {
+            "const": "sfx-ui-explorer-region-header"
+          },
+          "place": {
+            "const": 1
+          },
+          "role": {
+            "const": "shell-chrome"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "regionId": {
+            "const": "left-sidebar"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "providerId": {
+            "enum": [
+              "sfx-ui-explorer-region",
+              "sfx-ui-explorer-region-left-sidebar"
+            ]
+          },
+          "regionProviderId": {
+            "const": "sfx-ui-explorer-region-left-sidebar"
+          },
+          "place": {
+            "const": 2
+          },
+          "role": {
+            "const": "navigate-and-select"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "regionId": {
+            "const": "middle"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "providerId": {
+            "enum": [
+              "sfx-ui-explorer-region",
+              "sfx-ui-explorer-region-middle"
+            ]
+          },
+          "regionProviderId": {
+            "const": "sfx-ui-explorer-region-middle"
+          },
+          "place": {
+            "const": 3
+          },
+          "role": {
+            "const": "scenario-circuit-canvas-and-execution"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "regionId": {
+            "const": "right-sidebar"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "providerId": {
+            "enum": [
+              "sfx-ui-explorer-region",
+              "sfx-ui-explorer-region-right-sidebar"
+            ]
+          },
+          "regionProviderId": {
+            "const": "sfx-ui-explorer-region-right-sidebar"
+          },
+          "place": {
+            "const": 4
+          },
+          "role": {
+            "const": "context-inspection-and-evidence"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "regionId": {
+            "const": "footer"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "providerId": {
+            "enum": [
+              "sfx-ui-shell-footer"
+            ]
+          },
+          "regionProviderId": {
+            "const": "sfx-ui-shell-footer"
+          },
+          "place": {
+            "const": 5
+          },
+          "role": {
+            "const": "shell-chrome"
+          }
+        }
+      }
+    }
+  ]
+}
