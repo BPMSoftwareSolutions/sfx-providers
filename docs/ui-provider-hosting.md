@@ -1,5 +1,9 @@
 # Hosted UI providers
 
+For the verified deployment state, unfinished estate/platform work, exact
+requests, and steps to finish local acceptance and staging, read the
+[UI landing closeout handoff](ui-landing-provider-coverage.md).
+
 The UI-only host is https://sfx-ui-providers.azurewebsites.net. Each declared
 provider has one folder, named exactly like its providerId. The host discovers
 packages by the ui-runtime-provider.v1 module contract; it does not contain a
@@ -52,10 +56,9 @@ sfx-embody align-ui-provider-region-contracts migration (60fff1f), including
 footer. Drill-down takes the actual read-ui-page result for
 /circuit/views/provider-profile and returns the validated, selection-bound page.
 
-A configured SFX_UI_PROVIDER_API_KEY requires the X-SFX-Provider-Key header on
-invoke. Index, manifests and assets remain public. Without a configured key,
-the existing public READ_ONLY invocation behavior remains. The key value is
-never included in a response. JSON body bytes without Content-Type are accepted
+Invocations, index, manifests and assets are public. These deterministic
+READ_ONLY operations require no invocation key or credential provisioning.
+JSON body bytes without Content-Type are accepted
 for the existing governed HTTP carrier; explicitly different formats refuse.
 The host makes no model or external data calls.
 

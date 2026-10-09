@@ -15,8 +15,8 @@ const PROVIDERS = fileURLToPath(new URL('../providers/', import.meta.url));
 const digestOf = (value) => `sha256:${createHash('sha256').update(JSON.stringify(value)).digest('hex')}`;
 const bytesDigest = (bytes) => `sha256:${createHash('sha256').update(bytes).digest('hex')}`;
 
-async function host(providers, options) {
-  const handle = createUiProviderRequestHandler(providers, options);
+async function host(providers) {
+  const handle = createUiProviderRequestHandler(providers);
   const server = http.createServer(async (req, res) => {
     const url = new URL(req.url, 'http://localhost');
     if (!(await handle(req, res, url.pathname, url.searchParams))) { res.writeHead(404); res.end(); }
@@ -26,18 +26,14 @@ async function host(providers, options) {
 }
 const post = (url, body, headers = { 'content-type': 'application/json' }) => fetch(url, { method: 'POST', headers, body: typeof body === 'string' ? body : JSON.stringify(body) });
 
-test('a configured provider credential protects invocation and accepts the governed carrier body shape', async()=>{
-  const entries=await loadUiProviders(PROVIDERS), protectedHost=await host(entries,{invocationKey:'test-only-ui-provider-key'});
+test('public invocation accepts the governed carrier body shape without credentials', async()=>{
+  const entries=await loadUiProviders(PROVIDERS), publicHost=await host(entries);
   try {
-    const [id,entry]=[...entries][0],url=`${protectedHost.base}/ui-providers/${id}/invoke`,input=requestsOf(entry)[0];
-    for(const key of [null,'wrong']) {
-      const response=await post(url,input,{'content-type':'application/json',...(key?{'x-sfx-provider-key':key}:{})});
-      assert.equal(response.status,401);assert.equal((await response.json()).error,'UI_PROVIDER_CREDENTIAL_REQUIRED');
-    }
-    const response=await fetch(url,{method:'POST',headers:{'x-sfx-provider-key':'test-only-ui-provider-key'},body:Buffer.from(JSON.stringify(input))});
+    const [id,entry]=[...entries][0],url=`${publicHost.base}/ui-providers/${id}/invoke`,input=requestsOf(entry)[0];
+    const response=await fetch(url,{method:'POST',body:Buffer.from(JSON.stringify(input))});
     assert.equal(response.status,200);assert.equal((await response.json()).disposition,'AUTHORED');
-    const manifest=await fetch(`${protectedHost.base}/ui-providers/${id}/manifest`);assert.equal(manifest.status,200);await manifest.body.cancel();
-  } finally {await protectedHost.close();}
+    const manifest=await fetch(`${publicHost.base}/ui-providers/${id}/manifest`);assert.equal(manifest.status,200);await manifest.body.cancel();
+  } finally {await publicHost.close();}
 });
 // A minimal valid request for each operation, from the package's own contracts:
 // the input contract, plus each declared region for region providers.

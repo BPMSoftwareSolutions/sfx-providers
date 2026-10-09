@@ -10,7 +10,6 @@
 // Any route accepts ?version=<semver>: a consumer pinned to a version that is not
 // the hosted one is refused, never served another version. Refusals are named.
 import { indexOf, readVerifiedAsset } from './registry.mjs';
-import {createHash, timingSafeEqual} from 'node:crypto';
 
 export const UI_PROVIDER_PREFIX = '/ui-providers';
 // Azure can decode %2F before forwarding. Asset identities may contain slashes;
@@ -43,8 +42,7 @@ async function readJson(req, limit) {
   catch { return { bytes, invalid: true }; }
 }
 
-export function createUiProviderRequestHandler(providers, {invocationKey} = {}) {
-  const expectedKey = invocationKey ? createHash('sha256').update(invocationKey).digest() : null;
+export function createUiProviderRequestHandler(providers) {
   return async (req, res, pathname, searchParams = new URLSearchParams()) => {
     if (pathname !== UI_PROVIDER_PREFIX && !pathname.startsWith(`${UI_PROVIDER_PREFIX}/`)) return false;
     if (pathname === UI_PROVIDER_PREFIX) {
@@ -90,12 +88,6 @@ export function createUiProviderRequestHandler(providers, {invocationKey} = {}) 
     }
 
     const operations = manifest.entrypoint.operations, requestedOperation = searchParams.get('operation');
-    if (expectedKey) {
-      const supplied = req.headers['x-sfx-provider-key'];
-      if (typeof supplied !== 'string' || !timingSafeEqual(expectedKey, createHash('sha256').update(supplied).digest())) {
-        req.resume(); refuse(res, 401, 'UI_PROVIDER_CREDENTIAL_REQUIRED', 'An authorized provider credential is required.', identity); return true;
-      }
-    }
     const operationId = requestedOperation ?? (operations.length === 1 ? operations[0] : null);
     if (!operations.includes(operationId)) {
       req.resume();

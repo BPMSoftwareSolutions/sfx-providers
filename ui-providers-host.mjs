@@ -2,8 +2,7 @@
 // Deployable host for the UI runtime providers only: the read-only provider index,
 // manifests, digest-verified assets and invoke (src/ui-providers/http.mjs). It
 // serves none of server.mjs's altitude, audio or presentation providers and
-// makes no model calls. SFX_UI_PROVIDER_API_KEY can protect invoke while
-// manifests and assets remain public. It speaks plain HTTP on PORT
+// makes no model calls. Invocations, manifests and assets are public. It speaks plain HTTP on PORT
 // (default 8080) for a TLS-terminating platform; HOST defaults to 0.0.0.0. A
 // packaged bundle's deployment.json (scripts/package-ui-providers.mjs) is reported
 // on /health; robots.txt disallows indexing.
@@ -21,10 +20,10 @@ function sendJson(res, status, body) {
   res.end(text);
 }
 
-export async function startUiProviderHost({ port = Number.parseInt(process.env.PORT ?? '8080', 10), host = process.env.HOST ?? '0.0.0.0', directory, invocationKey = process.env.SFX_UI_PROVIDER_API_KEY } = {}) {
+export async function startUiProviderHost({ port = Number.parseInt(process.env.PORT ?? '8080', 10), host = process.env.HOST ?? '0.0.0.0', directory } = {}) {
   if (!Number.isInteger(port) || port < 0 || port > 65535) throw new Error(`PORT must be a TCP port; received ${process.env.PORT}`);
   const providers = await loadUiProviders(directory);
-  const handle = createUiProviderRequestHandler(providers, {invocationKey});
+  const handle = createUiProviderRequestHandler(providers);
   const served = [...providers.values()].map(({ manifest }) => `${manifest.identity.providerId}@${manifest.version.version}`);
   const deploymentFile = fileURLToPath(new URL('./deployment.json', import.meta.url));
   const deployment = existsSync(deploymentFile) ? JSON.parse(readFileSync(deploymentFile, 'utf8')) : null;
