@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 64" width="1200" height="64" role="presentation" aria-hidden="true">
+  <rect class="region-frame" x="0.5" y="0.5" width="1199" height="63" rx="4" ry="4"></rect>
+  <line class="region-axis" x1="24" y1="32" x2="1176" y2="32"></line>
+  <circle class="region-node" cx="24" cy="32" r="3"></circle>
+  <circle class="region-node" cx="600" cy="32" r="3"></circle>
+  <circle class="region-node" cx="1176" cy="32" r="3"></circle>
+</svg>
