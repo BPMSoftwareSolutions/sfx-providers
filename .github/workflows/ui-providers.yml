@@ -77,7 +77,8 @@ jobs:
           tenant-id: ${{ vars.AZURE_TENANT_ID }}
           subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
       - name: Deploy
-        run: az webapp deploy -g "$RESOURCE_GROUP" -n "$APP_NAME" --src-path "$RUNNER_TEMP/ui-bundle.zip" --type zip --restart true --only-show-errors -o none
+        # Replace the previous UI bundle, including provider folders removed or renamed.
+        run: az webapp deploy -g "$RESOURCE_GROUP" -n "$APP_NAME" --src-path "$RUNNER_TEMP/ui-bundle.zip" --type zip --clean true --restart true --only-show-errors -o none
       - name: Verify the hosted providers are exactly this bundle
         run: |
           node - "$RUNNER_TEMP/deployment.json" <<'EOF'
