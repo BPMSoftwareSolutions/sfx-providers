@@ -16,6 +16,11 @@ The provider also generates [capability presentations](docs/capability-presentat
 from a selected estate `capabilityId`, combining a semantic circuit view with all
 eleven authoring context layers. Use `node capability-deck.mjs --help`.
 
+The UI runtime providers (Explorer regions, shell footer, token set) are
+[hosted](docs/ui-provider-hosting.md): consumers read their manifests and
+digest-verified assets and invoke them over HTTP (`npm run ui-providers`)
+instead of copying or importing provider code.
+
 The [live circuit data and navigation contract](docs/live-circuit-data-contract.md)
 describes database-driven selection and drill-down without requiring a deck export.
 
@@ -60,7 +65,8 @@ current repository behavior from proposed estate capabilities and operating rule
 README.md
 package.json           scripts only, no dependencies
 setup-cert.ps1         current-user self-signed localhost cert (PFX + CER + PEM + trust)
-server.mjs             one HTTPS process serving 11 altitude providers + audio-to-text
+server.mjs             one HTTPS process serving 11 altitude providers + audio-to-text + hosted UI providers
+ui-providers-host.mjs  deployable HTTP host for the UI providers only
 runner.mjs             starts the server, prints PROVIDERS_READY
 transcribe.mjs         local audio CLI; exports TXT, JSON and SRT artifacts
 requirements-audio.txt Python speech-recognition dependency

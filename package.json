@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "Local HTTPS providers: the authoring-altitude migration bridge and hand-authored audio transcription",
+  "description": "Local HTTPS providers: the authoring-altitude migration bridge, hand-authored audio transcription, and the hosted UI runtime providers",
   "engines": {
     "node": ">=20"
   },
@@ -13,6 +13,7 @@
     "transcribe": "node transcribe.mjs",
     "test": "node --test tests",
     "circuit-deck": "node circuit-deck.mjs",
-    "capability-deck": "node capability-deck.mjs"
+    "capability-deck": "node capability-deck.mjs",
+    "ui-providers": "node ui-providers-host.mjs"
   }
 }

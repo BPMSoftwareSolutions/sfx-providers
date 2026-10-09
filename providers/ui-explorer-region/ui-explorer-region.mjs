@@ -15,7 +15,7 @@ export const descriptor = {
   moduleContractId: 'ui-runtime-provider.v1',
   providerId,
   package: 'providers/ui-explorer-region',
-  version: '0.1.0',
+  version: '0.1.1',
   runtime: 'node',
   type: 'ui-runtime',
   method: 'in-process',

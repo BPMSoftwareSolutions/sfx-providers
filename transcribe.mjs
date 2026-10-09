@@ -4,7 +4,7 @@ import path from 'node:path';
 import { randomUUID } from 'node:crypto';
 import { parseArgs } from 'node:util';
 import { fileURLToPath, pathToFileURL } from 'node:url';
-import { handle, inputShape } from './providers/audio-to-text.mjs';
+import { handle, inputShape } from './providers/audio-to-text/audio-to-text.mjs';
 
 export function toSrt(segments) {
   const timestamp = (seconds) => {

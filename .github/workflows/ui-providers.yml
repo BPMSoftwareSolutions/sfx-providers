@@ -1,0 +1,107 @@
+name: UI providers
+
+# Tests every UI runtime provider package and the hosted provider API, then
+# deploys the UI-only host (ui-providers-host.mjs) to sfx-ui-providers on pushes
+# to main. The bundle carries only the ui-runtime-provider.v1 packages; no
+# altitude, audio, presentation or login provider is deployed.
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'providers/ui-*/**'
+      - 'src/ui-providers/**'
+      - 'ui-providers-host.mjs'
+      - 'scripts/package-ui-providers.mjs'
+      - 'tests/ui-*.test.mjs'
+      - '.github/workflows/ui-providers.yml'
+  pull_request:
+    paths:
+      - 'providers/ui-*/**'
+      - 'src/ui-providers/**'
+      - 'ui-providers-host.mjs'
+      - 'scripts/package-ui-providers.mjs'
+      - 'tests/ui-*.test.mjs'
+      - '.github/workflows/ui-providers.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# One deployment at a time; a newer push waits rather than cancelling one in flight.
+concurrency:
+  group: ui-providers-${{ github.event_name == 'pull_request' && github.ref || 'deploy' }}
+  cancel-in-progress: false
+
+env:
+  APP_NAME: sfx-ui-providers
+  RESOURCE_GROUP: sidefx_group
+  HOST_URL: https://sfx-ui-providers.azurewebsites.net
+
+jobs:
+  test:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '24.20.0'
+      - name: UI provider packages and the hosted provider API
+        run: node --test tests/ui-*.test.mjs
+
+  deploy:
+    needs: test
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '24.20.0'
+      - name: Package the UI-only host bundle
+        run: |
+          node scripts/package-ui-providers.mjs "$RUNNER_TEMP/ui-bundle"
+          (cd "$RUNNER_TEMP/ui-bundle" && zip -qr "$RUNNER_TEMP/ui-bundle.zip" .)
+          cp "$RUNNER_TEMP/ui-bundle/deployment.json" "$RUNNER_TEMP/deployment.json"
+      - uses: azure/login@7184910d9eb2b1c5e48f7073824a90609bb9b6d6
+        with:
+          client-id: ${{ vars.AZURE_CLIENT_ID }}
+          tenant-id: ${{ vars.AZURE_TENANT_ID }}
+          subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+      - name: Deploy
+        run: az webapp deploy -g "$RESOURCE_GROUP" -n "$APP_NAME" --src-path "$RUNNER_TEMP/ui-bundle.zip" --type zip --restart true --only-show-errors -o none
+      - name: Verify the hosted providers are exactly this bundle
+        run: |
+          node - "$RUNNER_TEMP/deployment.json" <<'EOF'
+          const expected = JSON.parse(require('fs').readFileSync(process.argv[2], 'utf8'));
+          const base = process.env.HOST_URL;
+          (async () => {
+            let health;
+            for (let attempt = 0; attempt < 60; attempt++) {
+              try { health = await (await fetch(base + '/health')).json(); } catch {}
+              if (health?.deployment?.builtAt === expected.builtAt) break;
+              await new Promise(resolve => setTimeout(resolve, 5000));
+            }
+            if (health?.deployment?.builtAt !== expected.builtAt) throw new Error('DEPLOYMENT_NOT_SERVING: /health does not report this bundle');
+            if (health.deployment.sourceCommit !== process.env.GITHUB_SHA || health.deployment.dirty) throw new Error('DEPLOYMENT_SOURCE_MISMATCH');
+            const index = await (await fetch(base + '/ui-providers')).json();
+            const served = Object.fromEntries(index.providers.map(p => [p.providerId, p.manifestDigest]));
+            for (const p of expected.providers)
+              if (served[p.providerId] !== p.manifestDigest) throw new Error(`MANIFEST_MISMATCH: ${p.providerId}`);
+            if (Object.keys(served).length !== expected.providers.length) throw new Error('UNEXPECTED_PROVIDER_SET');
+            for (const route of ['/altitude-01/health', '/audio-to-text/health', '/circuit-presentation/health'])
+              if ((await fetch(base + route)).status !== 404) throw new Error('NON_UI_ROUTE_EXPOSED: ' + route);
+            console.log(`Hosted ${expected.providers.map(p => p.providerId + '@' + p.version).join(', ')} from ${expected.sourceCommit}`);
+          })().catch(error => { console.error(error.message); process.exit(1); });
+          EOF
+      - if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: ui-provider-deployment
+          path: ${{ runner.temp }}/deployment.json
+          if-no-files-found: ignore
+          retention-days: 90

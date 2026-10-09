@@ -9,6 +9,8 @@ import { createAudioRequestHandler } from './src/audio-http.mjs';
 
 import * as circuitProvider from './providers/circuit-presentation/circuit-presentation.mjs';
 import { createCircuitRequestHandler } from './src/circuit-presentation/http.mjs';
+import { loadUiProviders } from './src/ui-providers/registry.mjs';
+import { createUiProviderRequestHandler } from './src/ui-providers/http.mjs';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const DEFAULT_PORT = 8790;
@@ -255,8 +257,9 @@ function healthBody(provider, port, modelCallConfigured) {
   };
 }
 
-function createRequestHandler(providers, port) {
+function createRequestHandler(providers, port, uiProviders = new Map()) {
   const handleCircuitRequest = createCircuitRequestHandler();
+  const handleUiProviderRequest = createUiProviderRequestHandler(uiProviders);
   const handleAudioRequest = createAudioRequestHandler();
   const byAltitude = new Map(providers.map((provider) => [provider.altitude, provider]));
   const byTool = new Map();
@@ -270,6 +273,7 @@ function createRequestHandler(providers, port) {
     try {
       if (await handleAudioRequest(req, res, url.pathname)) return;
       if (await handleCircuitRequest(req, res, url.pathname)) return;
+      if (await handleUiProviderRequest(req, res, url.pathname, url.searchParams)) return;
       if (req.method === 'GET' && url.pathname === '/health') {
         sendJson(res, 200, {
           status: 'ok',
@@ -278,6 +282,7 @@ function createRequestHandler(providers, port) {
           providerCount: providers.length + 2,
           altitudeProviderCount: providers.length,
           handAuthoredProviders: [audioProvider.providerId, circuitProvider.providerId],
+          uiProviders: [...uiProviders.values()].map(({ manifest }) => `${manifest.identity.providerId}@${manifest.version.version}`),
           modelCallConfigured: Boolean(apiKey),
           defaultProviderExecution: apiKey ? 'model' : 'stub',
           requestContract: REQUEST_CONTRACT_ID,
@@ -395,9 +400,10 @@ export async function startServer() {
     throw new Error(`missing certificate ${CERT_PFX}; run setup-cert.ps1 first`);
   }
   const providers = await loadProviders();
+  const uiProviders = await loadUiProviders();
   const server = https.createServer(
     { pfx: fs.readFileSync(CERT_PFX), passphrase },
-    createRequestHandler(providers, port),
+    createRequestHandler(providers, port, uiProviders),
   );
   await new Promise((resolve, reject) => {
     server.once('error', reject);

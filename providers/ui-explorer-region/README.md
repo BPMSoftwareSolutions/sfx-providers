@@ -6,7 +6,9 @@ header, left sidebar, middle, right sidebar — realised as providers that link 
 circuit. No region content is hand-authored in `sfx-platform`; the shell keeps only the projector,
 validator, routing and security seams.
 
-Status: implementation only, conformed to its declared authority. The provider is **not declared in
+Status: implementation only, conformed to its declared authority. Version 0.1.1 restores the sidebar
+landmark names the hand-authored Explorer carried ("Capability explorer", "Observe and selection details");
+it is hosted with the other UI providers (`docs/ui-provider-hosting.md`). The provider is **not declared in
 the estate**, its contracts are `PROPOSED`, and every region binding is `UNBOUND`. The declared
 authority for the four regions is
 `sfx-platform/docs/sfx-website-product-evolution/ui-explorer-region-blueprint.md` — region set,

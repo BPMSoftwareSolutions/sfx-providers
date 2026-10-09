@@ -1,4 +1,4 @@
-import * as audio from '../providers/audio-to-text.mjs';
+import * as audio from '../providers/audio-to-text/audio-to-text.mjs';
 
 const INVOKE = '/audio-to-text/audio.transcribe';
 const HEALTH = '/audio-to-text/health';
