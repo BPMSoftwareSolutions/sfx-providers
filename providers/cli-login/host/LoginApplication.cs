@@ -26,7 +26,7 @@ public static class LoginApplication
         if (serviceKey is null || serviceKey.Length != 64) throw new InvalidOperationException("IDENTITY_SERVICE_KEY_REQUIRED");
         var serviceKeyHash = SHA256.HashData(Encoding.UTF8.GetBytes(serviceKey));
         var dal = new GeneratedIdentityDal();
-        var policy = new LoginPolicy(TimeSpan.FromMinutes(2), TimeSpan.FromMinutes(30));
+        var policy = new LoginPolicy(TimeSpan.FromMinutes(2), TimeSpan.FromDays(1));
         var verifier = new Argon2PasswordVerifier();
         var principal = new IdentityPrincipalProvider(dal, policy);
         var credential = new PasswordCredentialProvider(dal, verifier);

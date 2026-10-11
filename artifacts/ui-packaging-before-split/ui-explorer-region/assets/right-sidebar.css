@@ -1,0 +1,44 @@
+.region-right-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  box-sizing: border-box;
+  width: 340px;
+  padding: var(--gutter);
+  border-left: 1px solid var(--line);
+  background: var(--panel);
+  color: var(--muted);
+  overflow-y: auto;
+}
+
+.region-right-sidebar .region-slot {
+  min-height: 24px;
+}
+
+.region-right-sidebar [data-slot="evidence-tabs"] {
+  border-bottom: 1px solid var(--line);
+  color: var(--white);
+}
+
+.region-right-sidebar [data-slot="observe-form"] {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--panel-solid);
+}
+
+.region-right-sidebar [data-slot="declared-authority"] {
+  color: var(--dim);
+}
+
+.region-right-sidebar .region-frame {
+  fill: none;
+  stroke: var(--line);
+}
+
+.region-right-sidebar .region-axis {
+  stroke: var(--blue);
+}
+
+.region-right-sidebar .region-node {
+  fill: var(--amber);
+}

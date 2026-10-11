@@ -1,0 +1,37 @@
+.region-header {
+  display: flex;
+  align-items: center;
+  gap: var(--gutter);
+  box-sizing: border-box;
+  min-height: 56px;
+  padding: 0 var(--gutter);
+  border-bottom: 1px solid var(--line);
+  background: var(--bar);
+  color: var(--white);
+}
+
+.region-header .region-slot {
+  min-height: 24px;
+}
+
+.region-header [data-slot="primary-navigation"] {
+  flex: 1 1 auto;
+}
+
+.region-header [data-slot="environment-label"],
+.region-header [data-slot="identity-session-mount"] {
+  color: var(--muted);
+}
+
+.region-header .region-frame {
+  fill: none;
+  stroke: var(--line);
+}
+
+.region-header .region-axis {
+  stroke: var(--blue);
+}
+
+.region-header .region-node {
+  fill: var(--cyan);
+}

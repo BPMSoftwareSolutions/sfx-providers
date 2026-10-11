@@ -1,0 +1,56 @@
+.region-middle {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  box-sizing: border-box;
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: var(--gutter);
+  background: var(--bg);
+  color: var(--white);
+  overflow: hidden;
+}
+
+.region-middle .region-slot {
+  min-height: 24px;
+}
+
+.region-middle [data-slot="objective-composer"],
+.region-middle [data-slot="run-bar"] {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--panel);
+}
+
+.region-middle [data-slot="circuit-scene"] {
+  flex: 1 1 auto;
+  min-height: 240px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--shade);
+}
+
+.region-middle .region-status-bar {
+  margin-top: auto;
+  padding-top: 8px;
+  border-top: 1px solid var(--line);
+  color: var(--dim);
+}
+
+.region-middle .region-frame {
+  fill: none;
+  stroke: var(--line);
+}
+
+.region-middle .region-grid {
+  fill: none;
+  stroke: var(--line);
+}
+
+.region-middle .region-axis {
+  stroke: var(--blue);
+}
+
+.region-middle .region-node {
+  fill: var(--green);
+}

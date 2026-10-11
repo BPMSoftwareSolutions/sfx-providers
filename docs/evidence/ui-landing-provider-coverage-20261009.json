@@ -1,0 +1,550 @@
+{
+  "checkedAt": "2026-10-09T14:09:23.949Z",
+  "scope": "Provider coverage audit; not a Stage A acceptance receipt",
+  "stageA": "INCOMPLETE",
+  "endpoint": "https://sfx-ui-providers.azurewebsites.net",
+  "deployment": {
+    "contractId": "ui-provider-deployment.v1",
+    "builtAt": "2026-10-09T13:58:50.155Z",
+    "sourceCommit": "56a1c5a576b89e1a0637876cada4c0d9ceb6110b",
+    "dirty": false,
+    "providers": [
+      {
+        "providerId": "sfx-ui-explorer-region",
+        "version": "0.1.1",
+        "manifestDigest": "sha256:f4583e37e3b5f7346a86e1225a120e9f24831efdef559d7a6721137214441ca8"
+      },
+      {
+        "providerId": "sfx-ui-runtime-token-set",
+        "version": "0.1.0",
+        "manifestDigest": "sha256:0f7e483f533c80b04c14f6e85789a4401fc4c1b9ad41981c7119625e8cb47b18"
+      },
+      {
+        "providerId": "sfx-ui-shell-footer",
+        "version": "0.1.0",
+        "manifestDigest": "sha256:7ed41255e6e0fce2e520e3600f7d2eb00d2aa670bbb26f73136e8e26b77fcbbf"
+      }
+    ]
+  },
+  "hostedPackages": [
+    {
+      "providerId": "sfx-ui-explorer-region",
+      "version": "0.1.1",
+      "operations": [
+        "ui.region.load"
+      ],
+      "manifest": "/ui-providers/sfx-ui-explorer-region/manifest",
+      "manifestDigest": "sha256:f4583e37e3b5f7346a86e1225a120e9f24831efdef559d7a6721137214441ca8"
+    },
+    {
+      "providerId": "sfx-ui-runtime-token-set",
+      "version": "0.1.0",
+      "operations": [
+        "ui.tokens.resolve"
+      ],
+      "manifest": "/ui-providers/sfx-ui-runtime-token-set/manifest",
+      "manifestDigest": "sha256:0f7e483f533c80b04c14f6e85789a4401fc4c1b9ad41981c7119625e8cb47b18"
+    },
+    {
+      "providerId": "sfx-ui-shell-footer",
+      "version": "0.1.0",
+      "operations": [
+        "ui.region.load"
+      ],
+      "manifest": "/ui-providers/sfx-ui-shell-footer/manifest",
+      "manifestDigest": "sha256:7ed41255e6e0fce2e520e3600f7d2eb00d2aa670bbb26f73136e8e26b77fcbbf"
+    }
+  ],
+  "tests": {
+    "command": "node --test tests",
+    "passed": 214,
+    "failed": 0,
+    "skipped": 0
+  },
+  "invocations": [
+    {
+      "method": "POST",
+      "url": "https://sfx-ui-providers.azurewebsites.net/ui-providers/sfx-ui-explorer-region/invoke?version=0.1.1",
+      "input": {
+        "contractId": "ui-region-request.v1",
+        "regionId": "header"
+      },
+      "httpStatus": 200,
+      "elapsedMs": 50,
+      "disposition": "AUTHORED",
+      "servedBy": {
+        "providerId": "sfx-ui-explorer-region",
+        "version": "0.1.1",
+        "operationId": "ui.region.load",
+        "manifestDigest": "sha256:f4583e37e3b5f7346a86e1225a120e9f24831efdef559d7a6721137214441ca8"
+      },
+      "candidateDigest": "sha256:86f75b8e83e9b3eac6990d58932002ecf9680db00f07158f1133b213a2b8f190"
+    },
+    {
+      "method": "POST",
+      "url": "https://sfx-ui-providers.azurewebsites.net/ui-providers/sfx-ui-explorer-region/invoke?version=0.1.1",
+      "input": {
+        "contractId": "ui-region-request.v1",
+        "regionId": "left-sidebar"
+      },
+      "httpStatus": 200,
+      "elapsedMs": 50,
+      "disposition": "AUTHORED",
+      "servedBy": {
+        "providerId": "sfx-ui-explorer-region",
+        "version": "0.1.1",
+        "operationId": "ui.region.load",
+        "manifestDigest": "sha256:f4583e37e3b5f7346a86e1225a120e9f24831efdef559d7a6721137214441ca8"
+      },
+      "candidateDigest": "sha256:db8b90097e83fffe97c373cf59169421ed16d0811251f896d92b64405ae69da9"
+    },
+    {
+      "method": "POST",
+      "url": "https://sfx-ui-providers.azurewebsites.net/ui-providers/sfx-ui-explorer-region/invoke?version=0.1.1",
+      "input": {
+        "contractId": "ui-region-request.v1",
+        "regionId": "middle"
+      },
+      "httpStatus": 200,
+      "elapsedMs": 51,
+      "disposition": "AUTHORED",
+      "servedBy": {
+        "providerId": "sfx-ui-explorer-region",
+        "version": "0.1.1",
+        "operationId": "ui.region.load",
+        "manifestDigest": "sha256:f4583e37e3b5f7346a86e1225a120e9f24831efdef559d7a6721137214441ca8"
+      },
+      "candidateDigest": "sha256:d24f9392b7935582ef8f6ad0a9c397848b55b6c97efc3d3685bb91ca839cb8a7"
+    },
+    {
+      "method": "POST",
+      "url": "https://sfx-ui-providers.azurewebsites.net/ui-providers/sfx-ui-explorer-region/invoke?version=0.1.1",
+      "input": {
+        "contractId": "ui-region-request.v1",
+        "regionId": "right-sidebar"
+      },
+      "httpStatus": 200,
+      "elapsedMs": 50,
+      "disposition": "AUTHORED",
+      "servedBy": {
+        "providerId": "sfx-ui-explorer-region",
+        "version": "0.1.1",
+        "operationId": "ui.region.load",
+        "manifestDigest": "sha256:f4583e37e3b5f7346a86e1225a120e9f24831efdef559d7a6721137214441ca8"
+      },
+      "candidateDigest": "sha256:36656528a191f7cbb71467a14d5b01aa3179e757fbd39a199897a9ab13cfdd59"
+    },
+    {
+      "method": "POST",
+      "url": "https://sfx-ui-providers.azurewebsites.net/ui-providers/sfx-ui-runtime-token-set/invoke?version=0.1.0",
+      "input": {
+        "contractId": "ui-token-request.v1"
+      },
+      "httpStatus": 200,
+      "elapsedMs": 50,
+      "disposition": "AUTHORED",
+      "servedBy": {
+        "providerId": "sfx-ui-runtime-token-set",
+        "version": "0.1.0",
+        "operationId": "ui.tokens.resolve",
+        "manifestDigest": "sha256:0f7e483f533c80b04c14f6e85789a4401fc4c1b9ad41981c7119625e8cb47b18"
+      },
+      "candidateDigest": "sha256:dc2567917c30371b098ff5941feec46c27a8da36cd723e6e2293c01ceac693be"
+    },
+    {
+      "method": "POST",
+      "url": "https://sfx-ui-providers.azurewebsites.net/ui-providers/sfx-ui-shell-footer/invoke?version=0.1.0",
+      "input": {
+        "contractId": "ui-region-request.v1",
+        "regionId": "footer"
+      },
+      "httpStatus": 200,
+      "elapsedMs": 52,
+      "disposition": "AUTHORED",
+      "servedBy": {
+        "providerId": "sfx-ui-shell-footer",
+        "version": "0.1.0",
+        "operationId": "ui.region.load",
+        "manifestDigest": "sha256:7ed41255e6e0fce2e520e3600f7d2eb00d2aa670bbb26f73136e8e26b77fcbbf"
+      },
+      "candidateDigest": "sha256:3b0416a274ba1d7238b7825d2701d55230356f5b961a6b006f49ee7101fd60df"
+    }
+  ],
+  "schemaValidation": [
+    {
+      "input": {
+        "contractId": "ui-region-request.v1",
+        "regionId": "header"
+      },
+      "checks": {
+        "packageInput": {
+          "valid": true,
+          "errors": []
+        },
+        "packageOutput": {
+          "valid": true,
+          "errors": []
+        },
+        "installedInput": {
+          "valid": true,
+          "errors": []
+        },
+        "installedOutput": {
+          "valid": true,
+          "errors": []
+        }
+      }
+    },
+    {
+      "input": {
+        "contractId": "ui-region-request.v1",
+        "regionId": "left-sidebar"
+      },
+      "checks": {
+        "packageInput": {
+          "valid": true,
+          "errors": []
+        },
+        "packageOutput": {
+          "valid": true,
+          "errors": []
+        },
+        "installedInput": {
+          "valid": true,
+          "errors": []
+        },
+        "installedOutput": {
+          "valid": true,
+          "errors": []
+        }
+      }
+    },
+    {
+      "input": {
+        "contractId": "ui-region-request.v1",
+        "regionId": "middle"
+      },
+      "checks": {
+        "packageInput": {
+          "valid": true,
+          "errors": []
+        },
+        "packageOutput": {
+          "valid": true,
+          "errors": []
+        },
+        "installedInput": {
+          "valid": true,
+          "errors": []
+        },
+        "installedOutput": {
+          "valid": true,
+          "errors": []
+        }
+      }
+    },
+    {
+      "input": {
+        "contractId": "ui-region-request.v1",
+        "regionId": "right-sidebar"
+      },
+      "checks": {
+        "packageInput": {
+          "valid": true,
+          "errors": []
+        },
+        "packageOutput": {
+          "valid": true,
+          "errors": []
+        },
+        "installedInput": {
+          "valid": true,
+          "errors": []
+        },
+        "installedOutput": {
+          "valid": true,
+          "errors": []
+        }
+      }
+    },
+    {
+      "input": {
+        "contractId": "ui-token-request.v1"
+      },
+      "checks": {
+        "packageInput": {
+          "valid": true,
+          "errors": []
+        },
+        "packageOutput": {
+          "valid": true,
+          "errors": []
+        },
+        "installedInput": {
+          "available": false
+        },
+        "installedOutput": {
+          "available": false
+        }
+      }
+    },
+    {
+      "input": {
+        "contractId": "ui-region-request.v1",
+        "regionId": "footer"
+      },
+      "checks": {
+        "packageInput": {
+          "valid": true,
+          "errors": []
+        },
+        "packageOutput": {
+          "valid": true,
+          "errors": []
+        },
+        "installedInput": {
+          "valid": false,
+          "errors": [
+            "'footer' is not one of ['header', 'left-sidebar', 'middle', 'right-sidebar']"
+          ]
+        },
+        "installedOutput": {
+          "valid": false,
+          "errors": [
+            "'sfx-ui-explorer-region' was expected",
+            "'footer' is not one of ['header', 'left-sidebar', 'middle', 'right-sidebar']",
+            "5 is greater than the maximum of 4"
+          ]
+        }
+      }
+    }
+  ],
+  "installedAuthority": {
+    "snapshotId": "sha256:1a770ac0795d10665a88166f8d8c968dc5b2d030fdfab2b837aa6071d135f9e9",
+    "rootScenarioId": "ui-page-landing",
+    "executionAuthorities": [
+      {
+        "id": "ui-region-header.v1",
+        "owningScenarioId": "ui-region-header",
+        "operations": [
+          {
+            "operationId": "ui-region-header.load",
+            "kind": "invoke-port",
+            "portId": "ui-region-header-port"
+          }
+        ]
+      },
+      {
+        "id": "ui-region-left-sidebar.v1",
+        "owningScenarioId": "ui-region-left-sidebar",
+        "operations": [
+          {
+            "operationId": "ui-region-left-sidebar.load",
+            "kind": "invoke-port",
+            "portId": "ui-region-left-sidebar-port"
+          }
+        ]
+      },
+      {
+        "id": "ui-region-middle.v1",
+        "owningScenarioId": "ui-region-middle",
+        "operations": [
+          {
+            "operationId": "ui-region-middle.load",
+            "kind": "invoke-port",
+            "portId": "ui-region-middle-port"
+          }
+        ]
+      },
+      {
+        "id": "ui-region-right-sidebar.v1",
+        "owningScenarioId": "ui-region-right-sidebar",
+        "operations": [
+          {
+            "operationId": "ui-region-right-sidebar.load",
+            "kind": "invoke-port",
+            "portId": "ui-region-right-sidebar-port"
+          }
+        ]
+      },
+      {
+        "id": "ui-page-landing.v1",
+        "owningScenarioId": "ui-page-landing",
+        "operations": [
+          {
+            "operationId": "ui-page-landing.session-read",
+            "kind": "invoke-scenario",
+            "scenarioId": "authenticate-ide-user"
+          },
+          {
+            "operationId": "ui-page-landing.header-region",
+            "kind": "invoke-scenario",
+            "scenarioId": "ui-region-header"
+          },
+          {
+            "operationId": "ui-page-landing.left-sidebar-region",
+            "kind": "invoke-scenario",
+            "scenarioId": "ui-region-left-sidebar"
+          },
+          {
+            "operationId": "ui-page-landing.middle-region",
+            "kind": "invoke-scenario",
+            "scenarioId": "ui-region-middle"
+          },
+          {
+            "operationId": "ui-page-landing.right-sidebar-region",
+            "kind": "invoke-scenario",
+            "scenarioId": "ui-region-right-sidebar"
+          },
+          {
+            "operationId": "ui-page-landing.provider-drilldown",
+            "kind": "invoke-scenario",
+            "scenarioId": "ui-page-provider-drilldown"
+          },
+          {
+            "operationId": "ui-page-landing.read",
+            "kind": "invoke-port",
+            "portId": "ui-page-landing-port"
+          }
+        ]
+      },
+      {
+        "id": "ui-page-provider-drilldown.v1",
+        "owningScenarioId": "ui-page-provider-drilldown",
+        "operations": [
+          {
+            "operationId": "ui-page-provider-drilldown.middle-region",
+            "kind": "invoke-scenario",
+            "scenarioId": "ui-region-middle"
+          },
+          {
+            "operationId": "ui-page-provider-drilldown.right-sidebar-region",
+            "kind": "invoke-scenario",
+            "scenarioId": "ui-region-right-sidebar"
+          },
+          {
+            "operationId": "ui-page-provider-drilldown.profile-read",
+            "kind": "invoke-port",
+            "portId": "ui-page-provider-drilldown-port"
+          }
+        ]
+      }
+    ],
+    "uiBindings": [
+      {
+        "portId": "ui-page-landing-port",
+        "platformCapabilityId": "sda-embodiment-plan-port.v1",
+        "providerId": "sda-declared-read-graph-provider.v1",
+        "bindingState": null,
+        "executionLocation": null,
+        "statement": "EXEC analysis.read_ui_page_document @input=@input,@estate_model_pk=@estate_model_pk;"
+      },
+      {
+        "portId": "ui-region-header-port",
+        "platformCapabilityId": "sda-ui-explorer-region-header-port.v1",
+        "providerId": "sfx-ui-explorer-region-header",
+        "bindingState": "UNBOUND",
+        "executionLocation": "browser-runtime",
+        "statement": null
+      },
+      {
+        "portId": "ui-region-left-sidebar-port",
+        "platformCapabilityId": "sda-ui-explorer-region-left-sidebar-port.v1",
+        "providerId": "sfx-ui-explorer-region-left-sidebar",
+        "bindingState": "UNBOUND",
+        "executionLocation": "browser-runtime",
+        "statement": null
+      },
+      {
+        "portId": "ui-region-middle-port",
+        "platformCapabilityId": "sda-ui-explorer-region-middle-port.v1",
+        "providerId": "sfx-ui-explorer-region-middle",
+        "bindingState": "UNBOUND",
+        "executionLocation": "browser-runtime",
+        "statement": null
+      },
+      {
+        "portId": "ui-region-right-sidebar-port",
+        "platformCapabilityId": "sda-ui-explorer-region-right-sidebar-port.v1",
+        "providerId": "sfx-ui-explorer-region-right-sidebar",
+        "bindingState": "UNBOUND",
+        "executionLocation": "browser-runtime",
+        "statement": null
+      },
+      {
+        "portId": "ui-page-provider-drilldown-port",
+        "platformCapabilityId": "sda-embodiment-plan-port.v1",
+        "providerId": "sda-declared-read-graph-provider.v1",
+        "bindingState": null,
+        "executionLocation": null,
+        "statement": "EXEC analysis.read_ui_page_document @input=@input,@estate_model_pk=@estate_model_pk;"
+      }
+    ]
+  },
+  "findings": [
+    {
+      "code": "REGION_EXECUTION_BINDING_MISSING",
+      "observedError": "SEMANTIC_EXECUTION_GRAPH_OVERLAY_BINDING_MISSING",
+      "platformCapabilityId": "sda-ui-explorer-region-header-port.v1"
+    },
+    {
+      "code": "FOOTER_CONTRACT_SCHEMA_COLLISION",
+      "contractIds": [
+        "ui-region-request.v1",
+        "ui-region-content.v1"
+      ]
+    },
+    {
+      "code": "DRILLDOWN_UI_NOT_INDEPENDENTLY_PACKAGED"
+    },
+    {
+      "code": "INTERACTIVE_SLOT_IMPLEMENTATION_REMAINS_IN_PLATFORM"
+    }
+  ],
+  "evidence": [
+    {
+      "path": "C:/lab/repos/sfx-embody/evidence/ui-landing-hosted-check-20261009/ui-page-landing-meaning.json",
+      "sha256": "86d9f15d60a2c16b76f0bdb0e7f2d1ab0fcfc7559426ed8b82ada6da20c9ad85"
+    },
+    {
+      "path": "C:/lab/repos/sfx-embody/evidence/ui-landing-hosted-check-20261009/hosted-provider-receipt.json",
+      "sha256": "ef7ae1cce7b39b45c308c47538757e21f43123c93c6cc4f706623c02793718f2"
+    },
+    {
+      "path": "C:/lab/repos/sfx-embody/evidence/ui-landing-hosted-check-20261009/schema-validation.json",
+      "sha256": "72b4454cb4933dbaa370af1735214233b3173a9e3d177128bf3ebaee885db9a4"
+    },
+    {
+      "path": "C:/lab/repos/sfx-embody/evidence/ui-landing-hosted-check-20261009/landing-invoke-input.json",
+      "sha256": "252f687b704d64473b6f7abdd4d170509073f1dc263f8bf7b5c2498c2d1c1cbf"
+    },
+    {
+      "path": "C:/lab/repos/sfx-embody/evidence/ui-landing-hosted-check-20261009/header-invoke-input.json",
+      "sha256": "d800733224a7ee3b4fbe553ef534b315040ec589d4a0b3a40abae5ce4de90134"
+    },
+    {
+      "path": "C:/lab/repos/sfx-embody/evidence/ui-landing-hosted-check-20261009/drilldown-read-input.json",
+      "sha256": "4294ce719dc962575ea648c24f895bd5a2b4dcaf964fc7775b3406abb57f39b0"
+    },
+    {
+      "path": "C:/lab/repos/sfx-embody/evidence/ui-landing-hosted-check-20261009/landing-observe.stderr.txt",
+      "sha256": "184012665c6f0586cb3d0b4913b0d0fd54098effc7fba1d90e09a70f384c0c07"
+    },
+    {
+      "path": "C:/lab/repos/sfx-embody/evidence/ui-landing-hosted-check-20261009/header-observe.stderr.txt",
+      "sha256": "184012665c6f0586cb3d0b4913b0d0fd54098effc7fba1d90e09a70f384c0c07"
+    },
+    {
+      "path": "C:/lab/repos/sfx-embody/evidence/ui-landing-hosted-check-20261009/drilldown-read.json",
+      "sha256": "87857624d893eb4fa1f0d1b6bef45c754ba4fa99ee1119a301aa4010030723a1"
+    },
+    {
+      "path": "C:/lab/repos/sfx-embody/evidence/ui-landing-hosted-check-20261009/observer-capture.sse",
+      "sha256": "067fede8a9b4644206d0d59b2d3222c6d535e3bbe3378648cb479bbc99908492"
+    },
+    {
+      "path": "C:/lab/repos/sfx-embody/evidence/ui-landing-hosted-check-20261009/landing-no-execution.jpg",
+      "sha256": "8a4528ef1a7f8de9b2b02b4964af114a74e62bd54823a24f122e442b1fb4e5b8"
+    }
+  ]
+}
