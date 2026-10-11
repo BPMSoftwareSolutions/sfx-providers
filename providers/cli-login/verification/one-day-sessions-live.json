@@ -1,0 +1,18 @@
+{
+  "checkedAt": "2026-10-11T21:38:42.6905774+00:00",
+  "database": "sfx-identity",
+  "passed": [
+    "real Argon2 login through generated DAL; issue one-day session, validate and revoke",
+    "wrong password and unknown principal rejected with no session",
+    "disabled principal rejected despite correct password",
+    "database verification is consumed once across concurrent callers",
+    "database session creation is consumed once across concurrent callers",
+    "credential rotation between verification and establishment refuses session",
+    "account throttle atomically admits only five concurrent attempts",
+    "expired attempt cannot verify or establish",
+    "absolute expiry, idle expiry and security version invalidate sessions",
+    "runtime role executes validation but cannot read credentials or enroll"
+  ],
+  "remainingTestPrincipalsAndAttempts": 0,
+  "scope": "Real database \u002B generated DAL \u002B providers; no HTTP, CLI command, estate or staging application deployment tested."
+}

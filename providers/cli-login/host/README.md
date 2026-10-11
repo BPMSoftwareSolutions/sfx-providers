@@ -74,6 +74,15 @@ deployment needs its own operator-managed matching host/vault configuration.
 
 ## Build and integration verification
 
+The production host requests a one-day session. The database independently caps
+absolute and idle lifetime: deploy `sfx-dal` migration `004-one-day-sessions`
+before promoting this host policy. Updating this repository alone cannot extend
+the database cap. Previously issued sessions retain their absolute expiry.
+
+Both the host integration suite and the live provider/DAL suite assert the
+one-day expiry. The live suite also checks rejection, throttling, concurrency,
+credential rotation, expiry, revocation and runtime database permissions.
+
 From the `sfx-providers` root:
 
 ```powershell

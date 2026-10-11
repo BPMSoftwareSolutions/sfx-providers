@@ -9,7 +9,7 @@ var dal = new GeneratedIdentityDal(); // validates the database name before any 
 using var hasher = new Argon2PasswordVerifier();
 string password = Convert.ToHexString(RandomNumberGenerator.GetBytes(24));
 var encoded = await hasher.CreateForEnrollmentAsync(Encoding.UTF8.GetBytes(password));
-var policy = new LoginPolicy(TimeSpan.FromMinutes(2), TimeSpan.FromMinutes(30));
+var policy = new LoginPolicy(TimeSpan.FromMinutes(2), TimeSpan.FromDays(1));
 string realm = "provider-verification-" + Guid.NewGuid().ToString("N");
 var passed = new List<string>();
 async Task Check(string name, Func<Task> test)
@@ -46,14 +46,17 @@ void Need(bool condition) { if (!condition) throw new Exception("Assertion faile
 int remaining = -1;
 try
 {
-    await Check("real Argon2 login through generated DAL; validate and revoke real session", async () =>
+    await Check("real Argon2 login through generated DAL; issue one-day session, validate and revoke", async () =>
     {
         var user = await User();
         using var attempt = await Resolve(user.Identifier);
         var verified = await Verify(attempt);
         Need(verified.Receipt.Disposition == LoginDisposition.CredentialVerified);
         var sessions = new IdeSessionProvider(dal, policy);
+        var started = DateTimeOffset.UtcNow;
         using var session = await sessions.EstablishAsync(verified);
+        Need(session.Metadata.ExpiresAt >= started.AddDays(1).AddSeconds(-1) &&
+            session.Metadata.ExpiresAt <= DateTimeOffset.UtcNow.AddDays(1).AddSeconds(1));
         string token = await Token(session);
         Need((await sessions.ValidateAsync(token))?.PrincipalId == user.Id);
         await sessions.RevokeAsync(token); await sessions.RevokeAsync(token);

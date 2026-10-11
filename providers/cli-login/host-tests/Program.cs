@@ -65,11 +65,16 @@ try
         }
     using (var forged = await client.PostAsJsonAsync("/auth/v1/provider/establish",new {correlationId=Guid.NewGuid().ToString("N")})) Need((int)forged.StatusCode==401,"Unowned provider context rejected");
     using (var invalid = await client.PostAsJsonAsync("/auth/v1/login",new {identifier,password,extra=true})) Need((int)invalid.StatusCode==400,"Unexpected private input refused");
+    var loginStarted = DateTimeOffset.UtcNow;
     using var response = await client.PostAsJsonAsync("/auth/v1/login",new {identifier,password});
+    var loginCompleted = DateTimeOffset.UtcNow;
     var text = await response.Content.ReadAsStringAsync();
     if (!response.IsSuccessStatusCode) throw new Exception("Valid login HTTP "+(int)response.StatusCode+"; stages="+string.Join(',',stages));
     using var session = JsonDocument.Parse(text);
     string token = session.RootElement.GetProperty("token").GetString()!;
+    var expiresAt = session.RootElement.GetProperty("expiresAt").GetDateTimeOffset();
+    Need(expiresAt >= loginStarted.AddDays(1).AddSeconds(-1) && expiresAt <= loginCompleted.AddDays(1).AddSeconds(1),
+        "Production host and SQL issue a one-day session");
     Need(stages[^1]==3,"Successful login calls all three providers");
     client.DefaultRequestHeaders.Authorization=new("Bearer",token);
     using (var status=await client.GetAsync("/auth/v1/session")) Need(status.IsSuccessStatusCode,"Issued session validates against database (HTTP "+(int)status.StatusCode+")");
