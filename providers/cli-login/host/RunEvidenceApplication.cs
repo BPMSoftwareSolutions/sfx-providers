@@ -108,7 +108,7 @@ public static class RunEvidenceApplication
             // from an exit code or translate an outcome into ledger admission.
             if (Text(run, "runId", 128) != runId) return Results.BadRequest();
             var result = await new EvidenceCompleteRunRepository().ExecuteAsync(runId, Writer(http), run.GetRawText(),
-                Optional(root, "graph")!, Optional(root, "output")!, Number(root, "latestCursor"));
+                Optional(root, "graph")!, Optional(root, "output")!, Number(root, "latestCursor"), Optional(root, "graphs"));
             return Results.Json(new { persistence = "stored", traceComplete = result.Rows.Single().TraceComplete, trust = "NOT_EVALUATED" });
         });
         app.MapGet("/evidence/v1/runs", async (HttpContext http) =>
@@ -125,7 +125,7 @@ public static class RunEvidenceApplication
             if (row is null) return Results.NotFound();
             return Results.Json(new { runId = row.RunId, capabilityId = row.CapabilityId, namespaceId = row.NamespaceId,
                 captureStatus = row.CaptureStatus, traceComplete = row.TraceComplete, latestCursor = row.LatestCursor,
-                run = Parse(row.RunJson), graph = Parse(row.GraphJson), output = Parse(row.OutputJson), trust = "NOT_EVALUATED",
+                run = Parse(row.RunJson), graph = Parse(row.GraphJson), graphs = Parse(row.GraphsJson), output = Parse(row.OutputJson), trust = "NOT_EVALUATED",
                 limitations = new[] { "Attributable executor identity and a persisted ledger evaluation are not yet recorded for this run." } });
         });
         app.MapGet("/evidence/v1/runs/{runId}/chunks", async (string runId, HttpContext http) =>

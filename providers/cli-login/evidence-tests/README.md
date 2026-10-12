@@ -44,3 +44,10 @@ it additionally requires `SDA_API_ENDPOINT`, `SDA_API_TOKEN` and a caller-select
 `SFX_EVIDENCE_EXECUTION_REQUEST` JSON file. That check compares every retained
 event, graph/output and circuit timeline, then removes the execution connection
 and exercises authenticated archive routes. It does not deploy these services.
+
+The completion transport writes and reads the top-level `graphs` collection
+verbatim through the regenerated identity DAL from migration
+`005-per-root-run-graphs`. It retains the existing parent `graph`. The live
+harness checks two roots sharing a graph ID, exact projections after host
+restart, and a conflicting graph collection on repeated completion. See
+[the acceptance receipt](per-root-graphs-acceptance.json).

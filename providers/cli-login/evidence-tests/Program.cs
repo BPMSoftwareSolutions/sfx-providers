@@ -89,15 +89,22 @@ try
     Need((int)(await Send($"/runs/{runId}/chunks", chunk with { sha256 = new string('0', 64) })).StatusCode == 400, "digest mismatch refused");
     Need((int)(await Send($"/runs/{runId}/chunks", new { chunk.content, chunk.sha256, firstCursor = "1" })).StatusCode == 400, "malformed chunk cursor refused");
     Need((int)(await Send($"/runs/{runId}/complete", new { })).StatusCode == 400, "missing completion refused");
-    var completion = new { run = new { runId, state = "completed", partial = false }, graph = new { fixture = true }, output = new { fixture = true }, latestCursor = 1 };
+    var graphs = new[] { "root-a", "root-b" }.Select(root => new {
+        rootExecutionId = root, graphId = "graph:shared", canonicalGraphDigest = root + "-digest",
+        projection = new { rootExecutionId = root, graphId = "graph:shared", cells = new[] { new { cellId = root + "-cell" } } }
+    }).ToArray();
+    var completion = new { run = new { runId, state = "completed", partial = false }, graph = new { fixture = true }, graphs, output = new { fixture = true }, latestCursor = 1 };
     Need((await Send($"/runs/{runId}/complete", completion)).IsSuccessStatusCode, "complete verifies contiguous cursor coverage");
     Need((await Send($"/runs/{runId}/complete", completion)).IsSuccessStatusCode, "completion retry is idempotent");
     Need((int)(await Send($"/runs/{runId}/complete", completion with { latestCursor = 2 })).StatusCode == 409, "contradictory completion refused");
+    Need((int)(await Send($"/runs/{runId}/complete", completion with { graphs = graphs.Take(1).ToArray() })).StatusCode == 409, "graph collection participates in immutable completion");
     foreach (var path in new[] { $"/runs/{runId}", $"/runs/{runId}/chunks" })
     { Need((int)(await Send(path, token: other)).StatusCode == 404, "cross-principal read concealed " + path.Split('/').Last()); }
     await app!.StopAsync(); await app.DisposeAsync(); app = null; origin = await Start();
     using var read = JsonDocument.Parse(await (await Send($"/runs/{runId}", token: user)).Content.ReadAsStringAsync());
     Need(read.RootElement.GetProperty("traceComplete").GetBoolean(), "complete capture survives identity host restart");
+    Need(read.RootElement.GetProperty("graphs").GetRawText() == JsonSerializer.Serialize(graphs), "both roots sharing a graph ID retain their exact projections after restart");
+    Need(read.RootElement.GetProperty("graph").GetRawText() == JsonSerializer.Serialize(completion.graph), "parent graph remains available alongside per-root graphs");
     Need(read.RootElement.GetProperty("trust").GetString() == "NOT_EVALUATED", "stored fixture never becomes a trust claim");
     using var chunks = JsonDocument.Parse(await (await Send($"/runs/{runId}/chunks", token: user)).Content.ReadAsStringAsync());
     Need(chunks.RootElement.GetProperty("chunks").GetArrayLength() == 1, "immutable chunk survives restart without duplicates");
