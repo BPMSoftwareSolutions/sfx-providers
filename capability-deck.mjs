@@ -4,21 +4,37 @@ import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { handle,inputShape } from './src/capability-presentation/provider.mjs';
 import { snapshotFromDeclaration } from './src/capability-presentation/declaration-snapshot.mjs';
+import { attachDslSource } from './src/capability-presentation/snapshot.mjs';
+import { loadEstateReader } from './src/capability-presentation/estate.mjs';
 import {renderBlueprintSvg} from './src/capability-presentation/blueprint-sheet.mjs';
 
 export async function run(args=process.argv.slice(2)) {
   const options={};
   for(let i=0;i<args.length;i++){
     const arg=args[i];
-    if(arg==='--help'){console.log('node capability-deck.mjs (--capability-id ID | --snapshot FILE | --declaration FILE) --output NEW_DIRECTORY [--view capability|scenario|event|mechanic|provider|physical] [--scenario-id ID] [--operation-id ID] [--transformation-id ID] [--context-altitude all|1..11] [--namespace-id ID] [--pptx]');return;}
+    if(arg==='--help'){console.log('node capability-deck.mjs (--capability-id ID | --snapshot FILE | --declaration FILE) --output NEW_DIRECTORY [--view capability|scenario|event|mechanic|provider|physical] [--scenario-id ID] [--operation-id ID] [--transformation-id ID] [--context-altitude all|1..11] [--namespace-id ID] [--dsl-source FILE --dsl-source-run RUNID] [--pptx]');return;}
     if(arg==='--pptx'){options.pptx=true;continue;}
-    if(!['--capability-id','--namespace-id','--snapshot','--declaration','--output','--view','--scenario-id','--operation-id','--transformation-id','--context-altitude','--narrator'].includes(arg)||!args[i+1]||args[i+1].startsWith('--'))throw new Error(`Unknown or incomplete option: ${arg}`);
+    if(!['--capability-id','--namespace-id','--snapshot','--declaration','--output','--view','--scenario-id','--operation-id','--transformation-id','--context-altitude','--narrator','--dsl-source','--dsl-source-run'].includes(arg)||!args[i+1]||args[i+1].startsWith('--'))throw new Error(`Unknown or incomplete option: ${arg}`);
     if(arg in options)throw new Error('Repeated option: '+arg);options[arg]=args[++i];
   }
   if(!options['--output']||(!options['--capability-id']&&!options['--snapshot']&&!options['--declaration'])||(options['--snapshot']&&options['--declaration']))throw new Error('Provide --capability-id, --snapshot or --declaration, and --output.');
   let readEstate,snapshot;
   if(options['--snapshot']){const stat=await fs.stat(options['--snapshot']);if(!stat.isFile()||stat.size>8*1024*1024)throw new Error('Snapshot must be a regular file of at most 8 MiB.');snapshot=JSON.parse(await fs.readFile(options['--snapshot'],'utf8'));readEstate=async()=>snapshot;}
   if(options['--declaration']){const stat=await fs.stat(options['--declaration']);if(!stat.isFile()||stat.size>32*1024*1024)throw new Error('Declaration must be a regular file of at most 32 MiB.');snapshot=snapshotFromDeclaration(JSON.parse(await fs.readFile(options['--declaration'],'utf8')));readEstate=async()=>snapshot;}
+  let dslSourceEdit;
+  if(options['--dsl-source']){
+    const stat=await fs.stat(options['--dsl-source']);if(!stat.isFile()||stat.size>4*1024*1024)throw new Error('DSL source read must be a regular file of at most 4 MiB.');
+    const raw=JSON.parse((await fs.readFile(options['--dsl-source'],'utf8')).replace(/^\uFEFF/,''));
+    const find=value=>{if(!value||typeof value!=='object'||Array.isArray(value))return null;if(Array.isArray(value.sources))return value;
+      for(const key of ['value','result','invocationResult','run','body']){const found=find(value[key]);if(found)return found;}return null;};
+    const read=find(raw);if(!read||!read.sources.length)throw new Error('The DSL source read file carries no sources.');
+    const entry=read.sources.find(s=>s.sourceKind==='original')??read.sources[0];
+    dslSourceEdit={capabilityId:entry.capabilityId,sourceKind:entry.sourceKind,contentDigest:entry.contentDigest,byteLength:entry.byteLength,
+      authoringRef:entry.authoringRef??null,recordedDate:entry.recordedDate??null,source:entry.source,
+      readRunId:options['--dsl-source-run']??null,readRef:'api-run:'+(options['--dsl-source-run']??'unretained')};
+    const baseReadEstate=readEstate??await loadEstateReader();
+    readEstate=async input=>attachDslSource(await baseReadEstate(input),dslSourceEdit);
+  }
   const input={contractId:inputShape.contractId,capabilityId:options['--capability-id']??snapshot.identity.capabilityId,view:options['--view']??'capability',contextAltitude:options['--context-altitude']&&options['--context-altitude']!=='all'?Number(options['--context-altitude']):'all'};
   for(const [flag,key]of [['--scenario-id','scenarioId'],['--operation-id','operationId'],['--transformation-id','transformationId']])if(options[flag])input[key]=options[flag];
   if(options['--namespace-id'])input.namespaceId=options['--namespace-id'];
@@ -51,7 +67,7 @@ export async function run(args=process.argv.slice(2)) {
     pptx=path.join(output,'presentation.pptx');
     const {exportPptx}=await import('./src/circuit-presentation/pptx.mjs');await exportPptx({slides:c.volumes.flatMap(v=>v.presentation.slides)},pptx);
   }
-  console.log(JSON.stringify({output,capabilityId:c.capabilityId,view:c.view,contextAltitude:c.contextAltitude,slides:c.storyboard.slides.length,volumes:c.volumes.length,contentDigest:c.contentDigest,...(pptx?{pptx}:{})}));
+  console.log(JSON.stringify({output,capabilityId:c.capabilityId,view:c.view,contextAltitude:c.contextAltitude,slides:c.storyboard.slides.length,volumes:c.volumes.length,contentDigest:c.contentDigest,...(dslSourceEdit?{dslSource:{capabilityId:dslSourceEdit.capabilityId,contentDigest:dslSourceEdit.contentDigest,byteLength:dslSourceEdit.byteLength,readRunId:dslSourceEdit.readRunId}}:{}),...(pptx?{pptx}:{})}));
   return result;
 }
 if(process.argv[1]&&pathToFileURL(path.resolve(process.argv[1])).href===import.meta.url)run().catch(error=>{console.error(error.message);process.exitCode=1;});

@@ -176,3 +176,13 @@ export function validateSnapshot(snapshot) {
   if (Buffer.byteLength(JSON.stringify(snapshot)) > 8 * 1024 * 1024) fail('Compact snapshot exceeds 8 MiB.');
   return snapshot;
 }
+
+// Attach the declared-read authoring source (read-capability-dsl-source) to an
+// already-normalized snapshot and re-seal the digest, so a snapshot that
+// carries the source travels with its read provenance (read capability, run
+// reference, content digest, authoring reference) wherever the snapshot goes.
+export function attachDslSource(snapshot, dslSource) {
+  const { snapshotDigest, ...body } = snapshot;
+  body.dslSource = dslSource;
+  return validateSnapshot({ ...body, snapshotDigest: digest(body) });
+}

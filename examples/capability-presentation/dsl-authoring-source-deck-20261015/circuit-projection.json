@@ -1,0 +1,60 @@
+{
+  "contractId": "capability-blueprint-projection.v1",
+  "altitude": "capability",
+  "capabilityId": "read-capability-dsl-source",
+  "scenarioId": "read-capability-dsl-source",
+  "snapshotDigest": "734ca73fdf67e4726120180a2426181532ab2c9c02d15ae6c44a0d02aeaa1103",
+  "nodes": [
+    {
+      "id": "scenario:read-capability-dsl-source",
+      "kind": "scenario",
+      "label": "Read capability dsl source",
+      "ref": "graph:/scenarios/0",
+      "scenarioId": "read-capability-dsl-source"
+    },
+    {
+      "id": "provider:sda-declared-read-graph-provider.v1",
+      "kind": "provider",
+      "label": "Declared Read Graph Provider (query runner)",
+      "ref": "graph:/interfaceAuthority/portBindings/1"
+    }
+  ],
+  "edges": [
+    {
+      "id": "scenario-provider:read-capability-dsl-source:provider:sda-declared-read-graph-provider.v1",
+      "from": "scenario:read-capability-dsl-source",
+      "to": "provider:sda-declared-read-graph-provider.v1",
+      "kind": "scenario-provider",
+      "collapsed": true,
+      "label": "declared provider involvement",
+      "basis": "owning scenario operations and explicit port bindings",
+      "ref": "graph:/scenarios/0",
+      "sourceEdgeIds": [
+        "B3",
+        "B6",
+        "B7",
+        "B8"
+      ],
+      "sourceRefs": [
+        "graph:/executionAuthorities/0/operations/0",
+        "graph:/interfaceAuthority/portBindings/1"
+      ],
+      "via": [
+        {
+          "operationId": "operation:read-capability-dsl-source.v1:1",
+          "portId": "capability-dsl-source-read",
+          "bindingId": "binding:capability-dsl-source-read",
+          "sourceEdgeIds": [
+            "B3",
+            "B6",
+            "B7",
+            "B8"
+          ],
+          "basis": "declared provider"
+        }
+      ]
+    }
+  ],
+  "scope": "Root-connected scenario topology and declared provider involvement; collapsed links retain exact operation and binding evidence, not observed execution.",
+  "topologyDigest": "2bbf2c34dc23f540c80dc994ec69dfddb8430842d2dff3af48b9a6d5af0a825c"
+}

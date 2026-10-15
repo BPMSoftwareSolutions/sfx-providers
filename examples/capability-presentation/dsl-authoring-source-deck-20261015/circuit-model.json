@@ -1,0 +1,23 @@
+{
+  "view": "capability",
+  "nodes": [
+    {
+      "id": "scenario:read-capability-dsl-source",
+      "label": "Read capability dsl source",
+      "kind": "scenario",
+      "ref": "graph:/scenarios/0",
+      "missing": false,
+      "reachable": true
+    }
+  ],
+  "edges": [],
+  "findings": [
+    {
+      "code": "FEATURE_PROSE_DIFFERS_FROM_SOURCE",
+      "label": "Parsed and retained Gherkin",
+      "message": "Parsed scenario prose for read-capability-dsl-source differs from its retained source bytes. Both are preserved.",
+      "sourceRef": "model:feature_version/183046"
+    }
+  ],
+  "digest": "a075145cc1c250e654170f81b3949de94d84b42a9bd222c1dc88e618d5f1e165"
+}

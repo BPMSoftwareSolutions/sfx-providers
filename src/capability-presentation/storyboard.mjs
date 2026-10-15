@@ -158,6 +158,22 @@ export function buildStoryboard(snapshot, model, { contextAltitude='all',view=mo
   fan(p,'Selected estate snapshot',[{label:`Snapshot ${s.snapshotDigest.slice(0,16)}`,color:C.amber},{label:`Graph ${s.provenance.graphDigest.slice(0,16)}`,color:C.blue},{label:`Circuit ${model.digest.slice(0,16)}`,color:C.green}], 'snapshot → semantic projection → editable presentation');
   p.interpretation='Hashes identify retained evidence; they do not certify the capability’s behavior or the truth of an inferred explanation.';
 
+  // The authoring source section: present only when the snapshot carries the
+  // declared-read source. Every line is the retained text verbatim; the header
+  // and footer carry the read provenance (capability, run reference, digest).
+  if(s.dslSource){
+    const src=s.dslSource, lines=String(src.source??'').split(/\r?\n/), maxLines=28;
+    p=page('Authoring source — '+short(src.capabilityId,60),
+      `DSL SOURCE RETAINED AT AUTHORING  ·  ${src.contentDigest}  ·  ${src.byteLength} bytes`, [src.readRef],
+      `read-capability-dsl-source result:\n${JSON.stringify({capabilityId:src.capabilityId,sourceKind:src.sourceKind,contentDigest:src.contentDigest,byteLength:src.byteLength,authoringRef:src.authoringRef,recordedDate:src.recordedDate,readRunId:src.readRunId},null,2)}\n\nSource (verbatim):\n${String(src.source??'')}`);
+    p.text(`DECLARED SOURCE  ·  VERBATIM, CONTENT-ADDRESSED  ·  READ ${src.readRunId??'unretained'}  ·  REF ${src.authoringRef??'none'}`,36,88,890,18,11,C.amber,true);
+    for(const [i,line]of lines.slice(0,maxLines).entries())
+      p.text(line.length>150?line.slice(0,149)+'…':line,36,112+i*13,890,14,9.5,C.white);
+    if(lines.length>maxLines)p.text(`+ ${lines.length-maxLines} further lines — full source in notes and in the retained declared read`,36,112+maxLines*13+6,890,14,10,C.muted);
+    p.interpretation='The source is returned byte-exact by read-capability-dsl-source (the content digest verified against the retained bytes); the authoring receipt reference is the capability-from-dsl change receipt, whose source_digest names this text.';
+
+  }
+
   appendInspectionSlides({model:blueprint,page});
   const scenarioStart=slides.length;
   appendScenarioSheet({snapshot:s,model:blueprint,page,slides,scenarioId:scenarioId??blueprint.rootScenarioId});

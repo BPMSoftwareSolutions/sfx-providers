@@ -1,0 +1,6 @@
+{
+  "contractId": "capability-presentation-request.v1",
+  "capabilityId": "read-capability-dsl-source",
+  "view": "capability",
+  "contextAltitude": "all"
+}
