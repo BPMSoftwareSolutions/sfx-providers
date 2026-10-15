@@ -1,0 +1,60 @@
+{
+  "contractId": "capability-blueprint-projection.v1",
+  "altitude": "capability",
+  "capabilityId": "procedural-dungeon-governed-execution",
+  "scenarioId": "procedural-dungeon-governed-execution",
+  "snapshotDigest": "d33bac21fecf05e9b4c48e1d6791f10ad6817f784fa1c35f5e4e6449c92c6f58",
+  "nodes": [
+    {
+      "id": "scenario:procedural-dungeon-governed-execution",
+      "kind": "scenario",
+      "label": "Procedural dungeon governed execution",
+      "ref": "graph:/scenarios/0",
+      "scenarioId": "procedural-dungeon-governed-execution"
+    },
+    {
+      "id": "provider:sda-declared-read-graph-provider.v1",
+      "kind": "provider",
+      "label": "Declared Read Graph Provider (query runner)",
+      "ref": "graph:/interfaceAuthority/portBindings/1"
+    }
+  ],
+  "edges": [
+    {
+      "id": "scenario-provider:procedural-dungeon-governed-execution:provider:sda-declared-read-graph-provider.v1",
+      "from": "scenario:procedural-dungeon-governed-execution",
+      "to": "provider:sda-declared-read-graph-provider.v1",
+      "kind": "scenario-provider",
+      "collapsed": true,
+      "label": "declared provider involvement",
+      "basis": "owning scenario operations and explicit port bindings",
+      "ref": "graph:/scenarios/0",
+      "sourceEdgeIds": [
+        "B3",
+        "B6",
+        "B7",
+        "B8"
+      ],
+      "sourceRefs": [
+        "graph:/executionAuthorities/0/operations/0",
+        "graph:/interfaceAuthority/portBindings/1"
+      ],
+      "via": [
+        {
+          "operationId": "operation:procedural-dungeon-governed-execution.v1:1",
+          "portId": "topology-and-rasterize-transform-port",
+          "bindingId": "binding:topology-and-rasterize-transform-port",
+          "sourceEdgeIds": [
+            "B3",
+            "B6",
+            "B7",
+            "B8"
+          ],
+          "basis": "declared provider"
+        }
+      ]
+    }
+  ],
+  "scope": "Root-connected scenario topology and declared provider involvement; collapsed links retain exact operation and binding evidence, not observed execution.",
+  "topologyDigest": "e76e1891b48eb6b5136aa2c901308d6024923ad15b4b1a3822d7778ecbb28ca2"
+}

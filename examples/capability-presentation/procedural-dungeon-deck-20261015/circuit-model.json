@@ -1,0 +1,23 @@
+{
+  "view": "capability",
+  "nodes": [
+    {
+      "id": "scenario:procedural-dungeon-governed-execution",
+      "label": "Procedural dungeon governed execution",
+      "kind": "scenario",
+      "ref": "graph:/scenarios/0",
+      "missing": false,
+      "reachable": true
+    }
+  ],
+  "edges": [],
+  "findings": [
+    {
+      "code": "FEATURE_PROSE_DIFFERS_FROM_SOURCE",
+      "label": "Parsed and retained Gherkin",
+      "message": "Parsed scenario prose for procedural-dungeon-governed-execution differs from its retained source bytes. Both are preserved.",
+      "sourceRef": "model:feature_version/183051"
+    }
+  ],
+  "digest": "7038b8317077ef9643c97c95a5f026ca959630ea0d38dbe61af1923c67d5718d"
+}
