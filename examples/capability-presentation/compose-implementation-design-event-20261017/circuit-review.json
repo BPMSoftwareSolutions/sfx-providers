@@ -1,0 +1,1808 @@
+{
+  "contractId": "capability-blueprint-review.v1",
+  "inspection": {
+    "status": "SNAPSHOT_MATCH",
+    "capturedUtc": "2026-10-17T05:35:27.2528236",
+    "sourceRef": "snapshot:/inspection",
+    "executionBasis": "selected reading statements under sidefx_reader; not target execution",
+    "readings": [
+      {
+        "reading": "platform-binding-without-provider",
+        "kind": "detection",
+        "status": "READ",
+        "sourceRef": "snapshot:/inspection/readings/0",
+        "portDefinitionPk": 213887,
+        "statementDigest": "ef8e14419d25034009b54f56b390e56539cca7fc20b815dc113f55ea14146bcb"
+      },
+      {
+        "reading": "invocation-condition-path-absent",
+        "kind": "detection",
+        "status": "READ",
+        "sourceRef": "snapshot:/inspection/readings/1",
+        "portDefinitionPk": 213893,
+        "statementDigest": "d1dbbffc9ebcba3129f6f13cac266dd37658f020c1bbfab1a03b62a687d87ae5"
+      },
+      {
+        "reading": "invocation-request-path-absent",
+        "kind": "detection",
+        "status": "READ",
+        "sourceRef": "snapshot:/inspection/readings/2",
+        "portDefinitionPk": 213899,
+        "statementDigest": "5123b7bcd96b83359fe2407713e28e42ac08065adc958ce7d4150a178c76d89e"
+      },
+      {
+        "reading": "feature-binding-drift",
+        "kind": "detection",
+        "status": "READ",
+        "sourceRef": "snapshot:/inspection/readings/3",
+        "portDefinitionPk": 213905,
+        "statementDigest": "efa0bb5a155014b403e2c37a0aaf7d314b94179500fbfa781631b02244b1ded3"
+      },
+      {
+        "reading": "declaration-cycle",
+        "kind": "detection",
+        "status": "READ",
+        "sourceRef": "snapshot:/inspection/readings/4",
+        "portDefinitionPk": 213911,
+        "statementDigest": "5c9470f8c8d00e95950ee82017fe806cb8ccde6bd2108a8852b444dd825e0dcf"
+      },
+      {
+        "reading": "contract-satisfiability",
+        "kind": "verification",
+        "status": "READ",
+        "sourceRef": "snapshot:/inspection/readings/5",
+        "portDefinitionPk": 213652,
+        "statementDigest": "1a8829ec4c2002b0c29d14ac4b68dd0862c51e47d17d83be39489ced1c03cd70"
+      },
+      {
+        "reading": "scenario-predicates",
+        "kind": "verification",
+        "status": "READ",
+        "sourceRef": "snapshot:/inspection/readings/6",
+        "portDefinitionPk": 213653,
+        "statementDigest": "9df04ac421470fade96cdcb2536c865710af1184aa8076012cbfd51ce6ad10e8"
+      },
+      {
+        "reading": "expression-semantics",
+        "kind": "verification",
+        "status": "READ",
+        "sourceRef": "snapshot:/inspection/readings/7",
+        "portDefinitionPk": 213654,
+        "statementDigest": "dd760973e379b674ec53cc8402111308dd69800a61ba1652b4dbdbcb5b37f58e"
+      },
+      {
+        "reading": "expression-totality",
+        "kind": "verification",
+        "status": "READ",
+        "sourceRef": "snapshot:/inspection/readings/8",
+        "portDefinitionPk": 213655,
+        "statementDigest": "5b99decabbab72a73663e3df88f50f0b292084e8eaa60ab17fd2a1c74eaafe6d"
+      },
+      {
+        "reading": "route-variant-coverage",
+        "kind": "verification",
+        "status": "READ",
+        "sourceRef": "snapshot:/inspection/readings/9",
+        "portDefinitionPk": 213656,
+        "statementDigest": "384d29be525f3e3d94b9214a71332503aa8395c96ad3ae1bcda4f6f79daec9a0"
+      },
+      {
+        "reading": "reachability-cycles",
+        "kind": "verification",
+        "status": "READ",
+        "sourceRef": "snapshot:/inspection/readings/10",
+        "portDefinitionPk": 213657,
+        "statementDigest": "c59dd0b1c976b059941b6e79f4d8f6ee9a671df73ff4e368becd7cfcf007bbe9"
+      },
+      {
+        "reading": "contract-face-compatibility",
+        "kind": "verification",
+        "status": "READ",
+        "sourceRef": "snapshot:/inspection/readings/11",
+        "portDefinitionPk": 213658,
+        "statementDigest": "03d109a6181ae7cd728bf568d36d026d75300205ea95047f81578ab3a94bdf8d"
+      },
+      {
+        "reading": "witnesses",
+        "kind": "verification",
+        "status": "READ",
+        "sourceRef": "snapshot:/inspection/readings/12",
+        "portDefinitionPk": 214823,
+        "statementDigest": "beba5a5a5da35e9af05ec350112662c3a567fddadaf87f645f051c56623a6cdd"
+      },
+      {
+        "reading": "capability-proof-obligations",
+        "kind": "obligations",
+        "status": "READ",
+        "sourceRef": "snapshot:/inspection/readings/13",
+        "portDefinitionPk": 212587,
+        "statementDigest": "5ea033e6772909f94c5108d8a2bb8d1fe1357150e41d97b91af23bae0787ffc5"
+      },
+      {
+        "reading": "retained-scenario-bugs",
+        "kind": "detection",
+        "status": "READ",
+        "sourceRef": "snapshot:/inspection/readings/14",
+        "portDefinitionPk": 214658,
+        "statementDigest": "f1c48ee6f3c04e4032eab6a3b5b4ee8c990c94017c7314835fa2adadc9747398"
+      }
+    ],
+    "checks": [
+      {
+        "id": "V1",
+        "reading": "contract-satisfiability",
+        "property": "contract-satisfiability",
+        "subject": "implementation-design-request.v1",
+        "disposition": "PROVED",
+        "basis": "schema resolves in the encodable keyword fragment; no unsatisfiable root pattern detected",
+        "nodeIds": [
+          "input:compose-implementation-design"
+        ],
+        "scenarioIds": [
+          "compose-implementation-design"
+        ],
+        "sourceRef": "snapshot:/inspection/readings/5/document/rows/0",
+        "rowIndex": 0,
+        "raw": {
+          "contract_id": "implementation-design-request.v1",
+          "namespace_id": "sidefx:contracts",
+          "schema_digest": "60986dabc4210e18307c548d9e23cefb6aa940f47327937631c8be9e4ca5acdd",
+          "schema_resolved": 1,
+          "root_type": "object",
+          "root_closed": 1,
+          "root_unconstrained": 0,
+          "required_missing": 0,
+          "const_type_conflict": 0,
+          "disposition": "PROVED",
+          "basis": "schema resolves in the encodable keyword fragment; no unsatisfiable root pattern detected"
+        }
+      },
+      {
+        "id": "V2",
+        "reading": "contract-satisfiability",
+        "property": "contract-satisfiability",
+        "subject": "implementation-design-review.v1",
+        "disposition": "PROVED",
+        "basis": "schema resolves in the encodable keyword fragment; no unsatisfiable root pattern detected",
+        "nodeIds": [
+          "outcome:compose-implementation-design"
+        ],
+        "scenarioIds": [
+          "compose-implementation-design"
+        ],
+        "sourceRef": "snapshot:/inspection/readings/5/document/rows/1",
+        "rowIndex": 1,
+        "raw": {
+          "contract_id": "implementation-design-review.v1",
+          "namespace_id": "sidefx:contracts",
+          "schema_digest": "f491a836a350d88c005b138e7e59becc6c8d3e685411b6177a6c0cbfeb2caf83",
+          "schema_resolved": 1,
+          "root_type": "object",
+          "root_closed": 0,
+          "root_unconstrained": 0,
+          "required_missing": 0,
+          "const_type_conflict": 0,
+          "disposition": "PROVED",
+          "basis": "schema resolves in the encodable keyword fragment; no unsatisfiable root pattern detected"
+        }
+      },
+      {
+        "id": "V3",
+        "reading": "scenario-predicates",
+        "property": "scenario-predicates",
+        "subject": "compose-implementation-design",
+        "disposition": "PROVED",
+        "basis": "P_I and P_O both declared",
+        "nodeIds": [
+          "scenario:compose-implementation-design"
+        ],
+        "scenarioIds": [
+          "compose-implementation-design"
+        ],
+        "sourceRef": "snapshot:/inspection/readings/6/document/rows/0",
+        "rowIndex": 0,
+        "raw": {
+          "capability_id": "compose-implementation-design",
+          "scenario_id": "compose-implementation-design",
+          "scenario_version_pk": 113703,
+          "has_input_contract": 1,
+          "has_outcome_contract": 1,
+          "variants": 2,
+          "disposition": "PROVED",
+          "basis": "P_I and P_O both declared"
+        }
+      },
+      {
+        "id": "V4",
+        "reading": "expression-semantics",
+        "property": "expression-semantics",
+        "subject": "array",
+        "disposition": "PROVED",
+        "basis": "SDA ruling file transcribed; every estate use is covered",
+        "nodeIds": [],
+        "scenarioIds": [],
+        "sourceRef": "snapshot:/inspection/readings/7/document/rows/0",
+        "rowIndex": 0,
+        "raw": {
+          "operator": "array",
+          "ruling_file": "conformance/execution-graph/mechanics/array.v1",
+          "semantic_effect": "pure",
+          "primary_decision": "construct from evaluated items",
+          "estate_uses": 5,
+          "transcribed": 1,
+          "disposition": "PROVED",
+          "basis": "SDA ruling file transcribed; every estate use is covered"
+        }
+      },
+      {
+        "id": "V5",
+        "reading": "expression-semantics",
+        "property": "expression-semantics",
+        "subject": "base64-decode-utf8",
+        "disposition": "PROVED",
+        "basis": "SDA ruling file transcribed; no estate use",
+        "nodeIds": [],
+        "scenarioIds": [],
+        "sourceRef": "snapshot:/inspection/readings/7/document/rows/1",
+        "rowIndex": 1,
+        "raw": {
+          "operator": "base64-decode-utf8",
+          "ruling_file": "conformance/execution-graph/mechanics/base64-decode-utf8.v1",
+          "semantic_effect": "pure",
+          "primary_decision": "decode base64 text as UTF-8",
+          "estate_uses": 0,
+          "transcribed": 1,
+          "disposition": "PROVED",
+          "basis": "SDA ruling file transcribed; no estate use"
+        }
+      },
+      {
+        "id": "V6",
+        "reading": "expression-semantics",
+        "property": "expression-semantics",
+        "subject": "bind-path",
+        "disposition": "PROVED",
+        "basis": "SDA ruling file transcribed; no estate use",
+        "nodeIds": [],
+        "scenarioIds": [],
+        "sourceRef": "snapshot:/inspection/readings/7/document/rows/2",
+        "rowIndex": 2,
+        "raw": {
+          "operator": "bind-path",
+          "ruling_file": "conformance/execution-graph/mechanics/bind-path.v1",
+          "semantic_effect": "pure",
+          "primary_decision": "prototype segments refused (PROTOTYPE_SEGMENT_REJECTED); empty path refused (PATH_NOT_DECLARED); non-object carrier refused (OPERAND_NOT_OBJECT); result is a clone",
+          "estate_uses": 0,
+          "transcribed": 1,
+          "disposition": "PROVED",
+          "basis": "SDA ruling file transcribed; no estate use"
+        }
+      },
+      {
+        "id": "V7",
+        "reading": "expression-semantics",
+        "property": "expression-semantics",
+        "subject": "canonicalize",
+        "disposition": "PROVED",
+        "basis": "SDA ruling file transcribed; no estate use",
+        "nodeIds": [],
+        "scenarioIds": [],
+        "sourceRef": "snapshot:/inspection/readings/7/document/rows/3",
+        "rowIndex": 3,
+        "raw": {
+          "operator": "canonicalize",
+          "ruling_file": "conformance/execution-graph/mechanics/canonicalize.v1",
+          "semantic_effect": "pure",
+          "primary_decision": "recursive sorted-key canonical form",
+          "estate_uses": 0,
+          "transcribed": 1,
+          "disposition": "PROVED",
+          "basis": "SDA ruling file transcribed; no estate use"
+        }
+      },
+      {
+        "id": "V8",
+        "reading": "expression-semantics",
+        "property": "expression-semantics",
+        "subject": "directed-graph-closure",
+        "disposition": "PROVED",
+        "basis": "SDA ruling file transcribed; no estate use",
+        "nodeIds": [],
+        "scenarioIds": [],
+        "sourceRef": "snapshot:/inspection/readings/7/document/rows/4",
+        "rowIndex": 4,
+        "raw": {
+          "operator": "directed-graph-closure",
+          "ruling_file": "conformance/execution-graph/mechanics/directed-graph-closure.v1",
+          "semantic_effect": "pure",
+          "primary_decision": "lexical ordering by stable identity; reachability includes the zero-length path",
+          "estate_uses": 0,
+          "transcribed": 1,
+          "disposition": "PROVED",
+          "basis": "SDA ruling file transcribed; no estate use"
+        }
+      },
+      {
+        "id": "V9",
+        "reading": "expression-semantics",
+        "property": "expression-semantics",
+        "subject": "equals",
+        "disposition": "PROVED",
+        "basis": "SDA ruling file transcribed; every estate use is covered",
+        "nodeIds": [],
+        "scenarioIds": [],
+        "sourceRef": "snapshot:/inspection/readings/7/document/rows/5",
+        "rowIndex": 5,
+        "raw": {
+          "operator": "equals",
+          "ruling_file": "conformance/execution-graph/mechanics/equals.v1",
+          "semantic_effect": "pure",
+          "primary_decision": "primitive values only; a non-primitive operand is not admitted",
+          "estate_uses": 5,
+          "transcribed": 1,
+          "disposition": "PROVED",
+          "basis": "SDA ruling file transcribed; every estate use is covered"
+        }
+      },
+      {
+        "id": "V10",
+        "reading": "expression-semantics",
+        "property": "expression-semantics",
+        "subject": "escape-html",
+        "disposition": "PROVED",
+        "basis": "SDA ruling file transcribed; no estate use",
+        "nodeIds": [],
+        "scenarioIds": [],
+        "sourceRef": "snapshot:/inspection/readings/7/document/rows/6",
+        "rowIndex": 6,
+        "raw": {
+          "operator": "escape-html",
+          "ruling_file": "conformance/execution-graph/mechanics/escape-html.v1",
+          "semantic_effect": "pure",
+          "primary_decision": "HTML-escape a string",
+          "estate_uses": 0,
+          "transcribed": 1,
+          "disposition": "PROVED",
+          "basis": "SDA ruling file transcribed; no estate use"
+        }
+      },
+      {
+        "id": "V11",
+        "reading": "expression-semantics",
+        "property": "expression-semantics",
+        "subject": "every",
+        "disposition": "PROVED",
+        "basis": "SDA ruling file transcribed; no estate use",
+        "nodeIds": [],
+        "scenarioIds": [],
+        "sourceRef": "snapshot:/inspection/readings/7/document/rows/7",
+        "rowIndex": 7,
+        "raw": {
+          "operator": "every",
+          "ruling_file": "conformance/execution-graph/mechanics/every.v1",
+          "semantic_effect": "pure",
+          "primary_decision": "true when every item satisfies the predicate",
+          "estate_uses": 0,
+          "transcribed": 1,
+          "disposition": "PROVED",
+          "basis": "SDA ruling file transcribed; no estate use"
+        }
+      },
+      {
+        "id": "V12",
+        "reading": "expression-semantics",
+        "property": "expression-semantics",
+        "subject": "filter",
+        "disposition": "PROVED",
+        "basis": "SDA ruling file transcribed; no estate use",
+        "nodeIds": [],
+        "scenarioIds": [],
+        "sourceRef": "snapshot:/inspection/readings/7/document/rows/8",
+        "rowIndex": 8,
+        "raw": {
+          "operator": "filter",
+          "ruling_file": "conformance/execution-graph/mechanics/filter.v1",
+          "semantic_effect": "pure",
+          "primary_decision": "keep items whose predicate is truthy",
+          "estate_uses": 0,
+          "transcribed": 1,
+          "disposition": "PROVED",
+          "basis": "SDA ruling file transcribed; no estate use"
+        }
+      },
+      {
+        "id": "V13",
+        "reading": "expression-semantics",
+        "property": "expression-semantics",
+        "subject": "find",
+        "disposition": "PROVED",
+        "basis": "SDA ruling file transcribed; every estate use is covered",
+        "nodeIds": [],
+        "scenarioIds": [],
+        "sourceRef": "snapshot:/inspection/readings/7/document/rows/9",
+        "rowIndex": 9,
+        "raw": {
+          "operator": "find",
+          "ruling_file": "conformance/execution-graph/mechanics/find.v1",
+          "semantic_effect": "pure",
+          "primary_decision": "no match is absent (null)",
+          "estate_uses": 1,
+          "transcribed": 1,
+          "disposition": "PROVED",
+          "basis": "SDA ruling file transcribed; every estate use is covered"
+        }
+      },
+      {
+        "id": "V14",
+        "reading": "expression-semantics",
+        "property": "expression-semantics",
+        "subject": "flat-map",
+        "disposition": "PROVED",
+        "basis": "SDA ruling file transcribed; every estate use is covered",
+        "nodeIds": [],
+        "scenarioIds": [],
+        "sourceRef": "snapshot:/inspection/readings/7/document/rows/10",
+        "rowIndex": 10,
+        "raw": {
+          "operator": "flat-map",
+          "ruling_file": "conformance/execution-graph/mechanics/flat-map.v1",
+          "semantic_effect": "pure",
+          "primary_decision": "map then flatten one level",
+          "estate_uses": 1,
+          "transcribed": 1,
+          "disposition": "PROVED",
+          "basis": "SDA ruling file transcribed; every estate use is covered"
+        }
+      },
+      {
+        "id": "V15",
+        "reading": "expression-semantics",
+        "property": "expression-semantics",
+        "subject": "format",
+        "disposition": "PROVED",
+        "basis": "SDA ruling file transcribed; every estate use is covered",
+        "nodeIds": [],
+        "scenarioIds": [],
+        "sourceRef": "snapshot:/inspection/readings/7/document/rows/11",
+        "rowIndex": 11,
+        "raw": {
+          "operator": "format",
+          "ruling_file": "conformance/execution-graph/mechanics/format.v1",
+          "semantic_effect": "pure",
+          "primary_decision": "primitive values by the declared coercion table; each placeholder substituted once",
+          "estate_uses": 2,
+          "transcribed": 1,
+          "disposition": "PROVED",
+          "basis": "SDA ruling file transcribed; every estate use is covered"
+        }
+      },
+      {
+        "id": "V16",
+        "reading": "expression-semantics",
+        "property": "expression-semantics",
+        "subject": "greater-than",
+        "disposition": "PROVED",
+        "basis": "SDA ruling file transcribed; no estate use",
+        "nodeIds": [],
+        "scenarioIds": [],
+        "sourceRef": "snapshot:/inspection/readings/7/document/rows/12",
+        "rowIndex": 12,
+        "raw": {
+          "operator": "greater-than",
+          "ruling_file": "conformance/execution-graph/mechanics/greater-than.v1",
+          "semantic_effect": "pure",
+          "primary_decision": "two numbers or two strings; anything else is not admitted",
+          "estate_uses": 0,
+          "transcribed": 1,
+          "disposition": "PROVED",
+          "basis": "SDA ruling file transcribed; no estate use"
+        }
+      },
+      {
+        "id": "V17",
+        "reading": "expression-semantics",
+        "property": "expression-semantics",
+        "subject": "if",
+        "disposition": "PROVED",
+        "basis": "SDA ruling file transcribed; every estate use is covered",
+        "nodeIds": [],
+        "scenarioIds": [],
+        "sourceRef": "snapshot:/inspection/readings/7/document/rows/13",
+        "rowIndex": 13,
+        "raw": {
+          "operator": "if",
+          "ruling_file": "conformance/execution-graph/mechanics/if.v1",
+          "semantic_effect": "pure",
+          "primary_decision": "empty collections are false; the untaken branch is not evaluated",
+          "estate_uses": 4,
+          "transcribed": 1,
+          "disposition": "PROVED",
+          "basis": "SDA ruling file transcribed; every estate use is covered"
+        }
+      },
+      {
+        "id": "V18",
+        "reading": "expression-semantics",
+        "property": "expression-semantics",
+        "subject": "includes",
+        "disposition": "PROVED",
+        "basis": "SDA ruling file transcribed; no estate use",
+        "nodeIds": [],
+        "scenarioIds": [],
+        "sourceRef": "snapshot:/inspection/readings/7/document/rows/14",
+        "rowIndex": 14,
+        "raw": {
+          "operator": "includes",
+          "ruling_file": "conformance/execution-graph/mechanics/includes.v1",
+          "semantic_effect": "pure",
+          "primary_decision": "a string contains a substring; an array contains a primitive member",
+          "estate_uses": 0,
+          "transcribed": 1,
+          "disposition": "PROVED",
+          "basis": "SDA ruling file transcribed; no estate use"
+        }
+      },
+      {
+        "id": "V19",
+        "reading": "expression-semantics",
+        "property": "expression-semantics",
+        "subject": "intersects",
+        "disposition": "PROVED",
+        "basis": "SDA ruling file transcribed; no estate use",
+        "nodeIds": [],
+        "scenarioIds": [],
+        "sourceRef": "snapshot:/inspection/readings/7/document/rows/15",
+        "rowIndex": 15,
+        "raw": {
+          "operator": "intersects",
+          "ruling_file": "conformance/execution-graph/mechanics/intersects.v1",
+          "semantic_effect": "pure",
+          "primary_decision": "true when two arrays share an element",
+          "estate_uses": 0,
+          "transcribed": 1,
+          "disposition": "PROVED",
+          "basis": "SDA ruling file transcribed; no estate use"
+        }
+      },
+      {
+        "id": "V20",
+        "reading": "expression-semantics",
+        "property": "expression-semantics",
+        "subject": "join",
+        "disposition": "PROVED",
+        "basis": "SDA ruling file transcribed; no estate use",
+        "nodeIds": [],
+        "scenarioIds": [],
+        "sourceRef": "snapshot:/inspection/readings/7/document/rows/16",
+        "rowIndex": 16,
+        "raw": {
+          "operator": "join",
+          "ruling_file": "conformance/execution-graph/mechanics/join.v1",
+          "semantic_effect": "pure",
+          "primary_decision": "an absent member joins as the empty string",
+          "estate_uses": 0,
+          "transcribed": 1,
+          "disposition": "PROVED",
+          "basis": "SDA ruling file transcribed; no estate use"
+        }
+      },
+      {
+        "id": "V21",
+        "reading": "expression-semantics",
+        "property": "expression-semantics",
+        "subject": "json-stringify",
+        "disposition": "PROVED",
+        "basis": "SDA ruling file transcribed; no estate use",
+        "nodeIds": [],
+        "scenarioIds": [],
+        "sourceRef": "snapshot:/inspection/readings/7/document/rows/17",
+        "rowIndex": 17,
+        "raw": {
+          "operator": "json-stringify",
+          "ruling_file": "conformance/execution-graph/mechanics/json-stringify.v1",
+          "semantic_effect": "pure",
+          "primary_decision": "declared field order, no whitespace, JSON escaping",
+          "estate_uses": 0,
+          "transcribed": 1,
+          "disposition": "PROVED",
+          "basis": "SDA ruling file transcribed; no estate use"
+        }
+      },
+      {
+        "id": "V22",
+        "reading": "expression-semantics",
+        "property": "expression-semantics",
+        "subject": "length",
+        "disposition": "PROVED",
+        "basis": "SDA ruling file transcribed; no estate use",
+        "nodeIds": [],
+        "scenarioIds": [],
+        "sourceRef": "snapshot:/inspection/readings/7/document/rows/18",
+        "rowIndex": 18,
+        "raw": {
+          "operator": "length",
+          "ruling_file": "conformance/execution-graph/mechanics/length.v1",
+          "semantic_effect": "pure",
+          "primary_decision": "arrays and strings only; anything else is not admitted",
+          "estate_uses": 0,
+          "transcribed": 1,
+          "disposition": "PROVED",
+          "basis": "SDA ruling file transcribed; no estate use"
+        }
+      },
+      {
+        "id": "V23",
+        "reading": "expression-semantics",
+        "property": "expression-semantics",
+        "subject": "let",
+        "disposition": "PROVED",
+        "basis": "SDA ruling file transcribed; every estate use is covered",
+        "nodeIds": [],
+        "scenarioIds": [],
+        "sourceRef": "snapshot:/inspection/readings/7/document/rows/19",
+        "rowIndex": 19,
+        "raw": {
+          "operator": "let",
+          "ruling_file": "conformance/execution-graph/mechanics/let.v1",
+          "semantic_effect": "pure",
+          "primary_decision": "sequential named bindings, then a body in the extended scope",
+          "estate_uses": 1,
+          "transcribed": 1,
+          "disposition": "PROVED",
+          "basis": "SDA ruling file transcribed; every estate use is covered"
+        }
+      },
+      {
+        "id": "V24",
+        "reading": "expression-semantics",
+        "property": "expression-semantics",
+        "subject": "literal",
+        "disposition": "PROVED",
+        "basis": "SDA ruling file transcribed; every estate use is covered",
+        "nodeIds": [],
+        "scenarioIds": [],
+        "sourceRef": "snapshot:/inspection/readings/7/document/rows/20",
+        "rowIndex": 20,
+        "raw": {
+          "operator": "literal",
+          "ruling_file": "conformance/execution-graph/mechanics/literal.v1",
+          "semantic_effect": "pure",
+          "primary_decision": "the declared literal value",
+          "estate_uses": 26,
+          "transcribed": 1,
+          "disposition": "PROVED",
+          "basis": "SDA ruling file transcribed; every estate use is covered"
+        }
+      },
+      {
+        "id": "V25",
+        "reading": "expression-semantics",
+        "property": "expression-semantics",
+        "subject": "lower-case",
+        "disposition": "PROVED",
+        "basis": "SDA ruling file transcribed; no estate use",
+        "nodeIds": [],
+        "scenarioIds": [],
+        "sourceRef": "snapshot:/inspection/readings/7/document/rows/21",
+        "rowIndex": 21,
+        "raw": {
+          "operator": "lower-case",
+          "ruling_file": "conformance/execution-graph/mechanics/lower-case.v1",
+          "semantic_effect": "pure",
+          "primary_decision": "locale-independent lower-case",
+          "estate_uses": 0,
+          "transcribed": 1,
+          "disposition": "PROVED",
+          "basis": "SDA ruling file transcribed; no estate use"
+        }
+      },
+      {
+        "id": "V26",
+        "reading": "expression-semantics",
+        "property": "expression-semantics",
+        "subject": "map",
+        "disposition": "PROVED",
+        "basis": "SDA ruling file transcribed; no estate use",
+        "nodeIds": [],
+        "scenarioIds": [],
+        "sourceRef": "snapshot:/inspection/readings/7/document/rows/22",
+        "rowIndex": 22,
+        "raw": {
+          "operator": "map",
+          "ruling_file": "conformance/execution-graph/mechanics/map.v1",
+          "semantic_effect": "pure",
+          "primary_decision": "item-scoped evaluation",
+          "estate_uses": 0,
+          "transcribed": 1,
+          "disposition": "PROVED",
+          "basis": "SDA ruling file transcribed; no estate use"
+        }
+      },
+      {
+        "id": "V27",
+        "reading": "expression-semantics",
+        "property": "expression-semantics",
+        "subject": "merge",
+        "disposition": "PROVED",
+        "basis": "SDA ruling file transcribed; no estate use",
+        "nodeIds": [],
+        "scenarioIds": [],
+        "sourceRef": "snapshot:/inspection/readings/7/document/rows/23",
+        "rowIndex": 23,
+        "raw": {
+          "operator": "merge",
+          "ruling_file": "conformance/execution-graph/mechanics/merge.v1",
+          "semantic_effect": "pure",
+          "primary_decision": "objects and absent values only",
+          "estate_uses": 0,
+          "transcribed": 1,
+          "disposition": "PROVED",
+          "basis": "SDA ruling file transcribed; no estate use"
+        }
+      },
+      {
+        "id": "V28",
+        "reading": "expression-semantics",
+        "property": "expression-semantics",
+        "subject": "object-values",
+        "disposition": "PROVED",
+        "basis": "SDA ruling file transcribed; no estate use",
+        "nodeIds": [],
+        "scenarioIds": [],
+        "sourceRef": "snapshot:/inspection/readings/7/document/rows/24",
+        "rowIndex": 24,
+        "raw": {
+          "operator": "object-values",
+          "ruling_file": "conformance/execution-graph/mechanics/object-values.v1",
+          "semantic_effect": "pure",
+          "primary_decision": "values in ascending lexical key order",
+          "estate_uses": 0,
+          "transcribed": 1,
+          "disposition": "PROVED",
+          "basis": "SDA ruling file transcribed; no estate use"
+        }
+      },
+      {
+        "id": "V29",
+        "reading": "expression-semantics",
+        "property": "expression-semantics",
+        "subject": "object",
+        "disposition": "PROVED",
+        "basis": "SDA ruling file transcribed; every estate use is covered",
+        "nodeIds": [],
+        "scenarioIds": [],
+        "sourceRef": "snapshot:/inspection/readings/7/document/rows/25",
+        "rowIndex": 25,
+        "raw": {
+          "operator": "object",
+          "ruling_file": "conformance/execution-graph/mechanics/object.v1",
+          "semantic_effect": "pure",
+          "primary_decision": "construct from evaluated fields",
+          "estate_uses": 13,
+          "transcribed": 1,
+          "disposition": "PROVED",
+          "basis": "SDA ruling file transcribed; every estate use is covered"
+        }
+      },
+      {
+        "id": "V30",
+        "reading": "expression-semantics",
+        "property": "expression-semantics",
+        "subject": "parse-json",
+        "disposition": "PROVED",
+        "basis": "SDA ruling file transcribed; no estate use",
+        "nodeIds": [],
+        "scenarioIds": [],
+        "sourceRef": "snapshot:/inspection/readings/7/document/rows/26",
+        "rowIndex": 26,
+        "raw": {
+          "operator": "parse-json",
+          "ruling_file": "conformance/execution-graph/mechanics/parse-json.v1",
+          "semantic_effect": "pure",
+          "primary_decision": "unparsable text is not admitted",
+          "estate_uses": 0,
+          "transcribed": 1,
+          "disposition": "PROVED",
+          "basis": "SDA ruling file transcribed; no estate use"
+        }
+      },
+      {
+        "id": "V31",
+        "reading": "expression-semantics",
+        "property": "expression-semantics",
+        "subject": "path",
+        "disposition": "PROVED",
+        "basis": "SDA ruling file transcribed; every estate use is covered",
+        "nodeIds": [],
+        "scenarioIds": [],
+        "sourceRef": "snapshot:/inspection/readings/7/document/rows/27",
+        "rowIndex": 27,
+        "raw": {
+          "operator": "path",
+          "ruling_file": "conformance/execution-graph/mechanics/path.v1",
+          "semantic_effect": "pure",
+          "primary_decision": "empty path returns the binding; a missing segment is absent",
+          "estate_uses": 20,
+          "transcribed": 1,
+          "disposition": "PROVED",
+          "basis": "SDA ruling file transcribed; every estate use is covered"
+        }
+      },
+      {
+        "id": "V32",
+        "reading": "expression-semantics",
+        "property": "expression-semantics",
+        "subject": "sha256",
+        "disposition": "PROVED",
+        "basis": "SDA ruling file transcribed; no estate use",
+        "nodeIds": [],
+        "scenarioIds": [],
+        "sourceRef": "snapshot:/inspection/readings/7/document/rows/28",
+        "rowIndex": 28,
+        "raw": {
+          "operator": "sha256",
+          "ruling_file": "conformance/execution-graph/mechanics/sha256.v1",
+          "semantic_effect": "pure",
+          "primary_decision": "SHA-256 hex digest over the string form",
+          "estate_uses": 0,
+          "transcribed": 1,
+          "disposition": "PROVED",
+          "basis": "SDA ruling file transcribed; no estate use"
+        }
+      },
+      {
+        "id": "V33",
+        "reading": "expression-semantics",
+        "property": "expression-semantics",
+        "subject": "some",
+        "disposition": "PROVED",
+        "basis": "SDA ruling file transcribed; no estate use",
+        "nodeIds": [],
+        "scenarioIds": [],
+        "sourceRef": "snapshot:/inspection/readings/7/document/rows/29",
+        "rowIndex": 29,
+        "raw": {
+          "operator": "some",
+          "ruling_file": "conformance/execution-graph/mechanics/some.v1",
+          "semantic_effect": "pure",
+          "primary_decision": "true when any item satisfies the predicate",
+          "estate_uses": 0,
+          "transcribed": 1,
+          "disposition": "PROVED",
+          "basis": "SDA ruling file transcribed; no estate use"
+        }
+      },
+      {
+        "id": "V34",
+        "reading": "expression-semantics",
+        "property": "expression-semantics",
+        "subject": "trim",
+        "disposition": "PROVED",
+        "basis": "SDA ruling file transcribed; no estate use",
+        "nodeIds": [],
+        "scenarioIds": [],
+        "sourceRef": "snapshot:/inspection/readings/7/document/rows/30",
+        "rowIndex": 30,
+        "raw": {
+          "operator": "trim",
+          "ruling_file": "conformance/execution-graph/mechanics/trim.v1",
+          "semantic_effect": "pure",
+          "primary_decision": "remove leading/trailing Unicode whitespace",
+          "estate_uses": 0,
+          "transcribed": 1,
+          "disposition": "PROVED",
+          "basis": "SDA ruling file transcribed; no estate use"
+        }
+      },
+      {
+        "id": "V35",
+        "reading": "expression-semantics",
+        "property": "expression-semantics",
+        "subject": "try-parse-json",
+        "disposition": "PROVED",
+        "basis": "SDA ruling file transcribed; no estate use",
+        "nodeIds": [],
+        "scenarioIds": [],
+        "sourceRef": "snapshot:/inspection/readings/7/document/rows/31",
+        "rowIndex": 31,
+        "raw": {
+          "operator": "try-parse-json",
+          "ruling_file": "conformance/execution-graph/mechanics/try-parse-json.v1",
+          "semantic_effect": "pure",
+          "primary_decision": "classify parsed or not parsed; no runtime exception",
+          "estate_uses": 0,
+          "transcribed": 1,
+          "disposition": "PROVED",
+          "basis": "SDA ruling file transcribed; no estate use"
+        }
+      },
+      {
+        "id": "V36",
+        "reading": "expression-semantics",
+        "property": "expression-semantics",
+        "subject": "unique",
+        "disposition": "PROVED",
+        "basis": "SDA ruling file transcribed; no estate use",
+        "nodeIds": [],
+        "scenarioIds": [],
+        "sourceRef": "snapshot:/inspection/readings/7/document/rows/32",
+        "rowIndex": 32,
+        "raw": {
+          "operator": "unique",
+          "ruling_file": "conformance/execution-graph/mechanics/unique.v1",
+          "semantic_effect": "pure",
+          "primary_decision": "primitive members only; preserve first occurrence",
+          "estate_uses": 0,
+          "transcribed": 1,
+          "disposition": "PROVED",
+          "basis": "SDA ruling file transcribed; no estate use"
+        }
+      },
+      {
+        "id": "V37",
+        "reading": "expression-semantics",
+        "property": "expression-semantics",
+        "subject": "read-argv",
+        "disposition": "PROVIDER_ASSUMPTION_REQUIRED",
+        "basis": "effectful observation operator; no pure-mechanics ruling file exists",
+        "nodeIds": [],
+        "scenarioIds": [],
+        "sourceRef": "snapshot:/inspection/readings/7/document/rows/33",
+        "rowIndex": 33,
+        "raw": {
+          "operator": "read-argv",
+          "semantic_effect": "observation",
+          "primary_decision": "effectful observation; declared by the estate read-argv mechanic on platform-effect-provider.v1; no pure-mechanics ruling file",
+          "estate_uses": 0,
+          "transcribed": 0,
+          "disposition": "PROVIDER_ASSUMPTION_REQUIRED",
+          "basis": "effectful observation operator; no pure-mechanics ruling file exists"
+        }
+      },
+      {
+        "id": "V38",
+        "reading": "expression-totality",
+        "property": "expression-totality",
+        "subject": "compose-governed-model-invocation.v1",
+        "disposition": "PROVED",
+        "basis": "4 if nodes; every one has a then branch and is total under the truthiness ruling",
+        "nodeIds": [
+          "operation:compose-implementation-design.v1:2",
+          "operation:compose-implementation-design.v1:6",
+          "operation:compose-implementation-design.v1:10",
+          "operation:compose-implementation-design.v1:14",
+          "operation:compose-implementation-design.v1:18"
+        ],
+        "scenarioIds": [
+          "compose-implementation-design"
+        ],
+        "sourceRef": "snapshot:/inspection/readings/8/document/rows/0",
+        "rowIndex": 0,
+        "raw": {
+          "transformation_id": "compose-governed-model-invocation.v1",
+          "namespace_id": "sidefx:capability:compose-implementation-design",
+          "if_nodes": 4,
+          "if_with_else": 4,
+          "if_missing_then": 0,
+          "disposition": "PROVED",
+          "basis": "4 if nodes; every one has a then branch and is total under the truthiness ruling"
+        }
+      },
+      {
+        "id": "V39",
+        "reading": "expression-totality",
+        "property": "expression-totality",
+        "subject": "compose-implementation-design-transform.v1",
+        "disposition": "PROVED",
+        "basis": "no if node; totality holds vacuously",
+        "nodeIds": [],
+        "scenarioIds": [],
+        "sourceRef": "snapshot:/inspection/readings/8/document/rows/1",
+        "rowIndex": 1,
+        "raw": {
+          "transformation_id": "compose-implementation-design-transform.v1",
+          "namespace_id": "sidefx:capability:compose-implementation-design",
+          "if_nodes": 0,
+          "if_with_else": 0,
+          "if_missing_then": 0,
+          "disposition": "PROVED",
+          "basis": "no if node; totality holds vacuously"
+        }
+      },
+      {
+        "id": "V40",
+        "reading": "route-variant-coverage",
+        "disposition": "NO_ROWS",
+        "basis": "No property rows returned; not a proof",
+        "nodeIds": [],
+        "scenarioIds": [],
+        "sourceRef": "snapshot:/inspection/readings/9"
+      },
+      {
+        "id": "V41",
+        "reading": "reachability-cycles",
+        "property": "reachability-cycles",
+        "disposition": "PROVED",
+        "basis": "no invoke-scenario edge; acyclicity holds vacuously",
+        "nodeIds": [],
+        "scenarioIds": [],
+        "sourceRef": "snapshot:/inspection/readings/10/document/rows/0",
+        "rowIndex": 0,
+        "raw": {
+          "capability_id": "compose-implementation-design",
+          "capability_version_pk": 4902284,
+          "invoke_scenario_edges": 0,
+          "cycle_paths": 0,
+          "disposition": "PROVED",
+          "basis": "no invoke-scenario edge; acyclicity holds vacuously"
+        }
+      },
+      {
+        "id": "V42",
+        "reading": "contract-face-compatibility",
+        "disposition": "NO_ROWS",
+        "basis": "No property rows returned; not a proof",
+        "nodeIds": [],
+        "scenarioIds": [],
+        "sourceRef": "snapshot:/inspection/readings/11"
+      },
+      {
+        "id": "V43",
+        "reading": "witnesses",
+        "disposition": "NO_ROWS",
+        "basis": "No property rows returned; not a proof",
+        "nodeIds": [],
+        "scenarioIds": [],
+        "sourceRef": "snapshot:/inspection/readings/12"
+      },
+      {
+        "id": "V44",
+        "reading": "capability-proof-obligations",
+        "property": "contract-satisfiability",
+        "disposition": "PROVED",
+        "basis": "2 contract(s) resolve with no unsatisfiable root pattern",
+        "nodeIds": [],
+        "scenarioIds": [],
+        "sourceRef": "snapshot:/inspection/readings/13/document/capabilities",
+        "rowIndex": 0,
+        "raw": {
+          "obligation": "contract-satisfiability",
+          "disposition": "PROVED",
+          "basis": "2 contract(s) resolve with no unsatisfiable root pattern",
+          "scope": {
+            "semanticsVersion": "sda-execution-patterns/vectors.v1 + sda-execution-graph/mechanics/*.v1",
+            "sdaCommit": "cc5791b907bfb24e65b5b601c135ea9123a77bbe",
+            "conformanceVerified": false,
+            "conformanceBasis": "installed kernel is csharp: no execution-pattern-vector conformance test; node and python run the vectors"
+          }
+        }
+      },
+      {
+        "id": "V45",
+        "reading": "capability-proof-obligations",
+        "property": "input-outcome-predicates",
+        "disposition": "PROVED",
+        "basis": "1/1 input predicates, 1/1 outcome predicates",
+        "nodeIds": [],
+        "scenarioIds": [],
+        "sourceRef": "snapshot:/inspection/readings/13/document/capabilities",
+        "rowIndex": 1,
+        "raw": {
+          "obligation": "input-outcome-predicates",
+          "disposition": "PROVED",
+          "basis": "1/1 input predicates, 1/1 outcome predicates",
+          "scope": {
+            "semanticsVersion": "sda-execution-patterns/vectors.v1 + sda-execution-graph/mechanics/*.v1",
+            "sdaCommit": "cc5791b907bfb24e65b5b601c135ea9123a77bbe",
+            "conformanceVerified": false,
+            "conformanceBasis": "installed kernel is csharp: no execution-pattern-vector conformance test; node and python run the vectors"
+          }
+        }
+      },
+      {
+        "id": "V46",
+        "reading": "capability-proof-obligations",
+        "property": "expression-semantics",
+        "disposition": "PROVED",
+        "basis": "10 operator(s) used; every one is transcribed by an SDA ruling file",
+        "nodeIds": [],
+        "scenarioIds": [],
+        "sourceRef": "snapshot:/inspection/readings/13/document/capabilities",
+        "rowIndex": 2,
+        "raw": {
+          "obligation": "expression-semantics",
+          "disposition": "PROVED",
+          "basis": "10 operator(s) used; every one is transcribed by an SDA ruling file",
+          "scope": {
+            "semanticsVersion": "sda-execution-patterns/vectors.v1 + sda-execution-graph/mechanics/*.v1",
+            "sdaCommit": "cc5791b907bfb24e65b5b601c135ea9123a77bbe",
+            "conformanceVerified": false,
+            "conformanceBasis": "installed kernel is csharp: no execution-pattern-vector conformance test; node and python run the vectors"
+          }
+        }
+      },
+      {
+        "id": "V47",
+        "reading": "capability-proof-obligations",
+        "property": "expression-totality",
+        "disposition": "PROVED",
+        "basis": "4 if node(s); every one has a then branch under the truthiness ruling",
+        "nodeIds": [],
+        "scenarioIds": [],
+        "sourceRef": "snapshot:/inspection/readings/13/document/capabilities",
+        "rowIndex": 3,
+        "raw": {
+          "obligation": "expression-totality",
+          "disposition": "PROVED",
+          "basis": "4 if node(s); every one has a then branch under the truthiness ruling",
+          "scope": {
+            "semanticsVersion": "sda-execution-patterns/vectors.v1 + sda-execution-graph/mechanics/*.v1",
+            "sdaCommit": "cc5791b907bfb24e65b5b601c135ea9123a77bbe",
+            "conformanceVerified": false,
+            "conformanceBasis": "installed kernel is csharp: no execution-pattern-vector conformance test; node and python run the vectors"
+          }
+        }
+      },
+      {
+        "id": "V48",
+        "reading": "capability-proof-obligations",
+        "property": "route-variant-coverage",
+        "disposition": "NOT_FORMALLY_OBSERVABLE",
+        "basis": "no declared routing entry reaches this capability",
+        "nodeIds": [],
+        "scenarioIds": [],
+        "sourceRef": "snapshot:/inspection/readings/13/document/capabilities",
+        "rowIndex": 4,
+        "raw": {
+          "obligation": "route-variant-coverage",
+          "disposition": "NOT_FORMALLY_OBSERVABLE",
+          "basis": "no declared routing entry reaches this capability",
+          "scope": {
+            "semanticsVersion": "sda-execution-patterns/vectors.v1 + sda-execution-graph/mechanics/*.v1",
+            "sdaCommit": "cc5791b907bfb24e65b5b601c135ea9123a77bbe",
+            "conformanceVerified": false,
+            "conformanceBasis": "installed kernel is csharp: no execution-pattern-vector conformance test; node and python run the vectors"
+          }
+        }
+      },
+      {
+        "id": "V49",
+        "reading": "capability-proof-obligations",
+        "property": "reachability-acyclicity",
+        "disposition": "PROVED",
+        "basis": "no invoke-scenario edge; acyclicity holds vacuously",
+        "nodeIds": [],
+        "scenarioIds": [],
+        "sourceRef": "snapshot:/inspection/readings/13/document/capabilities",
+        "rowIndex": 5,
+        "raw": {
+          "obligation": "reachability-acyclicity",
+          "disposition": "PROVED",
+          "basis": "no invoke-scenario edge; acyclicity holds vacuously",
+          "scope": {
+            "semanticsVersion": "sda-execution-patterns/vectors.v1 + sda-execution-graph/mechanics/*.v1",
+            "sdaCommit": "cc5791b907bfb24e65b5b601c135ea9123a77bbe",
+            "conformanceVerified": false,
+            "conformanceBasis": "installed kernel is csharp: no execution-pattern-vector conformance test; node and python run the vectors"
+          }
+        }
+      },
+      {
+        "id": "V50",
+        "reading": "capability-proof-obligations",
+        "property": "contract-face-compatibility",
+        "disposition": "NOT_FORMALLY_OBSERVABLE",
+        "basis": "no route or terminal invoke-scenario edge declared",
+        "nodeIds": [],
+        "scenarioIds": [],
+        "sourceRef": "snapshot:/inspection/readings/13/document/capabilities",
+        "rowIndex": 6,
+        "raw": {
+          "obligation": "contract-face-compatibility",
+          "disposition": "NOT_FORMALLY_OBSERVABLE",
+          "basis": "no route or terminal invoke-scenario edge declared",
+          "scope": {
+            "semanticsVersion": "sda-execution-patterns/vectors.v1 + sda-execution-graph/mechanics/*.v1",
+            "sdaCommit": "cc5791b907bfb24e65b5b601c135ea9123a77bbe",
+            "conformanceVerified": false,
+            "conformanceBasis": "installed kernel is csharp: no execution-pattern-vector conformance test; node and python run the vectors"
+          }
+        }
+      },
+      {
+        "id": "V51",
+        "reading": "capability-proof-obligations",
+        "property": "witnesses",
+        "disposition": "NOT_FORMALLY_OBSERVABLE",
+        "basis": "no fixture owned by this capability or its scenarios",
+        "nodeIds": [],
+        "scenarioIds": [],
+        "sourceRef": "snapshot:/inspection/readings/13/document/capabilities",
+        "rowIndex": 7,
+        "raw": {
+          "obligation": "witnesses",
+          "disposition": "NOT_FORMALLY_OBSERVABLE",
+          "basis": "no fixture owned by this capability or its scenarios",
+          "scope": {
+            "semanticsVersion": "sda-execution-patterns/vectors.v1 + sda-execution-graph/mechanics/*.v1",
+            "sdaCommit": "cc5791b907bfb24e65b5b601c135ea9123a77bbe",
+            "conformanceVerified": false,
+            "conformanceBasis": "installed kernel is csharp: no execution-pattern-vector conformance test; node and python run the vectors"
+          }
+        }
+      },
+      {
+        "id": "V52",
+        "reading": "capability-proof-obligations",
+        "property": "invariants",
+        "disposition": "NOT_FORMALLY_OBSERVABLE",
+        "basis": "0 observable condition(s) owned, 0 with a formal expression statement",
+        "nodeIds": [],
+        "scenarioIds": [],
+        "sourceRef": "snapshot:/inspection/readings/13/document/capabilities",
+        "rowIndex": 8,
+        "raw": {
+          "obligation": "invariants",
+          "disposition": "NOT_FORMALLY_OBSERVABLE",
+          "basis": "0 observable condition(s) owned, 0 with a formal expression statement",
+          "scope": {
+            "semanticsVersion": "sda-execution-patterns/vectors.v1 + sda-execution-graph/mechanics/*.v1",
+            "sdaCommit": "cc5791b907bfb24e65b5b601c135ea9123a77bbe",
+            "conformanceVerified": false,
+            "conformanceBasis": "installed kernel is csharp: no execution-pattern-vector conformance test; node and python run the vectors"
+          }
+        }
+      },
+      {
+        "id": "V53",
+        "reading": "capability-proof-obligations",
+        "property": "provider-assumptions",
+        "disposition": "PROVIDER_ASSUMPTION_REQUIRED",
+        "basis": "5 provider-facing port(s) on sda-projected-capability-invocation-port.v2,sda-projected-capability-invocation-port.v2,sda-projected-capability-invocation-port.v2,sda-projected-capability-invocation-port.v2,sda-projected-capability-invocation-port.v2; no assume/guarantee contract is declared",
+        "nodeIds": [],
+        "scenarioIds": [],
+        "sourceRef": "snapshot:/inspection/readings/13/document/capabilities",
+        "rowIndex": 9,
+        "raw": {
+          "obligation": "provider-assumptions",
+          "disposition": "PROVIDER_ASSUMPTION_REQUIRED",
+          "basis": "5 provider-facing port(s) on sda-projected-capability-invocation-port.v2,sda-projected-capability-invocation-port.v2,sda-projected-capability-invocation-port.v2,sda-projected-capability-invocation-port.v2,sda-projected-capability-invocation-port.v2; no assume/guarantee contract is declared",
+          "scope": {
+            "semanticsVersion": "sda-execution-patterns/vectors.v1 + sda-execution-graph/mechanics/*.v1",
+            "sdaCommit": "cc5791b907bfb24e65b5b601c135ea9123a77bbe",
+            "conformanceVerified": false,
+            "conformanceBasis": "installed kernel is csharp: no execution-pattern-vector conformance test; node and python run the vectors"
+          }
+        }
+      },
+      {
+        "id": "V54",
+        "reading": "capability-proof-obligations",
+        "property": "mechanic-contracts",
+        "disposition": "NOT_FORMALLY_OBSERVABLE",
+        "basis": "no platform mechanic referenced by this capability's ports",
+        "nodeIds": [],
+        "scenarioIds": [],
+        "sourceRef": "snapshot:/inspection/readings/13/document/capabilities",
+        "rowIndex": 10,
+        "raw": {
+          "obligation": "mechanic-contracts",
+          "disposition": "NOT_FORMALLY_OBSERVABLE",
+          "basis": "no platform mechanic referenced by this capability's ports",
+          "scope": {
+            "semanticsVersion": "sda-execution-patterns/vectors.v1 + sda-execution-graph/mechanics/*.v1",
+            "sdaCommit": "cc5791b907bfb24e65b5b601c135ea9123a77bbe",
+            "conformanceVerified": false,
+            "conformanceBasis": "installed kernel is csharp: no execution-pattern-vector conformance test; node and python run the vectors"
+          }
+        }
+      },
+      {
+        "id": "V55",
+        "reading": "capability-proof-obligations",
+        "property": "pattern-vocabulary-binding",
+        "disposition": "NOT_FORMALLY_OBSERVABLE",
+        "basis": "0 of 4795 selected estate definitions with a pattern key; the mapping from the ordinal operation list to the declared pattern semantics is compiler behaviour, not a declared row",
+        "nodeIds": [],
+        "scenarioIds": [],
+        "sourceRef": "snapshot:/inspection/readings/13/document/capabilities",
+        "rowIndex": 11,
+        "raw": {
+          "obligation": "pattern-vocabulary-binding",
+          "disposition": "NOT_FORMALLY_OBSERVABLE",
+          "basis": "0 of 4795 selected estate definitions with a pattern key; the mapping from the ordinal operation list to the declared pattern semantics is compiler behaviour, not a declared row",
+          "scope": {
+            "semanticsVersion": "sda-execution-patterns/vectors.v1 + sda-execution-graph/mechanics/*.v1",
+            "sdaCommit": "cc5791b907bfb24e65b5b601c135ea9123a77bbe",
+            "conformanceVerified": false,
+            "conformanceBasis": "installed kernel is csharp: no execution-pattern-vector conformance test; node and python run the vectors"
+          }
+        }
+      },
+      {
+        "id": "V56",
+        "reading": "capability-proof-obligations",
+        "property": "interpreter-conformance",
+        "disposition": "NOT_FORMALLY_OBSERVABLE",
+        "basis": "installed kernel is csharp and has no execution-pattern-vector conformance test; node and python run the vectors",
+        "nodeIds": [],
+        "scenarioIds": [],
+        "sourceRef": "snapshot:/inspection/readings/13/document/capabilities",
+        "rowIndex": 12,
+        "raw": {
+          "obligation": "interpreter-conformance",
+          "disposition": "NOT_FORMALLY_OBSERVABLE",
+          "basis": "installed kernel is csharp and has no execution-pattern-vector conformance test; node and python run the vectors",
+          "scope": {
+            "semanticsVersion": "sda-execution-patterns/vectors.v1 + sda-execution-graph/mechanics/*.v1",
+            "sdaCommit": "cc5791b907bfb24e65b5b601c135ea9123a77bbe",
+            "conformanceVerified": false,
+            "conformanceBasis": "installed kernel is csharp: no execution-pattern-vector conformance test; node and python run the vectors"
+          }
+        }
+      }
+    ],
+    "receipts": [],
+    "unlocatedIssueIds": [
+      "R01",
+      "R02",
+      "R03",
+      "R04"
+    ],
+    "repairMap": {
+      "definitionPk": 214668,
+      "digest": "c5207627ad3c5b6494d86347b792ac00c62b108504556ed8da633c75c32bb6c9",
+      "entries": [
+        {
+          "findingCode": "BINDING_NOT_INVOKED",
+          "disposition": "REPAIR",
+          "repairProcedure": "model.remove_scenario_operations",
+          "parameterContract": "blueprint-finding-repair-parameters.v1",
+          "requiredParameters": [
+            "capability_id",
+            "scenario"
+          ],
+          "parameterDefaults": {
+            "operation_ids": null,
+            "remove_uninvoked_bindings": true
+          },
+          "nextUnit": null
+        },
+        {
+          "findingCode": "ENDPOINT_BINDING_WITHOUT_PROVIDER_ID",
+          "disposition": "REPAIR",
+          "repairProcedure": "model.replace_port_configuration",
+          "parameterContract": "blueprint-finding-repair-parameters.v1",
+          "requiredParameters": [
+            "namespace",
+            "port",
+            "configuration_json"
+          ],
+          "parameterDefaults": {},
+          "nextUnit": null
+        },
+        {
+          "findingCode": "FEATURE_VERSION_BINDING_NOT_READ",
+          "disposition": "REPAIR",
+          "repairProcedure": "model.repoint_capability_feature",
+          "parameterContract": "blueprint-finding-repair-parameters.v1",
+          "requiredParameters": [
+            "capability_id"
+          ],
+          "parameterDefaults": {
+            "feature_version_pk": null
+          },
+          "nextUnit": null
+        },
+        {
+          "findingCode": "FEATURE_SCENARIO_SELECTION_DIFFERS",
+          "disposition": "REPAIR",
+          "repairProcedure": "model.repoint_capability_feature",
+          "parameterContract": "blueprint-finding-repair-parameters.v1",
+          "requiredParameters": [
+            "capability_id"
+          ],
+          "parameterDefaults": {
+            "feature_version_pk": null
+          },
+          "nextUnit": null
+        },
+        {
+          "findingCode": "PLATFORM_BINDING_WITHOUT_PROVIDER",
+          "disposition": "NO_INSTALLED_REPAIR",
+          "repairProcedure": null,
+          "parameterContract": null,
+          "requiredParameters": [],
+          "parameterDefaults": {},
+          "nextUnit": "request-sda-embodiment-plan-port-registration.md"
+        },
+        {
+          "findingCode": "CANONICAL_BLUEPRINT_EDGES_NOT_AVAILABLE",
+          "disposition": "NONE",
+          "repairProcedure": null,
+          "parameterContract": null,
+          "requiredParameters": [],
+          "parameterDefaults": {},
+          "nextUnit": null
+        },
+        {
+          "findingCode": "OBSERVABILITY_CONTRACT_NOT_RETAINED",
+          "disposition": "NONE",
+          "repairProcedure": null,
+          "parameterContract": null,
+          "requiredParameters": [],
+          "parameterDefaults": {},
+          "nextUnit": null
+        },
+        {
+          "findingCode": "MONOTONIC_PROGRESS_NOT_PROVEN",
+          "disposition": "NONE",
+          "repairProcedure": null,
+          "parameterContract": null,
+          "requiredParameters": [],
+          "parameterDefaults": {},
+          "nextUnit": null
+        },
+        {
+          "findingCode": "SCENARIO_DISCONNECTED",
+          "disposition": "NONE",
+          "repairProcedure": null,
+          "parameterContract": null,
+          "requiredParameters": [],
+          "parameterDefaults": {},
+          "nextUnit": null
+        },
+        {
+          "findingCode": "ADVANCED_ROUTING_NOT_PROJECTED",
+          "disposition": "NONE",
+          "repairProcedure": null,
+          "parameterContract": null,
+          "requiredParameters": [],
+          "parameterDefaults": {},
+          "nextUnit": null
+        },
+        {
+          "findingCode": "FEATURE_PROSE_DIFFERS_FROM_SOURCE",
+          "disposition": "NONE",
+          "repairProcedure": null,
+          "parameterContract": null,
+          "requiredParameters": [],
+          "parameterDefaults": {},
+          "nextUnit": null
+        },
+        {
+          "findingCode": "AUTHORITY_GRAPH_ROOT_DIFFERS",
+          "disposition": "NONE",
+          "repairProcedure": null,
+          "parameterContract": null,
+          "requiredParameters": [],
+          "parameterDefaults": {},
+          "nextUnit": null
+        },
+        {
+          "findingCode": "INTERFACE_ROOT_NOT_IN_GRAPH",
+          "disposition": "NONE",
+          "repairProcedure": null,
+          "parameterContract": null,
+          "requiredParameters": [],
+          "parameterDefaults": {},
+          "nextUnit": null
+        },
+        {
+          "findingCode": "SCENARIOS_WITHOUT_DECLARED_ROOT_PATH",
+          "disposition": "NONE",
+          "repairProcedure": null,
+          "parameterContract": null,
+          "requiredParameters": [],
+          "parameterDefaults": {},
+          "nextUnit": null
+        },
+        {
+          "findingCode": "EXECUTION_AUTHORITY_EMPTY",
+          "disposition": "NONE",
+          "repairProcedure": null,
+          "parameterContract": null,
+          "requiredParameters": [],
+          "parameterDefaults": {},
+          "nextUnit": null
+        },
+        {
+          "findingCode": "INVOCATION_CONDITION_PATH_ABSENT",
+          "disposition": "REPAIR",
+          "repairProcedure": "model.repair_binding_path_compatibility",
+          "parameterContract": "blueprint-finding-repair-parameters.v1",
+          "requiredParameters": [
+            "capability_id",
+            "operation_ordinal",
+            "required_paths"
+          ],
+          "parameterDefaults": {
+            "capability_id": null,
+            "scenario": null,
+            "binding_port": null,
+            "operation_ordinal": null,
+            "required_paths": []
+          },
+          "nextUnit": null
+        },
+        {
+          "findingCode": "INVOCATION_REQUEST_PATH_ABSENT",
+          "disposition": "REPAIR",
+          "repairProcedure": "model.repair_binding_path_compatibility",
+          "parameterContract": "blueprint-finding-repair-parameters.v1",
+          "requiredParameters": [
+            "capability_id",
+            "operation_ordinal",
+            "required_paths"
+          ],
+          "parameterDefaults": {
+            "capability_id": null,
+            "scenario": null,
+            "binding_port": null,
+            "operation_ordinal": null,
+            "required_paths": []
+          },
+          "nextUnit": null
+        },
+        {
+          "findingCode": "INVOCATION_CONDITION_EVIDENCE_NOT_RETAINED",
+          "disposition": "NONE",
+          "repairProcedure": null,
+          "parameterContract": null,
+          "requiredParameters": [],
+          "parameterDefaults": {},
+          "nextUnit": null
+        },
+        {
+          "findingCode": "PROJECTED_CAPABILITY_REQUEST_PATH_MISSING",
+          "disposition": "NONE",
+          "repairProcedure": null,
+          "parameterContract": null,
+          "requiredParameters": [],
+          "parameterDefaults": {},
+          "nextUnit": "request-projected-capability-request-contract-shape.md"
+        },
+        {
+          "findingCode": "NESTED_INVOCATION_REQUEST_PATH_ABSENT",
+          "disposition": "NONE",
+          "repairProcedure": null,
+          "parameterContract": null,
+          "requiredParameters": [],
+          "parameterDefaults": {},
+          "nextUnit": "request-projected-capability-request-contract-shape.md"
+        },
+        {
+          "findingCode": "BOUNDARY_INSPECTION_EVIDENCE_NOT_RETAINED",
+          "disposition": "NONE",
+          "repairProcedure": null,
+          "parameterContract": null,
+          "requiredParameters": [],
+          "parameterDefaults": {},
+          "nextUnit": null
+        },
+        {
+          "findingCode": "CLI_DISPLAY_SELECTOR_NOT_TOTAL",
+          "disposition": "REPAIR",
+          "repairProcedure": "model.declare_capability_interface",
+          "parameterContract": "blueprint-finding-repair-parameters.v1",
+          "requiredParameters": [
+            "capability_id",
+            "cli_json"
+          ],
+          "parameterDefaults": {},
+          "nextUnit": null
+        },
+        {
+          "findingCode": "NESTED_INVOCATION_INPUT_UNVERIFIED",
+          "disposition": "NONE",
+          "repairProcedure": null,
+          "parameterContract": null,
+          "requiredParameters": [],
+          "parameterDefaults": {},
+          "nextUnit": null
+        },
+        {
+          "findingCode": "GRAPH_SOURCE_READ_LATENCY",
+          "disposition": "NO_INSTALLED_REPAIR",
+          "repairProcedure": null,
+          "parameterContract": null,
+          "requiredParameters": [],
+          "parameterDefaults": {},
+          "nextUnit": "docs/request-objective-invocation-graph-read-delay.md"
+        },
+        {
+          "findingCode": "INVOCATION_PURPOSE_MISMATCH",
+          "disposition": "NO_INSTALLED_REPAIR",
+          "repairProcedure": null,
+          "parameterContract": null,
+          "requiredParameters": [],
+          "parameterDefaults": {},
+          "nextUnit": "docs/request-objective-invocation-graph-read-delay.md"
+        },
+        {
+          "findingCode": "EXECUTOR_DECLARATION_UNRESOLVED",
+          "disposition": "NO_INSTALLED_REPAIR",
+          "repairProcedure": null,
+          "parameterContract": null,
+          "requiredParameters": [],
+          "parameterDefaults": {},
+          "nextUnit": "docs/request-objective-invocation-graph-read-delay.md"
+        },
+        {
+          "findingCode": "LEGACY_DECLARED_READ_REFERENCE",
+          "disposition": "NO_INSTALLED_REPAIR",
+          "repairProcedure": null,
+          "parameterContract": null,
+          "requiredParameters": [],
+          "parameterDefaults": {},
+          "nextUnit": "docs/request-objective-invocation-graph-read-delay.md"
+        },
+        {
+          "findingCode": "FORMAL_VERIFICATION_NOT_COMPOSED",
+          "disposition": "NO_INSTALLED_REPAIR",
+          "repairProcedure": null,
+          "parameterContract": null,
+          "requiredParameters": [],
+          "parameterDefaults": {},
+          "nextUnit": "docs/request-objective-invocation-graph-read-delay.md"
+        },
+        {
+          "findingCode": "SESSION_SETUP_OVERHEAD",
+          "disposition": "NO_INSTALLED_REPAIR",
+          "repairProcedure": null,
+          "parameterContract": null,
+          "requiredParameters": [],
+          "parameterDefaults": {},
+          "nextUnit": "sda:docs/request-declarative-session-identity.md"
+        }
+      ]
+    },
+    "summary": {
+      "readings": 15,
+      "read": 15,
+      "checks": 56,
+      "proved": 44,
+      "counterexamples": 0,
+      "other": 12,
+      "unlocated": 4,
+      "receipts": 0
+    }
+  },
+  "signal": "EVIDENCE_INCOMPLETE",
+  "isAdmissionReceipt": false,
+  "errors": 0,
+  "warnings": 4,
+  "issues": [
+    {
+      "id": "R01",
+      "severity": "warning",
+      "code": "CANONICAL_BLUEPRINT_EDGES_NOT_AVAILABLE",
+      "message": "No selected canonical blueprint with edge records was returned. Operation order is not a proof of complete canonical semantics.",
+      "nodeIds": [],
+      "sourceRefs": [],
+      "resolvedNodeIds": [],
+      "scenarioIds": [],
+      "addressStatus": "UNLOCATED",
+      "repair": {
+        "status": "HELD",
+        "declaration": {
+          "findingCode": "CANONICAL_BLUEPRINT_EDGES_NOT_AVAILABLE",
+          "disposition": "NONE",
+          "repairProcedure": null,
+          "parameterContract": null,
+          "requiredParameters": [],
+          "parameterDefaults": {},
+          "nextUnit": null
+        },
+        "requiredParameters": [],
+        "execution": "Not attempted",
+        "closure": "Not verified"
+      }
+    },
+    {
+      "id": "R02",
+      "severity": "warning",
+      "code": "OBSERVABILITY_CONTRACT_NOT_RETAINED",
+      "message": "The reader did not retain a per-cell observation contract. Runtime state is separate and unobserved.",
+      "nodeIds": [],
+      "sourceRefs": [],
+      "resolvedNodeIds": [],
+      "scenarioIds": [],
+      "addressStatus": "UNLOCATED",
+      "repair": {
+        "status": "HELD",
+        "declaration": {
+          "findingCode": "OBSERVABILITY_CONTRACT_NOT_RETAINED",
+          "disposition": "NONE",
+          "repairProcedure": null,
+          "parameterContract": null,
+          "requiredParameters": [],
+          "parameterDefaults": {},
+          "nextUnit": null
+        },
+        "requiredParameters": [],
+        "execution": "Not attempted",
+        "closure": "Not verified"
+      }
+    },
+    {
+      "id": "R03",
+      "severity": "warning",
+      "code": "MONOTONIC_PROGRESS_NOT_PROVEN",
+      "message": "No complete semantic-progress proof was retained. Forward placement must not imply proven monotonicity.",
+      "nodeIds": [],
+      "sourceRefs": [],
+      "resolvedNodeIds": [],
+      "scenarioIds": [],
+      "addressStatus": "UNLOCATED",
+      "repair": {
+        "status": "HELD",
+        "declaration": {
+          "findingCode": "MONOTONIC_PROGRESS_NOT_PROVEN",
+          "disposition": "NONE",
+          "repairProcedure": null,
+          "parameterContract": null,
+          "requiredParameters": [],
+          "parameterDefaults": {},
+          "nextUnit": null
+        },
+        "requiredParameters": [],
+        "execution": "Not attempted",
+        "closure": "Not verified"
+      }
+    },
+    {
+      "code": "FEATURE_VERSION_BINDING_NOT_READ",
+      "severity": "warning",
+      "message": "Feature compose-implementation-design is selected through the capability identity; no version-owned binding was returned.",
+      "nodeIds": [],
+      "sourceRefs": [
+        "model:feature_version/183108",
+        "snapshot:/inspection/readings/3/document/findings/0"
+      ],
+      "evidence": {
+        "label": "Feature version binding",
+        "selectionSource": "capability.feature_pk / selected estate definition",
+        "versionBound": false,
+        "feature": {
+          "featureVersionPk": 183108,
+          "featureId": "compose-implementation-design"
+        },
+        "scope": {
+          "capabilityId": "compose-implementation-design"
+        },
+        "reading": "feature-binding-drift",
+        "portDefinitionPk": 213905,
+        "statementDigest": "efa0bb5a155014b403e2c37a0aaf7d314b94179500fbfa781631b02244b1ded3"
+      },
+      "scope": {
+        "capabilityId": "compose-implementation-design"
+      },
+      "id": "R04",
+      "resolvedNodeIds": [],
+      "scenarioIds": [],
+      "addressStatus": "UNLOCATED",
+      "repair": {
+        "status": "MAPPED",
+        "declaration": {
+          "findingCode": "FEATURE_VERSION_BINDING_NOT_READ",
+          "disposition": "REPAIR",
+          "repairProcedure": "model.repoint_capability_feature",
+          "parameterContract": "blueprint-finding-repair-parameters.v1",
+          "requiredParameters": [
+            "capability_id"
+          ],
+          "parameterDefaults": {
+            "feature_version_pk": null
+          },
+          "nextUnit": null
+        },
+        "requiredParameters": [
+          "capability_id"
+        ],
+        "execution": "Not attempted",
+        "closure": "Not verified"
+      }
+    }
+  ]
+}

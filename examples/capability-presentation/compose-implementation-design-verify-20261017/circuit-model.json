@@ -1,0 +1,376 @@
+{
+  "view": "event",
+  "nodes": [
+    {
+      "id": "scenario:compose-implementation-design",
+      "label": "Compose the implementation design by altitude",
+      "kind": "scenario",
+      "ref": "graph:/scenarios/0",
+      "missing": false,
+      "reachable": true
+    },
+    {
+      "id": "operation:compose-implementation-design.v1:1",
+      "label": "design-alt-intent-build",
+      "kind": "operation",
+      "ref": "graph:/executionAuthorities/0/operations/0",
+      "operationKind": "invoke-port",
+      "ordinal": 1
+    },
+    {
+      "id": "operation:compose-implementation-design.v1:2",
+      "label": "design-alt-intent-compose",
+      "kind": "operation",
+      "ref": "graph:/executionAuthorities/0/operations/1",
+      "operationKind": "invoke-port",
+      "ordinal": 2
+    },
+    {
+      "id": "operation:compose-implementation-design.v1:3",
+      "label": "design-alt-intent-ask",
+      "kind": "operation",
+      "ref": "graph:/executionAuthorities/0/operations/2",
+      "operationKind": "invoke-port",
+      "ordinal": 3
+    },
+    {
+      "id": "operation:compose-implementation-design.v1:4",
+      "label": "design-alt-intent-snapshot",
+      "kind": "operation",
+      "ref": "graph:/executionAuthorities/0/operations/3",
+      "operationKind": "invoke-port",
+      "ordinal": 4
+    },
+    {
+      "id": "operation:compose-implementation-design.v1:5",
+      "label": "design-alt-feature-build",
+      "kind": "operation",
+      "ref": "graph:/executionAuthorities/0/operations/4",
+      "operationKind": "invoke-port",
+      "ordinal": 5
+    },
+    {
+      "id": "operation:compose-implementation-design.v1:6",
+      "label": "design-alt-feature-compose",
+      "kind": "operation",
+      "ref": "graph:/executionAuthorities/0/operations/5",
+      "operationKind": "invoke-port",
+      "ordinal": 6
+    },
+    {
+      "id": "operation:compose-implementation-design.v1:7",
+      "label": "design-alt-feature-ask",
+      "kind": "operation",
+      "ref": "graph:/executionAuthorities/0/operations/6",
+      "operationKind": "invoke-port",
+      "ordinal": 7
+    },
+    {
+      "id": "operation:compose-implementation-design.v1:8",
+      "label": "design-alt-feature-snapshot",
+      "kind": "operation",
+      "ref": "graph:/executionAuthorities/0/operations/7",
+      "operationKind": "invoke-port",
+      "ordinal": 8
+    },
+    {
+      "id": "operation:compose-implementation-design.v1:9",
+      "label": "design-alt-contracts-build",
+      "kind": "operation",
+      "ref": "graph:/executionAuthorities/0/operations/8",
+      "operationKind": "invoke-port",
+      "ordinal": 9
+    },
+    {
+      "id": "operation:compose-implementation-design.v1:10",
+      "label": "design-alt-contracts-compose",
+      "kind": "operation",
+      "ref": "graph:/executionAuthorities/0/operations/9",
+      "operationKind": "invoke-port",
+      "ordinal": 10
+    },
+    {
+      "id": "operation:compose-implementation-design.v1:11",
+      "label": "design-alt-contracts-ask",
+      "kind": "operation",
+      "ref": "graph:/executionAuthorities/0/operations/10",
+      "operationKind": "invoke-port",
+      "ordinal": 11
+    },
+    {
+      "id": "operation:compose-implementation-design.v1:12",
+      "label": "design-alt-contracts-snapshot",
+      "kind": "operation",
+      "ref": "graph:/executionAuthorities/0/operations/11",
+      "operationKind": "invoke-port",
+      "ordinal": 12
+    },
+    {
+      "id": "operation:compose-implementation-design.v1:13",
+      "label": "design-alt-providers-build",
+      "kind": "operation",
+      "ref": "graph:/executionAuthorities/0/operations/12",
+      "operationKind": "invoke-port",
+      "ordinal": 13
+    },
+    {
+      "id": "operation:compose-implementation-design.v1:14",
+      "label": "design-alt-providers-compose",
+      "kind": "operation",
+      "ref": "graph:/executionAuthorities/0/operations/13",
+      "operationKind": "invoke-port",
+      "ordinal": 14
+    },
+    {
+      "id": "operation:compose-implementation-design.v1:15",
+      "label": "design-alt-providers-ask",
+      "kind": "operation",
+      "ref": "graph:/executionAuthorities/0/operations/14",
+      "operationKind": "invoke-port",
+      "ordinal": 15
+    },
+    {
+      "id": "operation:compose-implementation-design.v1:16",
+      "label": "design-alt-providers-snapshot",
+      "kind": "operation",
+      "ref": "graph:/executionAuthorities/0/operations/15",
+      "operationKind": "invoke-port",
+      "ordinal": 16
+    },
+    {
+      "id": "operation:compose-implementation-design.v1:17",
+      "label": "design-alt-topology-build",
+      "kind": "operation",
+      "ref": "graph:/executionAuthorities/0/operations/16",
+      "operationKind": "invoke-port",
+      "ordinal": 17
+    },
+    {
+      "id": "operation:compose-implementation-design.v1:18",
+      "label": "design-alt-topology-compose",
+      "kind": "operation",
+      "ref": "graph:/executionAuthorities/0/operations/17",
+      "operationKind": "invoke-port",
+      "ordinal": 18
+    },
+    {
+      "id": "operation:compose-implementation-design.v1:19",
+      "label": "design-alt-topology-ask",
+      "kind": "operation",
+      "ref": "graph:/executionAuthorities/0/operations/18",
+      "operationKind": "invoke-port",
+      "ordinal": 19
+    },
+    {
+      "id": "operation:compose-implementation-design.v1:20",
+      "label": "design-alt-topology-snapshot",
+      "kind": "operation",
+      "ref": "graph:/executionAuthorities/0/operations/19",
+      "operationKind": "invoke-port",
+      "ordinal": 20
+    },
+    {
+      "id": "operation:compose-implementation-design.v1:21",
+      "label": "design-admit-merge",
+      "kind": "operation",
+      "ref": "graph:/executionAuthorities/0/operations/20",
+      "operationKind": "invoke-port",
+      "ordinal": 21
+    },
+    {
+      "id": "operation:compose-implementation-design.v1:22",
+      "label": "design-admit-normalize",
+      "kind": "operation",
+      "ref": "graph:/executionAuthorities/0/operations/21",
+      "operationKind": "invoke-port",
+      "ordinal": 22
+    }
+  ],
+  "edges": [
+    {
+      "id": "edge:1",
+      "from": "scenario:compose-implementation-design",
+      "to": "operation:compose-implementation-design.v1:1",
+      "relation": "authority",
+      "ref": "graph:/executionAuthorities/0",
+      "label": "compose-implementation-design.v1"
+    },
+    {
+      "id": "edge:2",
+      "from": "operation:compose-implementation-design.v1:1",
+      "to": "operation:compose-implementation-design.v1:2",
+      "relation": "order",
+      "ref": "graph:/executionAuthorities/0/operations/1",
+      "label": "declared order"
+    },
+    {
+      "id": "edge:3",
+      "from": "operation:compose-implementation-design.v1:2",
+      "to": "operation:compose-implementation-design.v1:3",
+      "relation": "order",
+      "ref": "graph:/executionAuthorities/0/operations/2",
+      "label": "declared order"
+    },
+    {
+      "id": "edge:4",
+      "from": "operation:compose-implementation-design.v1:3",
+      "to": "operation:compose-implementation-design.v1:4",
+      "relation": "order",
+      "ref": "graph:/executionAuthorities/0/operations/3",
+      "label": "declared order"
+    },
+    {
+      "id": "edge:5",
+      "from": "operation:compose-implementation-design.v1:4",
+      "to": "operation:compose-implementation-design.v1:5",
+      "relation": "order",
+      "ref": "graph:/executionAuthorities/0/operations/4",
+      "label": "declared order"
+    },
+    {
+      "id": "edge:6",
+      "from": "operation:compose-implementation-design.v1:5",
+      "to": "operation:compose-implementation-design.v1:6",
+      "relation": "order",
+      "ref": "graph:/executionAuthorities/0/operations/5",
+      "label": "declared order"
+    },
+    {
+      "id": "edge:7",
+      "from": "operation:compose-implementation-design.v1:6",
+      "to": "operation:compose-implementation-design.v1:7",
+      "relation": "order",
+      "ref": "graph:/executionAuthorities/0/operations/6",
+      "label": "declared order"
+    },
+    {
+      "id": "edge:8",
+      "from": "operation:compose-implementation-design.v1:7",
+      "to": "operation:compose-implementation-design.v1:8",
+      "relation": "order",
+      "ref": "graph:/executionAuthorities/0/operations/7",
+      "label": "declared order"
+    },
+    {
+      "id": "edge:9",
+      "from": "operation:compose-implementation-design.v1:8",
+      "to": "operation:compose-implementation-design.v1:9",
+      "relation": "order",
+      "ref": "graph:/executionAuthorities/0/operations/8",
+      "label": "declared order"
+    },
+    {
+      "id": "edge:10",
+      "from": "operation:compose-implementation-design.v1:9",
+      "to": "operation:compose-implementation-design.v1:10",
+      "relation": "order",
+      "ref": "graph:/executionAuthorities/0/operations/9",
+      "label": "declared order"
+    },
+    {
+      "id": "edge:11",
+      "from": "operation:compose-implementation-design.v1:10",
+      "to": "operation:compose-implementation-design.v1:11",
+      "relation": "order",
+      "ref": "graph:/executionAuthorities/0/operations/10",
+      "label": "declared order"
+    },
+    {
+      "id": "edge:12",
+      "from": "operation:compose-implementation-design.v1:11",
+      "to": "operation:compose-implementation-design.v1:12",
+      "relation": "order",
+      "ref": "graph:/executionAuthorities/0/operations/11",
+      "label": "declared order"
+    },
+    {
+      "id": "edge:13",
+      "from": "operation:compose-implementation-design.v1:12",
+      "to": "operation:compose-implementation-design.v1:13",
+      "relation": "order",
+      "ref": "graph:/executionAuthorities/0/operations/12",
+      "label": "declared order"
+    },
+    {
+      "id": "edge:14",
+      "from": "operation:compose-implementation-design.v1:13",
+      "to": "operation:compose-implementation-design.v1:14",
+      "relation": "order",
+      "ref": "graph:/executionAuthorities/0/operations/13",
+      "label": "declared order"
+    },
+    {
+      "id": "edge:15",
+      "from": "operation:compose-implementation-design.v1:14",
+      "to": "operation:compose-implementation-design.v1:15",
+      "relation": "order",
+      "ref": "graph:/executionAuthorities/0/operations/14",
+      "label": "declared order"
+    },
+    {
+      "id": "edge:16",
+      "from": "operation:compose-implementation-design.v1:15",
+      "to": "operation:compose-implementation-design.v1:16",
+      "relation": "order",
+      "ref": "graph:/executionAuthorities/0/operations/15",
+      "label": "declared order"
+    },
+    {
+      "id": "edge:17",
+      "from": "operation:compose-implementation-design.v1:16",
+      "to": "operation:compose-implementation-design.v1:17",
+      "relation": "order",
+      "ref": "graph:/executionAuthorities/0/operations/16",
+      "label": "declared order"
+    },
+    {
+      "id": "edge:18",
+      "from": "operation:compose-implementation-design.v1:17",
+      "to": "operation:compose-implementation-design.v1:18",
+      "relation": "order",
+      "ref": "graph:/executionAuthorities/0/operations/17",
+      "label": "declared order"
+    },
+    {
+      "id": "edge:19",
+      "from": "operation:compose-implementation-design.v1:18",
+      "to": "operation:compose-implementation-design.v1:19",
+      "relation": "order",
+      "ref": "graph:/executionAuthorities/0/operations/18",
+      "label": "declared order"
+    },
+    {
+      "id": "edge:20",
+      "from": "operation:compose-implementation-design.v1:19",
+      "to": "operation:compose-implementation-design.v1:20",
+      "relation": "order",
+      "ref": "graph:/executionAuthorities/0/operations/19",
+      "label": "declared order"
+    },
+    {
+      "id": "edge:21",
+      "from": "operation:compose-implementation-design.v1:20",
+      "to": "operation:compose-implementation-design.v1:21",
+      "relation": "order",
+      "ref": "graph:/executionAuthorities/0/operations/20",
+      "label": "declared order"
+    },
+    {
+      "id": "edge:22",
+      "from": "operation:compose-implementation-design.v1:21",
+      "to": "operation:compose-implementation-design.v1:22",
+      "relation": "order",
+      "ref": "graph:/executionAuthorities/0/operations/21",
+      "label": "declared order"
+    }
+  ],
+  "findings": [
+    {
+      "code": "FEATURE_VERSION_BINDING_NOT_READ",
+      "label": "Feature version binding",
+      "message": "Feature compose-implementation-design is selected through the capability identity; no version-owned binding was returned.",
+      "sourceRef": "model:feature_version/183108"
+    }
+  ],
+  "digest": "b4e0dbdf79a26dff11d158d8593bb10034104cd094d29ab3175382c4e0aa6f12"
+}

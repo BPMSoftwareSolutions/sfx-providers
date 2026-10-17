@@ -229,6 +229,10 @@ match the corresponding operations in the complete Event sheet. Provider wires
 terminate at the selected glyph's owned anchor. Each reference retains its
 component classification alongside its independent provider-binding or testimony
 basis; changing a symbol cannot change provider ownership or disclosure scope.
+Provider columns reserve the measured width of their complete caption and each
+displayed call label, then share remaining space by call count. Uneven groups
+and operations naming multiple providers retain their owned calls without
+squeezing them into equal provider columns or lowering the existing font floors.
 
 Each rendered cell records its selected glyph, classification basis, platform
 ID, owning binding ID and retained source pointer. The rendering validator

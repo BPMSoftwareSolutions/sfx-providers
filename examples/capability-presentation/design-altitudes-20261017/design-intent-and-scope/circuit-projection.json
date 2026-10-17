@@ -1,0 +1,118 @@
+{
+  "contractId": "capability-blueprint-projection.v1",
+  "altitude": "capability",
+  "capabilityId": "design-intent-and-scope",
+  "scenarioId": "design-intent-and-scope",
+  "snapshotDigest": "cd0fc0a5a882afa1f143b157d489ca7a811f1ed97cbffef0674b00553c2d9197",
+  "nodes": [
+    {
+      "id": "scenario:design-intent-and-scope",
+      "kind": "scenario",
+      "label": "Design intent and scope",
+      "ref": "graph:/scenarios/0",
+      "scenarioId": "design-intent-and-scope"
+    },
+    {
+      "id": "provider:sda-declared-read-graph-provider.v1",
+      "kind": "provider",
+      "label": "Declared Read Graph Provider (query runner)",
+      "ref": "graph:/interfaceAuthority/portBindings/1"
+    },
+    {
+      "id": "provider:google/gemini-select",
+      "kind": "provider",
+      "label": "Google Gemini (Select)",
+      "ref": "graph:/interfaceAuthority/portBindings/3"
+    }
+  ],
+  "edges": [
+    {
+      "id": "scenario-provider:design-intent-and-scope:provider:sda-declared-read-graph-provider.v1",
+      "from": "scenario:design-intent-and-scope",
+      "to": "provider:sda-declared-read-graph-provider.v1",
+      "kind": "scenario-provider",
+      "collapsed": true,
+      "label": "declared provider involvement",
+      "basis": "owning scenario operations and explicit port bindings",
+      "ref": "graph:/scenarios/0",
+      "sourceEdgeIds": [
+        "B3",
+        "B12",
+        "B13",
+        "B14",
+        "B9",
+        "B24",
+        "B25",
+        "B26"
+      ],
+      "sourceRefs": [
+        "graph:/executionAuthorities/0/operations/0",
+        "graph:/interfaceAuthority/portBindings/1",
+        "graph:/executionAuthorities/0/operations/3",
+        "graph:/interfaceAuthority/portBindings/4"
+      ],
+      "via": [
+        {
+          "operationId": "operation:design-intent-and-scope.v1:1",
+          "portId": "altitude-request-port",
+          "bindingId": "binding:altitude-request-port",
+          "sourceEdgeIds": [
+            "B3",
+            "B12",
+            "B13",
+            "B14"
+          ],
+          "basis": "declared provider"
+        },
+        {
+          "operationId": "operation:design-intent-and-scope.v1:4",
+          "portId": "altitude-snapshot-port",
+          "bindingId": "binding:altitude-snapshot-port",
+          "sourceEdgeIds": [
+            "B9",
+            "B24",
+            "B25",
+            "B26"
+          ],
+          "basis": "declared provider"
+        }
+      ]
+    },
+    {
+      "id": "scenario-provider:design-intent-and-scope:provider:google/gemini-select",
+      "from": "scenario:design-intent-and-scope",
+      "to": "provider:google/gemini-select",
+      "kind": "scenario-provider",
+      "collapsed": true,
+      "label": "declared provider involvement",
+      "basis": "owning scenario operations and explicit port bindings",
+      "ref": "graph:/scenarios/0",
+      "sourceEdgeIds": [
+        "B7",
+        "B19",
+        "B20",
+        "B21"
+      ],
+      "sourceRefs": [
+        "graph:/executionAuthorities/0/operations/2",
+        "graph:/interfaceAuthority/portBindings/3"
+      ],
+      "via": [
+        {
+          "operationId": "operation:design-intent-and-scope.v1:3",
+          "portId": "altitude-ask-port",
+          "bindingId": "binding:altitude-ask-port",
+          "sourceEdgeIds": [
+            "B7",
+            "B19",
+            "B20",
+            "B21"
+          ],
+          "basis": "declared provider"
+        }
+      ]
+    }
+  ],
+  "scope": "Root-connected scenario topology and declared provider involvement; collapsed links retain exact operation and binding evidence, not observed execution.",
+  "topologyDigest": "3286f5d2476502b3eb91f8a0a15a7f64aa8b2c2e945cfeb7df5c81d438533723"
+}

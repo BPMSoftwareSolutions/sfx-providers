@@ -32,3 +32,5 @@ providers/enrollment-remote-tests/obj/
 providers/cli-login-input-provider/bin/
 providers/cli-login-input-provider/obj/
 
+examples/./*
+*.pptx

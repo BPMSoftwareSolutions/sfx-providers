@@ -3,7 +3,7 @@ import {fitBlueprintText} from '../circuit-presentation/text-fit.mjs';
 import {projectBlueprint} from './projection.mjs';
 import {identifierCaption} from './caption.mjs';
 import {blueprintGrid,eventAction,eventComponent} from './event-sheet.mjs';
-import {drawComponentGlyph,glyphAnchor,COMPONENT_STYLE} from './component-glyphs.mjs';
+import {drawComponentGlyph,glyphAnchor,glyphFrame,componentGlyph,COMPONENT_STYLE} from './component-glyphs.mjs';
 import {scenarioInspection} from './inspection-evidence.mjs';
 
 // Native drafting symbols describe visual roles only; they never add authority.
@@ -16,6 +16,11 @@ function outcomeIcon(p,x,y,color,classification){
  p.add('shape','ELLIPSE',x,y,15,15,{fill:'none',stroke:color,sw:1});
  if(classification==='failure'){p.add('line',x+4,y+4,x+11,y+11,color,1);p.add('line',x+4,y+11,x+11,y+4,color,1);}
  else{p.add('line',x+3,y+8,x+6,y+11,color,1.2);p.add('line',x+6,y+11,x+12,y+4,color,1.2);}
+}
+
+function providerCallCaption(op,capabilityId){
+ const words=identifierCaption(op.label,capabilityId).split(' ');
+ return [...new Set([words[0],words.at(-1)])].join(' ');
 }
 
 // Scenario semantics stay primary. Provider-related and flagged operation
@@ -138,7 +143,7 @@ function appendScenarioPage({snapshot,model,page,slides,scenarioId,operationIds,
   p.add('shape','ROUND_RECTANGLE',808,y,130,outcomeH-5,{fill:'#04252B',stroke:C.muted,sw:.9});
   label('+ '+outcomeSummary+' more variants',830,y+1,107,outcomeH-7,9,C.muted,false,undefined,8,true);
  }
- const count=involvement.length,colW=600/Math.max(1,count+(unassigned.length?1:0)),providerWidth=colW-14;
+ const count=involvement.length,colW=600/Math.max(1,count+(unassigned.length?1:0));
  const ports=[],eventNode=semantic.nodes.find(n=>n.kind==='event');
  const callStyle=COMPONENT_STYLE.scenario.providerCalls;
  // Each provider is centered above its calls, ordered within that group by
@@ -151,14 +156,38 @@ function appendScenarioPage({snapshot,model,page,slides,scenarioId,operationIds,
  const callWidth=Math.min(callStyle.width,(availableWidth-callGap*(shownCalls.length-1))/Math.max(1,shownCalls.length));
  const callSpan=shownCalls.length*callWidth+Math.max(0,shownCalls.length-1)*callGap;
  const callLeft=180+(availableWidth-callSpan)/2;
+ // Equal provider columns can squeeze several calls into a narrower frame
+ // than a single call in the next column. Measure both the retained provider
+ // label and its displayed calls, then share spare width by call count.
+ const groups=involvement.map(edge=>{
+  const provider=model.nodes.find(n=>n.id===edge.to),uses=edge.via.filter(use=>shownCalls.some(call=>call.edge===edge&&call.use===use));
+  const fit=width=>{
+   fitBlueprintText('PROVIDER',{width,height:21,fontSize:10,minFontSize:10});
+   fitBlueprintText(provider.label,{width,height:40,fontSize:10,minFontSize:8});
+   for(const use of uses){
+    const op=model.nodes.find(n=>n.id===use.operationId),w=Math.min(callStyle.width,(width-callGap*(uses.length-1))/uses.length);
+    const frame=glyphFrame({x:0,y:0,w,h:callStyle.height},componentGlyph(op,COMPONENT_STYLE,eventComponent(model,op).glyph).label);
+    fitBlueprintText(providerCallCaption(op,model.capabilityId),{width:frame.w,height:frame.h,fontSize:9,minFontSize:6});
+   }
+  };
+  let low=0,high=availableWidth-14;fit(high);
+  while(high-low>.25){const middle=(low+high)/2;
+   try{fit(middle);high=middle;}catch(error){if(error.code!=='CAPABILITY_BLUEPRINT_TEXT_OVERFLOW')throw error;low=middle;}
+  }
+  return {edge,provider,uses,w:high};
+ });
+ const spareWidth=availableWidth-groups.reduce((sum,g)=>sum+g.w+14,0),slots=groups.reduce((sum,g)=>sum+Math.max(1,g.uses.length),0);
+ if(spareWidth<0)throw Object.assign(new Error('Provider captions and call labels cannot fit the scenario surface without clipping.'),{code:'CAPABILITY_BLUEPRINT_TEXT_OVERFLOW'});
+ let groupX=180;
+ for(const group of groups){group.x=groupX;group.w+=spareWidth*Math.max(1,group.uses.length)/slots;groupX+=group.w+14;}
  p.blueprint.disclosedOperationIds=[...new Set([...shownCalls.map(c=>c.use.operationId),...unassigned.slice(0,3)])];
  p.blueprint.providerCallLayout={order:'provider-group-then-scenario-operation-order',total:allCalls.length,shown:shownCalls.length};
- for(const [i,edge]of involvement.entries()){
-  const x=180+i*colW,provider=model.nodes.find(n=>n.id===edge.to),inspection=slides.find(s=>s.blueprint?.role==='provider-inspection'&&s.blueprint.providerId===provider.id);
+ for(const {edge,provider,uses,x,w:providerWidth}of groups){
+  const inspection=slides.find(s=>s.blueprint?.role==='provider-inspection'&&s.blueprint.providerId===provider.id);
   const box={x,y:115,w:providerWidth,h:66};
   drawComponentGlyph(p,provider,box,C.violet,{fill:'#101A35'});
   p.text('PROVIDER',x,117,providerWidth,21,10,C.violet,true,'center');label(provider.label,x,138,providerWidth,40,10,C.white,true,inspection);
-  const uses=edge.via.filter(use=>shownCalls.some(call=>call.edge===edge&&call.use===use)),portH=callStyle.height;
+  const portH=callStyle.height;
   uses.forEach((use,j)=>{
    const callIndex=shownCalls.findIndex(call=>call.edge===edge&&call.use===use);
    const op=model.nodes.find(n=>n.id===use.operationId),y=callStyle.top;
@@ -181,8 +210,7 @@ function appendScenarioPage({snapshot,model,page,slides,scenarioId,operationIds,
    p.add('route',eventRoute,C.violet,{arrow:false,glow:false,width:1,routing:'orthogonal'});
    p.add('port',...eventAnchor,C.violet,2);p.add('port',...callAnchor,C.violet,2);
    const frames=drawComponentGlyph(p,op,opBox,ink??action.color,{glyphName:component.glyph,scale:.75,fill:action.category==='bind'?'#17132F':action.category==='select'?'#20251B':'#04263A'});
-   const words=identifierCaption(op.label,model.capabilityId).split(' ');
-   const caption=[...new Set([words[0],words.at(-1)])].join(' ');
+   const caption=providerCallCaption(op,model.capabilityId);
    p.text(String(op.ordinal).padStart(2,'0'),frames.heading.x-8,y+(portH-21)/2,frames.heading.w+16,21,8,action.color,true,'center');
    label(caption,frames.label.x,frames.label.y,frames.label.w,frames.label.h,9,C.white,false,target,6);
    if(issues.length){p.add('port',callX+w-3,y+3,ink??C.amber,3);p.blueprint.diagnosticOperationReferences.push({operationId:op.id,issueIds:issues.map(i=>i.id),bounds:opBox});}
@@ -191,7 +219,7 @@ function appendScenarioPage({snapshot,model,page,slides,scenarioId,operationIds,
   });
  }
  if(unassigned.length){
-  const x=180+count*colW,w=providerWidth;
+  const x=180+availableWidth,w=colW-14;
   // This is an inspection overlay above real operation references, not a
   // provider node. No connection is invented for the missing association.
   const missingAssociation=bindingIssues.some(i=>['PLATFORM_BINDING_WITHOUT_PROVIDER','ENDPOINT_BINDING_WITHOUT_PROVIDER_ID'].includes(i.code)&&i.nodeIds.some(id=>unassigned.includes(id)));

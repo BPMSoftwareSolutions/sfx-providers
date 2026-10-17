@@ -1,0 +1,554 @@
+{
+  "contractId": "capability-blueprint-projection.v1",
+  "altitude": "event",
+  "capabilityId": "compose-implementation-design",
+  "scenarioId": "compose-implementation-design",
+  "snapshotDigest": "468949b6a54e38d953c9c8d654722c3cf4c7791f92fd972a2bfe2fae5fe41b57",
+  "nodes": [
+    {
+      "id": "operation:compose-implementation-design.v1:1",
+      "kind": "operation",
+      "label": "design-alt-intent-build",
+      "ref": "graph:/executionAuthorities/0/operations/0",
+      "semanticId": "compose-implementation-design.intent.build",
+      "scenarioId": "compose-implementation-design",
+      "scenarioIds": [
+        "compose-implementation-design"
+      ],
+      "authorityId": "compose-implementation-design.v1",
+      "operationKind": "invoke-port",
+      "ordinal": 1,
+      "portId": "design-alt-intent-build",
+      "variants": []
+    },
+    {
+      "id": "operation:compose-implementation-design.v1:2",
+      "kind": "operation",
+      "label": "design-alt-intent-compose",
+      "ref": "graph:/executionAuthorities/0/operations/1",
+      "semanticId": "compose-implementation-design.intent.compose",
+      "scenarioId": "compose-implementation-design",
+      "scenarioIds": [
+        "compose-implementation-design"
+      ],
+      "authorityId": "compose-implementation-design.v1",
+      "operationKind": "invoke-port",
+      "ordinal": 2,
+      "portId": "design-alt-intent-compose",
+      "variants": []
+    },
+    {
+      "id": "operation:compose-implementation-design.v1:3",
+      "kind": "operation",
+      "label": "design-alt-intent-ask",
+      "ref": "graph:/executionAuthorities/0/operations/2",
+      "semanticId": "compose-implementation-design.intent.ask",
+      "scenarioId": "compose-implementation-design",
+      "scenarioIds": [
+        "compose-implementation-design"
+      ],
+      "authorityId": "compose-implementation-design.v1",
+      "operationKind": "invoke-port",
+      "ordinal": 3,
+      "portId": "design-alt-intent-ask",
+      "variants": []
+    },
+    {
+      "id": "operation:compose-implementation-design.v1:4",
+      "kind": "operation",
+      "label": "design-alt-intent-snapshot",
+      "ref": "graph:/executionAuthorities/0/operations/3",
+      "semanticId": "compose-implementation-design.intent.snapshot",
+      "scenarioId": "compose-implementation-design",
+      "scenarioIds": [
+        "compose-implementation-design"
+      ],
+      "authorityId": "compose-implementation-design.v1",
+      "operationKind": "invoke-port",
+      "ordinal": 4,
+      "portId": "design-alt-intent-snapshot",
+      "variants": []
+    },
+    {
+      "id": "operation:compose-implementation-design.v1:5",
+      "kind": "operation",
+      "label": "design-alt-feature-build",
+      "ref": "graph:/executionAuthorities/0/operations/4",
+      "semanticId": "compose-implementation-design.feature.build",
+      "scenarioId": "compose-implementation-design",
+      "scenarioIds": [
+        "compose-implementation-design"
+      ],
+      "authorityId": "compose-implementation-design.v1",
+      "operationKind": "invoke-port",
+      "ordinal": 5,
+      "portId": "design-alt-feature-build",
+      "variants": []
+    },
+    {
+      "id": "operation:compose-implementation-design.v1:6",
+      "kind": "operation",
+      "label": "design-alt-feature-compose",
+      "ref": "graph:/executionAuthorities/0/operations/5",
+      "semanticId": "compose-implementation-design.feature.compose",
+      "scenarioId": "compose-implementation-design",
+      "scenarioIds": [
+        "compose-implementation-design"
+      ],
+      "authorityId": "compose-implementation-design.v1",
+      "operationKind": "invoke-port",
+      "ordinal": 6,
+      "portId": "design-alt-feature-compose",
+      "variants": []
+    },
+    {
+      "id": "operation:compose-implementation-design.v1:7",
+      "kind": "operation",
+      "label": "design-alt-feature-ask",
+      "ref": "graph:/executionAuthorities/0/operations/6",
+      "semanticId": "compose-implementation-design.feature.ask",
+      "scenarioId": "compose-implementation-design",
+      "scenarioIds": [
+        "compose-implementation-design"
+      ],
+      "authorityId": "compose-implementation-design.v1",
+      "operationKind": "invoke-port",
+      "ordinal": 7,
+      "portId": "design-alt-feature-ask",
+      "variants": []
+    },
+    {
+      "id": "operation:compose-implementation-design.v1:8",
+      "kind": "operation",
+      "label": "design-alt-feature-snapshot",
+      "ref": "graph:/executionAuthorities/0/operations/7",
+      "semanticId": "compose-implementation-design.feature.snapshot",
+      "scenarioId": "compose-implementation-design",
+      "scenarioIds": [
+        "compose-implementation-design"
+      ],
+      "authorityId": "compose-implementation-design.v1",
+      "operationKind": "invoke-port",
+      "ordinal": 8,
+      "portId": "design-alt-feature-snapshot",
+      "variants": []
+    },
+    {
+      "id": "operation:compose-implementation-design.v1:9",
+      "kind": "operation",
+      "label": "design-alt-contracts-build",
+      "ref": "graph:/executionAuthorities/0/operations/8",
+      "semanticId": "compose-implementation-design.contracts.build",
+      "scenarioId": "compose-implementation-design",
+      "scenarioIds": [
+        "compose-implementation-design"
+      ],
+      "authorityId": "compose-implementation-design.v1",
+      "operationKind": "invoke-port",
+      "ordinal": 9,
+      "portId": "design-alt-contracts-build",
+      "variants": []
+    },
+    {
+      "id": "operation:compose-implementation-design.v1:10",
+      "kind": "operation",
+      "label": "design-alt-contracts-compose",
+      "ref": "graph:/executionAuthorities/0/operations/9",
+      "semanticId": "compose-implementation-design.contracts.compose",
+      "scenarioId": "compose-implementation-design",
+      "scenarioIds": [
+        "compose-implementation-design"
+      ],
+      "authorityId": "compose-implementation-design.v1",
+      "operationKind": "invoke-port",
+      "ordinal": 10,
+      "portId": "design-alt-contracts-compose",
+      "variants": []
+    },
+    {
+      "id": "operation:compose-implementation-design.v1:11",
+      "kind": "operation",
+      "label": "design-alt-contracts-ask",
+      "ref": "graph:/executionAuthorities/0/operations/10",
+      "semanticId": "compose-implementation-design.contracts.ask",
+      "scenarioId": "compose-implementation-design",
+      "scenarioIds": [
+        "compose-implementation-design"
+      ],
+      "authorityId": "compose-implementation-design.v1",
+      "operationKind": "invoke-port",
+      "ordinal": 11,
+      "portId": "design-alt-contracts-ask",
+      "variants": []
+    },
+    {
+      "id": "operation:compose-implementation-design.v1:12",
+      "kind": "operation",
+      "label": "design-alt-contracts-snapshot",
+      "ref": "graph:/executionAuthorities/0/operations/11",
+      "semanticId": "compose-implementation-design.contracts.snapshot",
+      "scenarioId": "compose-implementation-design",
+      "scenarioIds": [
+        "compose-implementation-design"
+      ],
+      "authorityId": "compose-implementation-design.v1",
+      "operationKind": "invoke-port",
+      "ordinal": 12,
+      "portId": "design-alt-contracts-snapshot",
+      "variants": []
+    },
+    {
+      "id": "operation:compose-implementation-design.v1:13",
+      "kind": "operation",
+      "label": "design-alt-providers-build",
+      "ref": "graph:/executionAuthorities/0/operations/12",
+      "semanticId": "compose-implementation-design.providers.build",
+      "scenarioId": "compose-implementation-design",
+      "scenarioIds": [
+        "compose-implementation-design"
+      ],
+      "authorityId": "compose-implementation-design.v1",
+      "operationKind": "invoke-port",
+      "ordinal": 13,
+      "portId": "design-alt-providers-build",
+      "variants": []
+    },
+    {
+      "id": "operation:compose-implementation-design.v1:14",
+      "kind": "operation",
+      "label": "design-alt-providers-compose",
+      "ref": "graph:/executionAuthorities/0/operations/13",
+      "semanticId": "compose-implementation-design.providers.compose",
+      "scenarioId": "compose-implementation-design",
+      "scenarioIds": [
+        "compose-implementation-design"
+      ],
+      "authorityId": "compose-implementation-design.v1",
+      "operationKind": "invoke-port",
+      "ordinal": 14,
+      "portId": "design-alt-providers-compose",
+      "variants": []
+    },
+    {
+      "id": "operation:compose-implementation-design.v1:15",
+      "kind": "operation",
+      "label": "design-alt-providers-ask",
+      "ref": "graph:/executionAuthorities/0/operations/14",
+      "semanticId": "compose-implementation-design.providers.ask",
+      "scenarioId": "compose-implementation-design",
+      "scenarioIds": [
+        "compose-implementation-design"
+      ],
+      "authorityId": "compose-implementation-design.v1",
+      "operationKind": "invoke-port",
+      "ordinal": 15,
+      "portId": "design-alt-providers-ask",
+      "variants": []
+    },
+    {
+      "id": "operation:compose-implementation-design.v1:16",
+      "kind": "operation",
+      "label": "design-alt-providers-snapshot",
+      "ref": "graph:/executionAuthorities/0/operations/15",
+      "semanticId": "compose-implementation-design.providers.snapshot",
+      "scenarioId": "compose-implementation-design",
+      "scenarioIds": [
+        "compose-implementation-design"
+      ],
+      "authorityId": "compose-implementation-design.v1",
+      "operationKind": "invoke-port",
+      "ordinal": 16,
+      "portId": "design-alt-providers-snapshot",
+      "variants": []
+    },
+    {
+      "id": "operation:compose-implementation-design.v1:17",
+      "kind": "operation",
+      "label": "design-alt-topology-build",
+      "ref": "graph:/executionAuthorities/0/operations/16",
+      "semanticId": "compose-implementation-design.topology.build",
+      "scenarioId": "compose-implementation-design",
+      "scenarioIds": [
+        "compose-implementation-design"
+      ],
+      "authorityId": "compose-implementation-design.v1",
+      "operationKind": "invoke-port",
+      "ordinal": 17,
+      "portId": "design-alt-topology-build",
+      "variants": []
+    },
+    {
+      "id": "operation:compose-implementation-design.v1:18",
+      "kind": "operation",
+      "label": "design-alt-topology-compose",
+      "ref": "graph:/executionAuthorities/0/operations/17",
+      "semanticId": "compose-implementation-design.topology.compose",
+      "scenarioId": "compose-implementation-design",
+      "scenarioIds": [
+        "compose-implementation-design"
+      ],
+      "authorityId": "compose-implementation-design.v1",
+      "operationKind": "invoke-port",
+      "ordinal": 18,
+      "portId": "design-alt-topology-compose",
+      "variants": []
+    },
+    {
+      "id": "operation:compose-implementation-design.v1:19",
+      "kind": "operation",
+      "label": "design-alt-topology-ask",
+      "ref": "graph:/executionAuthorities/0/operations/18",
+      "semanticId": "compose-implementation-design.topology.ask",
+      "scenarioId": "compose-implementation-design",
+      "scenarioIds": [
+        "compose-implementation-design"
+      ],
+      "authorityId": "compose-implementation-design.v1",
+      "operationKind": "invoke-port",
+      "ordinal": 19,
+      "portId": "design-alt-topology-ask",
+      "variants": []
+    },
+    {
+      "id": "operation:compose-implementation-design.v1:20",
+      "kind": "operation",
+      "label": "design-alt-topology-snapshot",
+      "ref": "graph:/executionAuthorities/0/operations/19",
+      "semanticId": "compose-implementation-design.topology.snapshot",
+      "scenarioId": "compose-implementation-design",
+      "scenarioIds": [
+        "compose-implementation-design"
+      ],
+      "authorityId": "compose-implementation-design.v1",
+      "operationKind": "invoke-port",
+      "ordinal": 20,
+      "portId": "design-alt-topology-snapshot",
+      "variants": []
+    },
+    {
+      "id": "operation:compose-implementation-design.v1:21",
+      "kind": "operation",
+      "label": "design-admit-merge",
+      "ref": "graph:/executionAuthorities/0/operations/20",
+      "semanticId": "compose-implementation-design.admit",
+      "scenarioId": "compose-implementation-design",
+      "scenarioIds": [
+        "compose-implementation-design"
+      ],
+      "authorityId": "compose-implementation-design.v1",
+      "operationKind": "invoke-port",
+      "ordinal": 21,
+      "portId": "design-admit-merge",
+      "variants": []
+    },
+    {
+      "id": "operation:compose-implementation-design.v1:22",
+      "kind": "operation",
+      "label": "design-admit-normalize",
+      "ref": "graph:/executionAuthorities/0/operations/21",
+      "semanticId": "compose-implementation-design.normalize",
+      "scenarioId": "compose-implementation-design",
+      "scenarioIds": [
+        "compose-implementation-design"
+      ],
+      "authorityId": "compose-implementation-design.v1",
+      "operationKind": "invoke-port",
+      "ordinal": 22,
+      "portId": "design-admit-normalize",
+      "variants": []
+    }
+  ],
+  "edges": [
+    {
+      "id": "B6",
+      "from": "operation:compose-implementation-design.v1:1",
+      "to": "operation:compose-implementation-design.v1:2",
+      "kind": "sequence",
+      "ref": "graph:/executionAuthorities/0/operations/1",
+      "label": "declared operation order",
+      "basis": "ordered execution authority; canonical routing not established"
+    },
+    {
+      "id": "B8",
+      "from": "operation:compose-implementation-design.v1:2",
+      "to": "operation:compose-implementation-design.v1:3",
+      "kind": "sequence",
+      "ref": "graph:/executionAuthorities/0/operations/2",
+      "label": "declared operation order",
+      "basis": "ordered execution authority; canonical routing not established"
+    },
+    {
+      "id": "B10",
+      "from": "operation:compose-implementation-design.v1:3",
+      "to": "operation:compose-implementation-design.v1:4",
+      "kind": "sequence",
+      "ref": "graph:/executionAuthorities/0/operations/3",
+      "label": "declared operation order",
+      "basis": "ordered execution authority; canonical routing not established"
+    },
+    {
+      "id": "B12",
+      "from": "operation:compose-implementation-design.v1:4",
+      "to": "operation:compose-implementation-design.v1:5",
+      "kind": "sequence",
+      "ref": "graph:/executionAuthorities/0/operations/4",
+      "label": "declared operation order",
+      "basis": "ordered execution authority; canonical routing not established"
+    },
+    {
+      "id": "B14",
+      "from": "operation:compose-implementation-design.v1:5",
+      "to": "operation:compose-implementation-design.v1:6",
+      "kind": "sequence",
+      "ref": "graph:/executionAuthorities/0/operations/5",
+      "label": "declared operation order",
+      "basis": "ordered execution authority; canonical routing not established"
+    },
+    {
+      "id": "B16",
+      "from": "operation:compose-implementation-design.v1:6",
+      "to": "operation:compose-implementation-design.v1:7",
+      "kind": "sequence",
+      "ref": "graph:/executionAuthorities/0/operations/6",
+      "label": "declared operation order",
+      "basis": "ordered execution authority; canonical routing not established"
+    },
+    {
+      "id": "B18",
+      "from": "operation:compose-implementation-design.v1:7",
+      "to": "operation:compose-implementation-design.v1:8",
+      "kind": "sequence",
+      "ref": "graph:/executionAuthorities/0/operations/7",
+      "label": "declared operation order",
+      "basis": "ordered execution authority; canonical routing not established"
+    },
+    {
+      "id": "B20",
+      "from": "operation:compose-implementation-design.v1:8",
+      "to": "operation:compose-implementation-design.v1:9",
+      "kind": "sequence",
+      "ref": "graph:/executionAuthorities/0/operations/8",
+      "label": "declared operation order",
+      "basis": "ordered execution authority; canonical routing not established"
+    },
+    {
+      "id": "B22",
+      "from": "operation:compose-implementation-design.v1:9",
+      "to": "operation:compose-implementation-design.v1:10",
+      "kind": "sequence",
+      "ref": "graph:/executionAuthorities/0/operations/9",
+      "label": "declared operation order",
+      "basis": "ordered execution authority; canonical routing not established"
+    },
+    {
+      "id": "B24",
+      "from": "operation:compose-implementation-design.v1:10",
+      "to": "operation:compose-implementation-design.v1:11",
+      "kind": "sequence",
+      "ref": "graph:/executionAuthorities/0/operations/10",
+      "label": "declared operation order",
+      "basis": "ordered execution authority; canonical routing not established"
+    },
+    {
+      "id": "B26",
+      "from": "operation:compose-implementation-design.v1:11",
+      "to": "operation:compose-implementation-design.v1:12",
+      "kind": "sequence",
+      "ref": "graph:/executionAuthorities/0/operations/11",
+      "label": "declared operation order",
+      "basis": "ordered execution authority; canonical routing not established"
+    },
+    {
+      "id": "B28",
+      "from": "operation:compose-implementation-design.v1:12",
+      "to": "operation:compose-implementation-design.v1:13",
+      "kind": "sequence",
+      "ref": "graph:/executionAuthorities/0/operations/12",
+      "label": "declared operation order",
+      "basis": "ordered execution authority; canonical routing not established"
+    },
+    {
+      "id": "B30",
+      "from": "operation:compose-implementation-design.v1:13",
+      "to": "operation:compose-implementation-design.v1:14",
+      "kind": "sequence",
+      "ref": "graph:/executionAuthorities/0/operations/13",
+      "label": "declared operation order",
+      "basis": "ordered execution authority; canonical routing not established"
+    },
+    {
+      "id": "B32",
+      "from": "operation:compose-implementation-design.v1:14",
+      "to": "operation:compose-implementation-design.v1:15",
+      "kind": "sequence",
+      "ref": "graph:/executionAuthorities/0/operations/14",
+      "label": "declared operation order",
+      "basis": "ordered execution authority; canonical routing not established"
+    },
+    {
+      "id": "B34",
+      "from": "operation:compose-implementation-design.v1:15",
+      "to": "operation:compose-implementation-design.v1:16",
+      "kind": "sequence",
+      "ref": "graph:/executionAuthorities/0/operations/15",
+      "label": "declared operation order",
+      "basis": "ordered execution authority; canonical routing not established"
+    },
+    {
+      "id": "B36",
+      "from": "operation:compose-implementation-design.v1:16",
+      "to": "operation:compose-implementation-design.v1:17",
+      "kind": "sequence",
+      "ref": "graph:/executionAuthorities/0/operations/16",
+      "label": "declared operation order",
+      "basis": "ordered execution authority; canonical routing not established"
+    },
+    {
+      "id": "B38",
+      "from": "operation:compose-implementation-design.v1:17",
+      "to": "operation:compose-implementation-design.v1:18",
+      "kind": "sequence",
+      "ref": "graph:/executionAuthorities/0/operations/17",
+      "label": "declared operation order",
+      "basis": "ordered execution authority; canonical routing not established"
+    },
+    {
+      "id": "B40",
+      "from": "operation:compose-implementation-design.v1:18",
+      "to": "operation:compose-implementation-design.v1:19",
+      "kind": "sequence",
+      "ref": "graph:/executionAuthorities/0/operations/18",
+      "label": "declared operation order",
+      "basis": "ordered execution authority; canonical routing not established"
+    },
+    {
+      "id": "B42",
+      "from": "operation:compose-implementation-design.v1:19",
+      "to": "operation:compose-implementation-design.v1:20",
+      "kind": "sequence",
+      "ref": "graph:/executionAuthorities/0/operations/19",
+      "label": "declared operation order",
+      "basis": "ordered execution authority; canonical routing not established"
+    },
+    {
+      "id": "B44",
+      "from": "operation:compose-implementation-design.v1:20",
+      "to": "operation:compose-implementation-design.v1:21",
+      "kind": "sequence",
+      "ref": "graph:/executionAuthorities/0/operations/20",
+      "label": "declared operation order",
+      "basis": "ordered execution authority; canonical routing not established"
+    },
+    {
+      "id": "B46",
+      "from": "operation:compose-implementation-design.v1:21",
+      "to": "operation:compose-implementation-design.v1:22",
+      "kind": "sequence",
+      "ref": "graph:/executionAuthorities/0/operations/21",
+      "label": "declared operation order",
+      "basis": "ordered execution authority; canonical routing not established"
+    }
+  ],
+  "scope": "All selected Event operations; wires retain declared order, not proven runtime routing.",
+  "topologyDigest": "6cfe5afdfd6fb2bfeac41ab1a02a17776c6c838c952945f0c2cd7a641b6d1901"
+}

@@ -1,0 +1,3408 @@
+{
+  "contractId": "capability-presentation-snapshot.v1",
+  "identity": {
+    "capabilityId": "design-intent-and-scope",
+    "namespaceId": "sidefx:capabilities",
+    "estateModelId": "34",
+    "capabilityPk": "111416",
+    "capabilityVersionPk": "4902272",
+    "definitionPk": "243181",
+    "definitionDigest": "bb7d949fe977baba109124b491ff63ac745909b0ddf6d3bbb6ece63fe2e58035",
+    "name": "design-intent-and-scope",
+    "actor": "caller",
+    "intent": "Generate the intent and scope altitude of an implementation design in Markdown from a retained specification - a dedicated governed model invocation so the altitude goes deep instead of shallow",
+    "outcome": "The intent and scope Markdown section with the source specification revision and provider provenance; or a named refusal",
+    "experiencePromise": "Generate the intent and scope altitude of an implementation design in Markdown from a retained specification - a dedicated governed model invocation so the altitude goes deep instead of shallow",
+    "rootScenarioId": "design-intent-and-scope",
+    "declaredRootScenarioId": "design-intent-and-scope",
+    "mode": "capability",
+    "experienceId": "design-intent-and-scope.v1",
+    "observableConditions": [
+      {
+        "id": "design-intent-and-scope",
+        "statement": ""
+      }
+    ],
+    "meaningSourceRef": "model:semantic_object_definition/243181/semantics/authority"
+  },
+  "provenance": {
+    "adapter": "sql-server-snapshot.v1",
+    "isolation": "SNAPSHOT",
+    "queryDigest": "ba0f3ec3f7f7d9bff54094b1def32289a6ce38b329bd8a92e975da8aba3731f7",
+    "graphFunctionDigest": "5b81fa4f90b259534c7203b9c14ee03f31fbed9e8e4cd12d10a39ff29f99596f",
+    "graphDigest": "887a02453dfd0de770a6785ce45502bea0be82b14e3d7d3df6aefc0efc514919",
+    "selection": "current estate capability version and its declared scenario closure"
+  },
+  "scenarios": [
+    {
+      "id": "design-intent-and-scope",
+      "name": "Design intent and scope",
+      "versionPk": "113691",
+      "definitionDigest": "925aea1db8c37339f89909335274153981d2f608e9f8f4b72686eeeb831dad68",
+      "authorityId": "design-intent-and-scope.v1",
+      "eventId": "design-intent-and-scope-requested",
+      "inputId": "design-intent-and-scope-request",
+      "inputContractId": "design-altitude-request.v1",
+      "outcomeId": "design-intent-and-scope",
+      "outcomeContractId": "design-element-fragment.v1",
+      "terminal": true,
+      "variants": [],
+      "owned": true,
+      "authored": {
+        "keyword": "Scenario",
+        "name": "Design intent and scope",
+        "description": "",
+        "tags": [
+          "@capability:design-intent-and-scope",
+          "@event:design-intent-and-scope-requested",
+          "@event-authority:design-intent-and-scope.v1",
+          "@input:design-intent-and-scope-request",
+          "@input-contract:design-altitude-request.v1",
+          "@outcome:design-intent-and-scope",
+          "@outcome-contract:design-element-fragment.v1",
+          "@root-scenario:design-intent-and-scope",
+          "@scenario:design-intent-and-scope",
+          "@outcome-terminal"
+        ],
+        "steps": [
+          {
+            "keyword": "Given",
+            "keywordType": "Context",
+            "text": "a retained specification digest and the capability id it describes"
+          },
+          {
+            "keyword": "When",
+            "keywordType": "Action",
+            "text": "the intent and scope altitude builder frames its governed model request and the model lane writes that section"
+          },
+          {
+            "keyword": "Then",
+            "keywordType": "Outcome",
+            "text": "the intent and scope section returns with its section digest and provenance"
+          }
+        ],
+        "examples": []
+      },
+      "inputDescription": "a retained specification digest and the capability id it describes",
+      "eventDescription": "the intent and scope altitude builder frames its governed model request and the model lane writes that section",
+      "outcomeDescription": "the intent and scope section returns with its section digest and provenance",
+      "terminalDisposition": "",
+      "meaningSourceRef": "model:scenario_version/113691",
+      "sourceRef": "graph:/scenarios/0"
+    }
+  ],
+  "transitions": [],
+  "authorities": [
+    {
+      "id": "design-intent-and-scope.v1",
+      "scenarioId": "design-intent-and-scope",
+      "sourceRef": "graph:/executionAuthorities/0",
+      "digest": "6824533c82fb97a39d0629bb2bf7be11da0e0238f38ff2eae30ac76846d19bcc",
+      "operations": [
+        {
+          "id": "design-intent-and-scope.request",
+          "ordinal": 1,
+          "kind": "invoke-port",
+          "portId": "altitude-request-port",
+          "variants": [],
+          "digest": "e2c0c980f196b442a1c3a99e947cc364cfdf71b9b81e29784053f420f0f3c8a8",
+          "sourceRef": "graph:/executionAuthorities/0/operations/0"
+        },
+        {
+          "id": "design-intent-and-scope.compose",
+          "ordinal": 2,
+          "kind": "invoke-port",
+          "portId": "altitude-compose-port",
+          "variants": [],
+          "digest": "0757fd3a5ea40a2786f0b857569963e0b193639fe525878f985339e4c8ddba64",
+          "sourceRef": "graph:/executionAuthorities/0/operations/1"
+        },
+        {
+          "id": "design-intent-and-scope.ask",
+          "ordinal": 3,
+          "kind": "invoke-port",
+          "portId": "altitude-ask-port",
+          "variants": [],
+          "digest": "d2161fdc113187af0a06e1f83e551e2a8c3a89fa2ab72f86c165d0cd21acba18",
+          "sourceRef": "graph:/executionAuthorities/0/operations/2"
+        },
+        {
+          "id": "design-intent-and-scope.snapshot",
+          "ordinal": 4,
+          "kind": "invoke-port",
+          "portId": "altitude-snapshot-port",
+          "variants": [],
+          "digest": "f6ae9e7ac943380c1dc58816415f98d6b77cbfcf49dc26cff949eb5e07bbb96a",
+          "sourceRef": "graph:/executionAuthorities/0/operations/3"
+        }
+      ]
+    }
+  ],
+  "bindings": [
+    {
+      "portId": "design-intent-and-scope-port",
+      "platformCapabilityId": "sda-authority-transformation-port.v1",
+      "declaredRead": false,
+      "transformationId": "design-intent-and-scope-transform.v1",
+      "configurationDigest": "93e41a2278fada1446b41beb10c7bea397f4e5f7a09d89b0aef61b6331784891",
+      "invocationCondition": null,
+      "nestedInvocation": null,
+      "providerIds": [],
+      "endpoints": [],
+      "credentialReferences": [],
+      "realizations": [],
+      "selectors": {
+        "transformationId": "design-intent-and-scope-transform.v1"
+      },
+      "inputAdmission": null,
+      "sourceRef": "graph:/interfaceAuthority/portBindings/0"
+    },
+    {
+      "portId": "altitude-request-port",
+      "platformCapabilityId": "sda-embodiment-plan-port.v1",
+      "declaredRead": true,
+      "transformationId": "",
+      "configurationDigest": "4b14d8beef95f3f78d4cb53a3ac24b060fba4b3fa9bc291b153ebfa32b7e219b",
+      "invocationCondition": null,
+      "nestedInvocation": null,
+      "providerIds": [
+        "sda-declared-read-graph-provider.v1"
+      ],
+      "endpoints": [],
+      "credentialReferences": [],
+      "realizations": [
+        {
+          "field": "module",
+          "value": "languages/typescript/runtimes/node/semantic-execution-graph-declared-read-provider.mjs",
+          "sourcePointer": "/estateProvider/module"
+        },
+        {
+          "field": "export",
+          "value": "createDeclaredReadProvider",
+          "sourcePointer": "/estateProvider/export"
+        }
+      ],
+      "selectors": {},
+      "inputAdmission": null,
+      "sourceRef": "graph:/interfaceAuthority/portBindings/1"
+    },
+    {
+      "portId": "altitude-compose-port",
+      "platformCapabilityId": "sda-authority-transformation-port.v1",
+      "declaredRead": false,
+      "transformationId": "compose-governed-model-invocation.v1",
+      "configurationDigest": "81036b6ebe66a2ed01f2e1f765fab5dad847cfad3f793e3b6d1b2ff63ded4f47",
+      "invocationCondition": null,
+      "nestedInvocation": null,
+      "providerIds": [],
+      "endpoints": [],
+      "credentialReferences": [],
+      "realizations": [],
+      "selectors": {
+        "transformationId": "compose-governed-model-invocation.v1"
+      },
+      "inputAdmission": null,
+      "sourceRef": "graph:/interfaceAuthority/portBindings/2"
+    },
+    {
+      "portId": "altitude-ask-port",
+      "platformCapabilityId": "sda-projected-capability-invocation-port.v2",
+      "declaredRead": false,
+      "transformationId": "",
+      "configurationDigest": "82b87e4d4cc4b55acd6d99a55240e16b1f72868e34bd64f1d55948acd7753c1a",
+      "invocationCondition": null,
+      "nestedInvocation": null,
+      "providerIds": [
+        "google/gemini-select"
+      ],
+      "endpoints": [
+        {
+          "sourcePointer": "/endpointAuthorities/0/urlPrefixes/0",
+          "origin": "https://generativelanguage.googleapis.com",
+          "path": "/v1beta/models/",
+          "selector": "urlPrefixes"
+        }
+      ],
+      "credentialReferences": [
+        "LOC_GEMINI_API_KEY"
+      ],
+      "realizations": [
+        {
+          "field": "method",
+          "value": "POST",
+          "sourcePointer": "/estateProvider/operations/0/method"
+        }
+      ],
+      "selectors": {
+        "requestPath": ".",
+        "resultPath": "primaryModelEvidence",
+        "resultMode": "replace-carrier",
+        "lineageMode": "retain-nested-execution"
+      },
+      "inputAdmission": null,
+      "sourceRef": "graph:/interfaceAuthority/portBindings/3"
+    },
+    {
+      "portId": "altitude-snapshot-port",
+      "platformCapabilityId": "sda-embodiment-plan-port.v1",
+      "declaredRead": true,
+      "transformationId": "",
+      "configurationDigest": "fef86adc6fb126449773e568ec8ed634d1c2dbbfd7572c16df28f03f2fd05f51",
+      "invocationCondition": null,
+      "nestedInvocation": null,
+      "providerIds": [
+        "sda-declared-read-graph-provider.v1"
+      ],
+      "endpoints": [],
+      "credentialReferences": [],
+      "realizations": [
+        {
+          "field": "module",
+          "value": "languages/typescript/runtimes/node/semantic-execution-graph-declared-read-provider.mjs",
+          "sourcePointer": "/estateProvider/module"
+        },
+        {
+          "field": "export",
+          "value": "createDeclaredReadProvider",
+          "sourcePointer": "/estateProvider/export"
+        }
+      ],
+      "selectors": {},
+      "inputAdmission": null,
+      "sourceRef": "graph:/interfaceAuthority/portBindings/4"
+    }
+  ],
+  "transformations": [
+    {
+      "id": "design-intent-and-scope-transform.v1",
+      "nodeCount": 5,
+      "branchCount": 0,
+      "operatorCounts": {
+        "object": 2,
+        "literal": 1,
+        "format": 1,
+        "path": 1
+      },
+      "preview": [
+        {
+          "path": "/expression",
+          "parent": null,
+          "op": "object",
+          "outputFields": [
+            "contractId",
+            "payload"
+          ]
+        },
+        {
+          "path": "/expression/fields/contractId",
+          "parent": "/expression",
+          "op": "literal",
+          "literalType": "string"
+        },
+        {
+          "path": "/expression/fields/payload",
+          "parent": "/expression",
+          "op": "object",
+          "outputFields": [
+            "message"
+          ]
+        },
+        {
+          "path": "/expression/fields/payload/fields/message",
+          "parent": "/expression/fields/payload",
+          "op": "format"
+        }
+      ],
+      "inputPaths": [
+        {
+          "expressionPath": "/expression/fields/payload/fields/message/values/name",
+          "inputPath": "payload.name"
+        }
+      ],
+      "cells": [
+        {
+          "path": "/expression",
+          "parent": null,
+          "op": "object",
+          "operand": "root",
+          "outputFields": [
+            "contractId",
+            "payload"
+          ]
+        },
+        {
+          "path": "/expression/fields/contractId",
+          "parent": "/expression",
+          "op": "literal",
+          "operand": "fields/contractId",
+          "literalType": "string"
+        },
+        {
+          "path": "/expression/fields/payload",
+          "parent": "/expression",
+          "op": "object",
+          "operand": "fields/payload",
+          "outputFields": [
+            "message"
+          ]
+        },
+        {
+          "path": "/expression/fields/payload/fields/message",
+          "parent": "/expression/fields/payload",
+          "op": "format",
+          "operand": "fields/message"
+        },
+        {
+          "path": "/expression/fields/payload/fields/message/values/name",
+          "parent": "/expression/fields/payload/fields/message",
+          "op": "path",
+          "operand": "values/name",
+          "inputPath": "payload.name"
+        }
+      ],
+      "providerReferences": [],
+      "previewComplete": false,
+      "expressionDigest": "49e8d1c6788850eb1a12c51c0413e11a25d89f3e887ad256c09c7500c6922ffb",
+      "resultShape": {
+        "kind": "object",
+        "expressionPath": "/expression",
+        "fields": {
+          "contractId": {
+            "kind": "unknown",
+            "expressionPath": "/expression/fields/contractId"
+          },
+          "payload": {
+            "kind": "object",
+            "expressionPath": "/expression/fields/payload",
+            "fields": {
+              "message": {
+                "kind": "unknown",
+                "expressionPath": "/expression/fields/payload/fields/message"
+              }
+            }
+          }
+        }
+      },
+      "sourceRef": "graph:/semanticTransformations/0"
+    },
+    {
+      "id": "compose-governed-model-invocation.v1",
+      "nodeCount": 73,
+      "branchCount": 4,
+      "operatorCounts": {
+        "object": 11,
+        "literal": 25,
+        "let": 1,
+        "find": 1,
+        "path": 19,
+        "equals": 5,
+        "flat-map": 1,
+        "if": 4,
+        "array": 5,
+        "format": 1
+      },
+      "preview": [
+        {
+          "path": "/expression",
+          "parent": null,
+          "op": "object",
+          "outputFields": [
+            "contractId",
+            "payload"
+          ]
+        },
+        {
+          "path": "/expression/fields/contractId",
+          "parent": "/expression",
+          "op": "literal",
+          "literalType": "string"
+        },
+        {
+          "path": "/expression/fields/payload",
+          "parent": "/expression",
+          "op": "object",
+          "outputFields": [
+            "attemptPlan"
+          ]
+        },
+        {
+          "path": "/expression/fields/payload/fields/attemptPlan",
+          "parent": "/expression/fields/payload",
+          "op": "object",
+          "outputFields": [
+            "contractId",
+            "payload"
+          ]
+        }
+      ],
+      "inputPaths": [
+        {
+          "expressionPath": "/expression/fields/payload/fields/attemptPlan/fields/payload/bindings/systemMessage/from",
+          "inputPath": "modelRequest.interaction.messages"
+        },
+        {
+          "expressionPath": "/expression/fields/payload/fields/attemptPlan/fields/payload/bindings/systemMessage/where/left",
+          "inputPath": "role"
+        },
+        {
+          "expressionPath": "/expression/fields/payload/fields/attemptPlan/fields/payload/value/fields/requestId",
+          "inputPath": "requestId"
+        },
+        {
+          "expressionPath": "/expression/fields/payload/fields/attemptPlan/fields/payload/value/fields/invocationIdentity",
+          "inputPath": "requestId"
+        },
+        {
+          "expressionPath": "/expression/fields/payload/fields/attemptPlan/fields/payload/value/fields/providerAuthorityId",
+          "inputPath": "modelRequest.providerAuthorityId"
+        },
+        {
+          "expressionPath": "/expression/fields/payload/fields/attemptPlan/fields/payload/value/fields/protocolProjectionRequest/fields/payload/fields/context/fields/maxTokens",
+          "inputPath": "modelRequest.responsePolicy.maximumOutputTokens"
+        },
+        {
+          "expressionPath": "/expression/fields/payload/fields/attemptPlan/fields/payload/value/fields/protocolProjectionRequest/fields/payload/fields/context/fields/messages/from",
+          "inputPath": "modelRequest.interaction.messages"
+        },
+        {
+          "expressionPath": "/expression/fields/payload/fields/attemptPlan/fields/payload/value/fields/protocolProjectionRequest/fields/payload/fields/context/fields/messages/value/when/left",
+          "inputPath": "role"
+        },
+        {
+          "expressionPath": "/expression/fields/payload/fields/attemptPlan/fields/payload/value/fields/protocolProjectionRequest/fields/payload/fields/context/fields/messages/value/else/items/0/fields/parts/items/0/fields/text",
+          "inputPath": "content"
+        },
+        {
+          "expressionPath": "/expression/fields/payload/fields/attemptPlan/fields/payload/value/fields/protocolProjectionRequest/fields/payload/fields/context/fields/messages/value/else/items/0/fields/role/when/left",
+          "inputPath": "role"
+        },
+        {
+          "expressionPath": "/expression/fields/payload/fields/attemptPlan/fields/payload/value/fields/protocolProjectionRequest/fields/payload/fields/context/fields/messages/value/else/items/0/fields/role/else",
+          "inputPath": "role"
+        },
+        {
+          "expressionPath": "/expression/fields/payload/fields/attemptPlan/fields/payload/value/fields/protocolProjectionRequest/fields/payload/fields/context/fields/responseSchema",
+          "inputPath": "modelRequest.responsePolicy.schema"
+        },
+        {
+          "expressionPath": "/expression/fields/payload/fields/attemptPlan/fields/payload/value/fields/protocolProjectionRequest/fields/payload/fields/context/fields/systemInstruction/when/left",
+          "inputPath": "role"
+        },
+        {
+          "expressionPath": "/expression/fields/payload/fields/attemptPlan/fields/payload/value/fields/protocolProjectionRequest/fields/payload/fields/context/fields/systemInstruction/then/fields/parts/items/0/fields/text",
+          "inputPath": "content"
+        },
+        {
+          "expressionPath": "/expression/fields/payload/fields/attemptPlan/fields/payload/value/fields/protocolProjectionRequest/fields/payload/fields/context/fields/temperature",
+          "inputPath": "modelRequest.responsePolicy.temperature"
+        },
+        {
+          "expressionPath": "/expression/fields/payload/fields/attemptPlan/fields/payload/value/fields/protocolProjectionRequest/fields/payload/fields/requestType/when/left",
+          "inputPath": "modelRequest.responsePolicy.format"
+        },
+        {
+          "expressionPath": "/expression/fields/payload/fields/attemptPlan/fields/payload/value/fields/responseFormat",
+          "inputPath": "modelRequest.responsePolicy.format"
+        },
+        {
+          "expressionPath": "/expression/fields/payload/fields/attemptPlan/fields/payload/value/fields/timeoutMilliseconds",
+          "inputPath": "modelRequest.executionPolicy.timeoutMilliseconds"
+        },
+        {
+          "expressionPath": "/expression/fields/payload/fields/attemptPlan/fields/payload/value/fields/requestLineage",
+          "inputPath": "requestLineage"
+        }
+      ],
+      "cells": [
+        {
+          "path": "/expression",
+          "parent": null,
+          "op": "object",
+          "operand": "root",
+          "outputFields": [
+            "contractId",
+            "payload"
+          ]
+        },
+        {
+          "path": "/expression/fields/contractId",
+          "parent": "/expression",
+          "op": "literal",
+          "operand": "fields/contractId",
+          "literalType": "string"
+        },
+        {
+          "path": "/expression/fields/payload",
+          "parent": "/expression",
+          "op": "object",
+          "operand": "fields/payload",
+          "outputFields": [
+            "attemptPlan"
+          ]
+        },
+        {
+          "path": "/expression/fields/payload/fields/attemptPlan",
+          "parent": "/expression/fields/payload",
+          "op": "object",
+          "operand": "fields/attemptPlan",
+          "outputFields": [
+            "contractId",
+            "payload"
+          ]
+        },
+        {
+          "path": "/expression/fields/payload/fields/attemptPlan/fields/contractId",
+          "parent": "/expression/fields/payload/fields/attemptPlan",
+          "op": "literal",
+          "operand": "fields/contractId",
+          "literalType": "string"
+        },
+        {
+          "path": "/expression/fields/payload/fields/attemptPlan/fields/payload",
+          "parent": "/expression/fields/payload/fields/attemptPlan",
+          "op": "let",
+          "operand": "fields/payload"
+        },
+        {
+          "path": "/expression/fields/payload/fields/attemptPlan/fields/payload/bindings/systemMessage",
+          "parent": "/expression/fields/payload/fields/attemptPlan/fields/payload",
+          "op": "find",
+          "operand": "bindings/systemMessage"
+        },
+        {
+          "path": "/expression/fields/payload/fields/attemptPlan/fields/payload/bindings/systemMessage/from",
+          "parent": "/expression/fields/payload/fields/attemptPlan/fields/payload/bindings/systemMessage",
+          "op": "path",
+          "operand": "from",
+          "inputPath": "modelRequest.interaction.messages"
+        },
+        {
+          "path": "/expression/fields/payload/fields/attemptPlan/fields/payload/bindings/systemMessage/where",
+          "parent": "/expression/fields/payload/fields/attemptPlan/fields/payload/bindings/systemMessage",
+          "op": "equals",
+          "operand": "where"
+        },
+        {
+          "path": "/expression/fields/payload/fields/attemptPlan/fields/payload/bindings/systemMessage/where/left",
+          "parent": "/expression/fields/payload/fields/attemptPlan/fields/payload/bindings/systemMessage/where",
+          "op": "path",
+          "operand": "left",
+          "inputPath": "role"
+        },
+        {
+          "path": "/expression/fields/payload/fields/attemptPlan/fields/payload/bindings/systemMessage/where/right",
+          "parent": "/expression/fields/payload/fields/attemptPlan/fields/payload/bindings/systemMessage/where",
+          "op": "literal",
+          "operand": "right",
+          "literalType": "string"
+        },
+        {
+          "path": "/expression/fields/payload/fields/attemptPlan/fields/payload/value",
+          "parent": "/expression/fields/payload/fields/attemptPlan/fields/payload",
+          "op": "object",
+          "operand": "value",
+          "outputFields": [
+            "requestId",
+            "invocationIdentity",
+            "providerAuthorityId",
+            "providerKind",
+            "resolvedModel",
+            "adapterIdentity",
+            "protocolProjectionIdentity",
+            "protocolProjectionRequest",
+            "credentialReference",
+            "endpointAuthorityDigest",
+            "endpointUrl",
+            "responseFormat",
+            "timeoutMilliseconds",
+            "cancellationScopeReference",
+            "maxResponseBytes",
+            "allowedResponseHeaders",
+            "requestLineage"
+          ]
+        },
+        {
+          "path": "/expression/fields/payload/fields/attemptPlan/fields/payload/value/fields/requestId",
+          "parent": "/expression/fields/payload/fields/attemptPlan/fields/payload/value",
+          "op": "path",
+          "operand": "fields/requestId",
+          "inputPath": "requestId"
+        },
+        {
+          "path": "/expression/fields/payload/fields/attemptPlan/fields/payload/value/fields/invocationIdentity",
+          "parent": "/expression/fields/payload/fields/attemptPlan/fields/payload/value",
+          "op": "path",
+          "operand": "fields/invocationIdentity",
+          "inputPath": "requestId"
+        },
+        {
+          "path": "/expression/fields/payload/fields/attemptPlan/fields/payload/value/fields/providerAuthorityId",
+          "parent": "/expression/fields/payload/fields/attemptPlan/fields/payload/value",
+          "op": "path",
+          "operand": "fields/providerAuthorityId",
+          "inputPath": "modelRequest.providerAuthorityId"
+        },
+        {
+          "path": "/expression/fields/payload/fields/attemptPlan/fields/payload/value/fields/providerKind",
+          "parent": "/expression/fields/payload/fields/attemptPlan/fields/payload/value",
+          "op": "literal",
+          "operand": "fields/providerKind",
+          "literalType": "string"
+        },
+        {
+          "path": "/expression/fields/payload/fields/attemptPlan/fields/payload/value/fields/resolvedModel",
+          "parent": "/expression/fields/payload/fields/attemptPlan/fields/payload/value",
+          "op": "literal",
+          "operand": "fields/resolvedModel",
+          "literalType": "string"
+        },
+        {
+          "path": "/expression/fields/payload/fields/attemptPlan/fields/payload/value/fields/adapterIdentity",
+          "parent": "/expression/fields/payload/fields/attemptPlan/fields/payload/value",
+          "op": "literal",
+          "operand": "fields/adapterIdentity",
+          "literalType": "string"
+        },
+        {
+          "path": "/expression/fields/payload/fields/attemptPlan/fields/payload/value/fields/protocolProjectionIdentity",
+          "parent": "/expression/fields/payload/fields/attemptPlan/fields/payload/value",
+          "op": "literal",
+          "operand": "fields/protocolProjectionIdentity",
+          "literalType": "string"
+        },
+        {
+          "path": "/expression/fields/payload/fields/attemptPlan/fields/payload/value/fields/protocolProjectionRequest",
+          "parent": "/expression/fields/payload/fields/attemptPlan/fields/payload/value",
+          "op": "object",
+          "operand": "fields/protocolProjectionRequest",
+          "outputFields": [
+            "contractId",
+            "payload"
+          ]
+        },
+        {
+          "path": "/expression/fields/payload/fields/attemptPlan/fields/payload/value/fields/protocolProjectionRequest/fields/contractId",
+          "parent": "/expression/fields/payload/fields/attemptPlan/fields/payload/value/fields/protocolProjectionRequest",
+          "op": "literal",
+          "operand": "fields/contractId",
+          "literalType": "string"
+        },
+        {
+          "path": "/expression/fields/payload/fields/attemptPlan/fields/payload/value/fields/protocolProjectionRequest/fields/payload",
+          "parent": "/expression/fields/payload/fields/attemptPlan/fields/payload/value/fields/protocolProjectionRequest",
+          "op": "object",
+          "operand": "fields/payload",
+          "outputFields": [
+            "adapterIdentity",
+            "context",
+            "providerKind",
+            "requestType"
+          ]
+        },
+        {
+          "path": "/expression/fields/payload/fields/attemptPlan/fields/payload/value/fields/protocolProjectionRequest/fields/payload/fields/adapterIdentity",
+          "parent": "/expression/fields/payload/fields/attemptPlan/fields/payload/value/fields/protocolProjectionRequest/fields/payload",
+          "op": "literal",
+          "operand": "fields/adapterIdentity",
+          "literalType": "string"
+        },
+        {
+          "path": "/expression/fields/payload/fields/attemptPlan/fields/payload/value/fields/protocolProjectionRequest/fields/payload/fields/context",
+          "parent": "/expression/fields/payload/fields/attemptPlan/fields/payload/value/fields/protocolProjectionRequest/fields/payload",
+          "op": "object",
+          "operand": "fields/context",
+          "outputFields": [
+            "maxTokens",
+            "messages",
+            "responseSchema",
+            "systemInstruction",
+            "temperature"
+          ]
+        },
+        {
+          "path": "/expression/fields/payload/fields/attemptPlan/fields/payload/value/fields/protocolProjectionRequest/fields/payload/fields/context/fields/maxTokens",
+          "parent": "/expression/fields/payload/fields/attemptPlan/fields/payload/value/fields/protocolProjectionRequest/fields/payload/fields/context",
+          "op": "path",
+          "operand": "fields/maxTokens",
+          "inputPath": "modelRequest.responsePolicy.maximumOutputTokens"
+        },
+        {
+          "path": "/expression/fields/payload/fields/attemptPlan/fields/payload/value/fields/protocolProjectionRequest/fields/payload/fields/context/fields/messages",
+          "parent": "/expression/fields/payload/fields/attemptPlan/fields/payload/value/fields/protocolProjectionRequest/fields/payload/fields/context",
+          "op": "flat-map",
+          "operand": "fields/messages"
+        },
+        {
+          "path": "/expression/fields/payload/fields/attemptPlan/fields/payload/value/fields/protocolProjectionRequest/fields/payload/fields/context/fields/messages/from",
+          "parent": "/expression/fields/payload/fields/attemptPlan/fields/payload/value/fields/protocolProjectionRequest/fields/payload/fields/context/fields/messages",
+          "op": "path",
+          "operand": "from",
+          "inputPath": "modelRequest.interaction.messages"
+        },
+        {
+          "path": "/expression/fields/payload/fields/attemptPlan/fields/payload/value/fields/protocolProjectionRequest/fields/payload/fields/context/fields/messages/value",
+          "parent": "/expression/fields/payload/fields/attemptPlan/fields/payload/value/fields/protocolProjectionRequest/fields/payload/fields/context/fields/messages",
+          "op": "if",
+          "operand": "value"
+        },
+        {
+          "path": "/expression/fields/payload/fields/attemptPlan/fields/payload/value/fields/protocolProjectionRequest/fields/payload/fields/context/fields/messages/value/when",
+          "parent": "/expression/fields/payload/fields/attemptPlan/fields/payload/value/fields/protocolProjectionRequest/fields/payload/fields/context/fields/messages/value",
+          "op": "equals",
+          "operand": "when"
+        },
+        {
+          "path": "/expression/fields/payload/fields/attemptPlan/fields/payload/value/fields/protocolProjectionRequest/fields/payload/fields/context/fields/messages/value/when/left",
+          "parent": "/expression/fields/payload/fields/attemptPlan/fields/payload/value/fields/protocolProjectionRequest/fields/payload/fields/context/fields/messages/value/when",
+          "op": "path",
+          "operand": "left",
+          "inputPath": "role"
+        },
+        {
+          "path": "/expression/fields/payload/fields/attemptPlan/fields/payload/value/fields/protocolProjectionRequest/fields/payload/fields/context/fields/messages/value/when/right",
+          "parent": "/expression/fields/payload/fields/attemptPlan/fields/payload/value/fields/protocolProjectionRequest/fields/payload/fields/context/fields/messages/value/when",
+          "op": "literal",
+          "operand": "right",
+          "literalType": "string"
+        },
+        {
+          "path": "/expression/fields/payload/fields/attemptPlan/fields/payload/value/fields/protocolProjectionRequest/fields/payload/fields/context/fields/messages/value/then",
+          "parent": "/expression/fields/payload/fields/attemptPlan/fields/payload/value/fields/protocolProjectionRequest/fields/payload/fields/context/fields/messages/value",
+          "op": "array",
+          "operand": "then"
+        },
+        {
+          "path": "/expression/fields/payload/fields/attemptPlan/fields/payload/value/fields/protocolProjectionRequest/fields/payload/fields/context/fields/messages/value/else",
+          "parent": "/expression/fields/payload/fields/attemptPlan/fields/payload/value/fields/protocolProjectionRequest/fields/payload/fields/context/fields/messages/value",
+          "op": "array",
+          "operand": "else"
+        },
+        {
+          "path": "/expression/fields/payload/fields/attemptPlan/fields/payload/value/fields/protocolProjectionRequest/fields/payload/fields/context/fields/messages/value/else/items/0",
+          "parent": "/expression/fields/payload/fields/attemptPlan/fields/payload/value/fields/protocolProjectionRequest/fields/payload/fields/context/fields/messages/value/else",
+          "op": "object",
+          "operand": "items/0",
+          "outputFields": [
+            "parts",
+            "role"
+          ]
+        },
+        {
+          "path": "/expression/fields/payload/fields/attemptPlan/fields/payload/value/fields/protocolProjectionRequest/fields/payload/fields/context/fields/messages/value/else/items/0/fields/parts",
+          "parent": "/expression/fields/payload/fields/attemptPlan/fields/payload/value/fields/protocolProjectionRequest/fields/payload/fields/context/fields/messages/value/else/items/0",
+          "op": "array",
+          "operand": "fields/parts"
+        },
+        {
+          "path": "/expression/fields/payload/fields/attemptPlan/fields/payload/value/fields/protocolProjectionRequest/fields/payload/fields/context/fields/messages/value/else/items/0/fields/parts/items/0",
+          "parent": "/expression/fields/payload/fields/attemptPlan/fields/payload/value/fields/protocolProjectionRequest/fields/payload/fields/context/fields/messages/value/else/items/0/fields/parts",
+          "op": "object",
+          "operand": "items/0",
+          "outputFields": [
+            "text"
+          ]
+        },
+        {
+          "path": "/expression/fields/payload/fields/attemptPlan/fields/payload/value/fields/protocolProjectionRequest/fields/payload/fields/context/fields/messages/value/else/items/0/fields/parts/items/0/fields/text",
+          "parent": "/expression/fields/payload/fields/attemptPlan/fields/payload/value/fields/protocolProjectionRequest/fields/payload/fields/context/fields/messages/value/else/items/0/fields/parts/items/0",
+          "op": "path",
+          "operand": "fields/text",
+          "inputPath": "content"
+        },
+        {
+          "path": "/expression/fields/payload/fields/attemptPlan/fields/payload/value/fields/protocolProjectionRequest/fields/payload/fields/context/fields/messages/value/else/items/0/fields/role",
+          "parent": "/expression/fields/payload/fields/attemptPlan/fields/payload/value/fields/protocolProjectionRequest/fields/payload/fields/context/fields/messages/value/else/items/0",
+          "op": "if",
+          "operand": "fields/role"
+        },
+        {
+          "path": "/expression/fields/payload/fields/attemptPlan/fields/payload/value/fields/protocolProjectionRequest/fields/payload/fields/context/fields/messages/value/else/items/0/fields/role/when",
+          "parent": "/expression/fields/payload/fields/attemptPlan/fields/payload/value/fields/protocolProjectionRequest/fields/payload/fields/context/fields/messages/value/else/items/0/fields/role",
+          "op": "equals",
+          "operand": "when"
+        },
+        {
+          "path": "/expression/fields/payload/fields/attemptPlan/fields/payload/value/fields/protocolProjectionRequest/fields/payload/fields/context/fields/messages/value/else/items/0/fields/role/when/left",
+          "parent": "/expression/fields/payload/fields/attemptPlan/fields/payload/value/fields/protocolProjectionRequest/fields/payload/fields/context/fields/messages/value/else/items/0/fields/role/when",
+          "op": "path",
+          "operand": "left",
+          "inputPath": "role"
+        },
+        {
+          "path": "/expression/fields/payload/fields/attemptPlan/fields/payload/value/fields/protocolProjectionRequest/fields/payload/fields/context/fields/messages/value/else/items/0/fields/role/when/right",
+          "parent": "/expression/fields/payload/fields/attemptPlan/fields/payload/value/fields/protocolProjectionRequest/fields/payload/fields/context/fields/messages/value/else/items/0/fields/role/when",
+          "op": "literal",
+          "operand": "right",
+          "literalType": "string"
+        },
+        {
+          "path": "/expression/fields/payload/fields/attemptPlan/fields/payload/value/fields/protocolProjectionRequest/fields/payload/fields/context/fields/messages/value/else/items/0/fields/role/then",
+          "parent": "/expression/fields/payload/fields/attemptPlan/fields/payload/value/fields/protocolProjectionRequest/fields/payload/fields/context/fields/messages/value/else/items/0/fields/role",
+          "op": "literal",
+          "operand": "then",
+          "literalType": "string"
+        },
+        {
+          "path": "/expression/fields/payload/fields/attemptPlan/fields/payload/value/fields/protocolProjectionRequest/fields/payload/fields/context/fields/messages/value/else/items/0/fields/role/else",
+          "parent": "/expression/fields/payload/fields/attemptPlan/fields/payload/value/fields/protocolProjectionRequest/fields/payload/fields/context/fields/messages/value/else/items/0/fields/role",
+          "op": "path",
+          "operand": "else",
+          "inputPath": "role"
+        },
+        {
+          "path": "/expression/fields/payload/fields/attemptPlan/fields/payload/value/fields/protocolProjectionRequest/fields/payload/fields/context/fields/responseSchema",
+          "parent": "/expression/fields/payload/fields/attemptPlan/fields/payload/value/fields/protocolProjectionRequest/fields/payload/fields/context",
+          "op": "path",
+          "operand": "fields/responseSchema",
+          "inputPath": "modelRequest.responsePolicy.schema"
+        },
+        {
+          "path": "/expression/fields/payload/fields/attemptPlan/fields/payload/value/fields/protocolProjectionRequest/fields/payload/fields/context/fields/systemInstruction",
+          "parent": "/expression/fields/payload/fields/attemptPlan/fields/payload/value/fields/protocolProjectionRequest/fields/payload/fields/context",
+          "op": "if",
+          "operand": "fields/systemInstruction"
+        },
+        {
+          "path": "/expression/fields/payload/fields/attemptPlan/fields/payload/value/fields/protocolProjectionRequest/fields/payload/fields/context/fields/systemInstruction/when",
+          "parent": "/expression/fields/payload/fields/attemptPlan/fields/payload/value/fields/protocolProjectionRequest/fields/payload/fields/context/fields/systemInstruction",
+          "op": "equals",
+          "operand": "when"
+        },
+        {
+          "path": "/expression/fields/payload/fields/attemptPlan/fields/payload/value/fields/protocolProjectionRequest/fields/payload/fields/context/fields/systemInstruction/when/left",
+          "parent": "/expression/fields/payload/fields/attemptPlan/fields/payload/value/fields/protocolProjectionRequest/fields/payload/fields/context/fields/systemInstruction/when",
+          "op": "path",
+          "operand": "left",
+          "inputPath": "role"
+        },
+        {
+          "path": "/expression/fields/payload/fields/attemptPlan/fields/payload/value/fields/protocolProjectionRequest/fields/payload/fields/context/fields/systemInstruction/when/right",
+          "parent": "/expression/fields/payload/fields/attemptPlan/fields/payload/value/fields/protocolProjectionRequest/fields/payload/fields/context/fields/systemInstruction/when",
+          "op": "literal",
+          "operand": "right",
+          "literalType": "string"
+        },
+        {
+          "path": "/expression/fields/payload/fields/attemptPlan/fields/payload/value/fields/protocolProjectionRequest/fields/payload/fields/context/fields/systemInstruction/then",
+          "parent": "/expression/fields/payload/fields/attemptPlan/fields/payload/value/fields/protocolProjectionRequest/fields/payload/fields/context/fields/systemInstruction",
+          "op": "object",
+          "operand": "then",
+          "outputFields": [
+            "parts"
+          ]
+        },
+        {
+          "path": "/expression/fields/payload/fields/attemptPlan/fields/payload/value/fields/protocolProjectionRequest/fields/payload/fields/context/fields/systemInstruction/then/fields/parts",
+          "parent": "/expression/fields/payload/fields/attemptPlan/fields/payload/value/fields/protocolProjectionRequest/fields/payload/fields/context/fields/systemInstruction/then",
+          "op": "array",
+          "operand": "fields/parts"
+        },
+        {
+          "path": "/expression/fields/payload/fields/attemptPlan/fields/payload/value/fields/protocolProjectionRequest/fields/payload/fields/context/fields/systemInstruction/then/fields/parts/items/0",
+          "parent": "/expression/fields/payload/fields/attemptPlan/fields/payload/value/fields/protocolProjectionRequest/fields/payload/fields/context/fields/systemInstruction/then/fields/parts",
+          "op": "object",
+          "operand": "items/0",
+          "outputFields": [
+            "text"
+          ]
+        },
+        {
+          "path": "/expression/fields/payload/fields/attemptPlan/fields/payload/value/fields/protocolProjectionRequest/fields/payload/fields/context/fields/systemInstruction/then/fields/parts/items/0/fields/text",
+          "parent": "/expression/fields/payload/fields/attemptPlan/fields/payload/value/fields/protocolProjectionRequest/fields/payload/fields/context/fields/systemInstruction/then/fields/parts/items/0",
+          "op": "path",
+          "operand": "fields/text",
+          "inputPath": "content"
+        },
+        {
+          "path": "/expression/fields/payload/fields/attemptPlan/fields/payload/value/fields/protocolProjectionRequest/fields/payload/fields/context/fields/systemInstruction/else",
+          "parent": "/expression/fields/payload/fields/attemptPlan/fields/payload/value/fields/protocolProjectionRequest/fields/payload/fields/context/fields/systemInstruction",
+          "op": "literal",
+          "operand": "else",
+          "literalType": "null"
+        },
+        {
+          "path": "/expression/fields/payload/fields/attemptPlan/fields/payload/value/fields/protocolProjectionRequest/fields/payload/fields/context/fields/temperature",
+          "parent": "/expression/fields/payload/fields/attemptPlan/fields/payload/value/fields/protocolProjectionRequest/fields/payload/fields/context",
+          "op": "path",
+          "operand": "fields/temperature",
+          "inputPath": "modelRequest.responsePolicy.temperature"
+        },
+        {
+          "path": "/expression/fields/payload/fields/attemptPlan/fields/payload/value/fields/protocolProjectionRequest/fields/payload/fields/providerKind",
+          "parent": "/expression/fields/payload/fields/attemptPlan/fields/payload/value/fields/protocolProjectionRequest/fields/payload",
+          "op": "literal",
+          "operand": "fields/providerKind",
+          "literalType": "string"
+        },
+        {
+          "path": "/expression/fields/payload/fields/attemptPlan/fields/payload/value/fields/protocolProjectionRequest/fields/payload/fields/requestType",
+          "parent": "/expression/fields/payload/fields/attemptPlan/fields/payload/value/fields/protocolProjectionRequest/fields/payload",
+          "op": "if",
+          "operand": "fields/requestType"
+        },
+        {
+          "path": "/expression/fields/payload/fields/attemptPlan/fields/payload/value/fields/protocolProjectionRequest/fields/payload/fields/requestType/when",
+          "parent": "/expression/fields/payload/fields/attemptPlan/fields/payload/value/fields/protocolProjectionRequest/fields/payload/fields/requestType",
+          "op": "equals",
+          "operand": "when"
+        },
+        {
+          "path": "/expression/fields/payload/fields/attemptPlan/fields/payload/value/fields/protocolProjectionRequest/fields/payload/fields/requestType/when/left",
+          "parent": "/expression/fields/payload/fields/attemptPlan/fields/payload/value/fields/protocolProjectionRequest/fields/payload/fields/requestType/when",
+          "op": "path",
+          "operand": "left",
+          "inputPath": "modelRequest.responsePolicy.format"
+        },
+        {
+          "path": "/expression/fields/payload/fields/attemptPlan/fields/payload/value/fields/protocolProjectionRequest/fields/payload/fields/requestType/when/right",
+          "parent": "/expression/fields/payload/fields/attemptPlan/fields/payload/value/fields/protocolProjectionRequest/fields/payload/fields/requestType/when",
+          "op": "literal",
+          "operand": "right",
+          "literalType": "string"
+        },
+        {
+          "path": "/expression/fields/payload/fields/attemptPlan/fields/payload/value/fields/protocolProjectionRequest/fields/payload/fields/requestType/then",
+          "parent": "/expression/fields/payload/fields/attemptPlan/fields/payload/value/fields/protocolProjectionRequest/fields/payload/fields/requestType",
+          "op": "literal",
+          "operand": "then",
+          "literalType": "string"
+        },
+        {
+          "path": "/expression/fields/payload/fields/attemptPlan/fields/payload/value/fields/protocolProjectionRequest/fields/payload/fields/requestType/else",
+          "parent": "/expression/fields/payload/fields/attemptPlan/fields/payload/value/fields/protocolProjectionRequest/fields/payload/fields/requestType",
+          "op": "literal",
+          "operand": "else",
+          "literalType": "string"
+        },
+        {
+          "path": "/expression/fields/payload/fields/attemptPlan/fields/payload/value/fields/credentialReference",
+          "parent": "/expression/fields/payload/fields/attemptPlan/fields/payload/value",
+          "op": "literal",
+          "operand": "fields/credentialReference",
+          "literalType": "string"
+        },
+        {
+          "path": "/expression/fields/payload/fields/attemptPlan/fields/payload/value/fields/endpointAuthorityDigest",
+          "parent": "/expression/fields/payload/fields/attemptPlan/fields/payload/value",
+          "op": "literal",
+          "operand": "fields/endpointAuthorityDigest",
+          "literalType": "string"
+        },
+        {
+          "path": "/expression/fields/payload/fields/attemptPlan/fields/payload/value/fields/endpointUrl",
+          "parent": "/expression/fields/payload/fields/attemptPlan/fields/payload/value",
+          "op": "format",
+          "operand": "fields/endpointUrl"
+        },
+        {
+          "path": "/expression/fields/payload/fields/attemptPlan/fields/payload/value/fields/endpointUrl/values/model",
+          "parent": "/expression/fields/payload/fields/attemptPlan/fields/payload/value/fields/endpointUrl",
+          "op": "literal",
+          "operand": "values/model",
+          "literalType": "string"
+        },
+        {
+          "path": "/expression/fields/payload/fields/attemptPlan/fields/payload/value/fields/responseFormat",
+          "parent": "/expression/fields/payload/fields/attemptPlan/fields/payload/value",
+          "op": "path",
+          "operand": "fields/responseFormat",
+          "inputPath": "modelRequest.responsePolicy.format"
+        },
+        {
+          "path": "/expression/fields/payload/fields/attemptPlan/fields/payload/value/fields/timeoutMilliseconds",
+          "parent": "/expression/fields/payload/fields/attemptPlan/fields/payload/value",
+          "op": "path",
+          "operand": "fields/timeoutMilliseconds",
+          "inputPath": "modelRequest.executionPolicy.timeoutMilliseconds"
+        },
+        {
+          "path": "/expression/fields/payload/fields/attemptPlan/fields/payload/value/fields/cancellationScopeReference",
+          "parent": "/expression/fields/payload/fields/attemptPlan/fields/payload/value",
+          "op": "literal",
+          "operand": "fields/cancellationScopeReference",
+          "literalType": "string"
+        },
+        {
+          "path": "/expression/fields/payload/fields/attemptPlan/fields/payload/value/fields/maxResponseBytes",
+          "parent": "/expression/fields/payload/fields/attemptPlan/fields/payload/value",
+          "op": "literal",
+          "operand": "fields/maxResponseBytes",
+          "literalType": "number"
+        },
+        {
+          "path": "/expression/fields/payload/fields/attemptPlan/fields/payload/value/fields/allowedResponseHeaders",
+          "parent": "/expression/fields/payload/fields/attemptPlan/fields/payload/value",
+          "op": "array",
+          "operand": "fields/allowedResponseHeaders"
+        },
+        {
+          "path": "/expression/fields/payload/fields/attemptPlan/fields/payload/value/fields/allowedResponseHeaders/items/0",
+          "parent": "/expression/fields/payload/fields/attemptPlan/fields/payload/value/fields/allowedResponseHeaders",
+          "op": "literal",
+          "operand": "items/0",
+          "literalType": "string"
+        },
+        {
+          "path": "/expression/fields/payload/fields/attemptPlan/fields/payload/value/fields/allowedResponseHeaders/items/1",
+          "parent": "/expression/fields/payload/fields/attemptPlan/fields/payload/value/fields/allowedResponseHeaders",
+          "op": "literal",
+          "operand": "items/1",
+          "literalType": "string"
+        },
+        {
+          "path": "/expression/fields/payload/fields/attemptPlan/fields/payload/value/fields/requestLineage",
+          "parent": "/expression/fields/payload/fields/attemptPlan/fields/payload/value",
+          "op": "path",
+          "operand": "fields/requestLineage",
+          "inputPath": "requestLineage"
+        }
+      ],
+      "providerReferences": [],
+      "previewComplete": false,
+      "expressionDigest": "075024578e561770298e1e1513a1be38a6654b94fc1102c41ebc94e1c065157d",
+      "resultShape": {
+        "kind": "object",
+        "expressionPath": "/expression",
+        "fields": {
+          "contractId": {
+            "kind": "unknown",
+            "expressionPath": "/expression/fields/contractId"
+          },
+          "payload": {
+            "kind": "object",
+            "expressionPath": "/expression/fields/payload",
+            "fields": {
+              "attemptPlan": {
+                "kind": "object",
+                "expressionPath": "/expression/fields/payload/fields/attemptPlan",
+                "fields": {
+                  "contractId": {
+                    "kind": "unknown",
+                    "expressionPath": "/expression/fields/payload/fields/attemptPlan/fields/contractId"
+                  },
+                  "payload": {
+                    "kind": "unknown",
+                    "expressionPath": "/expression/fields/payload/fields/attemptPlan/fields/payload"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "sourceRef": "graph:/semanticTransformations/1"
+    }
+  ],
+  "contracts": [
+    {
+      "id": "design-altitude-request.v1",
+      "schemaId": "",
+      "title": "design-altitude-request.v1",
+      "type": "object",
+      "required": [
+        "specDigest",
+        "capabilityId"
+      ],
+      "properties": [
+        "specDigest",
+        "capabilityId"
+      ],
+      "description": "",
+      "fields": [
+        {
+          "path": "$",
+          "type": "object",
+          "description": "",
+          "required": false,
+          "reference": "",
+          "additionalProperties": false
+        },
+        {
+          "path": "$/specDigest",
+          "type": "string",
+          "description": "",
+          "required": true,
+          "reference": "",
+          "pattern": "^sha256:[0-9a-f]{64}$"
+        },
+        {
+          "path": "$/capabilityId",
+          "type": "string",
+          "description": "",
+          "required": true,
+          "reference": "",
+          "minLength": 1,
+          "maxLength": 400
+        }
+      ],
+      "emptyObjectEvidence": {
+        "admitted": false
+      },
+      "schemaDigest": "92ea64f86e513e4494570d546278ae72b4d07cdfe893a32bc40b6004f403609c",
+      "sourceRef": "graph:/contractAuthorities/contracts/design-altitude-request.v1"
+    },
+    {
+      "id": "design-element-fragment.v1",
+      "schemaId": "",
+      "title": "design-element-fragment.v1",
+      "type": "object",
+      "required": [
+        "contractId"
+      ],
+      "properties": [
+        "contractId"
+      ],
+      "description": "",
+      "fields": [
+        {
+          "path": "$",
+          "type": "object",
+          "description": "",
+          "required": false,
+          "reference": "",
+          "additionalProperties": true
+        },
+        {
+          "path": "$/contractId",
+          "type": "string",
+          "description": "",
+          "required": true,
+          "reference": ""
+        }
+      ],
+      "emptyObjectEvidence": {
+        "admitted": false
+      },
+      "schemaDigest": "06734e8656bceefb32b9c860d2d7040d47b69fc22c160013c36ca63b3358acea",
+      "sourceRef": "graph:/contractAuthorities/contracts/design-element-fragment.v1"
+    }
+  ],
+  "interfaces": [
+    {
+      "id": "design-intent-and-scope-cli",
+      "profile": "cli",
+      "configurationDigest": "77c17e064726965cf1e82d6a7d802356b45fafe25ecf5a43153d0b432415af68",
+      "configurationKeys": [
+        "input",
+        "display"
+      ],
+      "rootScenarioId": "design-intent-and-scope",
+      "platformCapabilityId": "sda-json-cli.v1",
+      "inputType": "json",
+      "displaySelect": "outcome",
+      "displayAs": "json",
+      "displayTransformationId": "",
+      "sourceRef": "graph:/interfaceAuthority/interfaces/0"
+    }
+  ],
+  "features": [
+    {
+      "id": "design-intent-and-scope",
+      "name": "design-intent-and-scope",
+      "role": "CANONICAL",
+      "versionPk": "183097",
+      "definitionDigest": "7a2c3dbd7d66efa5592096e39ffa734486f53c63c9e0db65c92ab3d1f6326bf2",
+      "title": "design-intent-and-scope greeting",
+      "description": "A caller supplies a name and receives the configured greeting with that name substituted.",
+      "language": "en",
+      "tags": [],
+      "sourceTitle": "Write the configured text to standard output",
+      "sourceNarrative": "",
+      "sourcePath": "features/design-intent-and-scope.feature",
+      "sourceText": "@capability:design-intent-and-scope\n@root-scenario:design-intent-and-scope\nFeature: Write the configured text to standard output\n\n  @scenario:design-intent-and-scope\n  @input:design-intent-and-scope-request\n  @input-contract:design-intent-and-scope-request.v1\n  @event:design-intent-and-scope\n  @event-authority:design-intent-and-scope.v1\n  @outcome:design-intent-and-scope-greeting\n  @outcome-contract:design-intent-and-scope-greeting.v1\n  @outcome-terminal\n  Scenario: Write the database-defined message\n    Given the message configured in the database\n    When the sda-json-cli.v1 standard-output interface executes with that message\n    Then the caller observes the greeting for the supplied name on standard output\n",
+      "sourceContentDigest": "42b44650da18f1e114f59a5cdaf43224ae822578638667e0c03def0c3322c03f",
+      "sourceContentRef": "source:content_object/233150",
+      "selectionSource": "estate_capability_feature",
+      "versionBound": true,
+      "scenarios": [
+        {
+          "id": "design-intent-and-scope",
+          "versionPk": "113691",
+          "ordinal": 0,
+          "definitionDigest": "925aea1db8c37339f89909335274153981d2f608e9f8f4b72686eeeb831dad68",
+          "keyword": "Scenario",
+          "name": "Design intent and scope",
+          "description": "",
+          "tags": [
+            "@capability:design-intent-and-scope",
+            "@event:design-intent-and-scope-requested",
+            "@event-authority:design-intent-and-scope.v1",
+            "@input:design-intent-and-scope-request",
+            "@input-contract:design-altitude-request.v1",
+            "@outcome:design-intent-and-scope",
+            "@outcome-contract:design-element-fragment.v1",
+            "@root-scenario:design-intent-and-scope",
+            "@scenario:design-intent-and-scope",
+            "@outcome-terminal"
+          ],
+          "steps": [
+            {
+              "keyword": "Given",
+              "keywordType": "Context",
+              "text": "a retained specification digest and the capability id it describes"
+            },
+            {
+              "keyword": "When",
+              "keywordType": "Action",
+              "text": "the intent and scope altitude builder frames its governed model request and the model lane writes that section"
+            },
+            {
+              "keyword": "Then",
+              "keywordType": "Outcome",
+              "text": "the intent and scope section returns with its section digest and provenance"
+            }
+          ],
+          "examples": [],
+          "sourceRef": "model:scenario_version/113691"
+        }
+      ],
+      "sourceRef": "model:feature_version/183097"
+    }
+  ],
+  "fixtures": [],
+  "obligations": [],
+  "altitudeCatalog": [
+    {
+      "id": "altitude-10-fixtures-proof",
+      "name": "STUB altitude 10: Fixtures and proof",
+      "definitionDigest": "06b6d6a33ef8651a85dc5c08d99a5713f171ce1a505fd37878df834b312d52ae",
+      "sourceRef": "model:scenario_version/91981"
+    },
+    {
+      "id": "altitude-11-alignment-evaluation",
+      "name": "STUB altitude 11: Alignment evaluation",
+      "definitionDigest": "601a707f0b98efdc52665f772fbd0034e4ecfc6062544c1e4cdb8f6f8fa29eef",
+      "sourceRef": "model:scenario_version/91982"
+    },
+    {
+      "id": "altitude-2-capability-meaning",
+      "name": "STUB altitude 2: Capability meaning",
+      "definitionDigest": "f766c963478b819fbb06398950ad6155d089bc6bf6e520e4a8e24c453f094e51",
+      "sourceRef": "model:scenario_version/91973"
+    },
+    {
+      "id": "altitude-3-scenario-io",
+      "name": "STUB altitude 3: Scenario inputs/events/outcomes",
+      "definitionDigest": "bd17c2e29afa0e21dca05d38fd999e6f8a6b31d91811c111638e80346263c9c1",
+      "sourceRef": "model:scenario_version/91974"
+    },
+    {
+      "id": "altitude-4-contracts-schemas",
+      "name": "STUB altitude 4: Contracts and schemas",
+      "definitionDigest": "a4228d47b0b9d2f7101a0ce54dc830592ddb345c959feb704346af9d4727bef0",
+      "sourceRef": "model:scenario_version/91975"
+    },
+    {
+      "id": "altitude-5-semantic-authority-envelope",
+      "name": "STUB altitude 5: Semantic authority envelope",
+      "definitionDigest": "10fe01062f8235484b4fa56366201b4f80d429695e68a1a813eaae9a4975c1b1",
+      "sourceRef": "model:scenario_version/91976"
+    },
+    {
+      "id": "altitude-6-transformation-ast",
+      "name": "STUB altitude 6: Transformation AST",
+      "definitionDigest": "e18cf7b7b2ffa58208c582bab74d27d1f354e876319f0bcc8fb7b50b51fb5e01",
+      "sourceRef": "model:scenario_version/91977"
+    },
+    {
+      "id": "altitude-7-execution-authorities-ports",
+      "name": "STUB altitude 7: Execution authorities and ports",
+      "definitionDigest": "6b2a3fd14238d832b5c45dc97323fc6757e2e3a6c1d464ac57866e5b72167532",
+      "sourceRef": "model:scenario_version/91978"
+    },
+    {
+      "id": "altitude-8-providers-bindings-overlays",
+      "name": "STUB altitude 8: Providers, bindings, overlays",
+      "definitionDigest": "34d2865e5550d14509570b56431717583e48299be026b8a39f9a3b4cc3f6f6f4",
+      "sourceRef": "model:scenario_version/91979"
+    },
+    {
+      "id": "altitude-9-interface-cli-display",
+      "name": "STUB altitude 9: Interface and CLI display",
+      "definitionDigest": "0701e08fe5dc600237a1c98fdab76731dbbc3a48293706724b88f977260d269a",
+      "sourceRef": "model:scenario_version/91980"
+    },
+    {
+      "id": "authoring-altitude-model-stubs",
+      "name": "STUB altitude 1: Feature parse",
+      "definitionDigest": "703c5d7653297e008b6f9b163cc68d603585983b23b3f33bf8e651593270023e",
+      "sourceRef": "model:scenario_version/91972"
+    }
+  ],
+  "conditions": [],
+  "contextReaderVersion": "selected-inspection-envelope.v6",
+  "inspection": {
+    "contractId": "capability-inspection-evidence.v1",
+    "capturedUtc": "2026-10-17T05:24:15.1245924",
+    "executionBasis": "selected reading statements under sidefx_reader; not target execution",
+    "estateModelId": 34,
+    "capabilityId": "design-intent-and-scope",
+    "capabilityVersionPk": 4902272,
+    "definitionPk": 243181,
+    "definitionDigest": "bb7d949fe977baba109124b491ff63ac745909b0ddf6d3bbb6ece63fe2e58035",
+    "profile": {
+      "definitionPk": 214585,
+      "digest": "49fe6e10064e6a5eda116e3f60ac4351c88c983e982b9c1c16e121af02d9fe0b"
+    },
+    "readingCount": 15,
+    "readings": [
+      {
+        "ordinal": 0,
+        "kind": "detection",
+        "reading": "platform-binding-without-provider",
+        "sourceCapabilityId": "governed-detection",
+        "sourceScenarioId": "detect-platform-binding-without-provider",
+        "sourceCapabilityVersionPk": 1611350,
+        "sourceScenarioVersionPk": 102425,
+        "portVersionPk": 4708,
+        "portDefinitionPk": 213887,
+        "statementDigest": "ef8e14419d25034009b54f56b390e56539cca7fc20b815dc113f55ea14146bcb",
+        "status": "READ",
+        "document": {
+          "contractId": "detection-finding.v1",
+          "reading": "platform-binding-without-provider",
+          "capabilityId": "design-intent-and-scope",
+          "rowCount": 0,
+          "findings": []
+        }
+      },
+      {
+        "ordinal": 1,
+        "kind": "detection",
+        "reading": "invocation-condition-path-absent",
+        "sourceCapabilityId": "governed-detection",
+        "sourceScenarioId": "detect-invocation-condition-path-absent",
+        "sourceCapabilityVersionPk": 1611350,
+        "sourceScenarioVersionPk": 102426,
+        "portVersionPk": 4709,
+        "portDefinitionPk": 213893,
+        "statementDigest": "d1dbbffc9ebcba3129f6f13cac266dd37658f020c1bbfab1a03b62a687d87ae5",
+        "status": "READ",
+        "document": {
+          "contractId": "detection-finding.v1",
+          "reading": "invocation-condition-path-absent",
+          "capabilityId": "design-intent-and-scope",
+          "rowCount": 0,
+          "findings": []
+        }
+      },
+      {
+        "ordinal": 2,
+        "kind": "detection",
+        "reading": "invocation-request-path-absent",
+        "sourceCapabilityId": "governed-detection",
+        "sourceScenarioId": "detect-invocation-request-path-absent",
+        "sourceCapabilityVersionPk": 1611350,
+        "sourceScenarioVersionPk": 102427,
+        "portVersionPk": 4710,
+        "portDefinitionPk": 213899,
+        "statementDigest": "5123b7bcd96b83359fe2407713e28e42ac08065adc958ce7d4150a178c76d89e",
+        "status": "READ",
+        "document": {
+          "contractId": "detection-finding.v1",
+          "reading": "invocation-request-path-absent",
+          "capabilityId": "design-intent-and-scope",
+          "rowCount": 0,
+          "findings": []
+        }
+      },
+      {
+        "ordinal": 3,
+        "kind": "detection",
+        "reading": "feature-binding-drift",
+        "sourceCapabilityId": "governed-detection",
+        "sourceScenarioId": "detect-feature-binding-drift",
+        "sourceCapabilityVersionPk": 1611350,
+        "sourceScenarioVersionPk": 102428,
+        "portVersionPk": 4711,
+        "portDefinitionPk": 213905,
+        "statementDigest": "efa0bb5a155014b403e2c37a0aaf7d314b94179500fbfa781631b02244b1ded3",
+        "status": "READ",
+        "document": {
+          "contractId": "detection-finding.v1",
+          "reading": "feature-binding-drift",
+          "capabilityId": "design-intent-and-scope",
+          "rowCount": 0,
+          "findings": []
+        }
+      },
+      {
+        "ordinal": 4,
+        "kind": "detection",
+        "reading": "declaration-cycle",
+        "sourceCapabilityId": "governed-detection",
+        "sourceScenarioId": "detect-declaration-cycle",
+        "sourceCapabilityVersionPk": 1611350,
+        "sourceScenarioVersionPk": 102429,
+        "portVersionPk": 4712,
+        "portDefinitionPk": 213911,
+        "statementDigest": "5c9470f8c8d00e95950ee82017fe806cb8ccde6bd2108a8852b444dd825e0dcf",
+        "status": "READ",
+        "document": {
+          "contractId": "detection-finding.v1",
+          "reading": "declaration-cycle",
+          "capabilityId": "design-intent-and-scope",
+          "rowCount": 0,
+          "findings": []
+        }
+      },
+      {
+        "ordinal": 5,
+        "kind": "verification",
+        "reading": "contract-satisfiability",
+        "sourceCapabilityId": "governed-formal-verification",
+        "sourceScenarioId": "verify-satisfiability",
+        "sourceCapabilityVersionPk": 1571342,
+        "sourceScenarioVersionPk": 102386,
+        "portVersionPk": 4654,
+        "portDefinitionPk": 213652,
+        "statementDigest": "1a8829ec4c2002b0c29d14ac4b68dd0862c51e47d17d83be39489ced1c03cd70",
+        "status": "READ",
+        "document": {
+          "contractId": "governed-formal-verification-contract-satisfiability.v1",
+          "reading": "contract-satisfiability",
+          "capabilityId": "design-intent-and-scope",
+          "rowCount": 2,
+          "summary": {
+            "PROVED": 2,
+            "COUNTEREXAMPLE": 0,
+            "NOT_FORMALLY_OBSERVABLE": 0
+          },
+          "rows": [
+            {
+              "contract_id": "design-element-fragment.v1",
+              "namespace_id": "sidefx:contracts",
+              "schema_digest": "afa32b26552b588c5afce5189b28394b68fca3ec0ddb44dbcdd48a5bdc7d71ea",
+              "schema_resolved": 1,
+              "root_type": "object",
+              "root_closed": 0,
+              "root_unconstrained": 0,
+              "required_missing": 0,
+              "const_type_conflict": 0,
+              "disposition": "PROVED",
+              "basis": "schema resolves in the encodable keyword fragment; no unsatisfiable root pattern detected"
+            },
+            {
+              "contract_id": "design-altitude-request.v1",
+              "namespace_id": "sidefx:contracts",
+              "schema_digest": "60986dabc4210e18307c548d9e23cefb6aa940f47327937631c8be9e4ca5acdd",
+              "schema_resolved": 1,
+              "root_type": "object",
+              "root_closed": 1,
+              "root_unconstrained": 0,
+              "required_missing": 0,
+              "const_type_conflict": 0,
+              "disposition": "PROVED",
+              "basis": "schema resolves in the encodable keyword fragment; no unsatisfiable root pattern detected"
+            }
+          ]
+        }
+      },
+      {
+        "ordinal": 6,
+        "kind": "verification",
+        "reading": "scenario-predicates",
+        "sourceCapabilityId": "governed-formal-verification",
+        "sourceScenarioId": "verify-predicates",
+        "sourceCapabilityVersionPk": 1571342,
+        "sourceScenarioVersionPk": 102387,
+        "portVersionPk": 4655,
+        "portDefinitionPk": 213653,
+        "statementDigest": "9df04ac421470fade96cdcb2536c865710af1184aa8076012cbfd51ce6ad10e8",
+        "status": "READ",
+        "document": {
+          "contractId": "governed-formal-verification-scenario-predicates.v1",
+          "reading": "scenario-predicates",
+          "capabilityId": "design-intent-and-scope",
+          "rowCount": 1,
+          "summary": {
+            "scenarios": 1,
+            "withInputContract": 1,
+            "withOutcomeContract": 1,
+            "PROVED": 1,
+            "NOT_FORMALLY_OBSERVABLE": 0
+          },
+          "rows": [
+            {
+              "capability_id": "design-intent-and-scope",
+              "scenario_id": "design-intent-and-scope",
+              "scenario_version_pk": 113691,
+              "has_input_contract": 1,
+              "has_outcome_contract": 1,
+              "variants": 0,
+              "disposition": "PROVED",
+              "basis": "P_I and P_O both declared"
+            }
+          ]
+        }
+      },
+      {
+        "ordinal": 7,
+        "kind": "verification",
+        "reading": "expression-semantics",
+        "sourceCapabilityId": "governed-formal-verification",
+        "sourceScenarioId": "verify-semantics",
+        "sourceCapabilityVersionPk": 1571342,
+        "sourceScenarioVersionPk": 102388,
+        "portVersionPk": 4656,
+        "portDefinitionPk": 213654,
+        "statementDigest": "dd760973e379b674ec53cc8402111308dd69800a61ba1652b4dbdbcb5b37f58e",
+        "status": "READ",
+        "document": {
+          "contractId": "governed-formal-verification-expression-semantics.v1",
+          "reading": "expression-semantics",
+          "capabilityId": "design-intent-and-scope",
+          "rowCount": 34,
+          "summary": {
+            "vocabulary": 34,
+            "transcribedFromRulingFiles": 33,
+            "estateUses": 78,
+            "usedAndProved": 10,
+            "providerAssumptionRequired": 1,
+            "NOT_FORMALLY_OBSERVABLE": 0
+          },
+          "rows": [
+            {
+              "operator": "array",
+              "ruling_file": "conformance/execution-graph/mechanics/array.v1",
+              "semantic_effect": "pure",
+              "primary_decision": "construct from evaluated items",
+              "estate_uses": 5,
+              "transcribed": 1,
+              "disposition": "PROVED",
+              "basis": "SDA ruling file transcribed; every estate use is covered"
+            },
+            {
+              "operator": "base64-decode-utf8",
+              "ruling_file": "conformance/execution-graph/mechanics/base64-decode-utf8.v1",
+              "semantic_effect": "pure",
+              "primary_decision": "decode base64 text as UTF-8",
+              "estate_uses": 0,
+              "transcribed": 1,
+              "disposition": "PROVED",
+              "basis": "SDA ruling file transcribed; no estate use"
+            },
+            {
+              "operator": "bind-path",
+              "ruling_file": "conformance/execution-graph/mechanics/bind-path.v1",
+              "semantic_effect": "pure",
+              "primary_decision": "prototype segments refused (PROTOTYPE_SEGMENT_REJECTED); empty path refused (PATH_NOT_DECLARED); non-object carrier refused (OPERAND_NOT_OBJECT); result is a clone",
+              "estate_uses": 0,
+              "transcribed": 1,
+              "disposition": "PROVED",
+              "basis": "SDA ruling file transcribed; no estate use"
+            },
+            {
+              "operator": "canonicalize",
+              "ruling_file": "conformance/execution-graph/mechanics/canonicalize.v1",
+              "semantic_effect": "pure",
+              "primary_decision": "recursive sorted-key canonical form",
+              "estate_uses": 0,
+              "transcribed": 1,
+              "disposition": "PROVED",
+              "basis": "SDA ruling file transcribed; no estate use"
+            },
+            {
+              "operator": "directed-graph-closure",
+              "ruling_file": "conformance/execution-graph/mechanics/directed-graph-closure.v1",
+              "semantic_effect": "pure",
+              "primary_decision": "lexical ordering by stable identity; reachability includes the zero-length path",
+              "estate_uses": 0,
+              "transcribed": 1,
+              "disposition": "PROVED",
+              "basis": "SDA ruling file transcribed; no estate use"
+            },
+            {
+              "operator": "equals",
+              "ruling_file": "conformance/execution-graph/mechanics/equals.v1",
+              "semantic_effect": "pure",
+              "primary_decision": "primitive values only; a non-primitive operand is not admitted",
+              "estate_uses": 5,
+              "transcribed": 1,
+              "disposition": "PROVED",
+              "basis": "SDA ruling file transcribed; every estate use is covered"
+            },
+            {
+              "operator": "escape-html",
+              "ruling_file": "conformance/execution-graph/mechanics/escape-html.v1",
+              "semantic_effect": "pure",
+              "primary_decision": "HTML-escape a string",
+              "estate_uses": 0,
+              "transcribed": 1,
+              "disposition": "PROVED",
+              "basis": "SDA ruling file transcribed; no estate use"
+            },
+            {
+              "operator": "every",
+              "ruling_file": "conformance/execution-graph/mechanics/every.v1",
+              "semantic_effect": "pure",
+              "primary_decision": "true when every item satisfies the predicate",
+              "estate_uses": 0,
+              "transcribed": 1,
+              "disposition": "PROVED",
+              "basis": "SDA ruling file transcribed; no estate use"
+            },
+            {
+              "operator": "filter",
+              "ruling_file": "conformance/execution-graph/mechanics/filter.v1",
+              "semantic_effect": "pure",
+              "primary_decision": "keep items whose predicate is truthy",
+              "estate_uses": 0,
+              "transcribed": 1,
+              "disposition": "PROVED",
+              "basis": "SDA ruling file transcribed; no estate use"
+            },
+            {
+              "operator": "find",
+              "ruling_file": "conformance/execution-graph/mechanics/find.v1",
+              "semantic_effect": "pure",
+              "primary_decision": "no match is absent (null)",
+              "estate_uses": 1,
+              "transcribed": 1,
+              "disposition": "PROVED",
+              "basis": "SDA ruling file transcribed; every estate use is covered"
+            },
+            {
+              "operator": "flat-map",
+              "ruling_file": "conformance/execution-graph/mechanics/flat-map.v1",
+              "semantic_effect": "pure",
+              "primary_decision": "map then flatten one level",
+              "estate_uses": 1,
+              "transcribed": 1,
+              "disposition": "PROVED",
+              "basis": "SDA ruling file transcribed; every estate use is covered"
+            },
+            {
+              "operator": "format",
+              "ruling_file": "conformance/execution-graph/mechanics/format.v1",
+              "semantic_effect": "pure",
+              "primary_decision": "primitive values by the declared coercion table; each placeholder substituted once",
+              "estate_uses": 2,
+              "transcribed": 1,
+              "disposition": "PROVED",
+              "basis": "SDA ruling file transcribed; every estate use is covered"
+            },
+            {
+              "operator": "greater-than",
+              "ruling_file": "conformance/execution-graph/mechanics/greater-than.v1",
+              "semantic_effect": "pure",
+              "primary_decision": "two numbers or two strings; anything else is not admitted",
+              "estate_uses": 0,
+              "transcribed": 1,
+              "disposition": "PROVED",
+              "basis": "SDA ruling file transcribed; no estate use"
+            },
+            {
+              "operator": "if",
+              "ruling_file": "conformance/execution-graph/mechanics/if.v1",
+              "semantic_effect": "pure",
+              "primary_decision": "empty collections are false; the untaken branch is not evaluated",
+              "estate_uses": 4,
+              "transcribed": 1,
+              "disposition": "PROVED",
+              "basis": "SDA ruling file transcribed; every estate use is covered"
+            },
+            {
+              "operator": "includes",
+              "ruling_file": "conformance/execution-graph/mechanics/includes.v1",
+              "semantic_effect": "pure",
+              "primary_decision": "a string contains a substring; an array contains a primitive member",
+              "estate_uses": 0,
+              "transcribed": 1,
+              "disposition": "PROVED",
+              "basis": "SDA ruling file transcribed; no estate use"
+            },
+            {
+              "operator": "intersects",
+              "ruling_file": "conformance/execution-graph/mechanics/intersects.v1",
+              "semantic_effect": "pure",
+              "primary_decision": "true when two arrays share an element",
+              "estate_uses": 0,
+              "transcribed": 1,
+              "disposition": "PROVED",
+              "basis": "SDA ruling file transcribed; no estate use"
+            },
+            {
+              "operator": "join",
+              "ruling_file": "conformance/execution-graph/mechanics/join.v1",
+              "semantic_effect": "pure",
+              "primary_decision": "an absent member joins as the empty string",
+              "estate_uses": 0,
+              "transcribed": 1,
+              "disposition": "PROVED",
+              "basis": "SDA ruling file transcribed; no estate use"
+            },
+            {
+              "operator": "json-stringify",
+              "ruling_file": "conformance/execution-graph/mechanics/json-stringify.v1",
+              "semantic_effect": "pure",
+              "primary_decision": "declared field order, no whitespace, JSON escaping",
+              "estate_uses": 0,
+              "transcribed": 1,
+              "disposition": "PROVED",
+              "basis": "SDA ruling file transcribed; no estate use"
+            },
+            {
+              "operator": "length",
+              "ruling_file": "conformance/execution-graph/mechanics/length.v1",
+              "semantic_effect": "pure",
+              "primary_decision": "arrays and strings only; anything else is not admitted",
+              "estate_uses": 0,
+              "transcribed": 1,
+              "disposition": "PROVED",
+              "basis": "SDA ruling file transcribed; no estate use"
+            },
+            {
+              "operator": "let",
+              "ruling_file": "conformance/execution-graph/mechanics/let.v1",
+              "semantic_effect": "pure",
+              "primary_decision": "sequential named bindings, then a body in the extended scope",
+              "estate_uses": 1,
+              "transcribed": 1,
+              "disposition": "PROVED",
+              "basis": "SDA ruling file transcribed; every estate use is covered"
+            },
+            {
+              "operator": "literal",
+              "ruling_file": "conformance/execution-graph/mechanics/literal.v1",
+              "semantic_effect": "pure",
+              "primary_decision": "the declared literal value",
+              "estate_uses": 26,
+              "transcribed": 1,
+              "disposition": "PROVED",
+              "basis": "SDA ruling file transcribed; every estate use is covered"
+            },
+            {
+              "operator": "lower-case",
+              "ruling_file": "conformance/execution-graph/mechanics/lower-case.v1",
+              "semantic_effect": "pure",
+              "primary_decision": "locale-independent lower-case",
+              "estate_uses": 0,
+              "transcribed": 1,
+              "disposition": "PROVED",
+              "basis": "SDA ruling file transcribed; no estate use"
+            },
+            {
+              "operator": "map",
+              "ruling_file": "conformance/execution-graph/mechanics/map.v1",
+              "semantic_effect": "pure",
+              "primary_decision": "item-scoped evaluation",
+              "estate_uses": 0,
+              "transcribed": 1,
+              "disposition": "PROVED",
+              "basis": "SDA ruling file transcribed; no estate use"
+            },
+            {
+              "operator": "merge",
+              "ruling_file": "conformance/execution-graph/mechanics/merge.v1",
+              "semantic_effect": "pure",
+              "primary_decision": "objects and absent values only",
+              "estate_uses": 0,
+              "transcribed": 1,
+              "disposition": "PROVED",
+              "basis": "SDA ruling file transcribed; no estate use"
+            },
+            {
+              "operator": "object-values",
+              "ruling_file": "conformance/execution-graph/mechanics/object-values.v1",
+              "semantic_effect": "pure",
+              "primary_decision": "values in ascending lexical key order",
+              "estate_uses": 0,
+              "transcribed": 1,
+              "disposition": "PROVED",
+              "basis": "SDA ruling file transcribed; no estate use"
+            },
+            {
+              "operator": "object",
+              "ruling_file": "conformance/execution-graph/mechanics/object.v1",
+              "semantic_effect": "pure",
+              "primary_decision": "construct from evaluated fields",
+              "estate_uses": 13,
+              "transcribed": 1,
+              "disposition": "PROVED",
+              "basis": "SDA ruling file transcribed; every estate use is covered"
+            },
+            {
+              "operator": "parse-json",
+              "ruling_file": "conformance/execution-graph/mechanics/parse-json.v1",
+              "semantic_effect": "pure",
+              "primary_decision": "unparsable text is not admitted",
+              "estate_uses": 0,
+              "transcribed": 1,
+              "disposition": "PROVED",
+              "basis": "SDA ruling file transcribed; no estate use"
+            },
+            {
+              "operator": "path",
+              "ruling_file": "conformance/execution-graph/mechanics/path.v1",
+              "semantic_effect": "pure",
+              "primary_decision": "empty path returns the binding; a missing segment is absent",
+              "estate_uses": 20,
+              "transcribed": 1,
+              "disposition": "PROVED",
+              "basis": "SDA ruling file transcribed; every estate use is covered"
+            },
+            {
+              "operator": "sha256",
+              "ruling_file": "conformance/execution-graph/mechanics/sha256.v1",
+              "semantic_effect": "pure",
+              "primary_decision": "SHA-256 hex digest over the string form",
+              "estate_uses": 0,
+              "transcribed": 1,
+              "disposition": "PROVED",
+              "basis": "SDA ruling file transcribed; no estate use"
+            },
+            {
+              "operator": "some",
+              "ruling_file": "conformance/execution-graph/mechanics/some.v1",
+              "semantic_effect": "pure",
+              "primary_decision": "true when any item satisfies the predicate",
+              "estate_uses": 0,
+              "transcribed": 1,
+              "disposition": "PROVED",
+              "basis": "SDA ruling file transcribed; no estate use"
+            },
+            {
+              "operator": "trim",
+              "ruling_file": "conformance/execution-graph/mechanics/trim.v1",
+              "semantic_effect": "pure",
+              "primary_decision": "remove leading/trailing Unicode whitespace",
+              "estate_uses": 0,
+              "transcribed": 1,
+              "disposition": "PROVED",
+              "basis": "SDA ruling file transcribed; no estate use"
+            },
+            {
+              "operator": "try-parse-json",
+              "ruling_file": "conformance/execution-graph/mechanics/try-parse-json.v1",
+              "semantic_effect": "pure",
+              "primary_decision": "classify parsed or not parsed; no runtime exception",
+              "estate_uses": 0,
+              "transcribed": 1,
+              "disposition": "PROVED",
+              "basis": "SDA ruling file transcribed; no estate use"
+            },
+            {
+              "operator": "unique",
+              "ruling_file": "conformance/execution-graph/mechanics/unique.v1",
+              "semantic_effect": "pure",
+              "primary_decision": "primitive members only; preserve first occurrence",
+              "estate_uses": 0,
+              "transcribed": 1,
+              "disposition": "PROVED",
+              "basis": "SDA ruling file transcribed; no estate use"
+            },
+            {
+              "operator": "read-argv",
+              "semantic_effect": "observation",
+              "primary_decision": "effectful observation; declared by the estate read-argv mechanic on platform-effect-provider.v1; no pure-mechanics ruling file",
+              "estate_uses": 0,
+              "transcribed": 0,
+              "disposition": "PROVIDER_ASSUMPTION_REQUIRED",
+              "basis": "effectful observation operator; no pure-mechanics ruling file exists"
+            }
+          ]
+        }
+      },
+      {
+        "ordinal": 8,
+        "kind": "verification",
+        "reading": "expression-totality",
+        "sourceCapabilityId": "governed-formal-verification",
+        "sourceScenarioId": "verify-totality",
+        "sourceCapabilityVersionPk": 1571342,
+        "sourceScenarioVersionPk": 102389,
+        "portVersionPk": 4657,
+        "portDefinitionPk": 213655,
+        "statementDigest": "5b99decabbab72a73663e3df88f50f0b292084e8eaa60ab17fd2a1c74eaafe6d",
+        "status": "READ",
+        "document": {
+          "contractId": "governed-formal-verification-expression-totality.v1",
+          "reading": "expression-totality",
+          "capabilityId": "design-intent-and-scope",
+          "rowCount": 2,
+          "summary": {
+            "transformations": 2,
+            "ifNodes": 4,
+            "ifWithElse": 4,
+            "ifMissingThen": 0,
+            "PROVED": 2,
+            "COUNTEREXAMPLE": 0
+          },
+          "rows": [
+            {
+              "transformation_id": "compose-governed-model-invocation.v1",
+              "namespace_id": "sidefx:capability:design-intent-and-scope",
+              "if_nodes": 4,
+              "if_with_else": 4,
+              "if_missing_then": 0,
+              "disposition": "PROVED",
+              "basis": "4 if nodes; every one has a then branch and is total under the truthiness ruling"
+            },
+            {
+              "transformation_id": "design-intent-and-scope-transform.v1",
+              "namespace_id": "sidefx:capability:design-intent-and-scope",
+              "if_nodes": 0,
+              "if_with_else": 0,
+              "if_missing_then": 0,
+              "disposition": "PROVED",
+              "basis": "no if node; totality holds vacuously"
+            }
+          ]
+        }
+      },
+      {
+        "ordinal": 9,
+        "kind": "verification",
+        "reading": "route-variant-coverage",
+        "sourceCapabilityId": "governed-formal-verification",
+        "sourceScenarioId": "verify-coverage",
+        "sourceCapabilityVersionPk": 1571342,
+        "sourceScenarioVersionPk": 102390,
+        "portVersionPk": 4658,
+        "portDefinitionPk": 213656,
+        "statementDigest": "384d29be525f3e3d94b9214a71332503aa8395c96ad3ae1bcda4f6f79daec9a0",
+        "status": "READ",
+        "document": {
+          "contractId": "governed-formal-verification-route-variant-coverage.v1",
+          "reading": "route-variant-coverage",
+          "capabilityId": "design-intent-and-scope",
+          "rowCount": 0,
+          "summary": {
+            "routedScenarios": 0,
+            "declaredVariants": 0,
+            "routedVariants": 0,
+            "declaredButUnrouted": 0,
+            "routedButUndeclared": 0,
+            "PROVED": 0,
+            "COUNTEREXAMPLE": 0
+          }
+        }
+      },
+      {
+        "ordinal": 10,
+        "kind": "verification",
+        "reading": "reachability-cycles",
+        "sourceCapabilityId": "governed-formal-verification",
+        "sourceScenarioId": "verify-cycles",
+        "sourceCapabilityVersionPk": 1571342,
+        "sourceScenarioVersionPk": 102391,
+        "portVersionPk": 4659,
+        "portDefinitionPk": 213657,
+        "statementDigest": "c59dd0b1c976b059941b6e79f4d8f6ee9a671df73ff4e368becd7cfcf007bbe9",
+        "status": "READ",
+        "document": {
+          "contractId": "governed-formal-verification-reachability-cycles.v1",
+          "reading": "reachability-cycles",
+          "capabilityId": "design-intent-and-scope",
+          "rowCount": 1,
+          "summary": {
+            "capabilityVersions": 1,
+            "invokeScenarioEdges": 0,
+            "cyclePaths": 0,
+            "capabilityVersionsWithCycle": 0,
+            "PROVED": 1,
+            "COUNTEREXAMPLE": 0
+          },
+          "rows": [
+            {
+              "capability_id": "design-intent-and-scope",
+              "capability_version_pk": 4902272,
+              "invoke_scenario_edges": 0,
+              "cycle_paths": 0,
+              "disposition": "PROVED",
+              "basis": "no invoke-scenario edge; acyclicity holds vacuously"
+            }
+          ]
+        }
+      },
+      {
+        "ordinal": 11,
+        "kind": "verification",
+        "reading": "contract-face-compatibility",
+        "sourceCapabilityId": "governed-formal-verification",
+        "sourceScenarioId": "verify-compatibility",
+        "sourceCapabilityVersionPk": 1571342,
+        "sourceScenarioVersionPk": 102392,
+        "portVersionPk": 4660,
+        "portDefinitionPk": 213658,
+        "statementDigest": "03d109a6181ae7cd728bf568d36d026d75300205ea95047f81578ab3a94bdf8d",
+        "status": "READ",
+        "document": {
+          "contractId": "governed-formal-verification-contract-face-compatibility.v1",
+          "reading": "contract-face-compatibility",
+          "capabilityId": "design-intent-and-scope",
+          "rowCount": 0,
+          "summary": {
+            "edges": 0,
+            "routes": 0,
+            "terminalInvokeEdges": 0,
+            "identityHolds": 0,
+            "PROVED": 0,
+            "COUNTEREXAMPLE": 0,
+            "NOT_FORMALLY_OBSERVABLE": 0
+          }
+        }
+      },
+      {
+        "ordinal": 12,
+        "kind": "verification",
+        "reading": "witnesses",
+        "sourceCapabilityId": "governed-formal-verification",
+        "sourceScenarioId": "verify-witnesses",
+        "sourceCapabilityVersionPk": 1571342,
+        "sourceScenarioVersionPk": 102354,
+        "portVersionPk": 4822,
+        "portDefinitionPk": 214823,
+        "statementDigest": "beba5a5a5da35e9af05ec350112662c3a567fddadaf87f645f051c56623a6cdd",
+        "status": "READ",
+        "document": {
+          "contractId": "governed-formal-verification-witnesses.v1",
+          "reading": "witnesses",
+          "capabilityId": "design-intent-and-scope",
+          "rowCount": 0,
+          "summary": {
+            "fixtures": 0,
+            "withOutcomeAssertions": 0,
+            "assertions": 0,
+            "owningNamespaces": 0,
+            "PROVED": 0,
+            "NOT_FORMALLY_OBSERVABLE": 0
+          }
+        }
+      },
+      {
+        "ordinal": 13,
+        "kind": "obligations",
+        "reading": "capability-proof-obligations",
+        "sourceCapabilityId": "derive-capability-proof-obligations",
+        "sourceScenarioId": "derive-capability-proof-obligations",
+        "sourceCapabilityVersionPk": 1411321,
+        "sourceScenarioVersionPk": 102292,
+        "portVersionPk": 4485,
+        "portDefinitionPk": 212587,
+        "statementDigest": "5ea033e6772909f94c5108d8a2bb8d1fe1357150e41d97b91af23bae0787ffc5",
+        "status": "READ",
+        "document": {
+          "reading": "capability-proof-obligations.v1",
+          "semanticsVersion": "sda-execution-patterns/vectors.v1 + sda-execution-graph/mechanics/*.v1",
+          "sdaCommit": "cc5791b907bfb24e65b5b601c135ea9123a77bbe",
+          "conformanceVerified": false,
+          "capabilityCount": 1,
+          "capabilities": [
+            {
+              "capabilityId": "design-intent-and-scope",
+              "capabilityVersionPk": 4902272,
+              "capabilityDigest": "sha256:bb7d949fe977baba109124b491ff63ac745909b0ddf6d3bbb6ece63fe2e58035",
+              "scope": {
+                "semanticsVersion": "sda-execution-patterns/vectors.v1 + sda-execution-graph/mechanics/*.v1",
+                "sdaCommit": "cc5791b907bfb24e65b5b601c135ea9123a77bbe",
+                "conformanceVerified": false,
+                "conformanceBasis": "installed kernel is csharp: no execution-pattern-vector conformance test; node and python run the vectors"
+              },
+              "obligations": [
+                {
+                  "obligation": "contract-satisfiability",
+                  "disposition": "PROVED",
+                  "basis": "2 contract(s) resolve with no unsatisfiable root pattern"
+                },
+                {
+                  "obligation": "input-outcome-predicates",
+                  "disposition": "PROVED",
+                  "basis": "1/1 input predicates, 1/1 outcome predicates"
+                },
+                {
+                  "obligation": "expression-semantics",
+                  "disposition": "PROVED",
+                  "basis": "10 operator(s) used; every one is transcribed by an SDA ruling file"
+                },
+                {
+                  "obligation": "expression-totality",
+                  "disposition": "PROVED",
+                  "basis": "4 if node(s); every one has a then branch under the truthiness ruling"
+                },
+                {
+                  "obligation": "route-variant-coverage",
+                  "disposition": "NOT_FORMALLY_OBSERVABLE",
+                  "basis": "no declared routing entry reaches this capability"
+                },
+                {
+                  "obligation": "reachability-acyclicity",
+                  "disposition": "PROVED",
+                  "basis": "no invoke-scenario edge; acyclicity holds vacuously"
+                },
+                {
+                  "obligation": "contract-face-compatibility",
+                  "disposition": "NOT_FORMALLY_OBSERVABLE",
+                  "basis": "no route or terminal invoke-scenario edge declared"
+                },
+                {
+                  "obligation": "witnesses",
+                  "disposition": "NOT_FORMALLY_OBSERVABLE",
+                  "basis": "no fixture owned by this capability or its scenarios"
+                },
+                {
+                  "obligation": "invariants",
+                  "disposition": "NOT_FORMALLY_OBSERVABLE",
+                  "basis": "0 observable condition(s) owned, 0 with a formal expression statement"
+                },
+                {
+                  "obligation": "provider-assumptions",
+                  "disposition": "PROVIDER_ASSUMPTION_REQUIRED",
+                  "basis": "1 provider-facing port(s) on sda-projected-capability-invocation-port.v2; no assume/guarantee contract is declared"
+                },
+                {
+                  "obligation": "mechanic-contracts",
+                  "disposition": "NOT_FORMALLY_OBSERVABLE",
+                  "basis": "no platform mechanic referenced by this capability's ports"
+                },
+                {
+                  "obligation": "pattern-vocabulary-binding",
+                  "disposition": "NOT_FORMALLY_OBSERVABLE",
+                  "basis": "0 of 4795 selected estate definitions with a pattern key; the mapping from the ordinal operation list to the declared pattern semantics is compiler behaviour, not a declared row"
+                },
+                {
+                  "obligation": "interpreter-conformance",
+                  "disposition": "NOT_FORMALLY_OBSERVABLE",
+                  "basis": "installed kernel is csharp and has no execution-pattern-vector conformance test; node and python run the vectors"
+                }
+              ],
+              "summary": {
+                "PROVED": 5,
+                "COUNTEREXAMPLE": 0,
+                "NOT_FORMALLY_OBSERVABLE": 7,
+                "PROVIDER_ASSUMPTION_REQUIRED": 1
+              }
+            }
+          ]
+        }
+      },
+      {
+        "ordinal": 14,
+        "kind": "detection",
+        "reading": "retained-scenario-bugs",
+        "sourceCapabilityId": "read-scenario-bugs",
+        "sourceScenarioId": "read-scenario-bugs",
+        "sourceCapabilityVersionPk": 4242052,
+        "sourceScenarioVersionPk": 102477,
+        "portVersionPk": 4791,
+        "portDefinitionPk": 214658,
+        "statementDigest": "f1c48ee6f3c04e4032eab6a3b5b4ee8c990c94017c7314835fa2adadc9747398",
+        "status": "READ",
+        "document": {
+          "contractId": "scenario-bug-reading.v1",
+          "reading": "retained-scenario-bugs",
+          "capabilityId": "design-intent-and-scope",
+          "rowCount": 0,
+          "findings": []
+        }
+      }
+    ],
+    "moduleDigests": [
+      {
+        "name": "analysis.fv_capability_canonical_facts",
+        "bodyDigest": "e85fbd7f332fdecdbbf73a51ae602b65609c937392957f51f4ba4d2a3613d136"
+      },
+      {
+        "name": "analysis.fv_capability_canonical_findings",
+        "bodyDigest": "dac813210a7dbacc6db89a574a84d16a37fdb4b4770236efca1f12f61054d9f3"
+      },
+      {
+        "name": "analysis.fv_capability_evaluation_identity",
+        "bodyDigest": "642a98e51290cbc169a982ef4de24a4275572c8a8695a6d8a5f0ef6b7f526b78"
+      },
+      {
+        "name": "analysis.fv_capability_provider_conformance",
+        "bodyDigest": "9b1d3147c28a87e8b27615aa16f4a385731c61b7ab107fc92bc5f5663176397f"
+      },
+      {
+        "name": "analysis.fv_capability_provider_reference_evidence",
+        "bodyDigest": "6133fed22a602a894f5496c96059b592256ba39865f6e916686314ad7acd9711"
+      },
+      {
+        "name": "analysis.fv_capability_topology_conformance",
+        "bodyDigest": "91da763e77db5f6edac9a07eb3588c881b1cf45a2c5ba6ee2080bbb533c2db9d"
+      },
+      {
+        "name": "analysis.fv_capability_topology_violations",
+        "bodyDigest": "9ab8b7b72c9b7e692c82cbe0c13b1b4eb7a57bbda3a45b9a54108d102ded8b23"
+      },
+      {
+        "name": "analysis.fv_circuit_caption",
+        "bodyDigest": "017a9509408172a49897c479de1f986e742f15bb40db0451c49f8a7a1f9979b3"
+      },
+      {
+        "name": "analysis.fv_circuit_device",
+        "bodyDigest": "a7cf2387647b43c738bee152f706a164b1f68147d5a80bcaa5a9a9a2c77860fc"
+      },
+      {
+        "name": "analysis.fv_circuit_glyph",
+        "bodyDigest": "67b5de6c89ece9e946409eec91687a021fe31ad5757e5e5419409719444d32df"
+      },
+      {
+        "name": "analysis.fv_circuit_glyph_text",
+        "bodyDigest": "16e7d0f17e4bc176c4b533d18b268e31cc02c6c1694e394a6f8b281c28cb283c"
+      },
+      {
+        "name": "analysis.fv_circuit_rect",
+        "bodyDigest": "00612a64aecd4759cc20ef1c755bd0cbaf0495e0157da5617300bb72f68993ee"
+      },
+      {
+        "name": "analysis.fv_circuit_style",
+        "bodyDigest": "15abcd59e6f0d7db132ce5bcf925731f030a8309956fcece1aba7032930eac4e"
+      },
+      {
+        "name": "analysis.fv_circuit_surface",
+        "bodyDigest": "e5d3dea7117a924c920d08a1989a3b8838608fd1b2226972f8fb73430b922972"
+      },
+      {
+        "name": "analysis.fv_circuit_text",
+        "bodyDigest": "1377bc2ef8d65ee2165fcc743e141592351f284914bc3b03a482fccd2dadeb07"
+      },
+      {
+        "name": "analysis.fv_circuit_text_left",
+        "bodyDigest": "ee739f4910a1f14f254e77116701c940efba2c227fa0c523445bbd36569aa0b5"
+      },
+      {
+        "name": "analysis.fv_circuit_xml",
+        "bodyDigest": "b5474709585b04a0243960eecf58042f3957d167000426ce86ba92859bf3bfe2"
+      },
+      {
+        "name": "analysis.fv_contract_face_compatibility",
+        "bodyDigest": "05ecaefbc7fe9a473445780afdcfa47d6c25f1a23b6cebb95016b1007cd142ba"
+      },
+      {
+        "name": "analysis.fv_contract_satisfiability",
+        "bodyDigest": "00c53370ebb7a2cab50beafded19a6e4dd4d9d7412e77a5e86db1d773d630235"
+      },
+      {
+        "name": "analysis.fv_declared_reachability_conformance",
+        "bodyDigest": "c24eeadaf1896d1c6d636018a5ed7d7976cc8a2b544f6272117fd90d72ff1638"
+      },
+      {
+        "name": "analysis.fv_definition_body_heavy_path",
+        "bodyDigest": "83b8bf59410cd59ad17015c3eff9f0a8f2961973f81c3f81d76047f7452b2c1a"
+      },
+      {
+        "name": "analysis.fv_definition_body_members",
+        "bodyDigest": "130e5c662d2cc67d9ffdbcdec7fa90f914faaa4a8696676a5ab253c779390186"
+      },
+      {
+        "name": "analysis.fv_definition_generations",
+        "bodyDigest": "d6c83fe03a407437f913debe015fbb6d2c32f4f9d4dba0b5e30fcb06491e7ccc"
+      },
+      {
+        "name": "analysis.fv_definition_label",
+        "bodyDigest": "29b1a873f30513996fc6dac949b1fe3cab58baf0d8768cc7d92095d948cfb59f"
+      },
+      {
+        "name": "analysis.fv_execution_altitude_spine",
+        "bodyDigest": "616d12ba78bf7daad511f0204f0b5a727032cd4cabb60574919cbed198ffb12a"
+      },
+      {
+        "name": "analysis.fv_execution_authority_conformance",
+        "bodyDigest": "6b535721570fa4e6545678a7e35923a65d7054ee16788b84b7d83e06be3803b6"
+      },
+      {
+        "name": "analysis.fv_execution_authority_resolution",
+        "bodyDigest": "c34dc3254a358aa8f6d2ea79cc881ad95d7fcee0731a4e9c67e0f12708b4f2a2"
+      },
+      {
+        "name": "analysis.fv_execution_graph",
+        "bodyDigest": "b849f2c4707f6d78aafc2b6b89c1b429e537b27198bffade25ac6472497cc828"
+      },
+      {
+        "name": "analysis.fv_execution_operation_identity_proposals",
+        "bodyDigest": "dfbc3008137aa043000a8c707dcb213a355c681d9a07c8c1eec7a441eafb5524"
+      },
+      {
+        "name": "analysis.fv_execution_transformation_dispositions",
+        "bodyDigest": "3e89f941a1affcd5e045b410c7c0002fce00c3f5f03deee7899f4c48a89f36e1"
+      },
+      {
+        "name": "analysis.fv_execution_unbound_operations",
+        "bodyDigest": "87c9ed6ebad9f2dacad3e7dbdb6d9a3334660a598be9bfe1dc8744e8e64ce4c2"
+      },
+      {
+        "name": "analysis.fv_expression_semantics",
+        "bodyDigest": "71a64ed22db9e743756cb3df0b926244856eed127b337cf7bbf6d2e71fc4bdbc"
+      },
+      {
+        "name": "analysis.fv_expression_totality",
+        "bodyDigest": "ee87c207c55cc3dc088d6a281d93e21935f5a6ccbac3702dd7d82927bf5452c2"
+      },
+      {
+        "name": "analysis.fv_extract_execution_authority",
+        "bodyDigest": "5df3a8a360a14ea2bfce4edabcbbc3c602257c9e1cbe9319ca6430c40240dcfd"
+      },
+      {
+        "name": "analysis.fv_over_cap_definition_bodies",
+        "bodyDigest": "6bbc32205699b40d869ccb7976d310e756013d5f8a758df6c6a770884f828082"
+      },
+      {
+        "name": "analysis.fv_provider_boundary_conformance",
+        "bodyDigest": "04430ec98f3ed1c500f4c1c64055989ba53cf740985be7f0efd0abc318567161"
+      },
+      {
+        "name": "analysis.fv_provider_reference_evidence",
+        "bodyDigest": "dc23138287b942d302a122ea042e141633f5d1db5598c26aefcab90d3e518dd3"
+      },
+      {
+        "name": "analysis.fv_provider_role_evidence",
+        "bodyDigest": "3465ecc7cc3b1c1b01a470c44b3c9efcc5ea4976e5fd5fb85b2aa235c19819be"
+      },
+      {
+        "name": "analysis.fv_reachability_cycles",
+        "bodyDigest": "1e11575fe5eb33aaeddffec2c37129498862b66b1739b74d00d856bb2b609a07"
+      },
+      {
+        "name": "analysis.fv_references",
+        "bodyDigest": "52b4db79f961478f0918a4ca11b8104c2d1da3171c4cff8e8216fe2ddba02d32"
+      },
+      {
+        "name": "analysis.fv_route_variant_coverage",
+        "bodyDigest": "b11f4c8c79151f5737ba7d329f265e157256d8aa0863c22efd80bd94b6b32a4d"
+      },
+      {
+        "name": "analysis.fv_routing_conformance",
+        "bodyDigest": "0caac85bd06a364d69367737650efe32b50bd2817f52e4171bc3f870b69d143f"
+      },
+      {
+        "name": "analysis.fv_scenario_port_bindings",
+        "bodyDigest": "6b17a3553d2eb9450b7fb195c60e1f1be83320d6d40253f0b9aca0707cd0e48d"
+      },
+      {
+        "name": "analysis.fv_scenario_predicates",
+        "bodyDigest": "e3d0353ab2a83f993fb0212d7d444ecaeead5d6d0966b60273f982a4224ec895"
+      },
+      {
+        "name": "analysis.fv_selected_definition",
+        "bodyDigest": "6d7997161787ad4d22b7f20d24b1a774b3ba566941795533694f7399fb741f3e"
+      },
+      {
+        "name": "analysis.fv_skill_current_revision",
+        "bodyDigest": "59fde0d1859fbe07ff1975bf62e4b22a4710f87dd6c0a189e84f46f01be4c825"
+      },
+      {
+        "name": "analysis.fv_task_effective_actor",
+        "bodyDigest": "070fec5d18919c45a6075a3b9b08cb0c5fbe769449a0498127564c4389627ca9"
+      },
+      {
+        "name": "analysis.fv_task_skill_pin",
+        "bodyDigest": "a11ca9ede47977706e7f40c8ba6054b6a13b1cd48c154f60f8f280dccda60b02"
+      },
+      {
+        "name": "analysis.fv_translation_purity_conformance",
+        "bodyDigest": "ff70801ef4a9f849aab3e570e294c938413f45293eb13f34542d1bc5085dd44d"
+      },
+      {
+        "name": "analysis.fv_witnesses",
+        "bodyDigest": "e330cc68892cb20da0c79df11a26ce77025fa97494e8f904713142e396f8fb1c"
+      },
+      {
+        "name": "analysis.read_capability_inspection",
+        "bodyDigest": "e749f7b877e5a6f57540bd06b8f8f9ef16e1ad7eb37a259772faf2fa30fadd1f"
+      }
+    ],
+    "repairMap": {
+      "definitionPk": 214668,
+      "digest": "c5207627ad3c5b6494d86347b792ac00c62b108504556ed8da633c75c32bb6c9",
+      "entries": [
+        {
+          "findingCode": "BINDING_NOT_INVOKED",
+          "disposition": "REPAIR",
+          "repairProcedure": "model.remove_scenario_operations",
+          "parameterContract": "blueprint-finding-repair-parameters.v1",
+          "requiredParameters": [
+            "capability_id",
+            "scenario"
+          ],
+          "parameterDefaults": {
+            "operation_ids": null,
+            "remove_uninvoked_bindings": true
+          },
+          "nextUnit": null
+        },
+        {
+          "findingCode": "ENDPOINT_BINDING_WITHOUT_PROVIDER_ID",
+          "disposition": "REPAIR",
+          "repairProcedure": "model.replace_port_configuration",
+          "parameterContract": "blueprint-finding-repair-parameters.v1",
+          "requiredParameters": [
+            "namespace",
+            "port",
+            "configuration_json"
+          ],
+          "parameterDefaults": {},
+          "nextUnit": null
+        },
+        {
+          "findingCode": "FEATURE_VERSION_BINDING_NOT_READ",
+          "disposition": "REPAIR",
+          "repairProcedure": "model.repoint_capability_feature",
+          "parameterContract": "blueprint-finding-repair-parameters.v1",
+          "requiredParameters": [
+            "capability_id"
+          ],
+          "parameterDefaults": {
+            "feature_version_pk": null
+          },
+          "nextUnit": null
+        },
+        {
+          "findingCode": "FEATURE_SCENARIO_SELECTION_DIFFERS",
+          "disposition": "REPAIR",
+          "repairProcedure": "model.repoint_capability_feature",
+          "parameterContract": "blueprint-finding-repair-parameters.v1",
+          "requiredParameters": [
+            "capability_id"
+          ],
+          "parameterDefaults": {
+            "feature_version_pk": null
+          },
+          "nextUnit": null
+        },
+        {
+          "findingCode": "PLATFORM_BINDING_WITHOUT_PROVIDER",
+          "disposition": "NO_INSTALLED_REPAIR",
+          "repairProcedure": null,
+          "parameterContract": null,
+          "requiredParameters": [],
+          "parameterDefaults": {},
+          "nextUnit": "request-sda-embodiment-plan-port-registration.md"
+        },
+        {
+          "findingCode": "CANONICAL_BLUEPRINT_EDGES_NOT_AVAILABLE",
+          "disposition": "NONE",
+          "repairProcedure": null,
+          "parameterContract": null,
+          "requiredParameters": [],
+          "parameterDefaults": {},
+          "nextUnit": null
+        },
+        {
+          "findingCode": "OBSERVABILITY_CONTRACT_NOT_RETAINED",
+          "disposition": "NONE",
+          "repairProcedure": null,
+          "parameterContract": null,
+          "requiredParameters": [],
+          "parameterDefaults": {},
+          "nextUnit": null
+        },
+        {
+          "findingCode": "MONOTONIC_PROGRESS_NOT_PROVEN",
+          "disposition": "NONE",
+          "repairProcedure": null,
+          "parameterContract": null,
+          "requiredParameters": [],
+          "parameterDefaults": {},
+          "nextUnit": null
+        },
+        {
+          "findingCode": "SCENARIO_DISCONNECTED",
+          "disposition": "NONE",
+          "repairProcedure": null,
+          "parameterContract": null,
+          "requiredParameters": [],
+          "parameterDefaults": {},
+          "nextUnit": null
+        },
+        {
+          "findingCode": "ADVANCED_ROUTING_NOT_PROJECTED",
+          "disposition": "NONE",
+          "repairProcedure": null,
+          "parameterContract": null,
+          "requiredParameters": [],
+          "parameterDefaults": {},
+          "nextUnit": null
+        },
+        {
+          "findingCode": "FEATURE_PROSE_DIFFERS_FROM_SOURCE",
+          "disposition": "NONE",
+          "repairProcedure": null,
+          "parameterContract": null,
+          "requiredParameters": [],
+          "parameterDefaults": {},
+          "nextUnit": null
+        },
+        {
+          "findingCode": "AUTHORITY_GRAPH_ROOT_DIFFERS",
+          "disposition": "NONE",
+          "repairProcedure": null,
+          "parameterContract": null,
+          "requiredParameters": [],
+          "parameterDefaults": {},
+          "nextUnit": null
+        },
+        {
+          "findingCode": "INTERFACE_ROOT_NOT_IN_GRAPH",
+          "disposition": "NONE",
+          "repairProcedure": null,
+          "parameterContract": null,
+          "requiredParameters": [],
+          "parameterDefaults": {},
+          "nextUnit": null
+        },
+        {
+          "findingCode": "SCENARIOS_WITHOUT_DECLARED_ROOT_PATH",
+          "disposition": "NONE",
+          "repairProcedure": null,
+          "parameterContract": null,
+          "requiredParameters": [],
+          "parameterDefaults": {},
+          "nextUnit": null
+        },
+        {
+          "findingCode": "EXECUTION_AUTHORITY_EMPTY",
+          "disposition": "NONE",
+          "repairProcedure": null,
+          "parameterContract": null,
+          "requiredParameters": [],
+          "parameterDefaults": {},
+          "nextUnit": null
+        },
+        {
+          "findingCode": "INVOCATION_CONDITION_PATH_ABSENT",
+          "disposition": "REPAIR",
+          "repairProcedure": "model.repair_binding_path_compatibility",
+          "parameterContract": "blueprint-finding-repair-parameters.v1",
+          "requiredParameters": [
+            "capability_id",
+            "operation_ordinal",
+            "required_paths"
+          ],
+          "parameterDefaults": {
+            "capability_id": null,
+            "scenario": null,
+            "binding_port": null,
+            "operation_ordinal": null,
+            "required_paths": []
+          },
+          "nextUnit": null
+        },
+        {
+          "findingCode": "INVOCATION_REQUEST_PATH_ABSENT",
+          "disposition": "REPAIR",
+          "repairProcedure": "model.repair_binding_path_compatibility",
+          "parameterContract": "blueprint-finding-repair-parameters.v1",
+          "requiredParameters": [
+            "capability_id",
+            "operation_ordinal",
+            "required_paths"
+          ],
+          "parameterDefaults": {
+            "capability_id": null,
+            "scenario": null,
+            "binding_port": null,
+            "operation_ordinal": null,
+            "required_paths": []
+          },
+          "nextUnit": null
+        },
+        {
+          "findingCode": "INVOCATION_CONDITION_EVIDENCE_NOT_RETAINED",
+          "disposition": "NONE",
+          "repairProcedure": null,
+          "parameterContract": null,
+          "requiredParameters": [],
+          "parameterDefaults": {},
+          "nextUnit": null
+        },
+        {
+          "findingCode": "PROJECTED_CAPABILITY_REQUEST_PATH_MISSING",
+          "disposition": "NONE",
+          "repairProcedure": null,
+          "parameterContract": null,
+          "requiredParameters": [],
+          "parameterDefaults": {},
+          "nextUnit": "request-projected-capability-request-contract-shape.md"
+        },
+        {
+          "findingCode": "NESTED_INVOCATION_REQUEST_PATH_ABSENT",
+          "disposition": "NONE",
+          "repairProcedure": null,
+          "parameterContract": null,
+          "requiredParameters": [],
+          "parameterDefaults": {},
+          "nextUnit": "request-projected-capability-request-contract-shape.md"
+        },
+        {
+          "findingCode": "BOUNDARY_INSPECTION_EVIDENCE_NOT_RETAINED",
+          "disposition": "NONE",
+          "repairProcedure": null,
+          "parameterContract": null,
+          "requiredParameters": [],
+          "parameterDefaults": {},
+          "nextUnit": null
+        },
+        {
+          "findingCode": "CLI_DISPLAY_SELECTOR_NOT_TOTAL",
+          "disposition": "REPAIR",
+          "repairProcedure": "model.declare_capability_interface",
+          "parameterContract": "blueprint-finding-repair-parameters.v1",
+          "requiredParameters": [
+            "capability_id",
+            "cli_json"
+          ],
+          "parameterDefaults": {},
+          "nextUnit": null
+        },
+        {
+          "findingCode": "NESTED_INVOCATION_INPUT_UNVERIFIED",
+          "disposition": "NONE",
+          "repairProcedure": null,
+          "parameterContract": null,
+          "requiredParameters": [],
+          "parameterDefaults": {},
+          "nextUnit": null
+        },
+        {
+          "findingCode": "GRAPH_SOURCE_READ_LATENCY",
+          "disposition": "NO_INSTALLED_REPAIR",
+          "repairProcedure": null,
+          "parameterContract": null,
+          "requiredParameters": [],
+          "parameterDefaults": {},
+          "nextUnit": "docs/request-objective-invocation-graph-read-delay.md"
+        },
+        {
+          "findingCode": "INVOCATION_PURPOSE_MISMATCH",
+          "disposition": "NO_INSTALLED_REPAIR",
+          "repairProcedure": null,
+          "parameterContract": null,
+          "requiredParameters": [],
+          "parameterDefaults": {},
+          "nextUnit": "docs/request-objective-invocation-graph-read-delay.md"
+        },
+        {
+          "findingCode": "EXECUTOR_DECLARATION_UNRESOLVED",
+          "disposition": "NO_INSTALLED_REPAIR",
+          "repairProcedure": null,
+          "parameterContract": null,
+          "requiredParameters": [],
+          "parameterDefaults": {},
+          "nextUnit": "docs/request-objective-invocation-graph-read-delay.md"
+        },
+        {
+          "findingCode": "LEGACY_DECLARED_READ_REFERENCE",
+          "disposition": "NO_INSTALLED_REPAIR",
+          "repairProcedure": null,
+          "parameterContract": null,
+          "requiredParameters": [],
+          "parameterDefaults": {},
+          "nextUnit": "docs/request-objective-invocation-graph-read-delay.md"
+        },
+        {
+          "findingCode": "FORMAL_VERIFICATION_NOT_COMPOSED",
+          "disposition": "NO_INSTALLED_REPAIR",
+          "repairProcedure": null,
+          "parameterContract": null,
+          "requiredParameters": [],
+          "parameterDefaults": {},
+          "nextUnit": "docs/request-objective-invocation-graph-read-delay.md"
+        },
+        {
+          "findingCode": "SESSION_SETUP_OVERHEAD",
+          "disposition": "NO_INSTALLED_REPAIR",
+          "repairProcedure": null,
+          "parameterContract": null,
+          "requiredParameters": [],
+          "parameterDefaults": {},
+          "nextUnit": "sda:docs/request-declarative-session-identity.md"
+        }
+      ]
+    },
+    "sourceGraphDigest": "887a02453dfd0de770a6785ce45502bea0be82b14e3d7d3df6aefc0efc514919",
+    "captureBasis": "same SQL snapshot transaction as graph_source"
+  },
+  "blueprintSources": [],
+  "platformImplementations": [
+    {
+      "platformCapabilityId": "sda-authority-state-projection.v1",
+      "providerId": "scenario_kernel.adapters.SemanticTransformationEngine",
+      "targetLanguage": "node",
+      "declarationStatus": "ADMITTED"
+    },
+    {
+      "platformCapabilityId": "sda-authority-state-projection.v1",
+      "providerId": "ScenarioKernel.Adapters.Consumer.SemanticTransformationEngine",
+      "targetLanguage": "node",
+      "declarationStatus": "ADMITTED"
+    },
+    {
+      "platformCapabilityId": "sda-authority-state-projection.v1",
+      "providerId": "ScenarioKernel.NodePlatform.Projection.AuthorityTransformation",
+      "targetLanguage": "node",
+      "declarationStatus": "ADMITTED"
+    },
+    {
+      "platformCapabilityId": "sda-authority-transformation-port.v1",
+      "providerId": "scenario_kernel.adapters.SemanticTransformationEngine",
+      "targetLanguage": "node",
+      "declarationStatus": "ADMITTED"
+    },
+    {
+      "platformCapabilityId": "sda-authority-transformation-port.v1",
+      "providerId": "ScenarioKernel.Adapters.Consumer.SemanticTransformationEngine",
+      "targetLanguage": "node",
+      "declarationStatus": "ADMITTED"
+    },
+    {
+      "platformCapabilityId": "sda-authority-transformation-port.v1",
+      "providerId": "ScenarioKernel.NodePlatform.Execution.AuthorityTransformation",
+      "targetLanguage": "node",
+      "declarationStatus": "ADMITTED"
+    },
+    {
+      "platformCapabilityId": "sda-bounded-base64-byte-digest-port.v1",
+      "providerId": "ScenarioKernel.NodePlatform.Representation.BoundedBase64ByteDigest",
+      "targetLanguage": "node",
+      "declarationStatus": "ADMITTED"
+    },
+    {
+      "platformCapabilityId": "sda-canonical-capability-feature-resolution-port.v1",
+      "providerId": "ScenarioKernel.NodePlatform.Observation.CanonicalCapabilityFeatureResolution",
+      "targetLanguage": "node",
+      "declarationStatus": "ADMITTED"
+    },
+    {
+      "platformCapabilityId": "sda-declarative-state-projection.v1",
+      "providerId": "scenario_kernel.platform.consumer",
+      "targetLanguage": "node",
+      "declarationStatus": "ADMITTED"
+    },
+    {
+      "platformCapabilityId": "sda-declarative-state-projection.v1",
+      "providerId": "ScenarioKernel.Adapters.Consumer.AdmittedConsumerPlatform",
+      "targetLanguage": "node",
+      "declarationStatus": "ADMITTED"
+    },
+    {
+      "platformCapabilityId": "sda-declarative-state-projection.v1",
+      "providerId": "ScenarioKernel.NodePlatform.Projection.DeclarativeStateProjection",
+      "targetLanguage": "node",
+      "declarationStatus": "ADMITTED"
+    },
+    {
+      "platformCapabilityId": "sda-declarative-value-port.v1",
+      "providerId": "scenario_kernel.platform.consumer",
+      "targetLanguage": "node",
+      "declarationStatus": "ADMITTED"
+    },
+    {
+      "platformCapabilityId": "sda-declarative-value-port.v1",
+      "providerId": "ScenarioKernel.Adapters.Consumer.AdmittedConsumerPlatform",
+      "targetLanguage": "node",
+      "declarationStatus": "ADMITTED"
+    },
+    {
+      "platformCapabilityId": "sda-declarative-value-port.v1",
+      "providerId": "ScenarioKernel.NodePlatform.Execution.DeclarativeValuePort",
+      "targetLanguage": "node",
+      "declarationStatus": "ADMITTED"
+    },
+    {
+      "platformCapabilityId": "sda-embodiment-plan-port.v1",
+      "providerId": "fixture-166-provider",
+      "targetLanguage": "csharp",
+      "declarationStatus": "ADMITTED"
+    },
+    {
+      "platformCapabilityId": "sda-embodiment-plan-port.v1",
+      "providerId": "fixture-fin15-provider",
+      "targetLanguage": "csharp",
+      "declarationStatus": "ADMITTED"
+    },
+    {
+      "platformCapabilityId": "sda-embodiment-plan-port.v1",
+      "providerId": "fixture-rt1-provider",
+      "targetLanguage": "csharp",
+      "declarationStatus": "ADMITTED"
+    },
+    {
+      "platformCapabilityId": "sda-embodiment-plan-port.v1",
+      "providerId": "ScenarioKernel.Adapters.Consumer.EmbodimentPlanInvocation",
+      "targetLanguage": "csharp",
+      "declarationStatus": "ADMITTED"
+    },
+    {
+      "platformCapabilityId": "sda-embodiment-plan-port.v1",
+      "providerId": "sda-declared-read-graph-provider.v1",
+      "targetLanguage": "csharp",
+      "declarationStatus": "ADMITTED"
+    },
+    {
+      "platformCapabilityId": "sda-embodiment-plan-port.v1",
+      "providerId": "sfx-provider-simulator.capability-invocation.v1",
+      "targetLanguage": "csharp",
+      "declarationStatus": "ADMITTED"
+    },
+    {
+      "platformCapabilityId": "sda-embodiment-plan-port.v1",
+      "providerId": "sfx-provider-simulator.model-response.v1",
+      "targetLanguage": "csharp",
+      "declarationStatus": "ADMITTED"
+    },
+    {
+      "platformCapabilityId": "sda-embodiment-plan-port.v1",
+      "providerId": "vrc-accept-provider",
+      "targetLanguage": "csharp",
+      "declarationStatus": "ADMITTED"
+    },
+    {
+      "platformCapabilityId": "sda-embodiment-plan-port.v1",
+      "providerId": "vrc-candidate-provider",
+      "targetLanguage": "csharp",
+      "declarationStatus": "ADMITTED"
+    },
+    {
+      "platformCapabilityId": "sda-embodiment-plan-port.v1",
+      "providerId": "vrc-conform-provider",
+      "targetLanguage": "csharp",
+      "declarationStatus": "ADMITTED"
+    },
+    {
+      "platformCapabilityId": "sda-embodiment-plan-port.v1",
+      "providerId": "vrc-context-provider",
+      "targetLanguage": "csharp",
+      "declarationStatus": "ADMITTED"
+    },
+    {
+      "platformCapabilityId": "sda-embodiment-plan-port.v1",
+      "providerId": "vrc-evidence-provider",
+      "targetLanguage": "csharp",
+      "declarationStatus": "ADMITTED"
+    },
+    {
+      "platformCapabilityId": "sda-embodiment-plan-port.v1",
+      "providerId": "vrc-invoke-provider",
+      "targetLanguage": "csharp",
+      "declarationStatus": "ADMITTED"
+    },
+    {
+      "platformCapabilityId": "sda-embodiment-plan-port.v1",
+      "providerId": "vrc-migration-provider",
+      "targetLanguage": "csharp",
+      "declarationStatus": "ADMITTED"
+    },
+    {
+      "platformCapabilityId": "sda-embodiment-plan-port.v1",
+      "providerId": "vrc-repo-provider",
+      "targetLanguage": "csharp",
+      "declarationStatus": "ADMITTED"
+    },
+    {
+      "platformCapabilityId": "sda-external-credential-reference-binding-port.v1",
+      "providerId": "scenario_kernel.platform.consumer",
+      "targetLanguage": "node",
+      "declarationStatus": "ADMITTED"
+    },
+    {
+      "platformCapabilityId": "sda-external-credential-reference-binding-port.v1",
+      "providerId": "ScenarioKernel.Adapters.Consumer.AdmittedConsumerPlatform",
+      "targetLanguage": "node",
+      "declarationStatus": "ADMITTED"
+    },
+    {
+      "platformCapabilityId": "sda-external-credential-reference-binding-port.v1",
+      "providerId": "ScenarioKernel.NodePlatform.Effects.ExternalCredentialReferenceBinding",
+      "targetLanguage": "node",
+      "declarationStatus": "ADMITTED"
+    },
+    {
+      "platformCapabilityId": "sda-external-observation-port.v1",
+      "providerId": "ScenarioKernel.NodePlatform.Observation.HttpExternalObservationProvider",
+      "targetLanguage": "node",
+      "declarationStatus": "ADMITTED"
+    },
+    {
+      "platformCapabilityId": "sda-filesystem-artifact-store.v1",
+      "providerId": "ScenarioKernel.Adapters.Consumer.AtomicFilesystemArtifactStore",
+      "targetLanguage": "node",
+      "declarationStatus": "ADMITTED"
+    },
+    {
+      "platformCapabilityId": "sda-filesystem-artifact-store.v1",
+      "providerId": "ScenarioKernel.NodePlatform.Delivery.AtomicFilesystemArtifactStore",
+      "targetLanguage": "node",
+      "declarationStatus": "ADMITTED"
+    },
+    {
+      "platformCapabilityId": "sda-fixture-contract-validator.v1",
+      "providerId": "scenario_kernel.adapters.PredicateContractValidator",
+      "targetLanguage": "node",
+      "declarationStatus": "ADMITTED"
+    },
+    {
+      "platformCapabilityId": "sda-fixture-contract-validator.v1",
+      "providerId": "ScenarioKernel.Adapters.Consumer.AdmittedConsumerPlatform",
+      "targetLanguage": "node",
+      "declarationStatus": "ADMITTED"
+    },
+    {
+      "platformCapabilityId": "sda-fixture-contract-validator.v1",
+      "providerId": "ScenarioKernel.NodePlatform.Schema.FixtureContractValidator",
+      "targetLanguage": "node",
+      "declarationStatus": "ADMITTED"
+    },
+    {
+      "platformCapabilityId": "sda-generic-llm-connector-port.v1",
+      "providerId": "ScenarioKernel.NodePlatform.Cognition.GenericLlmConnector",
+      "targetLanguage": "node",
+      "declarationStatus": "ADMITTED"
+    },
+    {
+      "platformCapabilityId": "sda-governed-disposable-root-lifecycle-port.v1",
+      "providerId": "ScenarioKernel.NodePlatform.Effects.GovernedDisposableRootLifecycle",
+      "targetLanguage": "node",
+      "declarationStatus": "ADMITTED"
+    },
+    {
+      "platformCapabilityId": "sda-governed-external-root-batch-materialization-port.v1",
+      "providerId": "ScenarioKernel.NodePlatform.Effects.GovernedExternalRootBatchMaterialization",
+      "targetLanguage": "node",
+      "declarationStatus": "ADMITTED"
+    },
+    {
+      "platformCapabilityId": "sda-governed-external-root-consumer-projection-port.v1",
+      "providerId": "ScenarioKernel.NodePlatform.Projection.GovernedExternalRootConsumerProjection",
+      "targetLanguage": "node",
+      "declarationStatus": "ADMITTED"
+    },
+    {
+      "platformCapabilityId": "sda-governed-external-root-observation-port.v1",
+      "providerId": "ScenarioKernel.NodePlatform.Observation.GovernedExternalRoot",
+      "targetLanguage": "node",
+      "declarationStatus": "ADMITTED"
+    },
+    {
+      "platformCapabilityId": "sda-governed-external-root-projected-application-execution-port.v1",
+      "providerId": "ScenarioKernel.NodePlatform.Execution.GovernedExternalRootProjectedApplication",
+      "targetLanguage": "node",
+      "declarationStatus": "ADMITTED"
+    },
+    {
+      "platformCapabilityId": "sda-governed-file-system-shaping-port.v2",
+      "providerId": "ScenarioKernel.NodePlatform.Effects.GovernedFileSystemShaping",
+      "targetLanguage": "node",
+      "declarationStatus": "ADMITTED"
+    },
+    {
+      "platformCapabilityId": "sda-governed-filesystem-output-port.v1",
+      "providerId": "ScenarioKernel.NodePlatform.Effects.GovernedFilesystemOutput",
+      "targetLanguage": "node",
+      "declarationStatus": "ADMITTED"
+    },
+    {
+      "platformCapabilityId": "sda-governed-http-exchange-port.v1",
+      "providerId": "scenario_kernel.platform.consumer",
+      "targetLanguage": "node",
+      "declarationStatus": "ADMITTED"
+    },
+    {
+      "platformCapabilityId": "sda-governed-http-exchange-port.v1",
+      "providerId": "ScenarioKernel.Adapters.Consumer.AdmittedConsumerPlatform",
+      "targetLanguage": "node",
+      "declarationStatus": "ADMITTED"
+    },
+    {
+      "platformCapabilityId": "sda-governed-http-exchange-port.v1",
+      "providerId": "ScenarioKernel.NodePlatform.Effects.GovernedHttpExchange",
+      "targetLanguage": "node",
+      "declarationStatus": "ADMITTED"
+    },
+    {
+      "platformCapabilityId": "sda-governed-http-exchange-port.v1",
+      "providerId": "sfx-ui-explorer-region-header",
+      "targetLanguage": "node",
+      "declarationStatus": "ADMITTED"
+    },
+    {
+      "platformCapabilityId": "sda-governed-http-exchange-port.v1",
+      "providerId": "sfx-ui-explorer-region-left-sidebar",
+      "targetLanguage": "node",
+      "declarationStatus": "ADMITTED"
+    },
+    {
+      "platformCapabilityId": "sda-governed-http-exchange-port.v1",
+      "providerId": "sfx-ui-explorer-region-middle",
+      "targetLanguage": "node",
+      "declarationStatus": "ADMITTED"
+    },
+    {
+      "platformCapabilityId": "sda-governed-http-exchange-port.v1",
+      "providerId": "sfx-ui-explorer-region-right-sidebar",
+      "targetLanguage": "node",
+      "declarationStatus": "ADMITTED"
+    },
+    {
+      "platformCapabilityId": "sda-governed-http-exchange-port.v1",
+      "providerId": "sfx-ui-provider-drilldown",
+      "targetLanguage": "node",
+      "declarationStatus": "ADMITTED"
+    },
+    {
+      "platformCapabilityId": "sda-governed-http-exchange-port.v1",
+      "providerId": "sfx-ui-shell-footer",
+      "targetLanguage": "node",
+      "declarationStatus": "ADMITTED"
+    },
+    {
+      "platformCapabilityId": "sda-governed-repository-observation-port.v1",
+      "providerId": "ScenarioKernel.NodePlatform.Observation.GovernedRepository",
+      "targetLanguage": "node",
+      "declarationStatus": "ADMITTED"
+    },
+    {
+      "platformCapabilityId": "sda-governed-serial-execution-port.v1",
+      "providerId": "ScenarioKernel.NodePlatform.Execution.GovernedSerialExecution",
+      "targetLanguage": "node",
+      "declarationStatus": "ADMITTED"
+    },
+    {
+      "platformCapabilityId": "sda-governed-target-execution-observation-port.v1",
+      "providerId": "ScenarioKernel.NodePlatform.Observation.GovernedTargetExecution",
+      "targetLanguage": "node",
+      "declarationStatus": "ADMITTED"
+    },
+    {
+      "platformCapabilityId": "sda-governed-tooling-binding-transaction-port.v1",
+      "providerId": "ScenarioKernel.NodePlatform.Effects.GovernedToolingBindingTransaction",
+      "targetLanguage": "node",
+      "declarationStatus": "ADMITTED"
+    },
+    {
+      "platformCapabilityId": "sda-governed-tooling-migration-operation-port.v1",
+      "providerId": "ScenarioKernel.NodePlatform.Effects.GovernedToolingMigrationOperation",
+      "targetLanguage": "node",
+      "declarationStatus": "ADMITTED"
+    },
+    {
+      "platformCapabilityId": "sda-json-authority-ingestion-port.v1",
+      "providerId": "ScenarioKernel.NodePlatform.Ingestion.ProfileGovernedJsonAuthority",
+      "targetLanguage": "node",
+      "declarationStatus": "ADMITTED"
+    },
+    {
+      "platformCapabilityId": "sda-json-cli.v1",
+      "providerId": "scenario_kernel.platform.consumer",
+      "targetLanguage": "node",
+      "declarationStatus": "ADMITTED"
+    },
+    {
+      "platformCapabilityId": "sda-json-cli.v1",
+      "providerId": "ScenarioKernel.Adapters.Consumer.AdmittedConsumerPlatform",
+      "targetLanguage": "node",
+      "declarationStatus": "ADMITTED"
+    },
+    {
+      "platformCapabilityId": "sda-json-cli.v1",
+      "providerId": "ScenarioKernel.NodePlatform.Interface.JsonCli",
+      "targetLanguage": "node",
+      "declarationStatus": "ADMITTED"
+    },
+    {
+      "platformCapabilityId": "sda-json-query-cli.v1",
+      "providerId": "ScenarioKernel.NodePlatform.Interface.JsonQueryCli",
+      "targetLanguage": "node",
+      "declarationStatus": "ADMITTED"
+    },
+    {
+      "platformCapabilityId": "sda-managed-language-module-invocation-port.v1",
+      "providerId": "ScenarioKernel.NodePlatform.Language.ManagedModuleInvocation",
+      "targetLanguage": "node",
+      "declarationStatus": "ADMITTED"
+    },
+    {
+      "platformCapabilityId": "sda-node-consumer-runtime.v1",
+      "providerId": "ScenarioKernel.NodePlatform",
+      "targetLanguage": "node",
+      "declarationStatus": "ADMITTED"
+    },
+    {
+      "platformCapabilityId": "sda-os-environment-credential-port.v1",
+      "providerId": "ScenarioKernel.NodePlatform.Effects.OsEnvironmentCredentialBinding",
+      "targetLanguage": "node",
+      "declarationStatus": "ADMITTED"
+    },
+    {
+      "platformCapabilityId": "sda-projected-capability-invocation-port.v1",
+      "providerId": "ScenarioKernel.NodePlatform.Execution.ProjectedCapabilityInvocation",
+      "targetLanguage": "node",
+      "declarationStatus": "ADMITTED"
+    },
+    {
+      "platformCapabilityId": "sda-projected-capability-invocation-port.v2",
+      "providerId": "design-altitude-contracts-provider",
+      "targetLanguage": "node",
+      "declarationStatus": "ADMITTED"
+    },
+    {
+      "platformCapabilityId": "sda-projected-capability-invocation-port.v2",
+      "providerId": "design-altitude-feature-provider",
+      "targetLanguage": "node",
+      "declarationStatus": "ADMITTED"
+    },
+    {
+      "platformCapabilityId": "sda-projected-capability-invocation-port.v2",
+      "providerId": "design-altitude-intent-provider",
+      "targetLanguage": "node",
+      "declarationStatus": "ADMITTED"
+    },
+    {
+      "platformCapabilityId": "sda-projected-capability-invocation-port.v2",
+      "providerId": "design-altitude-providers-provider",
+      "targetLanguage": "node",
+      "declarationStatus": "ADMITTED"
+    },
+    {
+      "platformCapabilityId": "sda-projected-capability-invocation-port.v2",
+      "providerId": "design-altitude-topology-provider",
+      "targetLanguage": "node",
+      "declarationStatus": "ADMITTED"
+    },
+    {
+      "platformCapabilityId": "sda-projected-capability-invocation-port.v2",
+      "providerId": "ScenarioKernel.NodePlatform.Execution.ProjectedCapabilityInvocationAndBinding",
+      "targetLanguage": "node",
+      "declarationStatus": "ADMITTED"
+    },
+    {
+      "platformCapabilityId": "sda-projected-capability-invocation-port.v2",
+      "providerId": "sim-stream-balance-provider",
+      "targetLanguage": "node",
+      "declarationStatus": "ADMITTED"
+    },
+    {
+      "platformCapabilityId": "sda-projected-capability-invocation-port.v2",
+      "providerId": "sim-stream-cashflow-provider",
+      "targetLanguage": "node",
+      "declarationStatus": "ADMITTED"
+    },
+    {
+      "platformCapabilityId": "sda-projected-capability-invocation-port.v2",
+      "providerId": "sim-stream-income-provider",
+      "targetLanguage": "node",
+      "declarationStatus": "ADMITTED"
+    },
+    {
+      "platformCapabilityId": "sda-projected-capability-invocation-port.v2",
+      "providerId": "sim-stream-quote-provider",
+      "targetLanguage": "node",
+      "declarationStatus": "ADMITTED"
+    },
+    {
+      "platformCapabilityId": "sda-projected-capability-invocation-port.v2",
+      "providerId": "sim-stream-statistics-provider",
+      "targetLanguage": "node",
+      "declarationStatus": "ADMITTED"
+    },
+    {
+      "platformCapabilityId": "sda-proof-binding-evaluation-port.v1",
+      "providerId": "ScenarioKernel.NodePlatform.Evaluation.ProfileGovernedProofBinding",
+      "targetLanguage": "node",
+      "declarationStatus": "ADMITTED"
+    },
+    {
+      "platformCapabilityId": "sda-scenario-semantic-carrier-evaluation-port.v1",
+      "providerId": "ScenarioKernel.NodePlatform.Evaluation.ScenarioSemanticCarrierCompilationEvidence",
+      "targetLanguage": "node",
+      "declarationStatus": "ADMITTED"
+    },
+    {
+      "platformCapabilityId": "sda-scenario-semantic-carrier-extraction-port.v1",
+      "providerId": "ScenarioKernel.NodePlatform.Extraction.ScenarioSemanticCarrierGraph",
+      "targetLanguage": "node",
+      "declarationStatus": "ADMITTED"
+    },
+    {
+      "platformCapabilityId": "sda-scenario-semantic-carrier-validation-port.v1",
+      "providerId": "ScenarioKernel.NodePlatform.Validation.ScenarioSemanticCarrier",
+      "targetLanguage": "node",
+      "declarationStatus": "ADMITTED"
+    },
+    {
+      "platformCapabilityId": "sda-schema-contract-admission.v1",
+      "providerId": "scenario_kernel.adapters.JsonSchemaContractValidator",
+      "targetLanguage": "node",
+      "declarationStatus": "ADMITTED"
+    },
+    {
+      "platformCapabilityId": "sda-schema-contract-admission.v1",
+      "providerId": "ScenarioKernel.Adapters.Schema.JsonSchemaContractValidator",
+      "targetLanguage": "node",
+      "declarationStatus": "ADMITTED"
+    },
+    {
+      "platformCapabilityId": "sda-schema-contract-admission.v1",
+      "providerId": "ScenarioKernel.NodePlatform.Schema.JsonSchemaContractAdmission",
+      "targetLanguage": "node",
+      "declarationStatus": "ADMITTED"
+    },
+    {
+      "platformCapabilityId": "sda-semantic-execution-graph-compilation-port.v1",
+      "providerId": "ScenarioKernel.NodePlatform.Execution.SemanticExecutionGraphCompilation",
+      "targetLanguage": "node",
+      "declarationStatus": "ADMITTED"
+    },
+    {
+      "platformCapabilityId": "sda-semantic-vector-index.v1",
+      "providerId": "ScenarioKernel.NodePlatform.Recall.DeterministicSemanticVectorIndex",
+      "targetLanguage": "node",
+      "declarationStatus": "ADMITTED"
+    }
+  ],
+  "providerLabels": {
+    "ScenarioKernel": "Scenario Kernel (legacy root provider)",
+    "ScenarioKernel.Adapters.Consumer.AdmittedConsumerPlatform": "Adapters · Consumer · Admitted Consumer Platform",
+    "ScenarioKernel.Adapters.Consumer.AtomicFilesystemArtifactStore": "Adapters · Consumer · Atomic Filesystem Artifact Store",
+    "ScenarioKernel.Adapters.Consumer.DeclarativeConsumerMechanics": "Adapters · Consumer · Declarative Consumer Mechanics",
+    "ScenarioKernel.Adapters.Consumer.EmbodimentPlanInvocation": "Embodiment Plan Invocation (csharp)",
+    "ScenarioKernel.Adapters.Consumer.SemanticTransformationEngine": "Adapters · Consumer · Semantic Transformation Engine",
+    "ScenarioKernel.Adapters.InMemory": "Adapters · In Memory",
+    "ScenarioKernel.Adapters.Json": "Adapters · JSON",
+    "ScenarioKernel.Adapters.Schema": "Adapters · Schema",
+    "ScenarioKernel.Adapters.Schema.JsonSchemaContractValidator": "Adapters · Schema · JSON Schema Contract Validator",
+    "ScenarioKernel.Adapters.Telemetry": "Adapters · Telemetry",
+    "ScenarioKernel.NodePlatform": "Node Platform",
+    "ScenarioKernel.NodePlatform.Cognition.GenericLlmConnector": "Node Platform · Cognition · Generic LLM Connector",
+    "ScenarioKernel.NodePlatform.Delivery.AtomicFilesystemArtifactStore": "Node Platform · Delivery · Atomic Filesystem Artifact Store",
+    "ScenarioKernel.NodePlatform.Effects.ExternalCredentialReferenceBinding": "Node Platform · Effects · External Credential Reference Binding",
+    "ScenarioKernel.NodePlatform.Effects.GovernedDisposableRootLifecycle": "Node Platform · Effects · Governed Disposable Root Lifecycle",
+    "ScenarioKernel.NodePlatform.Effects.GovernedExternalRootBatchMaterialization": "Node Platform · Effects · Governed External Root Batch Materialization",
+    "ScenarioKernel.NodePlatform.Effects.GovernedFileSystemShaping": "Node Platform · Effects · Governed File System Shaping",
+    "ScenarioKernel.NodePlatform.Effects.GovernedHttpExchange": "Node Platform · Effects · Governed HTTP Exchange",
+    "ScenarioKernel.NodePlatform.Effects.GovernedToolingBindingTransaction": "Node Platform · Effects · Governed Tooling Binding Transaction",
+    "ScenarioKernel.NodePlatform.Effects.GovernedToolingMigrationOperation": "Node Platform · Effects · Governed Tooling Migration Operation",
+    "ScenarioKernel.NodePlatform.Effects.OsEnvironmentCredentialBinding": "Node Platform · Effects · OS Environment Credential Binding",
+    "ScenarioKernel.NodePlatform.Evaluation.ProfileGovernedProofBinding": "Node Platform · Evaluation · Profile Governed Proof Binding",
+    "ScenarioKernel.NodePlatform.Evaluation.ScenarioSemanticCarrierCompilationEvidence": "Node Platform · Evaluation · Scenario Semantic Carrier Compilation Evidence",
+    "ScenarioKernel.NodePlatform.Execution.AuthorityTransformation": "Node Platform · Execution · Authority Transformation",
+    "ScenarioKernel.NodePlatform.Execution.DeclarativeValuePort": "Node Platform · Execution · Declarative Value Port",
+    "ScenarioKernel.NodePlatform.Execution.GovernedExternalRootProjectedApplication": "Node Platform · Execution · Governed External Root Projected Application",
+    "ScenarioKernel.NodePlatform.Execution.GovernedSerialExecution": "Node Platform · Execution · Governed Serial Execution",
+    "ScenarioKernel.NodePlatform.Execution.ProjectedCapabilityInvocation": "Node Platform · Execution · Projected Capability Invocation",
+    "ScenarioKernel.NodePlatform.Execution.ProjectedCapabilityInvocationAndBinding": "Node Platform · Execution · Projected Capability Invocation And Binding",
+    "ScenarioKernel.NodePlatform.Execution.SemanticExecutionGraphCompilation": "Node Platform · Execution · Semantic Execution Graph Compilation",
+    "ScenarioKernel.NodePlatform.Extraction.ScenarioSemanticCarrierGraph": "Node Platform · Extraction · Scenario Semantic Carrier Graph",
+    "ScenarioKernel.NodePlatform.Ingestion.ProfileGovernedJsonAuthority": "Node Platform · Ingestion · Profile Governed JSON Authority",
+    "ScenarioKernel.NodePlatform.Interface.JsonCli": "Node Platform · Interface · JSON CLI",
+    "ScenarioKernel.NodePlatform.Interface.JsonQueryCli": "Node Platform · Interface · JSON Query CLI",
+    "ScenarioKernel.NodePlatform.Language.ManagedModuleInvocation": "Node Platform · Language · Managed Module Invocation",
+    "ScenarioKernel.NodePlatform.Observation.CanonicalCapabilityFeatureResolution": "Node Platform · Observation · Canonical Capability Feature Resolution",
+    "ScenarioKernel.NodePlatform.Observation.GovernedExternalRoot": "Node Platform · Observation · Governed External Root",
+    "ScenarioKernel.NodePlatform.Observation.GovernedRepository": "Node Platform · Observation · Governed Repository",
+    "ScenarioKernel.NodePlatform.Observation.GovernedTargetExecution": "Node Platform · Observation · Governed Target Execution",
+    "ScenarioKernel.NodePlatform.Observation.HttpExternalObservationProvider": "Node Platform · Observation · HTTP External Observation Provider",
+    "ScenarioKernel.NodePlatform.Projection.AuthorityTransformation": "Node Platform · Projection · Authority Transformation",
+    "ScenarioKernel.NodePlatform.Projection.DeclarativeStateProjection": "Node Platform · Projection · Declarative State Projection",
+    "ScenarioKernel.NodePlatform.Projection.GovernedExternalRootConsumerProjection": "Node Platform · Projection · Governed External Root Consumer Projection",
+    "ScenarioKernel.NodePlatform.Recall.DeterministicSemanticVectorIndex": "Node Platform · Recall · Deterministic Semantic Vector Index",
+    "ScenarioKernel.NodePlatform.Representation.BoundedBase64ByteDigest": "Node Platform · Representation · Bounded Base64 Byte Digest",
+    "ScenarioKernel.NodePlatform.Schema.FixtureContractValidator": "Node Platform · Schema · Fixture Contract Validator",
+    "ScenarioKernel.NodePlatform.Schema.JsonSchemaContractAdmission": "Node Platform · Schema · JSON Schema Contract Admission",
+    "ScenarioKernel.NodePlatform.Validation.ScenarioSemanticCarrier": "Node Platform · Validation · Scenario Semantic Carrier",
+    "ScenarioKernel.Wpf.AuthorityBackedViewModel": "Wpf · Authority Backed View Model",
+    "argv-provider.provideArguments": "Argv Provider",
+    "authority-read-provider.readCapabilityAuthority": "Authority Read Provider · Read Capability Authority",
+    "cli-login-input-provider": "CLI login input",
+    "consumer-authority-context.carryConsumerAuthorityContextForInvocation": "Consumer Authority Context · Carry Consumer Authority Context For Invocation",
+    "consumer-execution-provider.executeConsumerPlan": "Consumer Execution Provider · Execute Consumer Plan",
+    "consumer-object-provider.NodeConsumerObjectProvider": "Consumer Object Provider",
+    "consumer-plan-provider.readConsumerExecutionPlan": "Consumer Plan Provider · Read Consumer Execution Plan",
+    "consumer-write-provider.writeConsumerEmbodiment": "Consumer Write Provider",
+    "contract-admission-provider.admitDeclaredContract": "Contract Admission Provider · Admit Declared Contract",
+    "database-query-provider.readDatabaseQuery": "Database Query Provider · Read Database Query",
+    "design-altitude-contracts-provider": "Scenario Contracts (design altitude)",
+    "design-altitude-feature-provider": "Feature Gherkin (design altitude)",
+    "design-altitude-intent-provider": "Intent & Scope (design altitude)",
+    "design-altitude-providers-provider": "Providers & Bindings (design altitude)",
+    "design-altitude-topology-provider": "Topology & Verification (design altitude)",
+    "embodiment-plan-provider.planCapabilityEmbodiment": "Embodiment Plan Provider · Plan Capability Embodiment",
+    "embodiment-write-provider.writeCapabilityEmbodiment": "Embodiment Write Provider · Write Capability Embodiment",
+    "execution-graph-read-provider.readDeclaredExecutionGraph": "Execution Graph Read Provider · Read Declared Execution Graph",
+    "fixture-166-provider": "Finance166 Summary (fixture)",
+    "fixture-fin15-provider": "Finance15 Modules (fixture)",
+    "fixture-rt1-provider": "RealTime1 Summary (fixture)",
+    "google/gemini": "Google Gemini",
+    "google/gemini-select": "Google Gemini (Select)",
+    "google/gemini-summary": "Google Gemini (Summary)",
+    "ide-session-provider": "IDE session",
+    "identity-principal-provider": "Identity principal",
+    "invoke-database-capability.executeDatabaseCommand": "Invoke Database Capability · Execute Database Command (unembodied)",
+    "load-memory-scenario.loadMemoryScenario": "Load Memory Scenario · Load Memory Scenario",
+    "native-expression-projection.NativeExpressionProjection": "Native Expression Projection",
+    "password-credential-provider": "Password credential",
+    "platform.AdmittedConsumerPlatform": "Platform · Admitted Consumer Platform",
+    "platform.AtomicFilesystemArtifactStore": "Platform · Atomic Filesystem Artifact Store",
+    "platform.SemanticTransformationEngine": "Platform · Semantic Transformation Engine",
+    "rapidapi/davethebeast/yahoo-finance166": "Yahoo Finance166",
+    "rapidapi/realty-us": "Realty US",
+    "rapidapi/yahoo-finance-real-time1": "Yahoo Finance Real Time",
+    "rapidapi/yahoo-finance15": "YH Finance (yahoo-finance15)",
+    "rapidapi/yahoo-finance166": "YFinance API (yahoo-finance166)",
+    "read-authority.readAuthority": "Read Authority · Read Authority",
+    "scenario.kernel.adapters.AtomicFilesystemArtifactStore": "Scenario · Kernel · Adapters · Atomic Filesystem Artifact Store",
+    "scenario.kernel.adapters.SemanticTransformationEngine": "Scenario · Kernel · Adapters · Semantic Transformation Engine",
+    "scenario.kernel.platform.AdmittedConsumerPlatform": "Scenario · Kernel · Platform · Admitted Consumer Platform",
+    "scenario_kernel.adapters.AtomicFilesystemArtifactStore": "Scenario · Kernel · Adapters · Atomic Filesystem Artifact Store",
+    "scenario_kernel.adapters.DeclarativeConsumerMechanics": "Scenario · Kernel · Adapters · Declarative Consumer Mechanics",
+    "scenario_kernel.adapters.InMemoryExecutionAuthorityResolver": "Scenario · Kernel · Adapters · In Memory Execution Authority Resolver",
+    "scenario_kernel.adapters.InMemoryExecutionObserver": "Scenario · Kernel · Adapters · In Memory Execution Observer",
+    "scenario_kernel.adapters.InMemorySemanticExecutor": "Scenario · Kernel · Adapters · In Memory Semantic Executor",
+    "scenario_kernel.adapters.JsonDocumentMechanics": "Scenario · Kernel · Adapters · JSON Document Mechanics",
+    "scenario_kernel.adapters.JsonSchemaContractValidator": "Scenario · Kernel · Adapters · JSON Schema Contract Validator",
+    "scenario_kernel.adapters.PredicateContractValidator": "Scenario · Kernel · Adapters · Predicate Contract Validator",
+    "scenario_kernel.adapters.SemanticTransformationEngine": "Scenario · Kernel · Adapters · Semantic Transformation Engine",
+    "scenario_kernel.kernel.ScenarioKernel": "Scenario · Kernel · Kernel · Scenario Kernel",
+    "scenario_kernel.platform.consumer": "Scenario · Kernel · Platform · Consumer",
+    "sda-declared-read-graph-provider.v1": "Declared Read Graph Provider (query runner)",
+    "sda-node-load-memory-scenario.loadMemoryScenario": "SDA Node Load Memory Scenario · Load Memory Scenario",
+    "sda-semantic-execution-graph-compilation.compileSemanticExecutionGraph": "SDA Semantic Execution Graph Compilation · Compile Semantic Execution Graph",
+    "sda-semantic-execution-graph-execution.executeSemanticExecutionGraph": "SDA Semantic Execution Graph Execution · Execute Semantic Execution Graph",
+    "sda::platform::AdmittedConsumerPlatform": "SDA · Platform · Admitted Consumer Platform",
+    "sda::platform::AtomicFilesystemArtifactStore": "SDA · Platform · Atomic Filesystem Artifact Store",
+    "sda::platform::SemanticTransformationEngine": "SDA · Platform · Semantic Transformation Engine",
+    "sfx-authoring-altitude-01": "Authoring altitude 01 provider (feature parse)",
+    "sfx-authoring-altitude-02": "Authoring altitude 02 provider (capability meaning)",
+    "sfx-authoring-altitude-03": "Authoring altitude 03 provider (scenario I/E/O)",
+    "sfx-authoring-altitude-04": "Authoring altitude 04 provider (contracts and schemas)",
+    "sfx-authoring-altitude-05": "Authoring altitude 05 provider (semantic authority envelope)",
+    "sfx-authoring-altitude-06": "Authoring altitude 06 provider (transformation AST)",
+    "sfx-authoring-altitude-07": "Authoring altitude 07 provider (execution authorities and ports)",
+    "sfx-authoring-altitude-08": "Authoring altitude 08 provider (providers, bindings, overlays)",
+    "sfx-authoring-altitude-09": "Authoring altitude 09 provider (interface and CLI display)",
+    "sfx-authoring-altitude-10": "Authoring altitude 10 provider (fixtures and proof)",
+    "sfx-authoring-altitude-11": "Authoring altitude 11 provider (alignment evaluation)",
+    "sfx-provider-simulator.capability-invocation.v1": "SFX Provider Simulator — capability invocation (mock)",
+    "sfx-provider-simulator.model-response.v1": "SFX Provider Simulator — governed model response (mock)",
+    "sfx-ui-explorer-region-header": "sfx-ui-explorer-region-header",
+    "sfx-ui-explorer-region-left-sidebar": "sfx-ui-explorer-region-left-sidebar",
+    "sfx-ui-explorer-region-middle": "sfx-ui-explorer-region-middle",
+    "sfx-ui-explorer-region-right-sidebar": "sfx-ui-explorer-region-right-sidebar",
+    "sfx-ui-provider-drilldown": "sfx-ui-provider-drilldown",
+    "sfx-ui-shell-footer": "sfx-ui-shell-footer",
+    "sidefx/bounded-http": "SideFX · Bounded HTTP",
+    "sim-stream-balance-provider": "Balance Sheet (simulated)",
+    "sim-stream-cashflow-provider": "Cash Flow (simulated)",
+    "sim-stream-income-provider": "Income Statement (simulated)",
+    "sim-stream-quote-provider": "Quote Endpoint (simulated)",
+    "sim-stream-statistics-provider": "Statistics (simulated)",
+    "test/provider": "Test Provider (fixture)",
+    "vrc-accept-provider": "Acceptance (fixture)",
+    "vrc-candidate-provider": "Candidate (fixture)",
+    "vrc-conform-provider": "Conformance (fixture)",
+    "vrc-context-provider": "Context (fixture)",
+    "vrc-evidence-provider": "Evidence (fixture)",
+    "vrc-invoke-provider": "Invocation Check (fixture)",
+    "vrc-migration-provider": "Migration Check (fixture)",
+    "vrc-repo-provider": "Repository Facts (fixture)"
+  },
+  "graphFeatures": {
+    "graphType": "legacy declaration",
+    "requiredExecutionFeatures": [],
+    "edgeGroups": [],
+    "dispatchAuthorities": []
+  },
+  "snapshotDigest": "cd0fc0a5a882afa1f143b157d489ca7a811f1ed97cbffef0674b00553c2d9197"
+}

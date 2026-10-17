@@ -1,0 +1,7 @@
+{
+  "contractId": "capability-presentation-request.v1",
+  "capabilityId": "compose-implementation-design",
+  "view": "event",
+  "contextAltitude": "all",
+  "scenarioId": "compose-implementation-design"
+}

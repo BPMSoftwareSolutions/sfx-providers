@@ -1,0 +1,23 @@
+{
+  "view": "capability",
+  "nodes": [
+    {
+      "id": "scenario:design-intent-and-scope",
+      "label": "Design intent and scope",
+      "kind": "scenario",
+      "ref": "graph:/scenarios/0",
+      "missing": false,
+      "reachable": true
+    }
+  ],
+  "edges": [],
+  "findings": [
+    {
+      "code": "FEATURE_PROSE_DIFFERS_FROM_SOURCE",
+      "label": "Parsed and retained Gherkin",
+      "message": "Parsed scenario prose for design-intent-and-scope differs from its retained source bytes. Both are preserved.",
+      "sourceRef": "model:feature_version/183097"
+    }
+  ],
+  "digest": "0434acdf40d8c7f363a6ec3a0ede257c600174c4bd0b5e0a66e6d80e3a97ccfa"
+}

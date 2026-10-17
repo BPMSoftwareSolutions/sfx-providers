@@ -173,3 +173,30 @@ test('dense scenario circuits paginate their calls and retain the complete circu
  assert.equal(new Set(summaries.flatMap(s=>s.blueprint.providerPorts.map(p=>p.operationId))).size,8);
  assert.equal(result.candidate.storyboard.slides.find(s=>s.blueprint?.render?.cells?.length===8).blueprint.render.cells.length,8);
 });
+
+test('uneven provider groups fit their captions and retain shared-operation ownership',async()=>{
+ const raw=rawFixture(),ports=['section-intent-build','section-intent-compose','section-intent-ask','section-intent-snapshot','section-feature-build','section-feature-compose','section-feature-ask'];
+ raw.graph.executionAuthorities[0].operations=ports.map(portId=>({kind:'invoke-port',portId}));
+ const providers=[['query-fixture'],[],['intent-fixture','model-fixture'],['query-fixture'],['query-fixture'],[],['feature-fixture','model-fixture']];
+ raw.graph.interfaceAuthority.portBindings.push(...ports.map((portId,i)=>({portId,platformCapabilityId:'transform.v1',configuration:providers[i].length?
+  {providerAuthorities:providers[i].map(providerId=>({providerId}))}:{transformationId:'policy.v1'}})));
+ raw.providerLabels=[['query-fixture','Declared Query Provider (lookup service)'],['intent-fixture','Intent & Scope (section provider)'],['model-fixture','Language Model (Select)'],['feature-fixture','Feature Text (section provider)']].map(([provider_id,version_label])=>({provider_id,version_label}));
+ const snapshot=normalizeSnapshot(raw),result=await handle({contractId:'capability-presentation-request.v1',capabilityId:snapshot.identity.capabilityId,view:'event',contextAltitude:7},{readEstate:async()=>snapshot});
+ assert.equal(result.disposition,'AUTHORED',JSON.stringify(result.findings));
+ const slide=result.candidate.storyboard.slides.find(s=>s.blueprint?.role==='scenario-blueprint'&&s.blueprint.scenarioId==='review');
+ assert.equal(slide.blueprint.providerPorts.length,7);
+ assert.deepEqual(slide.blueprint.providerPorts.map(p=>[p.portId,p.providerId]).sort(),providers.flatMap((ids,i)=>ids.map(id=>[ports[i],'provider:'+id])).sort());
+ assert.equal(slide.blueprint.inlineOperationIds.length,7);
+ const groups=slide.blueprint.glyphs.filter(g=>g.kind==='provider').sort((a,b)=>a.bounds.x-b.bounds.x);
+ for(const [i,group]of groups.entries()){
+  if(i)assert.ok(groups[i-1].bounds.x+groups[i-1].bounds.w<=group.bounds.x);
+  const calls=slide.blueprint.providerPorts.filter(p=>p.providerId===group.nodeId).sort((a,b)=>a.bounds.x-b.bounds.x);
+  for(const [j,call]of calls.entries()){
+   assert.ok(call.bounds.x>=group.bounds.x&&call.bounds.x+call.bounds.w<=group.bounds.x+group.bounds.w+.001);
+   if(j)assert.ok(calls[j-1].bounds.x+calls[j-1].bounds.w<=call.bounds.x);
+   assert.deepEqual(call.providerRoute,[call.anchor,[call.anchor[0],group.bounds.y+group.bounds.h]]);
+  }
+ }
+ const event=result.candidate.storyboard.slides.find(s=>s.blueprint?.render?.cells?.length===7);
+ assert.equal(event.blueprint.render.routes.length,6);
+});

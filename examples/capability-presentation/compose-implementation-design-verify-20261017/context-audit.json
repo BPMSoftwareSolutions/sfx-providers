@@ -1,0 +1,237 @@
+{
+  "capabilityId": "compose-implementation-design",
+  "snapshotDigest": "932743acd96437dee00e12ee327e7580e3e477431d795d24632acd8125eaa772",
+  "altitudes": [
+    {
+      "altitude": 1,
+      "name": "Feature parse",
+      "question": "What need and feature frame this capability?",
+      "catalogRef": "model:scenario_version/91972",
+      "catalogName": "STUB altitude 1: Feature parse",
+      "status": "declared",
+      "summary": "Compose the implementation design by altitude",
+      "missingContext": [
+        "No version-owned feature binding returned"
+      ],
+      "evidenceRefs": [
+        "model:feature_version/183108"
+      ]
+    },
+    {
+      "altitude": 2,
+      "name": "Capability meaning",
+      "question": "Who needs the capability, for what purpose and outcome?",
+      "catalogRef": "model:scenario_version/91973",
+      "catalogName": "STUB altitude 2: Capability meaning",
+      "status": "declared",
+      "summary": "Generate the implementation design documentation in Markdown from a specification: five concurrent capability invocations each produce one design altitude (intent and scope, Gherkin feature, scenario contracts, providers and bindings, topology and verification) and the sections are converged deterministically into one reviewable design revision presented for owner approval",
+      "missingContext": [
+        "An observable condition has no statement"
+      ],
+      "evidenceRefs": [
+        "model:semantic_object_definition/243405/semantics/authority"
+      ]
+    },
+    {
+      "altitude": 3,
+      "name": "Scenario inputs/events/outcomes",
+      "question": "What enters, what happens, and what can leave?",
+      "catalogRef": "model:scenario_version/91974",
+      "catalogName": "STUB altitude 3: Scenario inputs/events/outcomes",
+      "status": "declared",
+      "summary": "1 scenarios; 1 with authored steps; 0 transitions.",
+      "missingContext": [],
+      "evidenceRefs": [
+        "graph:/scenarios/0"
+      ]
+    },
+    {
+      "altitude": 4,
+      "name": "Contracts and schemas",
+      "question": "What makes each input or outcome well formed?",
+      "catalogRef": "model:scenario_version/91975",
+      "catalogName": "STUB altitude 4: Contracts and schemas",
+      "status": "declared",
+      "summary": "2 contracts with field types, required members and retained constraints.",
+      "missingContext": [
+        "Schema defaults, example values and literal enum values are not projected"
+      ],
+      "evidenceRefs": [
+        "graph:/contractAuthorities/contracts/implementation-design-request.v1",
+        "graph:/contractAuthorities/contracts/implementation-design-review.v1"
+      ]
+    },
+    {
+      "altitude": 5,
+      "name": "Semantic authority envelope",
+      "question": "Which selected definitions establish the meaning?",
+      "catalogRef": "model:scenario_version/91976",
+      "catalogName": "STUB altitude 5: Semantic authority envelope",
+      "status": "declared",
+      "summary": "Estate 34; capability version 4902284; selected definition 243405.",
+      "missingContext": [
+        "Authority selection is not an admission receipt"
+      ],
+      "evidenceRefs": [
+        "model:semantic_object_definition/243405/semantics/authority"
+      ]
+    },
+    {
+      "altitude": 6,
+      "name": "Transformation AST",
+      "question": "How are declared values transformed?",
+      "catalogRef": "model:scenario_version/91977",
+      "catalogName": "STUB altitude 6: Transformation AST",
+      "status": "declared",
+      "summary": "2 transformations; 78 expression nodes.",
+      "missingContext": [
+        "Expression diagrams collapse deeper operators",
+        "Literal values are represented by type and digest"
+      ],
+      "evidenceRefs": [
+        "graph:/semanticTransformations/0",
+        "graph:/semanticTransformations/1"
+      ]
+    },
+    {
+      "altitude": 7,
+      "name": "Execution authorities and ports",
+      "question": "Which operations and calls form the circuit?",
+      "catalogRef": "model:scenario_version/91978",
+      "catalogName": "STUB altitude 7: Execution authorities and ports",
+      "status": "declared",
+      "summary": "1 execution authorities; 22 declared operations.",
+      "missingContext": [
+        "Declared order does not establish an observed execution trace"
+      ],
+      "evidenceRefs": [
+        "graph:/executionAuthorities/0"
+      ]
+    },
+    {
+      "altitude": 8,
+      "name": "Providers, bindings, overlays",
+      "question": "Which provider or platform realizes each port?",
+      "catalogRef": "model:scenario_version/91979",
+      "catalogName": "STUB altitude 8: Providers, bindings, overlays",
+      "status": "declared",
+      "summary": "22 port bindings in the selected interface authority.",
+      "missingContext": [
+        "Some bindings name a platform without an explicit provider ID",
+        "Provider qualification, binding scopes and overlay resolution outside graph_source are not queried"
+      ],
+      "evidenceRefs": [
+        "graph:/interfaceAuthority/portBindings/0",
+        "graph:/interfaceAuthority/portBindings/1",
+        "graph:/interfaceAuthority/portBindings/2",
+        "graph:/interfaceAuthority/portBindings/3",
+        "graph:/interfaceAuthority/portBindings/4",
+        "graph:/interfaceAuthority/portBindings/5",
+        "graph:/interfaceAuthority/portBindings/6",
+        "graph:/interfaceAuthority/portBindings/7",
+        "graph:/interfaceAuthority/portBindings/8",
+        "graph:/interfaceAuthority/portBindings/9",
+        "graph:/interfaceAuthority/portBindings/10",
+        "graph:/interfaceAuthority/portBindings/11",
+        "graph:/interfaceAuthority/portBindings/12",
+        "graph:/interfaceAuthority/portBindings/13",
+        "graph:/interfaceAuthority/portBindings/14",
+        "graph:/interfaceAuthority/portBindings/15",
+        "graph:/interfaceAuthority/portBindings/16",
+        "graph:/interfaceAuthority/portBindings/17",
+        "graph:/interfaceAuthority/portBindings/18",
+        "graph:/interfaceAuthority/portBindings/19",
+        "graph:/interfaceAuthority/portBindings/20",
+        "graph:/interfaceAuthority/portBindings/21"
+      ]
+    },
+    {
+      "altitude": 9,
+      "name": "Interface and CLI display",
+      "question": "How is the capability exposed to a person or caller?",
+      "catalogRef": "model:scenario_version/91980",
+      "catalogName": "STUB altitude 9: Interface and CLI display",
+      "status": "declared",
+      "summary": "1 interfaces with declared input, display and root selection.",
+      "missingContext": [],
+      "evidenceRefs": [
+        "graph:/interfaceAuthority/interfaces/0"
+      ]
+    },
+    {
+      "altitude": 10,
+      "name": "Fixtures and proof",
+      "question": "What expectations and proof obligations are declared?",
+      "catalogRef": "model:scenario_version/91981",
+      "catalogName": "STUB altitude 10: Fixtures and proof",
+      "status": "not-read",
+      "summary": "0 fixture case(s); 0 proof obligation(s). These are declarations, not test results.",
+      "missingContext": [
+        "No linked fixture cases returned",
+        "No linked proof obligations returned",
+        "Execution results and assertion values are not queried"
+      ],
+      "evidenceRefs": []
+    },
+    {
+      "altitude": 11,
+      "name": "Alignment evaluation",
+      "question": "What evidence supports consistency across the layers?",
+      "catalogRef": "model:scenario_version/91982",
+      "catalogName": "STUB altitude 11: Alignment evaluation",
+      "status": "derived",
+      "summary": "Reference checks are derived; no alignment receipt was read.",
+      "missingContext": [
+        "No alignment, reviewer decision or admission receipt queried",
+        "Reference consistency is not a semantic alignment evaluation"
+      ],
+      "evidenceRefs": []
+    }
+  ],
+  "checks": [
+    {
+      "label": "Scenario authority references",
+      "missing": [],
+      "status": "resolved"
+    },
+    {
+      "label": "Port binding references",
+      "missing": [],
+      "status": "resolved"
+    },
+    {
+      "label": "Scenario call references",
+      "missing": [],
+      "status": "resolved"
+    },
+    {
+      "label": "Scenario contract references",
+      "missing": [],
+      "status": "resolved"
+    },
+    {
+      "label": "Feature version binding",
+      "status": "gap",
+      "detail": "Feature compose-implementation-design is selected through the capability identity; no version-owned binding was returned.",
+      "sourceRef": "model:feature_version/183108"
+    },
+    {
+      "label": "Execution testimony",
+      "status": "not-read",
+      "detail": "This presentation does not invoke the capability."
+    },
+    {
+      "label": "Estate alignment decision",
+      "status": "not-read",
+      "detail": "No alignment receipt was queried."
+    }
+  ],
+  "findings": [
+    {
+      "code": "FEATURE_VERSION_BINDING_NOT_READ",
+      "label": "Feature version binding",
+      "message": "Feature compose-implementation-design is selected through the capability identity; no version-owned binding was returned.",
+      "sourceRef": "model:feature_version/183108"
+    }
+  ]
+}
