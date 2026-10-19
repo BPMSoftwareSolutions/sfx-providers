@@ -138,6 +138,7 @@ public static class RunEvidenceApplication
             return Results.Json(new { runId, chunks = chunks.Rows.Select(c => new { firstCursor = c.FirstCursor, lastCursor = c.LastCursor,
                 recordCount = c.RecordCount, sha256 = Convert.ToHexString(c.ContentDigest).ToLowerInvariant(), content = Convert.ToBase64String(c.Content) }) });
         });
+        FlightProviderApplication.Map(app);
         app.Lifetime.ApplicationStopped.Register(concurrency.Dispose);
     }
     private static string Writer(HttpContext http) => (string)http.Items["evidence.writer"]!;
