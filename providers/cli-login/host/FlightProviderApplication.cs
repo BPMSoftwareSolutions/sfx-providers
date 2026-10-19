@@ -81,5 +81,56 @@ public static class FlightProviderApplication
                 updatedAt = row.UpdatedAt
             });
         });
+
+        app.MapPost("/evidence/v1/flights/begin-recording", async (HttpContext http) =>
+        {
+            using var body = await Read(http);
+            var root = body.RootElement;
+            var result = await new EvidenceBeginFlightRecordingRepository().ExecuteAsync(
+                Id(root, "principalId"), Text(root, "agentId", 255), Id(root, "flightRecordingId"));
+            var row = result.Rows.Single();
+            return Results.Json(new { flight_recording_id = row.FlightRecordingId });
+        });
+        app.MapPost("/evidence/v1/flights/attach-run", async (HttpContext http) =>
+        {
+            using var body = await Read(http);
+            var root = body.RootElement;
+            var result = await new EvidenceAttachRunToRecordingRepository().ExecuteAsync(
+                Id(root, "principalId"), Text(root, "runId", 128), Id(root, "flightRecordingId"));
+            var row = result.Rows.Single();
+            return Results.Json(new { run_id = row.RunId, flight_recording_id = row.FlightRecordingId });
+        });
+        app.MapPost("/evidence/v1/flights/complete-recording", async (HttpContext http) =>
+        {
+            using var body = await Read(http);
+            var root = body.RootElement;
+            var result = await new EvidenceCompleteFlightRecordingRepository().ExecuteAsync(
+                Id(root, "principalId"), Id(root, "flightRecordingId"), Text(root, "frontierResponse", 1000000));
+            var row = result.Rows.Single();
+            return Results.Json(new { flight_recording_id = row.FlightRecordingId, completed_at = row.CompletedAt,
+                frontier_response = row.FrontierResponse, response_recorded_at = row.ResponseRecordedAt });
+        });
+        app.MapPost("/evidence/v1/flights/list-recordings", async (HttpContext http) =>
+        {
+            using var body = await Read(http);
+            var root = body.RootElement;
+            var records = await new FlightRecordingRepository().GetByPrincipalIdAsync(Id(root, "principalId"));
+            var agent = root.TryGetProperty("agentId", out var a) && a.ValueKind == JsonValueKind.String ? a.GetString() : null;
+            var offset = root.TryGetProperty("cursor", out var c) && c.ValueKind == JsonValueKind.String && int.TryParse(c.GetString(), out var n) ? Math.Max(0, n) : 0;
+            var limit = root.TryGetProperty("limit", out var l) && l.TryGetInt32(out var count) ? Math.Clamp(count, 1, 100) : 30;
+            var page = records.Where(r => string.IsNullOrEmpty(agent) || r.AgentId == agent).OrderByDescending(r => r.StartedAt)
+                .ThenBy(r => r.FlightRecordingId).Skip(offset).Take(limit + 1).ToArray();
+            return Results.Json(new { recordings = page.Take(limit).Select(r => new {
+                flight_recording_id = r.FlightRecordingId, agent_id = r.AgentId, objective_snapshot = r.ObjectiveSnapshot,
+                plan_revision = r.PlanRevision, started_at = r.StartedAt, completed_at = r.CompletedAt }),
+                nextCursor = page.Length > limit ? (offset + limit).ToString() : null });
+        });
     }
+
+    private static Task<JsonDocument> Read(HttpContext http) =>
+        JsonDocument.ParseAsync(http.Request.Body, new JsonDocumentOptions { MaxDepth = 16 }, http.RequestAborted);
+    private static string Text(JsonElement root, string name, int maximum) =>
+        root.ValueKind == JsonValueKind.Object && root.TryGetProperty(name, out var value) && value.ValueKind == JsonValueKind.String &&
+        value.GetString() is { Length: > 0 } text && text.Length <= maximum ? text : throw new JsonException();
+    private static Guid Id(JsonElement root, string name) => Guid.Parse(Text(root, name, 36));
 }
