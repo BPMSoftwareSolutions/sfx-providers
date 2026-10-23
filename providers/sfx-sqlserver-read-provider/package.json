@@ -1,0 +1,11 @@
+{
+    "name":  "sfx-sqlserver-read-provider",
+    "version":  "0.1.0",
+    "private":  true,
+    "type":  "module",
+    "main":  "sfx-sqlserver-read-provider.mjs",
+    "description":  "Host/consumer provider sfx-sqlserver-read-provider.v1: a declared read on a declared SQL Server connection (SDA ADR-0016).",
+    "dependencies":  {
+                         "mssql":  "12.7.0"
+                     }
+}
