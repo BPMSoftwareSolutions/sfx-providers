@@ -1,0 +1,116 @@
+{
+    "authorityType":  "sfx-host-provider-authority.v1",
+    "language":  "python",
+    "schedulerProviders":  [
+                               {
+                                   "providerProfileId":  "sql-server-client",
+                                   "language":  "python",
+                                   "providerModule":  "pyodbc",
+                                   "providerExport":  "connect",
+                                   "factory":  true,
+                                   "effectClassification":  "observation",
+                                   "operations":  [
+                                                      {
+                                                          "operationId":  "read",
+                                                          "parameters":  [
+                                                                             {
+                                                                                 "name":  "connectionString",
+                                                                                 "source":  "credential",
+                                                                                 "dataSource":  {
+                                                                                                    "objectKind":  "DATA_SOURCE",
+                                                                                                    "namespace":  "sidefx:data-sources",
+                                                                                                    "idPath":  "dataSource"
+                                                                                                },
+                                                                                 "connectionPath":  "connection"
+                                                                             },
+                                                                             {
+                                                                                 "name":  "statement",
+                                                                                 "source":  "input",
+                                                                                 "path":  "statement"
+                                                                             },
+                                                                             {
+                                                                                 "name":  "input",
+                                                                                 "source":  "input",
+                                                                                 "path":  "input",
+                                                                                 "encoding":  "json-text"
+                                                                             },
+                                                                             {
+                                                                                 "name":  "resultColumn",
+                                                                                 "source":  "input",
+                                                                                 "path":  "resultColumn"
+                                                                             }
+                                                                         ],
+                                                          "result":  {
+                                                                         "from":  "value",
+                                                                         "encoding":  "json-text"
+                                                                     },
+                                                          "program":  [
+                                                                          {
+                                                                              "bind":  "connection",
+                                                                              "invocation":  "connect",
+                                                                              "arguments":  [
+                                                                                                {
+                                                                                                    "op":  "path",
+                                                                                                    "from":  "scope",
+                                                                                                    "path":  "connectionString"
+                                                                                                }
+                                                                                            ],
+                                                                              "release":  {
+                                                                                              "invocation":  "connection.close"
+                                                                                          }
+                                                                          },
+                                                                          {
+                                                                              "bind":  "cursor",
+                                                                              "invocation":  "connection.cursor",
+                                                                              "release":  {
+                                                                                              "invocation":  "cursor.close"
+                                                                                          }
+                                                                          },
+                                                                          {
+                                                                              "invocation":  "cursor.execute",
+                                                                              "arguments":  [
+                                                                                                {
+                                                                                                    "op":  "join",
+                                                                                                    "value":  {
+                                                                                                                  "op":  "array",
+                                                                                                                  "items":  [
+                                                                                                                                {
+                                                                                                                                    "op":  "literal",
+                                                                                                                                    "value":  "DECLARE @input nvarchar(max)=?; "
+                                                                                                                                },
+                                                                                                                                {
+                                                                                                                                    "op":  "path",
+                                                                                                                                    "from":  "scope",
+                                                                                                                                    "path":  "statement"
+                                                                                                                                }
+                                                                                                                            ]
+                                                                                                              },
+                                                                                                    "separator":  ""
+                                                                                                },
+                                                                                                {
+                                                                                                    "op":  "path",
+                                                                                                    "from":  "scope",
+                                                                                                    "path":  "input"
+                                                                                                }
+                                                                                            ]
+                                                                          },
+                                                                          {
+                                                                              "bind":  "row",
+                                                                              "invocation":  "cursor.fetchone"
+                                                                          },
+                                                                          {
+                                                                              "bind":  "value",
+                                                                              "invocation":  "row.$computed.$read",
+                                                                              "selector":  {
+                                                                                               "op":  "path",
+                                                                                               "from":  "scope",
+                                                                                               "path":  "resultColumn"
+                                                                                           }
+                                                                          }
+                                                                      ]
+                                                      }
+                                                  ],
+                                   "sourceProviderDefinitionDigest":  "sha256:8bb59261e2a6dff5ab3eb240ad61f5ebc3aa6369848d37e0d28d9a857de4b6b2"
+                               }
+                           ]
+}

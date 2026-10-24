@@ -1,0 +1,120 @@
+{
+    "authorityType":  "sfx-host-provider-authority.v1",
+    "language":  "node",
+    "schedulerProviders":  [
+                               {
+                                   "providerProfileId":  "sql-server-client",
+                                   "language":  "node",
+                                   "providerModule":  "mssql",
+                                   "providerExport":  "ConnectionPool",
+                                   "factory":  true,
+                                   "effectClassification":  "observation",
+                                   "operations":  [
+                                                      {
+                                                          "operationId":  "read",
+                                                          "parameters":  [
+                                                                             {
+                                                                                 "name":  "connectionString",
+                                                                                 "source":  "credential",
+                                                                                 "dataSource":  {
+                                                                                                    "objectKind":  "DATA_SOURCE",
+                                                                                                    "namespace":  "sidefx:data-sources",
+                                                                                                    "idPath":  "dataSource"
+                                                                                                },
+                                                                                 "connectionPath":  "connection"
+                                                                             },
+                                                                             {
+                                                                                 "name":  "statement",
+                                                                                 "source":  "input",
+                                                                                 "path":  "statement"
+                                                                             },
+                                                                             {
+                                                                                 "name":  "input",
+                                                                                 "source":  "input",
+                                                                                 "path":  "input",
+                                                                                 "encoding":  "json-text"
+                                                                             },
+                                                                             {
+                                                                                 "name":  "resultColumn",
+                                                                                 "source":  "input",
+                                                                                 "path":  "resultColumn"
+                                                                             }
+                                                                         ],
+                                                          "result":  {
+                                                                         "from":  "value",
+                                                                         "encoding":  "json-text"
+                                                                     },
+                                                          "program":  [
+                                                                          {
+                                                                              "bind":  "pool",
+                                                                              "invocation":  "new ConnectionPool",
+                                                                              "arguments":  [
+                                                                                                {
+                                                                                                    "op":  "path",
+                                                                                                    "from":  "scope",
+                                                                                                    "path":  "connectionString"
+                                                                                                }
+                                                                                            ],
+                                                                              "release":  {
+                                                                                              "invocation":  "pool.close",
+                                                                                              "await":  true
+                                                                                          }
+                                                                          },
+                                                                          {
+                                                                              "invocation":  "pool.connect",
+                                                                              "await":  true
+                                                                          },
+                                                                          {
+                                                                              "bind":  "request",
+                                                                              "invocation":  "pool.request"
+                                                                          },
+                                                                          {
+                                                                              "invocation":  "request.input",
+                                                                              "arguments":  [
+                                                                                                {
+                                                                                                    "op":  "literal",
+                                                                                                    "value":  "input"
+                                                                                                },
+                                                                                                {
+                                                                                                    "op":  "path",
+                                                                                                    "from":  "scope",
+                                                                                                    "path":  "input"
+                                                                                                }
+                                                                                            ]
+                                                                          },
+                                                                          {
+                                                                              "bind":  "result",
+                                                                              "invocation":  "request.query",
+                                                                              "arguments":  [
+                                                                                                {
+                                                                                                    "op":  "path",
+                                                                                                    "from":  "scope",
+                                                                                                    "path":  "statement"
+                                                                                                }
+                                                                                            ],
+                                                                              "await":  true
+                                                                          },
+                                                                          {
+                                                                              "bind":  "row",
+                                                                              "invocation":  "result.recordset.$computed.$read",
+                                                                              "selector":  {
+                                                                                               "op":  "literal",
+                                                                                               "value":  0
+                                                                                           }
+                                                                          },
+                                                                          {
+                                                                              "bind":  "value",
+                                                                              "invocation":  "row.$computed.$read",
+                                                                              "selector":  {
+                                                                                               "op":  "path",
+                                                                                               "from":  "scope",
+                                                                                               "path":  "resultColumn"
+                                                                                           }
+                                                                          }
+                                                                      ]
+                                                      }
+                                                  ],
+                                   "sourceProviderDefinitionDigest":  "sha256:8bb59261e2a6dff5ab3eb240ad61f5ebc3aa6369848d37e0d28d9a857de4b6b2"
+                               }
+                           ]
+}
