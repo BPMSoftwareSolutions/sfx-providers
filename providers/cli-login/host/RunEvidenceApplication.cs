@@ -1,16 +1,15 @@
-using System.IO.Compression;
 using System.Net;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.Data.SqlClient;
-using SFX.Identity.DAL.Repositories;
 
 namespace SfxProviders.CliLogin.Hosting;
 
-// Private material transport. These endpoints do not evaluate claims or admit
-// authority. Only specifically named generated repositories touch the store.
+// Private service transport for the ledger and flight routes. These endpoints do
+// not evaluate claims or admit authority. Run evidence is captured and read through
+// the estate's declared evidence capabilities, not through this host.
 public static class RunEvidenceApplication
 {
     private sealed record Caller(string Id, string Key, string[] Actions);
@@ -44,7 +43,7 @@ public static class RunEvidenceApplication
             try
             {
                 http.Items["evidence.writer"] = caller.Id;
-                if (HttpMethods.IsGet(http.Request.Method) || http.Request.Path == "/evidence/v1/runs")
+                if (HttpMethods.IsGet(http.Request.Method))
                 {
                     var bearer = http.Request.Headers["x-sfx-session"].ToString();
                     var session = bearer.Length == 44 ? await sessions.ValidateAsync(bearer, http.RequestAborted) : null;
@@ -52,7 +51,7 @@ public static class RunEvidenceApplication
                     http.Items["evidence.session"] = session;
                 }
                 var limit = http.Features.Get<IHttpMaxRequestBodySizeFeature>();
-                if (limit is { IsReadOnly: false }) limit.MaxRequestBodySize = http.Request.Path.Value!.EndsWith("/chunks", StringComparison.Ordinal) ? 1500000 : 16 * 1024 * 1024;
+                if (limit is { IsReadOnly: false }) limit.MaxRequestBodySize = 16 * 1024 * 1024;
                 await next(http);
             }
             catch (JsonException) { if (!http.Response.HasStarted) http.Response.StatusCode = 400; }
@@ -67,94 +66,7 @@ public static class RunEvidenceApplication
         });
 
         TrustAuthorityApplication.Map(app);
-        app.MapPost("/evidence/v1/runs", async (HttpContext http) =>
-        {
-            using var body = await Read(http); var root = body.RootElement;
-            var session = (SessionMetadata)http.Items["evidence.session"]!;
-            var result = await new EvidenceRegisterRunRepository().ExecuteAsync(Text(root, "runId", 128), session.PrincipalId, session.SessionId,
-                Text(root, "capabilityId", 512), Text(root, "namespaceId", 256), Writer(http));
-            return Results.Json(new { runId = result.Rows.Single().RunId, persistence = "registered", trust = "NOT_EVALUATED" });
-        });
-        app.MapPost("/evidence/v1/runs/{runId}/chunks", async (string runId, HttpContext http) =>
-        {
-            using var body = await Read(http); var root = body.RootElement;
-            var bytes = Convert.FromBase64String(Text(root, "content", 1400000));
-            var digest = Convert.FromHexString(Text(root, "sha256", 64));
-            if (digest.Length != 32 || bytes.Length is < 1 or > 1048576 || !CryptographicOperations.FixedTimeEquals(digest, SHA256.HashData(bytes))) return Results.BadRequest();
-            var first = Number(root, "firstCursor"); var last = Number(root, "lastCursor");
-            var count = Number(root, "recordCount");
-            if (first < 1 || last < first || count is < 1 or > 128 || last - first + 1 != count) return Results.BadRequest();
-            using var stream = new BrotliStream(new MemoryStream(bytes), CompressionMode.Decompress);
-            using var expanded = new MemoryStream(); var buffer = new byte[8192];
-            for (int n; (n = await stream.ReadAsync(buffer, http.RequestAborted)) != 0;)
-            { if (expanded.Length + n > 8 * 1024 * 1024) return Results.StatusCode(413); await expanded.WriteAsync(buffer.AsMemory(0, n), http.RequestAborted); }
-            using var events = JsonDocument.Parse(expanded.ToArray());
-            if (events.RootElement.ValueKind != JsonValueKind.Array || events.RootElement.GetArrayLength() != count || count < 1 || last - first + 1 != count) return Results.BadRequest();
-            long cursor = first;
-            foreach (var e in events.RootElement.EnumerateArray())
-            {
-                if (Number(e, "cursor") != cursor || Text(e, "eventId", 256) != $"urn:sda-api:run-event:{runId}:{cursor}" ||
-                    (e.TryGetProperty("runId", out _) && Text(e, "runId", 128) != runId)) return Results.BadRequest();
-                cursor++;
-            }
-            await new EvidenceAppendTraceChunkRepository().ExecuteAsync(runId, Writer(http), first, last, (int)count, digest, bytes);
-            return Results.Json(new { stored = true });
-        });
-        app.MapPost("/evidence/v1/runs/{runId}/complete", async (string runId, HttpContext http) =>
-        {
-            using var body = await Read(http); var root = body.RootElement;
-            var run = Member(root, "run");
-            // Store the API envelope verbatim; never derive a terminal variant
-            // from an exit code or translate an outcome into ledger admission.
-            if (Text(run, "runId", 128) != runId) return Results.BadRequest();
-            var result = await new EvidenceCompleteRunRepository().ExecuteAsync(runId, Writer(http), run.GetRawText(),
-                Optional(root, "graph")!, Optional(root, "output")!, Number(root, "latestCursor"), Optional(root, "graphs"));
-            return Results.Json(new { persistence = "stored", traceComplete = result.Rows.Single().TraceComplete, trust = "NOT_EVALUATED" });
-        });
-        app.MapGet("/evidence/v1/runs", async (HttpContext http) =>
-        {
-            var session = (SessionMetadata)http.Items["evidence.session"]!;
-            var result = await new EvidenceListRunsRepository().ExecuteAsync(session.PrincipalId);
-            return Results.Json(new { principalId = session.PrincipalId, storage = "durable", runs = result.Rows.Select(r => new {
-                runId = r.RunId, capabilityId = r.CapabilityId, namespaceId = r.NamespaceId, admittedAt = r.AdmittedAt, sessionId = r.SessionId, captureStatus = r.CaptureStatus }) });
-        });
-        app.MapGet("/evidence/v1/runs/{runId}", async (string runId, HttpContext http) =>
-        {
-            var session = (SessionMetadata)http.Items["evidence.session"]!;
-            var result = await new EvidenceReadRunRepository().ExecuteAsync(session.PrincipalId, runId); var row = result.Rows.SingleOrDefault();
-            if (row is null) return Results.NotFound();
-            return Results.Json(new { runId = row.RunId, capabilityId = row.CapabilityId, namespaceId = row.NamespaceId,
-                captureStatus = row.CaptureStatus, traceComplete = row.TraceComplete, latestCursor = row.LatestCursor,
-                run = Parse(row.RunJson), graph = Parse(row.GraphJson), graphs = Parse(row.GraphsJson), output = Parse(row.OutputJson), trust = "NOT_EVALUATED",
-                limitations = new[] { "Attributable executor identity and a persisted ledger evaluation are not yet recorded for this run." } });
-        });
-        app.MapGet("/evidence/v1/runs/{runId}/chunks", async (string runId, HttpContext http) =>
-        {
-            var session = (SessionMetadata)http.Items["evidence.session"]!;
-            var owned = await new EvidenceReadRunRepository().ExecuteAsync(session.PrincipalId, runId);
-            if (owned.Rows.Count == 0) return Results.NotFound();
-            if (!long.TryParse(http.Request.Query["after"].FirstOrDefault() ?? "0", out var after) || after < 0) return Results.BadRequest();
-            var chunks = await new EvidenceReadTraceChunksRepository().ExecuteAsync(session.PrincipalId, runId, after);
-            return Results.Json(new { runId, chunks = chunks.Rows.Select(c => new { firstCursor = c.FirstCursor, lastCursor = c.LastCursor,
-                recordCount = c.RecordCount, sha256 = Convert.ToHexString(c.ContentDigest).ToLowerInvariant(), content = Convert.ToBase64String(c.Content) }) });
-        });
         FlightProviderApplication.Map(app);
         app.Lifetime.ApplicationStopped.Register(concurrency.Dispose);
     }
-    private static string Writer(HttpContext http) => (string)http.Items["evidence.writer"]!;
-    private static Task<JsonDocument> Read(HttpContext http) => JsonDocument.ParseAsync(http.Request.Body, new JsonDocumentOptions { MaxDepth = 128 }, http.RequestAborted);
-    private static string Text(JsonElement root, string key, int max)
-    {
-        var e = Member(root, key);
-        if (e.ValueKind != JsonValueKind.String || e.GetString() is not { } s || s.Length is < 1 || s.Length > max) throw new JsonException();
-        return s;
-    }
-    private static JsonElement Member(JsonElement root, string key) => root.ValueKind == JsonValueKind.Object && root.TryGetProperty(key, out var e) ? e : throw new JsonException();
-    private static long Number(JsonElement root, string key)
-    {
-        var e = Member(root, key);
-        return e.ValueKind == JsonValueKind.Number && e.TryGetInt64(out var n) ? n : throw new JsonException();
-    }
-    private static string? Optional(JsonElement root, string key) => root.TryGetProperty(key, out var v) && v.ValueKind != JsonValueKind.Null ? v.GetRawText() : null;
-    private static JsonElement? Parse(string? json) { if (json is null) return null; using var d = JsonDocument.Parse(json); return d.RootElement.Clone(); }
 }
