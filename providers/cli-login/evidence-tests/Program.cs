@@ -1,4 +1,3 @@
-using System.IO.Compression;
 using System.Diagnostics;
 using System.Net;
 using System.Net.Http.Json;
@@ -53,8 +52,7 @@ async Task<HttpResponseMessage> Send(string path, object? body = null, string? t
 }
 try
 {
-    string user = await User(), other = await User(); origin = await Start();
-    Need((int)(await Send("/runs")).StatusCode == 401, "service identity alone cannot list runs");
+    string user = await User(); origin = await Start();
     const string policyPin = "98b97712ba40153553186212b6094970433b9b4fee810fb67e2c9921368f4454";
     const string evaluatorPin = "0d8869aafd2ae49894f26b76b1d8bf2ea347289b355fd8d0009f13cb106e25a1";
     string authorityPath = $"/ledger/v1/authority/{policyPin}/{evaluatorPin}";
@@ -73,41 +71,11 @@ try
     Need(semantics.GetProperty("states").GetArrayLength() == 9 && semantics.GetProperty("evidenceClasses").GetArrayLength() == 8 && semantics.GetProperty("claimKinds").GetArrayLength() == 2, "estate vocabulary survives generated DAL and private API");
     var rules = authority.RootElement.GetProperty("rules");
     Need(rules.GetArrayLength() == 2 && rules.EnumerateArray().Single(r => r.GetProperty("claimKind").GetString() == "C2").GetProperty("available").GetBoolean() == false, "C2 remains unavailable in retained rule copy");
+    // Run evidence moved to the estate's declared evidence capabilities; this host no longer maps it.
     var registration = new { runId, capabilityId = "explicit-transport-fixture", namespaceId = "fixture" };
-    Need((int)(await Send("/runs", registration, user, readKey)).StatusCode == 403, "read-only service cannot capture");
-    foreach (var malformed in new object[] { new { }, new[] { "array" }, new { runId = 7 } })
-        Need((int)(await Send("/runs", malformed, user)).StatusCode == 400, "malformed registration is a client error");
-    Need((await Send("/runs", registration, user)).IsSuccessStatusCode, "register validates actual database session");
-    Need((await Send("/runs", registration, user)).IsSuccessStatusCode, "register retry is idempotent");
-    Need((int)(await Send("/runs", registration, other)).StatusCode == 409, "another principal cannot claim existing run");
-    var events = new[] { new { runId, cursor = 1, eventId = $"urn:sda-api:run-event:{runId}:1", kind = "fixture", payload = new { label = "transport fixture; not execution evidence" } } };
-    byte[] content;
-    using (var bytes = new MemoryStream()) { using (var compress = new BrotliStream(bytes, CompressionLevel.Fastest, true)) await compress.WriteAsync(JsonSerializer.SerializeToUtf8Bytes(events)); content = bytes.ToArray(); }
-    var chunk = new { firstCursor = 1, lastCursor = 1, recordCount = 1, sha256 = Convert.ToHexString(SHA256.HashData(content)), content = Convert.ToBase64String(content) };
-    Need((await Send($"/runs/{runId}/chunks", chunk)).IsSuccessStatusCode, "Brotli chunk stored through generated DAL");
-    Need((await Send($"/runs/{runId}/chunks", chunk)).IsSuccessStatusCode, "chunk retry is idempotent");
-    Need((int)(await Send($"/runs/{runId}/chunks", chunk with { sha256 = new string('0', 64) })).StatusCode == 400, "digest mismatch refused");
-    Need((int)(await Send($"/runs/{runId}/chunks", new { chunk.content, chunk.sha256, firstCursor = "1" })).StatusCode == 400, "malformed chunk cursor refused");
-    Need((int)(await Send($"/runs/{runId}/complete", new { })).StatusCode == 400, "missing completion refused");
-    var graphs = new[] { "root-a", "root-b" }.Select(root => new {
-        rootExecutionId = root, graphId = "graph:shared", canonicalGraphDigest = root + "-digest",
-        projection = new { rootExecutionId = root, graphId = "graph:shared", cells = new[] { new { cellId = root + "-cell" } } }
-    }).ToArray();
-    var completion = new { run = new { runId, state = "completed", partial = false }, graph = new { fixture = true }, graphs, output = new { fixture = true }, latestCursor = 1 };
-    Need((await Send($"/runs/{runId}/complete", completion)).IsSuccessStatusCode, "complete verifies contiguous cursor coverage");
-    Need((await Send($"/runs/{runId}/complete", completion)).IsSuccessStatusCode, "completion retry is idempotent");
-    Need((int)(await Send($"/runs/{runId}/complete", completion with { latestCursor = 2 })).StatusCode == 409, "contradictory completion refused");
-    Need((int)(await Send($"/runs/{runId}/complete", completion with { graphs = graphs.Take(1).ToArray() })).StatusCode == 409, "graph collection participates in immutable completion");
-    foreach (var path in new[] { $"/runs/{runId}", $"/runs/{runId}/chunks" })
-    { Need((int)(await Send(path, token: other)).StatusCode == 404, "cross-principal read concealed " + path.Split('/').Last()); }
-    await app!.StopAsync(); await app.DisposeAsync(); app = null; origin = await Start();
-    using var read = JsonDocument.Parse(await (await Send($"/runs/{runId}", token: user)).Content.ReadAsStringAsync());
-    Need(read.RootElement.GetProperty("traceComplete").GetBoolean(), "complete capture survives identity host restart");
-    Need(read.RootElement.GetProperty("graphs").GetRawText() == JsonSerializer.Serialize(graphs), "both roots sharing a graph ID retain their exact projections after restart");
-    Need(read.RootElement.GetProperty("graph").GetRawText() == JsonSerializer.Serialize(completion.graph), "parent graph remains available alongside per-root graphs");
-    Need(read.RootElement.GetProperty("trust").GetString() == "NOT_EVALUATED", "stored fixture never becomes a trust claim");
-    using var chunks = JsonDocument.Parse(await (await Send($"/runs/{runId}/chunks", token: user)).Content.ReadAsStringAsync());
-    Need(chunks.RootElement.GetProperty("chunks").GetArrayLength() == 1, "immutable chunk survives restart without duplicates");
+    Need((int)(await Send("/runs", registration, user)).StatusCode == 404, "run registration route retired");
+    foreach (var path in new[] { "/runs", $"/runs/{runId}", $"/runs/{runId}/chunks" })
+        Need((int)(await Send(path, token: user)).StatusCode == 404, "run read route retired " + path.Split('/').Last());
     if (args.Length > 2)
     {
         var start = new ProcessStartInfo("node") { UseShellExecute = false, CreateNoWindow = true, RedirectStandardInput = true, RedirectStandardOutput = true, RedirectStandardError = true };
@@ -123,7 +91,7 @@ try
         if (args.Length > 1) await File.WriteAllTextAsync(args[1] + ".capture.json", message);
     }
     await provider.RevokeAsync(user);
-    Need((int)(await Send($"/runs/{runId}", token: user)).StatusCode == 401, "revoked session cannot read retained content");
+    Need((int)(await Send(authorityPath, token: user)).StatusCode == 401, "revoked session cannot read the ledger authority");
     var receipt = JsonSerializer.Serialize(new { capturedAt = DateTimeOffset.UtcNow, basis = "Live sfx-identity and local HTTP host with explicit transport fixtures; no capability execution", checks, status = "PASS" }, new JsonSerializerOptions { WriteIndented = true });
     if (args.Length > 1) await File.WriteAllTextAsync(args[1], receipt);
 }
